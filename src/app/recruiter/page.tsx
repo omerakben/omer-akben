@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download, Mail, Linkedin, FileText, Clock, DollarSign } from "lucide-react";
+import { Download, Mail, Linkedin, FileText, Clock, DollarSign, Rocket, Briefcase, TrendingUp, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,87 @@ export default function RecruiterPage() {
             Quick overview and resources for recruiters and hiring managers.
           </p>
         </div>
+
+        {/* Production Metrics Dashboard */}
+        <Card className="mb-12 border-brand-primary/30 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5">
+          <CardHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <Rocket className="h-6 w-6 text-brand-primary" />
+              <CardTitle className="text-2xl">Production Portfolio Metrics</CardTitle>
+            </div>
+            <p className="text-text-2 text-sm">Live systems demonstrating production-ready skills</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
+                <div className="text-3xl font-bold text-brand-primary mb-1">6</div>
+                <div className="text-sm text-text-2">Live Projects</div>
+                <Badge variant="outline" className="mt-2 text-xs">
+                  ● Public URLs
+                </Badge>
+              </div>
+              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
+                <div className="text-3xl font-bold text-green-600 mb-1">2</div>
+                <div className="text-sm text-text-2">Client Projects</div>
+                <Badge variant="outline" className="mt-2 text-xs">
+                  Production Use
+                </Badge>
+              </div>
+              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
+                <div className="text-3xl font-bold text-accent-primary mb-1">9</div>
+                <div className="text-sm text-text-2">Total Projects</div>
+                <Badge variant="outline" className="mt-2 text-xs">
+                  Full Portfolio
+                </Badge>
+              </div>
+              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
+                <div className="text-3xl font-bold text-emerald-600 mb-1">$0</div>
+                <div className="text-sm text-text-2">Deployment Cost</div>
+                <Badge variant="outline" className="mt-2 text-xs">
+                  /month
+                </Badge>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 p-3 bg-surf-1 rounded-lg border border-border-line">
+                <Briefcase className="h-5 w-5 text-brand-primary mt-0.5 shrink-0" />
+                <div className="flex-1">
+                  <p className="font-medium text-text-1 mb-1">Real Client Work</p>
+                  <p className="text-sm text-text-2">
+                    <strong>North Glass LLC</strong> - Live commercial website with AI integration, serving real customers
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-surf-1 rounded-lg border border-border-line">
+                <TrendingUp className="h-5 w-5 text-brand-primary mt-0.5 shrink-0" />
+                <div className="flex-1">
+                  <p className="font-medium text-text-1 mb-1">Production-Validated AI</p>
+                  <p className="text-sm text-text-2">
+                    <strong>Elon AI Agent</strong> - Business plan generator achieving 3-4x speedup, validated by real client usage
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-surf-1 rounded-lg border border-border-line">
+                <Zap className="h-5 w-5 text-brand-primary mt-0.5 shrink-0" />
+                <div className="flex-1">
+                  <p className="font-medium text-text-1 mb-1">Mixed Infrastructure</p>
+                  <p className="text-sm text-text-2">
+                    5 Vercel deployments (free tier) + 1 Azure Container Apps backend (free tier) - demonstrates multi-cloud expertise and cost optimization
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-border-line">
+              <Button asChild size="lg" className="w-full">
+                <Link href="/projects">
+                  View All Live Projects →
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* TL;DR Section */}
         <Card className="mb-12">

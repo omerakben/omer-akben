@@ -16,6 +16,7 @@ export interface ProjectCardProps {
   demoUrl?: string;
   githubUrl?: string;
   slug?: string;
+  status?: "completed" | "in-progress" | "planned";
 }
 
 export function ProjectCard({
@@ -26,6 +27,7 @@ export function ProjectCard({
   demoUrl,
   githubUrl,
   slug,
+  status,
 }: ProjectCardProps) {
   return (
     <motion.div
@@ -46,6 +48,19 @@ export function ProjectCard({
             />
           ) : (
             <Code2 className="w-20 h-20 text-brand-primary/40" />
+          )}
+          {/* Production Badge */}
+          {status === "completed" && demoUrl && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="absolute top-3 right-3"
+            >
+              <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-none shadow-lg font-semibold">
+                ● LIVE
+              </Badge>
+            </motion.div>
           )}
         </div>
 

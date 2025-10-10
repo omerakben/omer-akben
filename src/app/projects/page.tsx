@@ -120,6 +120,7 @@ export default function ProjectsPage() {
               demoUrl={project.demoUrl}
               githubUrl={project.githubUrl}
               slug={project.slug}
+              status={project.status}
             />
           ))}
         </div>
