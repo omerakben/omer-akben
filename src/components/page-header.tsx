@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
-import { slideUp, staggerContainer, VIEWPORT } from "@/lib/animations";
+import { slideUp, staggerContainer } from "@/lib/animations";
 
 interface PageHeaderProps {
   icon: LucideIcon;
@@ -19,8 +19,7 @@ export function PageHeader({ icon: Icon, title, description, className = "" }: P
     <motion.div
       variants={staggerContainer}
       initial="hidden"
-      whileInView="visible"
-      viewport={VIEWPORT.default}
+      animate="visible"
       className={`text-center mb-12 ${className}`}
     >
       <motion.h1
