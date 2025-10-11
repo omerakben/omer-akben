@@ -25,9 +25,9 @@ npm start
 npm run lint
 ```
 
-### Testing (when implemented)
+### Testing (planned)
 ```bash
-# Run Playwright tests (planned)
+# Run Playwright tests (when implemented)
 npx playwright test
 
 # Run specific test file
@@ -75,6 +75,14 @@ TODO.md                     # Implementation roadmap
 
 ### Path Aliases
 - `@/*` → `./src/*` (configured in tsconfig.json)
+
+### Archive Directory
+The `/archive/` directory contains the original Vite + Wouter implementation from Figma:
+- **Purpose**: Reference implementation showing complete design system
+- **Tech**: Vite, React, Wouter (client-side routing), shadcn/ui
+- **Usage**: Reference for design patterns, component structure, and interactions
+- **Do NOT**: Copy directly or import from archive - adapt patterns to Next.js App Router
+- **Note**: Archive is excluded from TypeScript compilation (tsconfig.json)
 
 ### Agent Architecture
 
@@ -147,6 +155,31 @@ TODO.md                     # Implementation roadmap
 - TypeScript strict mode enabled
 - Turbopack for builds
 
+## Key Architectural Decisions
+
+### Turbopack Build System
+- **Why**: Faster builds and hot reload compared to Webpack
+- **Impact**: All commands use `--turbopack` flag (`npm run dev`, `npm run build`)
+- **Note**: Some features may differ from standard Next.js Webpack builds
+
+### Brightness System Over Theme Toggler
+- **Why**: More granular control than binary dark/light mode
+- **Implementation**: 5 manual stops (-2 to +2) plus auto mode
+- **Benefits**: Users can fine-tune contrast for comfort/accessibility
+- **Challenge**: Requires testing all components across all modes
+
+### Server-Side Agent Tools Only
+- **Why**: Security - never expose OpenAI API keys in browser
+- **Pattern**: All agent tools are Next.js API routes with Zod validation
+- **Flow**: ChatKit (client) → API route → Tool handler → Data source
+- **Future**: Short-lived client secrets for ChatKit authentication
+
+### Single Source of Truth for Data
+- **Personal Data**: `src/data/facts.ts` (agent grounding)
+- **Projects**: `src/data/projects.ts` (catalog + metadata)
+- **Content**: Journey, skills, testimonials in dedicated `data/` files
+- **Why**: Consistency across pages and agent responses
+
 ## Common Development Patterns
 
 ### Creating New Agent Tools
@@ -218,6 +251,7 @@ import { useBrightness } from "@/lib/brightness-context";
 
 const { brightness, setBrightness } = useBrightness();
 // brightness is: '-2' | '-1' | '0' | '+1' | '+2' | 'auto'
+// Current implementation: range from -2 to +2
 ```
 
 ## Project-Specific Context
@@ -227,6 +261,7 @@ const { brightness, setBrightness } = useBrightness();
 **Completed**:
 - ✅ Brightness system (7 modes + auto) with context provider
 - ✅ Core pages: /, /journey, /projects, /skills, /credentials, /contact, /recruiter
+- ✅ 404 error page with custom illustration and helpful navigation
 - ✅ Agent tool API endpoints with Zod validation
 - ✅ Data architecture (facts, projects, journey, skills, testimonials)
 - ✅ shadcn/ui component library setup
@@ -312,10 +347,11 @@ The project emphasizes security (short-lived tokens), accessibility (AA contrast
 - **Design Mode**: Full visual designs and prototypes
 - **Dev Mode**: Inspect spacing, colors, typography, and export assets
 
-**Reference Implementation**: `/figma/omer-akben-design/` (gitignored, reference only)
-- Contains fully implemented React components from Figma
+**Reference Implementation**: `/archive/omer-akben-design/` (archived reference only)
+- Contains fully implemented React components from Figma using Vite + Wouter
 - Use as reference for design patterns, spacing, and interactions
 - **Do NOT copy directly** - adapt patterns to Next.js App Router structure
+- Convert `wouter` routing to Next.js `Link` and file-based routing
 
 ### Page Structure & Routes
 
@@ -359,16 +395,14 @@ The design uses a **7-stop brightness control** (`-3` to `+3`) with "auto" mode:
 ```
 
 **Brightness Mode Mapping**:
-- `-3` (Darkest): Not implemented (range is -2 to +2)
 - `-2`: Deepest dark mode
 - `-1`: Medium dark mode
 - `0` (Baseline): Default dark theme
 - `+1`: Soft light mode
 - `+2`: Bright light mode
-- `+3` (Lightest): Not implemented (range is -2 to +2)
 - `auto`: System preference + time-based adjustment
-  - Dark OS preference: Uses `-1` at night (10pm-5am), `0` otherwise
-  - Light OS preference: Uses `+1` in evening (6pm-8am), `+2` during day
+  - Dark OS preference: Uses `-1` at night (10pm-5am), `0` otherwise.
+  - Light OS preference: Uses `+1` in the evening/morning (6pm-8am), `+2` during the day.
 
 **Implementation Pattern**:
 ```tsx
@@ -480,7 +514,7 @@ className="rounded-full"
 
 The design uses **shadcn/ui** components with Radix UI primitives:
 
-**Available Components** (in `figma/omer-akben-design/src/components/ui/`):
+**Available Components** (in `src/components/ui/` - adapted from reference in `archive/omer-akben-design/`):
 - `button`, `badge`, `card`, `avatar`
 - `dialog`, `sheet`, `drawer`, `popover`
 - `tabs`, `accordion`, `tooltip`
@@ -509,11 +543,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 </Card>
 ```
 
-### Custom Components (from Figma Reference)
+### Custom Components
 
-**Location**: `figma/omer-akben-design/src/components/`
+**Current Location**: `src/components/`
+**Reference Location**: `archive/omer-akben-design/src/components/`
 
-Key custom components to reference:
+Key custom components implemented:
 - `app-header.tsx`: Navigation header with brightness control
 - `app-footer.tsx`: Footer with social links
 - `hero-section.tsx`: Animated hero with gradient backgrounds
@@ -640,14 +675,14 @@ className="flex flex-col lg:flex-row gap-8"
 When implementing features from Figma:
 
 1. **Reference the Figma file** in dev mode for exact spacing, colors, typography
-2. **Check `/figma/omer-akben-design/`** for implementation patterns
+2. **Check `/archive/omer-akben-design/`** for implementation patterns (Vite + Wouter reference)
 3. **Adapt to Next.js App Router**:
    - Convert `wouter` routing to Next.js `Link` and file-based routing
-   - Move pages from `src/pages/*.tsx` to `src/app/*/page.tsx`
+   - Pages go in `src/app/*/page.tsx` following Next.js conventions
    - Extract reusable components to `src/components/`
 4. **Use design tokens** from `globals.css` (don't hardcode colors)
 5. **Maintain brightness system** compatibility
-6. **Test across all 7 brightness modes**
+6. **Test across all brightness modes (-2 to +2, plus auto)**
 
 ### Component Development Checklist
 
@@ -657,6 +692,86 @@ When creating new components:
 - [ ] Add proper TypeScript types
 - [ ] Include ARIA labels for accessibility
 - [ ] Test hover/focus/active states
-- [ ] Verify across brightness modes (-3 to +3)
+- [ ] Verify across brightness modes (-2 to +2, plus auto)
 - [ ] Follow existing naming conventions
 - [ ] Add animations with `motion` where appropriate
+
+## Common Pitfalls to Avoid
+
+### 1. Archive Directory Confusion
+- **Don't**: Import from `/archive/omer-akben-design/`
+- **Don't**: Copy files directly without adapting to Next.js
+- **Do**: Reference archive for design patterns and spacing
+- **Do**: Reimplement components in `src/` using Next.js conventions
+
+### 2. Path Alias Usage
+- **Don't**: Use relative imports like `../../components/ui/button`
+- **Do**: Use `@/components/ui/button` for all src imports
+- **Why**: Cleaner imports and easier refactoring
+
+### 3. Color Hardcoding
+- **Don't**: Use hex colors like `#00FFC6` or `bg-[#00FFC6]`
+- **Do**: Use CSS custom properties like `bg-brand-primary`
+- **Why**: Colors must adapt to brightness mode changes
+
+### 4. Brightness Mode Testing
+- **Don't**: Test only at default brightness (0)
+- **Do**: Test all modes (-2, -1, 0, +1, +2, auto)
+- **Why**: Text contrast and borders behave differently at each level
+
+### 5. Tool Validation
+- **Don't**: Parse request body without Zod validation
+- **Do**: Define schemas in `lib/agent-tools/schemas.ts`
+- **Why**: Type safety and runtime validation for agent inputs
+
+### 6. Component Library Source
+- **Don't**: Install shadcn/ui components via CLI (already installed)
+- **Do**: Use existing components from `src/components/ui/`
+- **Why**: Components are already customized for brightness system
+
+## Quick Reference
+
+### File Locations
+- **Pages**: `src/app/[route]/page.tsx`
+- **API Routes**: `src/app/api/[endpoint]/route.ts`
+- **Components**: `src/components/` (custom) or `src/components/ui/` (shadcn)
+- **Data**: `src/data/*.ts` (facts, projects, journey, skills, testimonials)
+- **Schemas**: `src/lib/agent-tools/schemas.ts`
+- **Utilities**: `src/lib/utils.ts`
+
+### Import Patterns
+```typescript
+// Pages and components
+import { Button } from '@/components/ui/button';
+import { facts } from '@/data/facts';
+import { projects } from '@/data/projects';
+
+// Utilities
+import { cn } from '@/lib/utils';
+import { useBrightness } from '@/lib/brightness-context';
+
+// Next.js
+import Link from 'next/link';
+import { NextRequest, NextResponse } from 'next/server';
+```
+
+### Color Class Reference
+```typescript
+// Surfaces (backgrounds)
+bg-surf-0  // Page background
+bg-surf-1  // Card backgrounds
+bg-surf-2  // Elevated surfaces
+
+// Text (hierarchy)
+text-text-1  // Primary text (headings)
+text-text-2  // Body text
+text-text-3  // Captions, labels
+
+// Brand
+bg-brand-primary  // Primary brand color
+text-brand-primary  // Brand color text
+bg-accent-primary  // Accent color
+
+// Borders
+border-border-line  // All borders
+```

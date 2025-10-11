@@ -110,6 +110,7 @@ export default function RecruiterPage() {
             <div className="mt-6 pt-6 border-t border-border-line">
               <Button asChild size="lg" className="w-full">
                 <Link href="/projects">
+                  <Briefcase className="mr-2 h-5 w-5" />
                   View All Live Projects →
                 </Link>
               </Button>
@@ -177,72 +178,75 @@ export default function RecruiterPage() {
           </CardContent>
         </Card>
 
-        {/* Downloads Section */}
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle>Resources</CardTitle>
-            <p className="text-text-2 text-sm">Download resume and other materials</p>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button asChild size="lg" className="w-full justify-start">
-              <a href="/resume.pdf" download>
-                <Download className="mr-2 h-5 w-5" />
-                Download Full Resume (PDF)
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full justify-start">
-              <a href="/resume-short.pdf" download>
-                <Download className="mr-2 h-5 w-5" />
-                Download One-Page Resume (PDF)
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full justify-start">
-              <Link href="/projects">
-                <FileText className="mr-2 h-5 w-5" />
-                View Portfolio & Projects
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Resources & Contact - Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Downloads Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Resources</CardTitle>
+              <p className="text-text-2 text-sm">Download resume and other materials</p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button asChild size="lg" className="w-full justify-start">
+                <a href="/resume.pdf" download>
+                  <Download className="mr-2 h-5 w-5" />
+                  Download Full Resume (PDF)
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="w-full justify-start">
+                <a href="/resume-short.pdf" download>
+                  <Download className="mr-2 h-5 w-5" />
+                  Download One-Page Resume (PDF)
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="w-full justify-start">
+                <Link href="/projects">
+                  <FileText className="mr-2 h-5 w-5" />
+                  View Portfolio & Projects
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
 
-        {/* Contact Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Get in Touch</CardTitle>
-            <p className="text-text-2 text-sm">
-              Interested in working together? Let&apos;s connect!
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button asChild size="lg" className="w-full justify-start">
-              <a href={`mailto:${facts.personal.email}`}>
-                <Mail className="mr-2 h-5 w-5" />
-                Email: {facts.personal.email}
-              </a>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="w-full justify-start"
-            >
-              <a
-                href="https://linkedin.com/in/omerakben"
-                target="_blank"
-                rel="noopener noreferrer"
+          {/* Contact Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Get in Touch</CardTitle>
+              <p className="text-text-2 text-sm">
+                Interested in working together? Let&apos;s connect!
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button asChild size="lg" className="w-full justify-start">
+                <a href={`mailto:${facts.personal.email}`}>
+                  <Mail className="mr-2 h-5 w-5" />
+                  Email: {facts.personal.email}
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="w-full justify-start"
               >
-                <Linkedin className="mr-2 h-5 w-5" />
-                Connect on LinkedIn
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full justify-start">
-              <Link href="/contact">
-                <Mail className="mr-2 h-5 w-5" />
-                Contact Form
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+                <a
+                  href="https://linkedin.com/in/omerakben"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Linkedin className="mr-2 h-5 w-5" />
+                  Connect on LinkedIn
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="w-full justify-start">
+                <Link href="/contact">
+                  <Mail className="mr-2 h-5 w-5" />
+                  Contact Form
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

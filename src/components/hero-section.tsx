@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Download, Mail, Briefcase, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RobotIllustration } from "@/components/robot-illustration";
 
@@ -53,7 +53,9 @@ export function HeroSection() {
             >
               Full-Stack Developer
               <br />
-              AI Engineer • QA - SDET
+              AI Engineer •
+              <br />
+              QA - SDET
             </motion.h1>
 
             {/* Description */}
@@ -67,26 +69,42 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-4"
+              className="flex flex-col gap-4"
               variants={itemVariants}
             >
-              <Button asChild size="lg" className="group">
-                <Link href="/projects">
-                  View My Work
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/contact">
-                  Get in Touch
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="lg">
-                <a href="/resume.pdf" download>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Resume
-                </a>
-              </Button>
+              {/* First Row - Get in Touch & For Recruiters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button asChild size="lg" className="group">
+                  <Link href="/contact">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Get in Touch
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg">
+                  <Link href="/recruiter">
+                    <UserCheck className="mr-2 h-4 w-4" />
+                    For Recruiters
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Second Row - View My Work & Download Resume */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button asChild variant="outline" size="lg" className="group">
+                  <Link href="/projects">
+                    <Briefcase className="mr-2 h-4 w-4" />
+                    View My Work
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <a href="/resume.pdf" download>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Resume
+                  </a>
+                </Button>
+              </div>
             </motion.div>
           </motion.div>
 

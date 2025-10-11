@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, MessageSquare, Sparkles, Calendar, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { facts } from "@/data/facts";
 
 // Note: Metadata export not supported in Client Components
 // SEO handled by root layout
