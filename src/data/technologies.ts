@@ -19,8 +19,6 @@ export const technologiesRow1: Technology[] = [
   { name: "Node.js", iconName: "nodedotjs", colorClass: "text-brand-node" },
   { name: "PostgreSQL", iconName: "postgresql", colorClass: "text-brand-postgresql" },
   { name: "Docker", iconName: "docker", colorClass: "text-brand-docker" },
-  { name: "AWS", iconName: "amazonaws", colorClass: "text-brand-aws" },
-  { name: "Playwright", iconName: "playwright", colorClass: "text-brand-playwright" },
   { name: "Selenium", iconName: "selenium", colorClass: "text-brand-selenium" },
   { name: "OpenAI", iconName: "openai", colorClass: "text-text-1" },
   { name: "LangChain", iconName: "langchain", colorClass: "text-brand-primary" },
