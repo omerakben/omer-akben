@@ -39,17 +39,38 @@ npx playwright test chat.spec.ts
 ### Directory Structure
 ```
 src/
-  app/              # Next.js App Router pages
-    layout.tsx      # Root layout
-    page.tsx        # Home page
-    globals.css     # Global styles + Tailwind
-  lib/              # (planned) Utilities, agents, tools
-    agent/          # Ozzy agent + Agents SDK orchestration
-    tools/          # Server-side tool implementations
-PRD.md              # Product requirements
-Agents.md           # Agent architecture + tool specs
-Rules.md            # Brand, safety, security policies
-TODO.md             # Implementation roadmap
+  app/                      # Next.js App Router pages
+    layout.tsx              # Root layout with BrightnessProvider
+    page.tsx                # Home page
+    globals.css             # Global styles + Tailwind + 7-mode brightness tokens
+    api/tools/              # Agent tool API endpoints
+      download-resume/      # Resume download handler
+      list-projects/        # Project listing handler
+      open-project/         # Project detail handler
+      get-contact/          # Contact info handler
+  components/               # Reusable UI components
+    ui/                     # shadcn/ui primitives (button, card, dialog, etc.)
+    app-header.tsx          # Navigation with brightness control
+    app-footer.tsx          # Footer with social links
+    brightness-control.tsx  # 7-stop brightness slider
+    hero-section.tsx        # Animated hero component
+    project-card.tsx        # Project showcase cards
+    timeline.tsx            # Journey timeline
+  data/                     # Static data files
+    facts.ts                # Agent grounding data (personal, skills, projects)
+    projects.ts             # Full project details with metadata
+    journey.ts              # Career timeline data
+    skills.ts               # Skills and expertise
+    testimonials.ts         # Testimonials data
+  lib/                      # Utilities and shared code
+    agent-tools/schemas.ts  # Zod schemas for agent tools
+    brightness-context.tsx  # Brightness mode state management
+    metadata.ts             # SEO metadata utilities
+    utils.ts                # General utilities (cn, etc.)
+PRD.md                      # Product requirements
+Agents.md                   # Agent architecture + tool specs
+Rules.md                    # Brand, safety, security policies
+TODO.md                     # Implementation roadmap
 ```
 
 ### Path Aliases
@@ -58,25 +79,45 @@ TODO.md             # Implementation roadmap
 ### Agent Architecture
 
 **Ozzy** is the embedded site assistant with these characteristics:
-- **UI**: ChatKit embedded widget
-- **Brain**: Agents SDK (TypeScript) for orchestration
+- **UI**: ChatKit embedded widget (planned - not yet implemented)
+- **Brain**: Agents SDK (TypeScript) for orchestration (planned)
 - **Model**: gpt-4o-mini (default), gpt-5-mini for planning turns
-- **Token Flow**: Short-lived client secrets via `/api/chatkit/start` + `/api/chatkit/refresh`
+- **Token Flow**: Short-lived client secrets via `/api/chatkit/start` + `/api/chatkit/refresh` (planned)
 - **Tools** (server-side only, strict allowlist):
-  - `download_resume(format: "pdf"|"docx")`
-  - `list_projects(tag?: string)`
-  - `open_project(slug: string)`
-  - `get_contact()`
+  - `download_resume(format: "full"|"short")` → `/api/tools/download-resume`
+  - `list_projects(category?, featured?, limit?)` → `/api/tools/list-projects`
+  - `open_project(slug)` → `/api/tools/open-project`
+  - `get_contact()` → `/api/tools/get-contact`
+- **Grounding Data**: `src/data/facts.ts` contains personal info, skills, education, certifications
 
-**Data Flow**: ChatKit (client) → API routes → Agents SDK → Tool endpoints → Structured response → ChatKit widgets
+**Data Flow**: ChatKit (client) → API routes → Tool endpoints → Zod validation → Data sources → Structured JSON response
+
+**Current Implementation Status**:
+- ✅ Tool API endpoints implemented with Zod validation
+- ✅ Data sources (facts.ts, projects.ts) populated
+- ✅ Schemas defined in `lib/agent-tools/schemas.ts`
+- ⏳ ChatKit integration pending
+- ⏳ Agents SDK orchestration pending
 
 ### Key Design Patterns
 
-1. **Brightness Control**: 7-stop slider (−3…+3) maps to CSS custom properties (`--brand`) for theming
+1. **Brightness Control**: 7-stop system (`-3` to `+3` plus `auto`) implemented via `data-brightness` attribute
+   - Context provider: `lib/brightness-context.tsx`
+   - CSS tokens: `app/globals.css` with mode-specific color palettes
+   - Auto mode: System preference + time-based adjustment (darker at night)
+
 2. **Tool Validation**: All tool inputs validated with Zod schemas before execution
-3. **Security-First**: No API keys in browser; CSP headers; rate limiting on `/api/*`
-4. **Accessibility**: AA color contrast across all brightness levels; keyboard navigation; ARIA labels
-5. **Performance**: Code-split demos; lazy-load heavy sections; Lighthouse ≥95 target
+   - Schemas: `lib/agent-tools/schemas.ts`
+   - Pattern: Request → Zod parse → Handler → Structured response
+
+3. **Data Architecture**:
+   - Agent grounding: `data/facts.ts` (personal, professional, skills)
+   - Project catalog: `data/projects.ts` (9 projects across 3 tiers)
+   - Content separation: Journey, skills, testimonials in dedicated files
+
+4. **Security-First**: No API keys in browser; CSP headers; rate limiting on `/api/*` (planned)
+5. **Accessibility**: AA color contrast across all brightness levels; keyboard navigation; ARIA labels
+6. **Performance**: Code-split demos; lazy-load heavy sections; Lighthouse ≥95 target
 
 ## Critical Rules & Conventions
 
@@ -109,10 +150,43 @@ TODO.md             # Implementation roadmap
 ## Common Development Patterns
 
 ### Creating New Agent Tools
-1. Define schema in `lib/agent/schemas.ts` (Zod)
+1. Define input/output schemas in `lib/agent-tools/schemas.ts` (Zod)
+   ```typescript
+   export const myToolInputSchema = z.object({
+     param: z.string(),
+   });
+   export const myToolOutputSchema = z.object({
+     result: z.string(),
+   });
+   ```
+
 2. Implement handler in `src/app/api/tools/[tool-name]/route.ts`
-3. Register tool in Agents SDK agent definition
-4. Add integration test in `tests/tools/[tool-name].spec.ts`
+   ```typescript
+   import { NextRequest, NextResponse } from "next/server";
+   import { myToolInputSchema } from "@/lib/agent-tools/schemas";
+
+   export async function POST(request: NextRequest) {
+     try {
+       const body = await request.json();
+       const input = myToolInputSchema.parse(body);
+
+       // Your logic here
+
+       return NextResponse.json({
+         success: true,
+         data: { /* result */ },
+       });
+     } catch (error) {
+       return NextResponse.json(
+         { success: false, error: error.message },
+         { status: 400 }
+       );
+     }
+   }
+   ```
+
+3. Register tool in Agents SDK agent definition (when implementing ChatKit)
+4. Add integration test in `tests/tools/[tool-name].spec.ts` (when implementing Playwright)
 5. Update `Agents.md` documentation
 
 ### Adding New Pages
@@ -124,13 +198,68 @@ TODO.md             # Implementation roadmap
 
 ### Theming Pattern
 ```tsx
-// Component should respond to brightness CSS vars
-<div className="bg-[var(--brand)] text-[var(--brand-contrast)]">
-  {/* Content */}
-</div>
+// Use CSS custom properties defined in globals.css
+// Surface colors
+<div className="bg-surf-0">           {/* Page background */}
+<Card className="bg-surf-1 border-border-line">  {/* Cards */}
+<Dialog className="bg-surf-2">        {/* Elevated surfaces */}
+
+// Text hierarchy
+<h1 className="text-text-1">          {/* Primary text */}
+<p className="text-text-2">           {/* Body text */}
+<span className="text-text-3">        {/* Captions */}
+
+// Brand colors
+<Button className="bg-brand-primary"> {/* Primary CTAs */}
+<Badge className="bg-accent-primary"> {/* Accent elements */}
+
+// Brightness control in components
+import { useBrightness } from "@/lib/brightness-context";
+
+const { brightness, setBrightness } = useBrightness();
+// brightness is: '-2' | '-1' | '0' | '+1' | '+2' | 'auto'
 ```
 
 ## Project-Specific Context
+
+### Implementation Status
+
+**Completed**:
+- ✅ Brightness system (7 modes + auto) with context provider
+- ✅ Core pages: /, /journey, /projects, /skills, /credentials, /contact, /recruiter
+- ✅ Agent tool API endpoints with Zod validation
+- ✅ Data architecture (facts, projects, journey, skills, testimonials)
+- ✅ shadcn/ui component library setup
+- ✅ App header with navigation and brightness control
+- ✅ App footer with social links
+
+**In Progress**:
+- ⏳ Project detail pages (`/projects/[slug]`)
+- ⏳ ChatKit integration
+- ⏳ Agents SDK orchestration
+
+**Planned**:
+- ⏳ /ai page with ChatKit widget
+- ⏳ ChatKit authentication endpoints
+- ⏳ Resume download functionality
+- ⏳ SEO optimization (JSON-LD, OG images, sitemap)
+- ⏳ CSP headers and security hardening
+- ⏳ Playwright test suite
+- ⏳ Performance optimization
+
+### Working with Data Files
+
+**Agent Grounding Data** (`src/data/facts.ts`):
+- Contains personal info, professional background, skills, education
+- Used by agent tools to answer questions about Omer
+- Helper functions: `getContactInfo()`, `getSkillsByCategory()`, `getFeaturedProjects()`
+- **Important**: When updating personal information, update this file
+
+**Projects Data** (`src/data/projects.ts`):
+- 9 projects organized in 3 tiers (production, ready-to-deploy, production-ready)
+- Each project has: id, slug, title, description, technologies, role, category, status
+- Helper functions: `getProjectBySlug()`, `getFeaturedProjects()`, `getProjectsByCategory()`
+- Categories: `"ai-ml" | "web" | "mobile" | "tools" | "other"`
 
 ### Planned Milestones (from TODO.md)
 - **M1**: Scaffold + /recruiter + /ai with token flow + brightness tokens
@@ -230,11 +359,16 @@ The design uses a **7-stop brightness control** (`-3` to `+3`) with "auto" mode:
 ```
 
 **Brightness Mode Mapping**:
-- `-3` (Darkest): Deepest dark mode, highest contrast
-- `-2` to `-1`: Progressive dark modes
+- `-3` (Darkest): Not implemented (range is -2 to +2)
+- `-2`: Deepest dark mode
+- `-1`: Medium dark mode
 - `0` (Baseline): Default dark theme
-- `+1` to `+3` (Lightest): Progressive light modes
+- `+1`: Soft light mode
+- `+2`: Bright light mode
+- `+3` (Lightest): Not implemented (range is -2 to +2)
 - `auto`: System preference + time-based adjustment
+  - Dark OS preference: Uses `-1` at night (10pm-5am), `0` otherwise
+  - Light OS preference: Uses `+1` in evening (6pm-8am), `+2` during day
 
 **Implementation Pattern**:
 ```tsx
