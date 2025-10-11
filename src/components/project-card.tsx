@@ -31,10 +31,11 @@ export function ProjectCard({
 }: ProjectCardProps) {
   return (
     <motion.div
+      className="motion-safe"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
       <Card className="group h-full hover:shadow-lg hover:border-brand-primary/50 transition-all duration-300">
         {/* Project Image or Code Icon */}
