@@ -38,8 +38,7 @@ export function Timeline({ items }: TimelineProps) {
             <motion.div
               key={`${item.year}-${item.title}`}
               initial={{ opacity: 0, x: isEven ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`relative flex items-center ${
                 isEven ? "md:flex-row" : "md:flex-row-reverse"
