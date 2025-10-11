@@ -31,6 +31,7 @@ export const projectSchema = z.object({
   title: z.string(),
   description: z.string(),
   technologies: z.array(z.string()),
+  role: z.enum(["Full-Stack", "AI", "QA", "QA/AI"]),
   category: z.enum(["ai-ml", "web", "mobile", "tools", "other"]),
   featured: z.boolean(),
   demoUrl: z.string().url().optional(),
@@ -51,7 +52,7 @@ export const openProjectInputSchema = z.object({
 export const projectDetailSchema = projectSchema.extend({
   longDescription: z.string().optional(),
   image: z.string().optional(),
-  startDate: z.string(),
+  startDate: z.string().optional(),
   endDate: z.string().optional(),
 });
 

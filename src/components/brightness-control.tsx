@@ -9,15 +9,16 @@ import { cn } from "@/lib/utils";
 export function BrightnessControl() {
   const { brightness, setBrightness } = useBrightness();
 
-  const modes = useMemo(() => ['-2', '-1', '0', '+1', '+2'] as const, []);
+  const modes = useMemo(() => ['-3', '-2', '-1', '0', '+1', '+2', '+3'] as const, []);
 
   return (
     <div className="flex items-center gap-1 px-3 py-1.5 bg-surf-1 border border-border-line rounded-full">
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => setBrightness('-2')}
+        onClick={() => setBrightness('-3')}
         className="h-7 w-7 p-0 hover:bg-surf-2"
+        aria-label="Set minimum brightness"
       >
         <Moon className="h-4 w-4" />
       </Button>
@@ -38,8 +39,9 @@ export function BrightnessControl() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => setBrightness('+2')}
+        onClick={() => setBrightness('+3')}
         className="h-7 w-7 p-0 hover:bg-surf-2"
+        aria-label="Set maximum brightness"
       >
         <Sun className="h-4 w-4" />
       </Button>

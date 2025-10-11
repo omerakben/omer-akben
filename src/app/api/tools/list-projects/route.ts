@@ -23,6 +23,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Store total before applying limit
+    const total = filteredProjects.length;
+
     // Apply limit
     if (input.limit) {
       filteredProjects = filteredProjects.slice(0, input.limit);
@@ -32,7 +35,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: {
         projects: filteredProjects,
-        total: filteredProjects.length,
+        total,
       },
     });
   } catch (error) {

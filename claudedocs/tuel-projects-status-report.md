@@ -18,10 +18,10 @@ Successfully configured and tested the **Tuel AI Chatbot Builder** with full Fas
 **API Keys Configured**:
 
 ```env
-✅ OpenAI API: sk-proj-GXCA... (truncated for security)
-✅ Gemini API: AIzaSyDFNw-CN2Mk5w3jDHhXrnLMYIsANOHq4tg
-✅ OpenRouter API: sk-or-v1-e839c593... (truncated)
-✅ Firecrawl API: fc-116367d54c04441aafc42f97f32b1960
+✅ OpenAI API: [REDACTED]
+✅ Gemini API: [REDACTED]
+✅ OpenRouter API: [REDACTED]
+✅ Firecrawl API: [REDACTED]
 ```
 
 **Database Configuration**:

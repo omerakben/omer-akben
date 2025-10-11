@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type BrightnessMode = '-2' | '-1' | '0' | '+1' | '+2' | 'auto';
+type BrightnessMode = '-3' | '-2' | '-1' | '0' | '+1' | '+2' | '+3' | 'auto';
 
 interface BrightnessContextType {
   brightness: BrightnessMode;
@@ -15,9 +15,10 @@ export function BrightnessProvider({ children }: { children: React.ReactNode }) 
   const [brightness, setBrightnessState] = useState<BrightnessMode>('0');
 
   useEffect(() => {
-    const saved = localStorage.getItem('brightness-mode') as BrightnessMode;
-    if (saved) {
-      setBrightnessState(saved);
+    const saved = localStorage.getItem('brightness-mode');
+    const validModes: BrightnessMode[] = ['-3', '-2', '-1', '0', '+1', '+2', '+3', 'auto'];
+    if (saved && validModes.includes(saved as BrightnessMode)) {
+      setBrightnessState(saved as BrightnessMode);
     }
   }, []);
 
