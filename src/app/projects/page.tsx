@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Briefcase, Filter } from "lucide-react";
 import { ProjectCard } from "@/components/project-card";
+import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,15 +45,11 @@ export default function ProjectsPage() {
     <div className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-6xl">
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-1 mb-6 flex items-center justify-center gap-4">
-            <Briefcase className="w-12 h-12 text-brand-primary" />
-            Projects
-          </h1>
-          <p className="text-lg text-text-2 max-w-2xl mx-auto">
-            A collection of my work in AI, automation, and full-stack development.
-          </p>
-        </div>
+        <PageHeader
+          icon={Briefcase}
+          title="Projects"
+          description="A collection of my work in AI, automation, and full-stack development."
+        />
 
         {/* Filters */}
         <Card className="mb-8">
@@ -81,8 +78,16 @@ export default function ProjectsPage() {
                   <Badge
                     key={role}
                     variant={selectedRole === role ? "default" : "outline"}
-                    className="cursor-pointer"
+                    className="cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                     onClick={() => setSelectedRole(role)}
+                    tabIndex={0}
+                    role="button"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedRole(role);
+                      }
+                    }}
                   >
                     {role}
                   </Badge>
@@ -98,8 +103,16 @@ export default function ProjectsPage() {
                   <Badge
                     key={tech}
                     variant={selectedTechnologies.includes(tech) ? "default" : "outline"}
-                    className="cursor-pointer"
+                    className="cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                     onClick={() => toggleTechnology(tech)}
+                    tabIndex={0}
+                    role="button"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleTechnology(tech);
+                      }
+                    }}
                   >
                     {tech}
                   </Badge>
@@ -111,7 +124,7 @@ export default function ProjectsPage() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
               title={project.title}
@@ -121,6 +134,7 @@ export default function ProjectsPage() {
               githubUrl={project.githubUrl}
               slug={project.slug}
               status={project.status}
+              index={index}
             />
           ))}
         </div>

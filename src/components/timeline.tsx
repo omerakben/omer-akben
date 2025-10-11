@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { DURATION, STAGGER, VIEWPORT } from "@/lib/animations";
 
 export interface TimelineItem {
   year: string;
@@ -39,8 +40,8 @@ export function Timeline({ items }: TimelineProps) {
               key={`${item.year}-${item.title}`}
               initial={{ opacity: 0, x: isEven ? -20 : 20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={VIEWPORT.default}
+              transition={{ duration: DURATION.normal, delay: index * STAGGER.normal }}
               className={`relative flex items-center ${
                 isEven ? "md:flex-row" : "md:flex-row-reverse"
               }`}

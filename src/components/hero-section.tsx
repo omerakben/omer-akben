@@ -5,29 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Download, Mail, Briefcase, UserCheck, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RobotIllustration } from "@/components/robot-illustration";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1] as const,
-    },
-  },
-};
+import { staggerContainer, slideUp, DURATION, EASING } from "@/lib/animations";
 
 export function HeroSection() {
   return (
@@ -42,14 +20,14 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text Content */}
           <motion.div
-            variants={containerVariants}
+            variants={staggerContainer}
             initial="hidden"
             animate="visible"
           >
             {/* Main Heading */}
             <motion.h1
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 w-full"
-              variants={itemVariants}
+              variants={slideUp}
             >
               <span className="flex items-center gap-3 mb-2 whitespace-nowrap">
                 <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
@@ -74,7 +52,7 @@ export function HeroSection() {
             {/* Description */}
             <motion.p
               className="text-base sm:text-lg text-text-2 mb-8"
-              variants={itemVariants}
+              variants={slideUp}
             >
               I build agentic systems, robust QA automation, and full-stack apps.
               6+ years shipping testable web applications and enterprise automation frameworks.
@@ -83,7 +61,7 @@ export function HeroSection() {
             {/* CTA Buttons */}
             <motion.div
               className="flex flex-col gap-4"
-              variants={itemVariants}
+              variants={slideUp}
             >
               {/* First Row - Get in Touch & For Recruiters */}
               <div className="flex flex-col sm:flex-row gap-4">
@@ -126,7 +104,7 @@ export function HeroSection() {
             className="hidden lg:block"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: DURATION.slower, delay: 0.3, ease: EASING.default }}
           >
             <RobotIllustration />
           </motion.div>
@@ -139,10 +117,11 @@ export function HeroSection() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          duration: 0.6,
+          duration: DURATION.slow,
           delay: 1,
           repeat: Infinity,
           repeatType: "reverse",
+          ease: EASING.default,
         }}
       >
         <div className="w-6 h-10 border-2 border-border-line rounded-full flex justify-center pt-2">

@@ -17,7 +17,11 @@ const FEATURED_PROJECTS_SECOND_ROW_COUNT = 2;
 const FEATURED_PROJECTS_GROUP_SIZE = 5;
 
 export default function HomePage() {
-  const featuredProjects = getFeaturedProjects();
+  const featuredProjects = getFeaturedProjects().sort((a, b) => {
+    if (a.slug === "elon-ai-toolbox") return -1;
+    if (b.slug === "elon-ai-toolbox") return 1;
+    return 0;
+  });
   const leadershipTestimonials = testimonials.filter((t) => t.type === "leadership");
   const teamTestimonials = testimonials.filter((t) => t.type === "team");
 
@@ -37,7 +41,7 @@ export default function HomePage() {
               <h2 className="text-3xl md:text-4xl font-bold text-text-1 mb-4">
                 Featured Projects
               </h2>
-              <p className="text-text-2 max-w-2xl">
+              <p className="text-lg text-text-2 max-w-2xl">
                 A selection of recent work in AI/ML engineering, web development,
                 and innovative solutions.
               </p>
@@ -55,7 +59,7 @@ export default function HomePage() {
           <div className="space-y-6">
             {/* First Row - 3 Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredProjects.slice(0, FEATURED_PROJECTS_FIRST_ROW_COUNT).map((project) => (
+              {featuredProjects.slice(0, FEATURED_PROJECTS_FIRST_ROW_COUNT).map((project, index) => (
                 <ProjectCard
                   key={project.id}
                   title={project.title}
@@ -65,6 +69,7 @@ export default function HomePage() {
                   githubUrl={project.githubUrl}
                   slug={project.slug}
                   status={project.status}
+                  index={index}
                 />
               ))}
             </div>
@@ -77,7 +82,7 @@ export default function HomePage() {
                     FEATURED_PROJECTS_FIRST_ROW_COUNT,
                     FEATURED_PROJECTS_FIRST_ROW_COUNT + FEATURED_PROJECTS_SECOND_ROW_COUNT
                   )
-                  .map((project) => (
+                  .map((project, index) => (
                   <ProjectCard
                     key={project.id}
                     title={project.title}
@@ -87,6 +92,7 @@ export default function HomePage() {
                     githubUrl={project.githubUrl}
                     slug={project.slug}
                     status={project.status}
+                    index={FEATURED_PROJECTS_FIRST_ROW_COUNT + index}
                   />
                 ))}
               </div>
@@ -175,7 +181,7 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-4xl font-bold text-text-1 mb-4">
               What People Say
             </h2>
-            <p className="text-text-2 max-w-2xl mx-auto">
+            <p className="text-lg text-text-2 max-w-2xl mx-auto">
               Testimonials from colleagues, clients, and collaborators.
             </p>
           </div>
@@ -189,7 +195,7 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {leadershipTestimonials.map((testimonial) => (
-                <Card key={testimonial.id} className="border-border-line hover:border-brand-primary/30 transition-all">
+                <Card key={testimonial.id} className="border-border-line hover:border-brand-primary/40 transition-all">
                   <CardContent className="pt-6 space-y-4">
                     <Quote className="w-8 h-8 text-brand-primary" />
                     <p className="text-text-2 italic">&ldquo;{testimonial.quote}&rdquo;</p>
@@ -222,7 +228,7 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {teamTestimonials.map((testimonial) => (
-                <Card key={testimonial.id} className="border-border-line hover:border-brand-primary/30 transition-all">
+                <Card key={testimonial.id} className="border-border-line hover:border-brand-primary/40 transition-all">
                   <CardContent className="pt-6 space-y-4">
                     <Quote className="w-8 h-8 text-brand-primary" />
                     <p className="text-text-2 italic">&ldquo;{testimonial.quote}&rdquo;</p>
