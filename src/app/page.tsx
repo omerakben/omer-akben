@@ -12,6 +12,10 @@ import { createMetadata } from "@/lib/metadata";
 
 export const metadata = createMetadata({});
 
+const FEATURED_PROJECTS_FIRST_ROW_COUNT = 3;
+const FEATURED_PROJECTS_SECOND_ROW_COUNT = 2;
+const FEATURED_PROJECTS_GROUP_SIZE = 5;
+
 export default function HomePage() {
   const featuredProjects = getFeaturedProjects();
   const leadershipTestimonials = testimonials.filter((t) => t.type === "leadership");
@@ -51,7 +55,7 @@ export default function HomePage() {
           <div className="space-y-6">
             {/* First Row - 3 Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredProjects.slice(0, 3).map((project) => (
+              {featuredProjects.slice(0, FEATURED_PROJECTS_FIRST_ROW_COUNT).map((project) => (
                 <ProjectCard
                   key={project.id}
                   title={project.title}
@@ -66,9 +70,14 @@ export default function HomePage() {
             </div>
 
             {/* Second Row - 2 Wider Cards */}
-            {featuredProjects.length > 3 && (
+            {featuredProjects.length > FEATURED_PROJECTS_FIRST_ROW_COUNT && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {featuredProjects.slice(3, 5).map((project) => (
+                {featuredProjects
+                  .slice(
+                    FEATURED_PROJECTS_FIRST_ROW_COUNT,
+                    FEATURED_PROJECTS_FIRST_ROW_COUNT + FEATURED_PROJECTS_SECOND_ROW_COUNT
+                  )
+                  .map((project) => (
                   <ProjectCard
                     key={project.id}
                     title={project.title}
@@ -84,12 +93,24 @@ export default function HomePage() {
             )}
 
             {/* Additional Rows (if more than 5 projects) - Continue 3-2 Pattern */}
-            {featuredProjects.length > 5 && (
+            {featuredProjects.length > FEATURED_PROJECTS_GROUP_SIZE && (
               <>
-                {Array.from({ length: Math.ceil((featuredProjects.length - 5) / 5) }).map((_, groupIndex) => {
-                  const startIndex = 5 + groupIndex * 5;
-                  const row1Projects = featuredProjects.slice(startIndex, startIndex + 3);
-                  const row2Projects = featuredProjects.slice(startIndex + 3, startIndex + 5);
+                {Array.from({
+                  length: Math.ceil(
+                    (featuredProjects.length - FEATURED_PROJECTS_GROUP_SIZE) /
+                      FEATURED_PROJECTS_GROUP_SIZE
+                  )
+                }).map((_, groupIndex) => {
+                  const startIndex =
+                    FEATURED_PROJECTS_GROUP_SIZE + groupIndex * FEATURED_PROJECTS_GROUP_SIZE;
+                  const row1Projects = featuredProjects.slice(
+                    startIndex,
+                    startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT
+                  );
+                  const row2Projects = featuredProjects.slice(
+                    startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT,
+                    startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT + FEATURED_PROJECTS_SECOND_ROW_COUNT
+                  );
 
                   return (
                     <div key={`group-${groupIndex}`} className="space-y-6">

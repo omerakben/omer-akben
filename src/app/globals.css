@@ -39,6 +39,33 @@
   --text-3: #8891A7;
   --brand-primary: #00FFC6;
   --accent-primary: #2563EB;
+
+  /* Technology brand colors */
+  --brand-python: #3776AB;
+  --brand-typescript: #3178C6;
+  --brand-react: #61DAFB;
+  --brand-node: #339933;
+  --brand-postgresql: #4169E1;
+  --brand-docker: #2496ED;
+  --brand-aws: #FF9900;
+  --brand-playwright: #2EAD33;
+  --brand-selenium: #43B02A;
+  --brand-git: #F05032;
+  --brand-postman: #FF6C37;
+  --brand-figma: #F24E1E;
+  --brand-javascript: #F7DF1E;
+  --brand-go: #00ADD8;
+  --brand-vue: #4FC08D;
+  --brand-tailwind: #06B6D4;
+  --brand-fastapi: #009688;
+  --brand-mongodb: #47A248;
+  --brand-redis: #DC382D;
+  --brand-kubernetes: #326CE5;
+  --brand-tensorflow: #FF6F00;
+  --brand-jenkins: #D24939;
+  --brand-jest: #C21325;
+  --brand-cypress: #17202C;
+  --brand-vscode: #007ACC;
 }
 
 /* Brightness Mode -3 (Darkest) */
@@ -205,5 +232,107 @@ html {
 
   .motion-safe {
     will-change: transform, opacity;
+  }
+}
+
+@layer utilities {
+  .text-brand-python {
+    color: var(--brand-python);
+  }
+
+  .text-brand-typescript {
+    color: var(--brand-typescript);
+  }
+
+  .text-brand-react {
+    color: var(--brand-react);
+  }
+
+  .text-brand-node {
+    color: var(--brand-node);
+  }
+
+  .text-brand-postgresql {
+    color: var(--brand-postgresql);
+  }
+
+  .text-brand-docker {
+    color: var(--brand-docker);
+  }
+
+  .text-brand-aws {
+    color: var(--brand-aws);
+  }
+
+  .text-brand-playwright {
+    color: var(--brand-playwright);
+  }
+
+  .text-brand-selenium {
+    color: var(--brand-selenium);
+  }
+
+  .text-brand-git {
+    color: var(--brand-git);
+  }
+
+  .text-brand-postman {
+    color: var(--brand-postman);
+  }
+
+  .text-brand-figma {
+    color: var(--brand-figma);
+  }
+
+  .text-brand-javascript {
+    color: var(--brand-javascript);
+  }
+
+  .text-brand-go {
+    color: var(--brand-go);
+  }
+
+  .text-brand-vue {
+    color: var(--brand-vue);
+  }
+
+  .text-brand-tailwind {
+    color: var(--brand-tailwind);
+  }
+
+  .text-brand-fastapi {
+    color: var(--brand-fastapi);
+  }
+
+  .text-brand-mongodb {
+    color: var(--brand-mongodb);
+  }
+
+  .text-brand-redis {
+    color: var(--brand-redis);
+  }
+
+  .text-brand-kubernetes {
+    color: var(--brand-kubernetes);
+  }
+
+  .text-brand-tensorflow {
+    color: var(--brand-tensorflow);
+  }
+
+  .text-brand-jenkins {
+    color: var(--brand-jenkins);
+  }
+
+  .text-brand-jest {
+    color: var(--brand-jest);
+  }
+
+  .text-brand-cypress {
+    color: var(--brand-cypress);
+  }
+
+  .text-brand-vscode {
+    color: var(--brand-vscode);
   }
 }

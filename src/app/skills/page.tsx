@@ -6,14 +6,41 @@ import { Zap, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { skillsData, getLevelColor, type Skill } from "@/data/skills";
+import { skillsData, getLevelColor } from "@/data/skills";
+
+const LEVEL_FILTER_OPTIONS = ["All", "Expert", "Advanced", "Proficient"] as const;
+type LevelFilterOption = (typeof LEVEL_FILTER_OPTIONS)[number];
+
+const LEVEL_BUTTON_BASE_CLASSES =
+  "px-5 py-2.5 rounded-full text-sm font-semibold transition-all";
+const LEVEL_INACTIVE_CLASSES =
+  "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50";
+const LEVEL_ACTIVE_STYLES: Record<Exclude<LevelFilterOption, "All">, string> = {
+  Expert: "bg-brand-primary text-surf-0 shadow-lg shadow-brand-primary/30",
+  Advanced: "bg-accent-primary text-white shadow-lg shadow-accent-primary/30",
+  Proficient: "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg",
+};
+const LEVEL_ALL_ACTIVE_CLASSES =
+  "bg-surf-1 text-text-1 border-2 border-brand-primary/40 shadow-lg shadow-brand-primary/20";
+
+function getLevelButtonClasses(level: LevelFilterOption, selectedLevel: LevelFilterOption) {
+  if (level !== selectedLevel) {
+    return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_INACTIVE_CLASSES}`;
+  }
+
+  if (level === "All") {
+    return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_ALL_ACTIVE_CLASSES}`;
+  }
+
+  return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_ACTIVE_STYLES[level]}`;
+}
 
 // Note: Metadata export not supported in Client Components
 // SEO handled by root layout
 
 export default function SkillsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState<Skill["level"] | "All">("All");
+  const [selectedLevel, setSelectedLevel] = useState<LevelFilterOption>("All");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   // Get unique categories
@@ -91,21 +118,11 @@ export default function SkillsPage() {
                   Proficiency Level
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {(["All", "Expert", "Advanced", "Proficient"] as const).map((level) => (
+                  {LEVEL_FILTER_OPTIONS.map((level) => (
                     <button
                       key={level}
                       onClick={() => setSelectedLevel(level)}
-                      className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                        selectedLevel === level
-                          ? level === "Expert"
-                            ? "bg-brand-primary text-surf-0 shadow-lg shadow-brand-primary/30"
-                            : level === "Advanced"
-                            ? "bg-accent-primary text-white shadow-lg shadow-accent-primary/30"
-                            : level === "Proficient"
-                            ? "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg"
-                            : "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg"
-                          : "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50"
-                      }`}
+                      className={getLevelButtonClasses(level, selectedLevel)}
                     >
                       {level}
                     </button>

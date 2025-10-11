@@ -401,8 +401,8 @@ The design uses a **7-stop brightness control** (`-3` to `+3`) with "auto" mode:
 - `+1`: Soft light mode
 - `+2`: Bright light mode
 - `auto`: System preference + time-based adjustment
-  - Syncs with system dark/light mode preference
-  - Applies time-based adjustments (darker at night, brighter during day)
+  - Dark OS preference: Uses `-1` at night (10pm-5am), `0` otherwise.
+  - Light OS preference: Uses `+1` in the evening/morning (6pm-8am), `+2` during the day.
 
 **Implementation Pattern**:
 ```tsx
