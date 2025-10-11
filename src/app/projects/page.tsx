@@ -6,7 +6,7 @@ import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { projects, type Project } from "@/data/projects";
+import { projects } from "@/data/projects";
 
 // Note: Metadata export not supported in Client Components
 // SEO handled by root layout

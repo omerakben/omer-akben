@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createMetadata } from "@/lib/metadata";
+import { facts } from "@/data/facts";
 
 export const metadata = createMetadata({
   title: "For Recruiters",
@@ -12,12 +13,12 @@ export const metadata = createMetadata({
 });
 
 const tldr = {
-  availability: "Available for new opportunities",
-  location: "San Francisco, CA (Open to remote)",
-  experience: "5+ years",
+  availability: facts.professional.availability,
+  location: facts.professional.workPreferences.location,
+  experience: `${facts.professional.yearsOfExperience}+ years`,
   specialization: "AI/ML Engineering & Full-Stack Development",
-  topSkills: ["Python", "TypeScript", "React", "Next.js", "OpenAI API", "AWS"],
-  preferredRoles: ["Senior AI/ML Engineer", "Full-Stack Engineer", "Tech Lead"],
+  topSkills: facts.skills.languages.slice(0, 3).concat(facts.skills.frameworks.slice(0, 3)),
+  preferredRoles: facts.professional.workPreferences.roles,
   salary: "Competitive (Open to discussion)",
 };
 
@@ -214,9 +215,9 @@ export default function RecruiterPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button asChild size="lg" className="w-full justify-start">
-              <a href="mailto:hello@omerakben.com">
+              <a href={`mailto:${facts.personal.email}`}>
                 <Mail className="mr-2 h-5 w-5" />
-                Email: hello@omerakben.com
+                Email: {facts.personal.email}
               </a>
             </Button>
             <Button

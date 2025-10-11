@@ -1,6 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Award, GraduationCap, FileCheck } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { GraduationCap } from "lucide-react";
 import { createMetadata } from "@/lib/metadata";
 import { facts } from "@/data/facts";
 
@@ -9,11 +8,6 @@ export const metadata = createMetadata({
   description: "My education, certifications, and professional qualifications in AI/ML and software engineering.",
   path: "/credentials",
 });
-
-const certifications = facts.certifications.map((cert) => ({
-  ...cert,
-  icon: cert.name.includes("AWS") ? Award : cert.name.includes("Machine Learning") ? GraduationCap : FileCheck,
-}));
 
 export default function CredentialsPage() {
   return (

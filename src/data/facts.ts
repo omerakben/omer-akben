@@ -133,7 +133,14 @@ export const facts = {
 };
 
 // Helper functions for agents
-export const getContactInfo = () => facts.personal;
+export const getContactInfo = () => ({
+  email: facts.personal.email,
+  phone: facts.personal.phone,
+  location: facts.personal.location,
+  linkedin: facts.social.linkedin,
+  github: facts.social.github,
+  twitter: facts.social.twitter,
+});
 export const getSkillsByCategory = (category: keyof typeof facts.skills) =>
   facts.skills[category];
 export const getFeaturedProjects = () => facts.projects.featured;

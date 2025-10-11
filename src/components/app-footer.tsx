@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
+import { facts } from "@/data/facts";
 
 const footerLinks = {
   navigation: [
@@ -17,22 +18,22 @@ const footerLinks = {
 
 const socialLinks = [
   {
-    href: "https://github.com/omerakben",
+    href: facts.social.github,
     label: "GitHub",
     icon: Github,
   },
   {
-    href: "https://linkedin.com/in/omerakben",
+    href: facts.social.linkedin,
     label: "LinkedIn",
     icon: Linkedin,
   },
   {
-    href: "https://twitter.com/omerakben",
+    href: facts.social.twitter || "https://twitter.com/omerakben",
     label: "Twitter",
     icon: Twitter,
   },
   {
-    href: "mailto:hello@omerakben.com",
+    href: `mailto:${facts.personal.email}`,
     label: "Email",
     icon: Mail,
   },
