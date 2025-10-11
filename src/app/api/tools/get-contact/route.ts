@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getContactInfo } from "@/data/facts";
 
 export async function POST(_request: NextRequest) {
   try {
+    const contact = getContactInfo();
     return NextResponse.json({
       success: true,
       data: {
-        contact: {
-          email: "hello@omerakben.com",
-          phone: "+1 (555) 123-4567",
-          location: "San Francisco, CA",
-          linkedin: "https://linkedin.com/in/omerakben",
-          github: "https://github.com/omerakben",
-          twitter: "https://twitter.com/omerakben",
-        },
+        contact,
       },
     });
   } catch (error) {

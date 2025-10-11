@@ -153,21 +153,21 @@ export default function ContactPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3 text-text-2">
                   <Mail className="w-5 h-5 text-brand-primary" />
-                  <a href="mailto:akbenof@gmail.com" className="hover:text-brand-primary">
-                    akbenof@gmail.com
+                  <a href={`mailto:${facts.personal.email}`} className="hover:text-brand-primary">
+                    {facts.personal.email}
                   </a>
                 </div>
                 <div className="flex items-center gap-3 text-text-2">
                   <MapPin className="w-5 h-5 text-brand-primary" />
-                  <span>Raleigh, NC</span>
+                  <span>{facts.personal.location}</span>
                 </div>
                 <div className="flex items-center gap-3 text-text-2">
                   <Clock className="w-5 h-5 text-brand-primary" />
-                  <span>EST (UTC-5)</span>
+                  <span>{facts.personal.timezone}</span>
                 </div>
                 <div className="flex flex-col gap-2 pt-2">
                   <a
-                    href="https://linkedin.com/in/omerakben"
+                    href={facts.social.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-text-2 hover:text-brand-primary"
@@ -178,7 +178,7 @@ export default function ContactPage() {
                     LinkedIn Profile
                   </a>
                   <a
-                    href="https://github.com/omerakben"
+                    href={facts.social.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-text-2 hover:text-brand-primary"
