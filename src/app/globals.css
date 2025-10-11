@@ -177,7 +177,7 @@
   }
 
   body {
-    @apply bg-surf-0 text-text-1 transition-colors duration-300;
+    @apply bg-surf-0 text-text-1;
   }
 }
 
@@ -193,5 +193,27 @@ html {
   }
   50% {
     transform: translateY(-20px);
+  }
+}
+
+@layer base {
+  [data-brightness] {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-brightness] {
+    transition: background-color 200ms ease;
+  }
+
+  .card,
+  .button,
+  .nav-item {
+    transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+  }
+
+  .motion-safe {
+    will-change: transform, opacity;
   }
 }

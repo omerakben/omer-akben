@@ -42,10 +42,10 @@ export function AppHeader() {
                   key={route.href}
                   href={route.href}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                    "nav-item flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
                     pathname === route.href
                       ? "text-brand-primary"
-                      : "text-text-2 hover:text-text-1"
+                      : "text-text-2 transition-colors hover:text-text-1"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -91,10 +91,10 @@ export function AppHeader() {
                         href={route.href}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "flex items-center gap-2 px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                          "nav-item flex items-center gap-2 px-4 py-3 rounded-lg text-base font-medium",
                           pathname === route.href
                             ? "text-brand-primary"
-                            : "text-text-2 hover:text-text-1"
+                            : "text-text-2 transition-colors hover:text-text-1"
                         )}
                       >
                         <Icon className="h-5 w-5" />
