@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Download, Mail, Briefcase, UserCheck } from "lucide-react";
+import { ArrowRight, Download, Mail, Briefcase, UserCheck, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RobotIllustration } from "@/components/robot-illustration";
 
@@ -48,14 +48,27 @@ export function HeroSection() {
           >
             {/* Main Heading */}
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 w-full"
               variants={itemVariants}
             >
-              Full-Stack Developer
-              <br />
-              AI Engineer •
-              <br />
-              QA - SDET
+              <span className="flex items-center gap-3 mb-2 whitespace-nowrap">
+                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
+                  Full-Stack Developer
+                </span>
+                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
+              </span>
+              <span className="flex items-center gap-3 mb-2">
+                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
+                  AI Engineer
+                </span>
+                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
+              </span>
+              <span className="flex items-center gap-3">
+                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
+                  SDET
+                </span>
+                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
+              </span>
             </motion.h1>
 
             {/* Description */}
@@ -74,14 +87,14 @@ export function HeroSection() {
             >
               {/* First Row - Get in Touch & For Recruiters */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="group">
+                <Button asChild size="lg" className="group sm:flex-1">
                   <Link href="/contact">
                     <Mail className="mr-2 h-4 w-4" />
                     Get in Touch
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="sm:flex-1">
                   <Link href="/recruiter">
                     <UserCheck className="mr-2 h-4 w-4" />
                     For Recruiters
@@ -91,14 +104,14 @@ export function HeroSection() {
 
               {/* Second Row - View My Work & Download Resume */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild variant="outline" size="lg" className="group">
+                <Button asChild variant="ghost" size="lg" className="group sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all">
                   <Link href="/projects">
                     <Briefcase className="mr-2 h-4 w-4" />
                     View My Work
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="ghost" size="lg" className="sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all">
                   <a href="/resume.pdf" download>
                     <Download className="mr-2 h-4 w-4" />
                     Download Resume

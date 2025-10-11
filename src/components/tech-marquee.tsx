@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import * as SimpleIcons from "simple-icons";
 import type { Technology } from "@/data/technologies";
+import { CustomTechIcons } from "./custom-tech-icons";
 
 interface TechMarqueeProps {
   technologies: Technology[];
@@ -159,8 +160,26 @@ export function TechMarqueeSection() {
 }
 
 function resolveSimpleIconSvg(iconName: string) {
+  // Check custom icons first
+  // cspell:disable-next-line
+  const customIconMap: Record<string, keyof typeof CustomTechIcons> = {
+    'amazonaws': 'aws',
+    'playwright': 'playwright',
+    'visualstudiocode': 'vscode',
+  };
+
+  if (customIconMap[iconName]) {
+    return CustomTechIcons[customIconMap[iconName]];
+  }
+
+  // Fall back to simple-icons
   const normalizedKey = `si${iconName.charAt(0).toUpperCase()}${iconName.slice(1)}` as keyof typeof SimpleIcons;
   const icon = SimpleIcons[normalizedKey];
 
-  return icon?.svg ?? null;
+  // Type guard: check if icon is a SimpleIcon object (has an svg property)
+  if (icon && typeof icon === 'object' && 'svg' in icon) {
+    return icon.svg;
+  }
+
+  return null;
 }
