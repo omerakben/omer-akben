@@ -23,9 +23,6 @@ npm start
 
 # Run linter
 npm run lint
-
-# Type check (TypeScript compilation check)
-npx tsc --noEmit
 ```
 
 ### Quality Assurance

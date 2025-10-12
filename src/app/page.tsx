@@ -18,8 +18,12 @@ const FEATURED_PROJECTS_GROUP_SIZE = 5;
 
 export default function HomePage() {
   const featuredProjects = getFeaturedProjects().sort((a, b) => {
-    if (a.slug === "elon-ai-toolbox") return -1;
-    if (b.slug === "elon-ai-toolbox") return 1;
+    // Sort by displayOrder if present (lower numbers first)
+    if (a.displayOrder !== undefined && b.displayOrder === undefined) return -1;
+    if (a.displayOrder === undefined && b.displayOrder !== undefined) return 1;
+    if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+      return a.displayOrder - b.displayOrder;
+    }
     return 0;
   });
   const leadershipTestimonials = testimonials.filter(

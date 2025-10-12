@@ -20,7 +20,7 @@ const FILE_MAP = {
       "https://drive.google.com/file/d/1r0vqR3w11_CdIblnEpjFSMXan5n1fRgz/view?usp=sharing",
   },
   "three-page": {
-    filename: "Omer_Akben_Resume_2pg_2025-10.pdf",
+    filename: "Omer_Akben_Resume_3pg_2025-10.pdf",
     size: 400000, // ~400KB (updated size for 3 pages)
     format: "pdf",
     googleDriveUrl:
