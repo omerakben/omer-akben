@@ -1,4 +1,9 @@
+import withBundleAnalyzer from "@next/bundle-analyzer";
 import type { NextConfig } from "next";
+
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
   // Enable React strict mode for better error detection
@@ -63,6 +68,18 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self'",
+              "style-src 'self'",
+              "img-src 'self' data: https:",
+              "font-src 'self'",
+              "connect-src 'self' https://vercel-insights.com",
+              "frame-ancestors 'none'",
+            ].join("; "),
+          },
         ],
       },
       // Cache static assets aggressively
@@ -89,4 +106,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default bundleAnalyzer(nextConfig);

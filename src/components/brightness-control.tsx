@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useBrightness } from "@/lib/brightness-context";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 

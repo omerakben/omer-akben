@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -38,15 +39,12 @@ export default function ContactPage() {
     <div className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-5xl">
         {/* Page Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-1 mb-6 flex items-center justify-center gap-4">
-            <MessageSquare className="w-12 h-12 text-brand-primary" />
-            Let&apos;s Connect
-          </h1>
-          <p className="text-lg text-text-2 max-w-2xl mx-auto">
-            Interested in collaboration, consulting, or just want to chat about AI and automation?
-          </p>
-        </div>
+        <PageHeader
+          icon={MessageSquare}
+          title="Let's Connect"
+          description="Interested in collaboration, consulting, or just want to chat about AI and automation?"
+          className="mb-16"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Form */}
@@ -135,7 +133,7 @@ export default function ContactPage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-gradient-to-r from-brand-primary to-[#2563EB]"
+                  className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
@@ -203,7 +201,7 @@ export default function ContactPage() {
                   Book a 30-minute consultation to discuss your project or needs.
                 </p>
                 <Button
-                  className="w-full bg-gradient-to-r from-brand-primary to-[#2563EB]"
+                  className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
                   asChild
                 >
                   <a href="#" target="_blank" rel="noopener noreferrer">

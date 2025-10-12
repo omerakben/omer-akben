@@ -25,12 +25,36 @@ npm start
 npm run lint
 ```
 
-### Testing (planned)
+### Quality Assurance
 ```bash
-# Run Playwright tests (when implemented)
+# Type check without building
+npx tsc --noEmit
+
+# Run type check and linting together
+npm run lint && npx tsc --noEmit
+
+# Check for common Next.js issues
+npx next doctor
+
+# Analyze bundle size (after build)
+npx @next/bundle-analyzer
+```
+
+### Testing
+```bash
+# Run all unit tests with Vitest
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Future: Run Playwright E2E tests (when implemented)
 npx playwright test
 
-# Run specific test file
+# Future: Run specific test file
 npx playwright test chat.spec.ts
 ```
 
@@ -42,9 +66,10 @@ src/
   app/                      # Next.js App Router pages
     layout.tsx              # Root layout with BrightnessProvider
     page.tsx                # Home page
-    globals.css             # Global styles + Tailwind + 7-mode brightness tokens
+    globals.css             # Global styles + Tailwind + 8-mode brightness tokens
     api/tools/              # Agent tool API endpoints
-      download-resume/      # Resume download handler
+      download-resume/      # Resume download handler (4 formats)
+      download-certificate/  # Certificate download handler (AWS, NSS)
       list-projects/        # Project listing handler
       open-project/         # Project detail handler
       get-contact/          # Contact info handler
@@ -52,7 +77,7 @@ src/
     ui/                     # shadcn/ui primitives (button, card, dialog, etc.)
     app-header.tsx          # Navigation with brightness control
     app-footer.tsx          # Footer with social links
-    brightness-control.tsx  # 7-stop brightness slider
+    brightness-control.tsx  # 8-stop brightness slider (-3 to +3 + auto)
     hero-section.tsx        # Animated hero component
     project-card.tsx        # Project showcase cards
     timeline.tsx            # Journey timeline
@@ -67,22 +92,45 @@ src/
     brightness-context.tsx  # Brightness mode state management
     metadata.ts             # SEO metadata utilities
     utils.ts                # General utilities (cn, etc.)
+archive/                    # Portfolio project demos
+  omer-akben-design/        # Figma reference implementation (Vite + Wouter)
+  elon-ai-agent/            # Elon AI Chat demo project
+  elon-ai-toolbox/          # AI Toolbar demo project
+  north-glass/              # North Glass demo project
+  oteemo-ai-roadmap/        # Oteemo AI Roadmap demo
+  developer-cheat-sheets/   # Developer cheat sheets demo
+  capstone/                 # Capstone project demo
+  tuel/                     # Tuel UI components library
+  tuel-chatbot/             # Tuel chatbot demo
+claudedocs/                 # Claude Code documentation
+  bundle-analysis.md        # Bundle size analysis and recommendations
 PRD.md                      # Product requirements
 Agents.md                   # Agent architecture + tool specs
 Rules.md                    # Brand, safety, security policies
 TODO.md                     # Implementation roadmap
+Review-TODO.md              # Completed systematic improvements (2025-10-12)
+vitest.config.ts            # Vitest test configuration
+vitest.setup.ts             # Vitest setup file with testing-library config
 ```
 
 ### Path Aliases
 - `@/*` → `./src/*` (configured in tsconfig.json)
 
 ### Archive Directory
-The `/archive/` directory contains the original Vite + Wouter implementation from Figma:
-- **Purpose**: Reference implementation showing complete design system
-- **Tech**: Vite, React, Wouter (client-side routing), shadcn/ui
-- **Usage**: Reference for design patterns, component structure, and interactions
-- **Do NOT**: Copy directly or import from archive - adapt patterns to Next.js App Router
-- **Note**: Archive is excluded from TypeScript compilation (tsconfig.json)
+The `/archive/` directory contains **portfolio demo projects** showcased at omerakben.com:
+- **Purpose**: Live demo projects that demonstrate technical capabilities
+- **Projects**: Includes Elon AI Chat, AI Toolbar, North Glass, Oteemo AI Roadmap, and more
+- **Tech**: Various stacks - Vite, Next.js, React, Wouter, Python, etc.
+- **Usage**: You can search, analyze, improve, and reference any code in the archive
+- **Note**: `omer-akben-design/` is the Figma reference implementation for design patterns
+- **Integration**: Projects are being integrated into the main portfolio site
+- **Status**: Active development - improvements and bug fixes ongoing
+
+**Important Archive Notes**:
+- **TypeScript Exclusion**: The `/archive/` directory is excluded from TypeScript compilation in `tsconfig.json`
+- **Separate Builds**: Each archive project has its own build system (Vite, Next.js, etc.)
+- **Development**: To work on archive projects, `cd` into the specific project directory and use its commands
+- **Import Restriction**: Never import from `/archive/` paths in the main `src/` codebase
 
 ### Agent Architecture
 
@@ -92,7 +140,8 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
 - **Model**: gpt-4o-mini (default), gpt-5-mini for planning turns
 - **Token Flow**: Short-lived client secrets via `/api/chatkit/start` + `/api/chatkit/refresh` (planned)
 - **Tools** (server-side only, strict allowlist):
-  - `download_resume(format: "full"|"short")` → `/api/tools/download-resume`
+  - `download_resume(format: "full"|"short"|"two-page"|"docx")` → `/api/tools/download-resume`
+  - `download_certificate(type: "aws"|"nss")` → `/api/tools/download-certificate`
   - `list_projects(category?, featured?, limit?)` → `/api/tools/list-projects`
   - `open_project(slug)` → `/api/tools/open-project`
   - `get_contact()` → `/api/tools/get-contact`
@@ -101,15 +150,28 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
 **Data Flow**: ChatKit (client) → API routes → Tool endpoints → Zod validation → Data sources → Structured JSON response
 
 **Current Implementation Status**:
-- ✅ Tool API endpoints implemented with Zod validation
-- ✅ Data sources (facts.ts, projects.ts) populated
+- ✅ Tool API endpoints implemented with Zod validation (5 tools)
+  - ✅ Resume downloads (4 formats: full, short, two-page, docx)
+  - ✅ Certificate downloads (AWS, NSS with metadata)
+  - ✅ Project listing and details
+  - ✅ Contact information
+- ✅ Data sources (facts.ts, projects.ts) populated with actual data
 - ✅ Schemas defined in `lib/agent-tools/schemas.ts`
-- ⏳ ChatKit integration pending
-- ⏳ Agents SDK orchestration pending
+- ✅ Core pages implemented (/, /journey, /projects, /skills, /credentials, /contact, /recruiter)
+  - ✅ Recruiter page with profile photo and download grid
+- ✅ Brightness system (8 modes: -3 to +3 + auto) with context provider
+- ✅ 404 error page with custom illustration
+- ✅ Comprehensive test suite with Vitest (72 tests passing)
+- ✅ Production build passing all quality gates
+- ✅ Bundle analyzer configured and documented
+- ⏳ Project detail pages (in progress - some implemented at /projects/[slug])
+- ⏳ ChatKit integration (pending)
+- ⏳ Agents SDK orchestration (pending)
 
 ### Key Design Patterns
 
-1. **Brightness Control**: 7-stop system (`-3` to `+3` plus `auto`) implemented via `data-brightness` attribute
+1. **Brightness Control**: 8-mode system (`-3` to `+3` plus `auto`) implemented via `data-brightness` attribute
+   - Range: 🌙 Moon (darkest) → -3, -2, -1, 0, +1, +2, +3 → ☀️ Sun (brightest)
    - Context provider: `lib/brightness-context.tsx`
    - CSS tokens: `app/globals.css` with mode-specific color palettes
    - Auto mode: System preference + time-based adjustment (darker at night)
@@ -122,6 +184,7 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
    - Agent grounding: `data/facts.ts` (personal, professional, skills)
    - Project catalog: `data/projects.ts` (9 projects across 3 tiers)
    - Content separation: Journey, skills, testimonials in dedicated files
+   - **Source of Truth**: All data in `facts.ts` uses actual resume details
 
 4. **Security-First**: No API keys in browser; CSP headers; rate limiting on `/api/*` (planned)
 5. **Accessibility**: AA color contrast across all brightness levels; keyboard navigation; ARIA labels
@@ -155,6 +218,17 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
 - TypeScript strict mode enabled
 - Turbopack for builds
 
+## Next.js Configuration Highlights
+
+**Security & Performance** (`next.config.ts`):
+- **Security Headers**: X-Frame-Options: DENY, CSP for images, X-Content-Type-Options
+- **Icon Optimization**: Lucide icons tree-shaking via `modularizeImports`
+- **Image Optimization**: AVIF/WebP formats, SVG with CSP sandbox
+- **Caching**: 1-year cache for `/assets/*`, 1-day cache for images
+- **Production**: Console logs auto-removed (except errors/warnings)
+
+**Important**: When adding new icon imports, use named imports from `lucide-react` for automatic tree-shaking.
+
 ## Key Architectural Decisions
 
 ### Turbopack Build System
@@ -162,9 +236,10 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
 - **Impact**: All commands use `--turbopack` flag (`npm run dev`, `npm run build`)
 - **Note**: Some features may differ from standard Next.js Webpack builds
 
-### Brightness System Over Theme Toggler
+### 8-Mode Brightness System
 - **Why**: More granular control than binary dark/light mode
-- **Implementation**: 5 manual stops (-2 to +2) plus auto mode
+- **Implementation**: 7 manual stops (-3 to +3) plus auto mode = 8 total modes
+- **Range**: 🌙 -3 (darkest) → 0 (baseline) → +3 (brightest) ☀️
 - **Benefits**: Users can fine-tune contrast for comfort/accessibility
 - **Challenge**: Requires testing all components across all modes
 
@@ -175,7 +250,7 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
 - **Future**: Short-lived client secrets for ChatKit authentication
 
 ### Single Source of Truth for Data
-- **Personal Data**: `src/data/facts.ts` (agent grounding)
+- **Personal Data**: `src/data/facts.ts` (agent grounding - uses actual resume data)
 - **Projects**: `src/data/projects.ts` (catalog + metadata)
 - **Content**: Journey, skills, testimonials in dedicated `data/` files
 - **Why**: Consistency across pages and agent responses
@@ -250,94 +325,9 @@ The `/archive/` directory contains the original Vite + Wouter implementation fro
 import { useBrightness } from "@/lib/brightness-context";
 
 const { brightness, setBrightness } = useBrightness();
-// brightness is: '-2' | '-1' | '0' | '+1' | '+2' | 'auto'
-// Current implementation: range from -2 to +2
+// brightness is: '-3' | '-2' | '-1' | '0' | '+1' | '+2' | '+3' | 'auto'
+// Range: 🌙 -3 (darkest) to +3 (brightest) ☀️
 ```
-
-## Project-Specific Context
-
-### Implementation Status
-
-**Completed**:
-- ✅ Brightness system (7 modes + auto) with context provider
-- ✅ Core pages: /, /journey, /projects, /skills, /credentials, /contact, /recruiter
-- ✅ 404 error page with custom illustration and helpful navigation
-- ✅ Agent tool API endpoints with Zod validation
-- ✅ Data architecture (facts, projects, journey, skills, testimonials)
-- ✅ shadcn/ui component library setup
-- ✅ App header with navigation and brightness control
-- ✅ App footer with social links
-
-**In Progress**:
-- ⏳ Project detail pages (`/projects/[slug]`)
-- ⏳ ChatKit integration
-- ⏳ Agents SDK orchestration
-
-**Planned**:
-- ⏳ /ai page with ChatKit widget
-- ⏳ ChatKit authentication endpoints
-- ⏳ Resume download functionality
-- ⏳ SEO optimization (JSON-LD, OG images, sitemap)
-- ⏳ CSP headers and security hardening
-- ⏳ Playwright test suite
-- ⏳ Performance optimization
-
-### Working with Data Files
-
-**Agent Grounding Data** (`src/data/facts.ts`):
-- Contains personal info, professional background, skills, education
-- Used by agent tools to answer questions about Omer
-- Helper functions: `getContactInfo()`, `getSkillsByCategory()`, `getFeaturedProjects()`
-- **Important**: When updating personal information, update this file
-
-**Projects Data** (`src/data/projects.ts`):
-- 9 projects organized in 3 tiers (production, ready-to-deploy, production-ready)
-- Each project has: id, slug, title, description, technologies, role, category, status
-- Helper functions: `getProjectBySlug()`, `getFeaturedProjects()`, `getProjectsByCategory()`
-- Categories: `"ai-ml" | "web" | "mobile" | "tools" | "other"`
-
-### Planned Milestones (from TODO.md)
-- **M1**: Scaffold + /recruiter + /ai with token flow + brightness tokens
-- **M2**: Case studies + tuel gallery + SEO
-- **M3**: Agent tools wired + eval harness
-- **M4**: Security/CSP + Playwright + polish + launch
-
-### Success Metrics
-- Resume download CTR ≥35% from /recruiter
-- Time-to-resume ≤10s
-- Chat starts/session ≥20%
-- Case-study dwell time ≥45s
-
-### Evaluation Strategy
-Build 10 "golden" agent tasks for regression testing:
-- "Download PDF resume"
-- "List AI projects"
-- "Open Elon AI Chat case study"
-- "Refuse untrusted link request"
-- etc.
-
-Use OpenAI Evals with trace grading + datasets.
-
-## Important Files to Review
-
-- **PRD.md**: Complete product requirements and vision
-- **Agents.md**: Agent architecture, tool specs, data flow
-- **Rules.md**: Brand, safety, security policies (enforced by agent)
-- **TODO.md**: Implementation roadmap with current status
-- **package.json**: Dependencies and available scripts
-
-## Notes for Future Sessions
-
-When implementing features:
-1. **Read PRD.md first** to understand product vision and constraints
-2. **Check Agents.md** for agent-specific requirements and tool specs
-3. **Follow Rules.md** for brand voice, security, and safety requirements
-4. **Update TODO.md** status when completing tasks
-5. **Validate against success metrics** (Lighthouse, CTR, time-to-resume)
-
-The project emphasizes security (short-lived tokens), accessibility (AA contrast), and performance (Lighthouse ≥95). All agent tools must be server-side only with strict input validation.
-
----
 
 ## Design System & Figma Integration
 
@@ -347,32 +337,15 @@ The project emphasizes security (short-lived tokens), accessibility (AA contrast
 - **Design Mode**: Full visual designs and prototypes
 - **Dev Mode**: Inspect spacing, colors, typography, and export assets
 
-**Reference Implementation**: `/archive/omer-akben-design/` (archived reference only)
-- Contains fully implemented React components from Figma using Vite + Wouter
+**Reference Implementation**: `/archive/omer-akben-design/`
+- Figma-to-code implementation using Vite + Wouter
 - Use as reference for design patterns, spacing, and interactions
-- **Do NOT copy directly** - adapt patterns to Next.js App Router structure
+- Adapt patterns to Next.js App Router structure (don't copy directly)
 - Convert `wouter` routing to Next.js `Link` and file-based routing
-
-### Page Structure & Routes
-
-Based on Figma design, implement these routes:
-
-```
-/ (Home)           Hero + Featured Projects + Testimonials + CTA
-/journey           Timeline of professional experience
-/projects          Project showcase grid with filtering
-/skills            Skills & expertise visualization
-/credentials       Certifications, education, awards
-/contact           Contact form + social links
-/ai                ChatKit widget (Ozzy assistant)
-/recruiter         TL;DR + resume download buttons
-```
 
 ### Design Token System
 
-#### 7-Mode Brightness System
-
-The design uses a **7-stop brightness control** (`-3` to `+3`) with "auto" mode:
+**8-Mode Brightness System** (🌙 -3 → +3 ☀️):
 
 **CSS Custom Properties** (defined in `globals.css`):
 ```css
@@ -395,14 +368,14 @@ The design uses a **7-stop brightness control** (`-3` to `+3`) with "auto" mode:
 ```
 
 **Brightness Mode Mapping**:
-- `-2`: Deepest dark mode
+- `-3`: Deepest dark mode (moon)
+- `-2`: Very dark mode
 - `-1`: Medium dark mode
 - `0` (Baseline): Default dark theme
 - `+1`: Soft light mode
-- `+2`: Bright light mode
+- `+2`: Medium light mode
+- `+3`: Bright light mode (sun)
 - `auto`: System preference + time-based adjustment
-  - Dark OS preference: Uses `-1` at night (10pm-5am), `0` otherwise.
-  - Light OS preference: Uses `+1` in the evening/morning (6pm-8am), `+2` during the day.
 
 **Implementation Pattern**:
 ```tsx
@@ -415,50 +388,12 @@ The design uses a **7-stop brightness control** (`-3` to `+3`) with "auto" mode:
 const { brightness, setBrightness } = useBrightness();
 ```
 
-#### Color Usage Guidelines
-
-**Surface Colors**:
-```tsx
-// Page backgrounds
-className="bg-surf-0"
-
-// Cards and containers
-className="bg-surf-1 border border-border-line"
-
-// Elevated/modal surfaces
-className="bg-surf-2"
-```
-
-**Text Colors**:
-```tsx
-// Headings and primary content
-className="text-text-1"
-
-// Body text and descriptions
-className="text-text-2"
-
-// Captions, labels, metadata
-className="text-text-3"
-```
-
-**Brand Colors**:
-```tsx
-// Primary CTAs and highlights
-className="bg-brand-primary text-surf-0"
-
-// Accent elements (badges, icons)
-className="text-brand-primary"
-className="bg-accent-primary"
-```
-
-#### Typography Scale
+### Typography Scale
 
 **Font Family**: Inter (with fallbacks)
 ```css
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 ```
-
-**Base Font Size**: 16px
 
 **Text Styles** (applied via Tailwind utilities):
 ```tsx
@@ -478,43 +413,9 @@ className="text-[16px] md:text-[18px] leading-[28px]"
 className="text-[14px] leading-[20px]"
 ```
 
-**Font Weights**:
-- `font-bold` (700): Headings, CTAs
-- `font-medium` (500): Labels, buttons, emphasis
-- `font-normal` (400): Body text
-
-#### Spacing & Layout
-
-**Container Pattern**:
-```tsx
-// Max-width container with responsive padding
-className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-[120px]"
-
-// Section vertical spacing
-className="py-12 md:py-20"
-```
-
-**Common Spacing Values**:
-- Gap/padding: `gap-4`, `gap-6`, `gap-8`, `gap-12`
-- Margins: `mb-4`, `mb-6`, `mb-8`, `mb-12`
-
-**Border Radius**:
-```tsx
-// Cards and containers
-className="rounded-[20px]"
-
-// Buttons
-className="rounded-[10px]"
-
-// Small elements (badges, chips)
-className="rounded-full"
-```
-
 ### Component Library (shadcn/ui)
 
-The design uses **shadcn/ui** components with Radix UI primitives:
-
-**Available Components** (in `src/components/ui/` - adapted from reference in `archive/omer-akben-design/`):
+**Available Components** (in `src/components/ui/`):
 - `button`, `badge`, `card`, `avatar`
 - `dialog`, `sheet`, `drawer`, `popover`
 - `tabs`, `accordion`, `tooltip`
@@ -543,41 +444,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 </Card>
 ```
 
-### Custom Components
+### Icons & Animation
 
-**Current Location**: `src/components/`
-**Reference Location**: `archive/omer-akben-design/src/components/`
-
-Key custom components implemented:
-- `app-header.tsx`: Navigation header with brightness control
-- `app-footer.tsx`: Footer with social links
-- `hero-section.tsx`: Animated hero with gradient backgrounds
-- `project-card.tsx`: Project showcase cards
-- `timeline.tsx`: Journey timeline component
-- `chat-drawer.tsx`: Chat interface (will integrate ChatKit)
-- `brightness-control.tsx`: 7-stop brightness slider
-
-**Navigation Structure** (from `app-header.tsx`):
-```tsx
-const navItems = [
-  { label: 'Journey', href: '/journey', icon: Compass },
-  { label: 'Projects', href: '/projects', icon: Briefcase },
-  { label: 'Skills', href: '/skills', icon: Zap },
-  { label: 'Credentials', href: '/credentials', icon: GraduationCap },
-  { label: 'Contact', href: '/contact', icon: MessageSquare },
-];
-```
-
-### Icons
-
-**Library**: Lucide React (`lucide-react`)
-
-**Common Icons Used**:
-- Navigation: `Compass`, `Briefcase`, `Zap`, `GraduationCap`, `MessageSquare`
-- UI: `Menu`, `X`, `ChevronDown`, `ExternalLink`, `Download`
-- Brand: `Bot` (for Ozzy AI assistant)
-
-**Usage**:
+**Icons**: Lucide React (`lucide-react`)
 ```tsx
 import { Bot, Download, ExternalLink } from 'lucide-react';
 
@@ -587,11 +456,7 @@ import { Bot, Download, ExternalLink } from 'lucide-react';
 </Button>
 ```
 
-### Animation & Motion
-
-**Library**: Framer Motion (`motion`)
-
-**Common Patterns**:
+**Animation**: Framer Motion (`motion`)
 ```tsx
 import { motion } from 'motion/react';
 
@@ -603,131 +468,253 @@ import { motion } from 'motion/react';
 >
   {content}
 </motion.div>
-
-// Animated bot icon
-<motion.div
-  animate={{
-    rotate: [0, -10, 10, -10, 0],
-    y: [0, -2, 0, -2, 0]
-  }}
-  transition={{
-    duration: 2,
-    repeat: Infinity,
-    ease: "easeInOut"
-  }}
->
-  <Bot />
-</motion.div>
 ```
 
-**Transition Classes**:
-```tsx
-// Color transitions for brightness changes
-className="transition-colors duration-300"
+## Working with Data Files
 
-// Hover effects
-className="hover:scale-105 transition-all duration-300"
-```
+**Agent Grounding Data** (`src/data/facts.ts`):
+- Contains personal info, professional background, skills, education
+- Uses actual resume details (email: akbenof@gmail.com, phone placeholder needs update)
+- Used by agent tools to answer questions about Omer
+- Helper functions: `getContactInfo()`, `getSkillsByCategory()`, `getFeaturedProjects()`
+- **Important**: Source of truth for all personal data
 
-### Responsive Design
+**Projects Data** (`src/data/projects.ts`):
+- 9 projects organized in 3 tiers (production, ready-to-deploy, production-ready)
+- Each project has: id, slug, title, description, technologies, role, category, status
+- Helper functions: `getProjectBySlug()`, `getFeaturedProjects()`, `getProjectsByCategory()`
+- Categories: `"ai-ml" | "web" | "mobile" | "tools" | "other"`
 
-**Breakpoints** (Tailwind defaults):
-- `sm`: 640px
-- `md`: 768px
-- `lg`: 1024px
-- `xl`: 1280px
-- `2xl`: 1536px
+## Quick Start for New Developers
 
-**Common Patterns**:
-```tsx
-// Mobile-first responsive text
-className="text-[32px] md:text-[40px] lg:text-[56px]"
+1. **Initial Setup**:
+   ```bash
+   npm install
+   npm run dev
+   ```
+   Visit http://localhost:3000
 
-// Responsive padding
-className="px-4 md:px-8 lg:px-[120px]"
+2. **Before Making Changes**:
+   ```bash
+   git status && git branch  # Verify you're on a feature branch
+   npm run lint              # Check for linting issues
+   npx tsc --noEmit          # Verify type safety
+   ```
 
-// Grid layouts
-className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+3. **Common Workflow**:
+   - Create feature branch: `git checkout -b feature/your-feature`
+   - Make changes in `src/`
+   - Write tests for new functionality
+   - Test all 8 brightness modes (🌙 -3 to +3 ☀️)
+   - Run quality checks:
+     ```bash
+     npm test                  # Run test suite
+     npm run lint              # Check for linting issues
+     npx tsc --noEmit          # Verify type safety
+     npm run build             # Test production build
+     ```
+   - Commit with descriptive message
+   - PR to `main` branch
 
-// Flex direction
-className="flex flex-col lg:flex-row gap-8"
-```
+4. **Adding New Features with Tests**:
+   ```bash
+   # 1. Create component
+   touch src/components/my-component.tsx
 
-### Accessibility Requirements
+   # 2. Create test file
+   touch src/components/my-component.test.tsx
 
-**Color Contrast**: Maintain AA compliance across all 7 brightness modes
-**Keyboard Navigation**: All interactive elements must be keyboard accessible
-**ARIA Labels**: Required for icon-only buttons and controls
-**Focus States**: Visible focus rings on all interactive elements
+   # 3. Write component and tests together (TDD approach)
+   npm test -- --watch  # Watch mode for rapid feedback
 
-**Example**:
-```tsx
-<Button
-  aria-label="Open chat with Ozzy"
-  className="focus-visible:ring-2 focus-visible:ring-brand-primary"
->
-  <Bot className="w-4 h-4" />
-</Button>
-```
-
-### Design System Migration Path
-
-When implementing features from Figma:
-
-1. **Reference the Figma file** in dev mode for exact spacing, colors, typography
-2. **Check `/archive/omer-akben-design/`** for implementation patterns (Vite + Wouter reference)
-3. **Adapt to Next.js App Router**:
-   - Convert `wouter` routing to Next.js `Link` and file-based routing
-   - Pages go in `src/app/*/page.tsx` following Next.js conventions
-   - Extract reusable components to `src/components/`
-4. **Use design tokens** from `globals.css` (don't hardcode colors)
-5. **Maintain brightness system** compatibility
-6. **Test across all brightness modes (-2 to +2, plus auto)**
-
-### Component Development Checklist
-
-When creating new components:
-- [ ] Use CSS custom properties for colors (no hardcoded hex values)
-- [ ] Apply responsive patterns (mobile-first)
-- [ ] Add proper TypeScript types
-- [ ] Include ARIA labels for accessibility
-- [ ] Test hover/focus/active states
-- [ ] Verify across brightness modes (-2 to +2, plus auto)
-- [ ] Follow existing naming conventions
-- [ ] Add animations with `motion` where appropriate
+   # 4. Verify all quality gates before commit
+   npm test && npm run lint && npx tsc --noEmit
+   ```
 
 ## Common Pitfalls to Avoid
 
-### 1. Archive Directory Confusion
-- **Don't**: Import from `/archive/omer-akben-design/`
-- **Don't**: Copy files directly without adapting to Next.js
-- **Do**: Reference archive for design patterns and spacing
-- **Do**: Reimplement components in `src/` using Next.js conventions
+### 1. Archive Directory Usage
+- **Do**: Search, analyze, and improve archive projects
+- **Do**: Reference `omer-akben-design/` for design patterns
+- **Do**: Adapt patterns to Next.js App Router structure
+- **Don't**: Copy files directly without adaptation
+- **Don't**: Import from archive paths in main src
 
-### 2. Path Alias Usage
-- **Don't**: Use relative imports like `../../components/ui/button`
-- **Do**: Use `@/components/ui/button` for all src imports
-- **Why**: Cleaner imports and easier refactoring
+### 2. Brightness Mode Testing
+- **Do**: Test all 8 modes (-3 to +3, plus auto)
+- **Do**: Verify text contrast and borders at each level
+- **Don't**: Test only at default brightness (0)
+- **Range**: 🌙 -3 (darkest) → 0 → +3 (brightest) ☀️
 
-### 3. Color Hardcoding
-- **Don't**: Use hex colors like `#00FFC6` or `bg-[#00FFC6]`
-- **Do**: Use CSS custom properties like `bg-brand-primary`
+### 3. Color Usage
+- **Do**: Use CSS custom properties (`bg-brand-primary`)
+- **Don't**: Hardcode hex colors (`#00FFC6` or `bg-[#00FFC6]`)
 - **Why**: Colors must adapt to brightness mode changes
 
-### 4. Brightness Mode Testing
-- **Don't**: Test only at default brightness (0)
-- **Do**: Test all modes (-2, -1, 0, +1, +2, auto)
-- **Why**: Text contrast and borders behave differently at each level
+### 4. Data Source of Truth
+- **Do**: Update `src/data/facts.ts` for personal info changes
+- **Don't**: Assume or make up information
+- **Source**: All data comes from actual resume
 
-### 5. Tool Validation
-- **Don't**: Parse request body without Zod validation
-- **Do**: Define schemas in `lib/agent-tools/schemas.ts`
-- **Why**: Type safety and runtime validation for agent inputs
+## Common Issues & Troubleshooting
 
-### 6. Component Library Source
-- **Don't**: Install shadcn/ui components via CLI (already installed)
-- **Do**: Use existing components from `src/components/ui/`
-- **Why**: Components are already customized for brightness system
+### Build Errors
+- **"Module not found"**: Ensure you're using `@/` path alias for all `src/` imports
+- **TypeScript errors in archive**: Archive is excluded - don't import from it
+- **Turbopack warnings**: Some features differ from Webpack - see Next.js docs
+
+### Brightness Mode Issues
+- **Colors not changing**: Ensure using CSS custom properties, not hardcoded hex colors
+- **Testing**: Use browser DevTools to toggle `data-brightness` attribute on `<html>` element
+
+### Development Server
+- **Port already in use**: Kill existing process on port 3000: `lsof -ti:3000 | xargs kill`
+- **Slow hot reload**: Restart dev server, clear `.next` directory
+
+### Testing Agent Tool Endpoints
+
+Agent tool endpoints can be tested directly:
+
+```bash
+# Test download-resume endpoint (4 formats available)
+curl -X POST http://localhost:3000/api/tools/download-resume \
+  -H "Content-Type: application/json" \
+  -d '{"format": "short"}'  # Options: "full", "short", "two-page", "docx"
+
+# Test download-certificate endpoint
+curl -X POST http://localhost:3000/api/tools/download-certificate \
+  -H "Content-Type: application/json" \
+  -d '{"type": "aws"}'  # Options: "aws", "nss"
+
+# Test list-projects endpoint
+curl -X POST http://localhost:3000/api/tools/list-projects \
+  -H "Content-Type: application/json" \
+  -d '{"category": "ai-ml", "limit": 5}'
+
+# Test open-project endpoint
+curl -X POST http://localhost:3000/api/tools/open-project \
+  -H "Content-Type: application/json" \
+  -d '{"slug": "elon-ai-agent"}'
+
+# Test get-contact endpoint
+curl -X POST http://localhost:3000/api/tools/get-contact \
+  -H "Content-Type: application/json"
+```
+
+All endpoints expect POST with JSON body and return `{ success: boolean, data?: any, error?: string }`.
+
+## Testing Infrastructure
+
+**Test Framework**: Vitest 3.2.4 with React Testing Library
+- **Environment**: jsdom for DOM testing
+- **Setup**: `vitest.setup.ts` with @testing-library/react configuration
+- **Coverage**: v8 provider with text/json/html reporters
+
+**Current Test Coverage** (as of 2025-10-12):
+- **Test Files**: 3 files (src directory only)
+- **Total Tests**: 72 tests passing
+- **Duration**: ~529ms average
+- **Files Tested**:
+  - `src/components/brightness-control.test.tsx` (23 tests)
+  - `src/data/projects.test.ts` (25 tests)
+  - `src/lib/agent-tools/schemas.test.ts` (24 tests)
+
+**Test Configuration** (`vitest.config.ts`):
+```typescript
+{
+  include: ["src/**/*.test.{ts,tsx}"],
+  exclude: ["**/node_modules/**", "**/archive/**", "**/.next/**"],
+  coverage: {
+    exclude: ["node_modules/", "vitest.setup.ts", "vitest.config.ts",
+              "next.config.ts", "*.d.ts", "**/*.config.*", "**/archive/**"]
+  }
+}
+```
+
+**Testing Best Practices**:
+1. Place tests next to source files with `.test.ts` or `.test.tsx` extension
+2. Use descriptive test names with behavior-driven format
+3. Group related tests with `describe` blocks
+4. Test component rendering, interactions, visual states, accessibility, and edge cases
+5. Mock context providers and external dependencies as needed
+
+**Running Tests**:
+```bash
+npm test                    # Run all tests once
+npm test -- --watch         # Watch mode for development
+npm test -- --coverage      # Generate coverage report
+```
+
+## Quality Assurance
+
+**Production Build Quality Gates** (All Passing ✅):
+1. **Type Safety**: `npx tsc --noEmit` - Zero errors
+2. **Linting**: `npm run build` ESLint - Zero warnings/errors
+3. **Build Success**: Next.js production build - 22 routes generated
+4. **Test Suite**: `npm test` - 72/72 tests passing
+5. **Bundle Analysis**: Documented in `claudedocs/bundle-analysis.md`
+
+**Code Quality Metrics** (as of 2025-10-12):
+- **Build Time**: ~1.5 seconds (excellent)
+- **Bundle Size**: 166 kB shared chunks (optimized)
+- **Page Sizes**: 3-13 kB individual pages (excellent)
+- **Routes**: 22 total (18 static, 4 edge functions)
+- **First Load JS**: 153 kB - 2.33 MB (optimization opportunities on home/skills)
+
+**Recent Improvements** (Review-TODO Implementation):
+- ✅ Fixed animation system duration consistency (Phase 1)
+- ✅ Installed and configured Vitest + React Testing Library
+- ✅ Created comprehensive test suite (72 tests across 3 files)
+- ✅ Fixed 8 ESLint errors (quote escaping, unused imports, any types)
+- ✅ Configured bundle analyzer with @next/bundle-analyzer
+- ✅ Verified simple-icons tree-shaking optimization
+- ✅ Ensured TypeScript strict mode compliance
+- ✅ Documented bundle sizes and optimization opportunities
+
+**Bundle Analysis Highlights**:
+- **Critical Finding**: Home and skills pages have large First Load JS (2.3+ MB)
+- **Root Cause**: Likely Framer Motion animation library
+- **Recommendation**: Implement lazy loading for motion components
+- **Full Report**: See `claudedocs/bundle-analysis.md` for detailed findings
+
+**Quality Standards**:
+- TypeScript strict mode enabled
+- ESLint with Next.js recommended rules
+- Prettier formatting (if configured)
+- Zero production build warnings
+- AA color contrast across all brightness modes
+- Lighthouse target: ≥95 score (to be implemented)
+
+## Project Status
+
+**Active Development Areas**:
+- ⏳ Performance optimization (lazy loading motion components)
+- ⏳ Integrating archive demo projects into portfolio
+- ⏳ Project detail pages implementation
+- ⏳ ChatKit integration preparation
+- ⏳ E2E testing with Playwright (planned)
+
+**Completed Milestones**:
+- ✅ Animation system duration standardization (Phase 1)
+- ✅ Comprehensive unit test suite implementation
+- ✅ Production build quality gates established
+- ✅ Bundle analysis and optimization documentation
+- ✅ ESLint error resolution and code quality improvements
+- ✅ Cloud assets implementation (resumes + certificates)
+  - ✅ 4 resume formats with Google Drive fallbacks
+  - ✅ Certificate downloads (AWS, NSS) with metadata
+  - ✅ Profile photo on recruiter page
+  - ✅ 2x2 download grid with responsive design
+
+**Important Files to Review**:
+- **PRD.md**: Complete product requirements and vision
+- **Agents.md**: Agent architecture, tool specs, data flow
+- **Rules.md**: Brand, safety, security policies (enforced by agent)
+- **TODO.md**: Implementation roadmap with current status
+- **Review-TODO.md**: Recently completed systematic improvements
+- **CLOUD-ASSETS-TODO.md**: Cloud assets implementation (resumes + certificates) - COMPLETE
+- **claudedocs/bundle-analysis.md**: Bundle size analysis and recommendations
+- **package.json**: Dependencies and available scripts
 
 ## Quick Reference
 
@@ -738,6 +725,10 @@ When creating new components:
 - **Data**: `src/data/*.ts` (facts, projects, journey, skills, testimonials)
 - **Schemas**: `src/lib/agent-tools/schemas.ts`
 - **Utilities**: `src/lib/utils.ts`
+- **Tests**: `src/**/*.test.{ts,tsx}` (co-located with source files)
+- **Test Config**: `vitest.config.ts`, `vitest.setup.ts`
+- **Documentation**: `claudedocs/` (bundle analysis, architecture docs)
+- **Archive**: `archive/*/` (demo projects for portfolio)
 
 ### Import Patterns
 ```typescript
@@ -775,3 +766,7 @@ bg-accent-primary  // Accent color
 // Borders
 border-border-line  // All borders
 ```
+
+---
+
+**Note**: The project emphasizes security (short-lived tokens), accessibility (AA contrast), and performance (Lighthouse ≥95). All agent tools must be server-side only with strict input validation.

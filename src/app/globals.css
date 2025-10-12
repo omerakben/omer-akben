@@ -26,18 +26,74 @@
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
   --radius: 0.625rem;
 
-  /* 7-Mode Brightness System - Mode 0 (baseline) */
-  --surf-0: #0B0F1C;
-  --surf-1: #111626;
-  --surf-2: #161C30;
-  --border-line: #2E3552;
-  --text-1: #E6EAF5;
-  --text-2: #B5BDD3;
-  --text-3: #8891A7;
-  --brand-primary: #00FFC6;
+  /* Brand Blue scale */
+  --brand-50:  #EFF6FF;
+  --brand-100: #DBEAFE;
+  --brand-200: #BFDBFE;
+  --brand-300: #93C5FD;
+  --brand-400: #60A5FA;
+  --brand-500: #3B82F6;
+  --brand-600: #2563EB;
+  --brand-700: #1D4ED8;
+  --brand-800: #1E40AF;
+  --brand-900: #1E3A8A;
+
+  /* Accent Emerald scale */
+  --emerald-50:  #ECFDF5;
+  --emerald-100: #D1FAE5;
+  --emerald-200: #A7F3D0;
+  --emerald-300: #6EE7B7;
+  --emerald-400: #34D399;
+  --emerald-500: #10B981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+
+  /* Cool blue-gray neutrals for text/borders */
+  --neutral-50:  #F6F9FF;
+  --neutral-100: #EDF2FA;
+  --neutral-200: #DCE6F6;
+  --neutral-300: #C6D3EA;
+  --neutral-400: #A8B6D3;
+  --neutral-500: #8897BB;
+  --neutral-600: #6A779F;
+  --neutral-700: #4E5A7F;
+  --neutral-800: #344062;
+  --neutral-900: #1F273E;
+
+  /* Focus ring derived from brand */
+  --ring: color-mix(in oklab, var(--brand-500) 30%, transparent);
+
+  /* Hero/card gradients */
+  --bg-hero: radial-gradient(1200px 600px at 30% -10%,
+                 color-mix(in oklab, var(--brand-primary) 20%, transparent) 0%,
+                 transparent 60%)
+             ,radial-gradient(800px 400px at 80% 0%,
+                 color-mix(in oklab, var(--accent-primary) 16%, transparent) 0%,
+                 transparent 70%);
+
+  /* Subtle card overlay for glass look */
+  --card-overlay: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--surf-1) 85%, transparent) 0%,
+      color-mix(in oklab, var(--surf-2) 85%, transparent) 100%
+  );
+
+  /* Shadows tuned for both modes */
+  --shadow-sm: 0 1px 2px color-mix(in oklab, #000 20%, transparent);
+  --shadow-md: 0 6px 20px color-mix(in oklab, #000 22%, transparent);
+  --shadow-lg: 0 18px 50px color-mix(in oklab, #000 28%, transparent);
+
+  /* 8-Mode Brightness System - Mode 0 (baseline) */
+  --surf-0: #0B1328;
+  --surf-1: #121A35;
+  --surf-2: #17213F;
+  --border-line: #2B355C;
+  --text-1: #E4ECFF;
+  --text-2: #B5C1DF;
+  --text-3: #8998C0;
+  --brand-primary: #10B981;
   --accent-primary: #2563EB;
 
   /* Technology brand colors */
@@ -70,93 +126,93 @@
 
 /* Brightness Mode -3 (Darkest) */
 [data-brightness="-3"] {
-  --surf-0: #0A0F1B;
-  --surf-1: #0E1424;
-  --surf-2: #141B30;
-  --border-line: #223055;
-  --text-1: #F0F3FA;
-  --text-2: #C6CEE2;
-  --text-3: #97A1BE;
-  --brand-primary: #00EAB8;
-  --accent-primary: #1D4ED8;
+  --surf-0: #0A1224;
+  --surf-1: #0E1830;
+  --surf-2: #13203E;
+  --border-line: #22325A;
+  --text-1: #ECF2FF;
+  --text-2: #C8D2EE;
+  --text-3: #9EABD4;
+  --brand-primary: #34D399;
+  --accent-primary: #5F8EFF;
 }
 
 /* Brightness Mode -2 */
 [data-brightness="-2"] {
-  --surf-0: #0C1220;
-  --surf-1: #12182B;
-  --surf-2: #182038;
-  --border-line: #2A3963;
-  --text-1: #ECF0F8;
-  --text-2: #C0C8DE;
-  --text-3: #909ABD;
-  --brand-primary: #00F0BE;
-  --accent-primary: #2159E0;
+  --surf-0: #0C162C;
+  --surf-1: #111C36;
+  --surf-2: #172443;
+  --border-line: #2B3B67;
+  --text-1: #EAF0FF;
+  --text-2: #C2CCEA;
+  --text-3: #96A3CF;
+  --brand-primary: #10B981;
+  --accent-primary: #4C7FFF;
 }
 
 /* Brightness Mode -1 */
 [data-brightness="-1"] {
-  --surf-0: #0F1526;
-  --surf-1: #151C32;
-  --surf-2: #1C2540;
-  --border-line: #33426E;
-  --text-1: #E9EDF6;
-  --text-2: #BAC2DA;
-  --text-3: #8A95B8;
-  --brand-primary: #14F2C3;
-  --accent-primary: #2563EB;
+  --surf-0: #0F1A33;
+  --surf-1: #15213F;
+  --surf-2: #1C2A4D;
+  --border-line: #334574;
+  --text-1: #E7EEFF;
+  --text-2: #BCC7E6;
+  --text-3: #8FA0CB;
+  --brand-primary: #10B981;
+  --accent-primary: #386CF8;
 }
 
 /* Brightness Mode 0 (Baseline) */
 [data-brightness="0"] {
-  --surf-0: #0B0F1C;
-  --surf-1: #111626;
-  --surf-2: #161C30;
-  --border-line: #2E3552;
-  --text-1: #E6EAF5;
-  --text-2: #B5BDD3;
-  --text-3: #8891A7;
-  --brand-primary: #00FFC6;
+  --surf-0: #0B1328;
+  --surf-1: #121A35;
+  --surf-2: #17213F;
+  --border-line: #2B355C;
+  --text-1: #E4ECFF;
+  --text-2: #B5C1DF;
+  --text-3: #8998C0;
+  --brand-primary: #10B981;
   --accent-primary: #2563EB;
 }
 
-/* Brightness Mode +1 */
+/* Brightness Mode +1 (Soft blue-tinted light) */
 [data-brightness="+1"] {
-  --surf-0: #D8E2F0;
-  --surf-1: #E5EBF5;
-  --surf-2: #F0F4FA;
-  --border-line: #C0CADC;
-  --text-1: #0B0F1C;
-  --text-2: #2D3A55;
-  --text-3: #5A6890;
-  --brand-primary: #00D3A8;
-  --accent-primary: #1D4ED8;
+  --surf-0: #EAF0FE;
+  --surf-1: #F3F7FF;
+  --surf-2: #FFFFFF;
+  --border-line: #D2DBF2;
+  --text-1: #0B1020;
+  --text-2: #293651;
+  --text-3: #4C5B80;
+  --brand-primary: #1D4ED8;
+  --accent-primary: #0FAE8E;
 }
 
 /* Brightness Mode +2 */
 [data-brightness="+2"] {
-  --surf-0: #E8ECF6;
-  --surf-1: #F2F5FB;
+  --surf-0: #F2F6FF;
+  --surf-1: #FFFFFF;
   --surf-2: #FFFFFF;
-  --border-line: #D4D9E7;
-  --text-1: #0B0F1C;
-  --text-2: #24304B;
-  --text-3: #4A5A80;
-  --brand-primary: #00CFA5;
-  --accent-primary: #1E40AF;
+  --border-line: #D9E2F7;
+  --text-1: #0A1020;
+  --text-2: #243351;
+  --text-3: #4A5E87;
+  --brand-primary: #1E40AF;
+  --accent-primary: #0A9F82;
 }
 
 /* Brightness Mode +3 (Lightest) */
 [data-brightness="+3"] {
-  --surf-0: #F8FAFF;
+  --surf-0: #F6F9FF;
   --surf-1: #FFFFFF;
   --surf-2: #FFFFFF;
-  --border-line: #E1E6F2;
-  --text-1: #0B0F1C;
-  --text-2: #24304B;
-  --text-3: #4E5D84;
-  --brand-primary: #00BE9A;
-  --accent-primary: #1E3A8A;
+  --border-line: #E3EAFC;
+  --text-1: #0A1020;
+  --text-2: #2A395A;
+  --text-3: #516089;
+  --brand-primary: #1E3A8A;
+  --accent-primary: #08977A;
 }
 
 @theme inline {
@@ -227,7 +283,7 @@ html {
   .card,
   .button,
   .nav-item {
-    transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
   }
 
   .motion-safe {

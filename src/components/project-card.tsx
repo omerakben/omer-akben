@@ -7,6 +7,7 @@ import { ExternalLink, Github, Code2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DURATION, EASING, VIEWPORT } from "@/lib/animations";
 
 export interface ProjectCardProps {
   title: string;
@@ -17,6 +18,7 @@ export interface ProjectCardProps {
   githubUrl?: string;
   slug?: string;
   status?: "completed" | "in-progress" | "planned";
+  index?: number;
 }
 
 export function ProjectCard({
@@ -28,16 +30,25 @@ export function ProjectCard({
   githubUrl,
   slug,
   status,
+  index = 0,
 }: ProjectCardProps) {
+  // First 6 cards (2 rows of 3) should animate immediately on page load
+  const shouldAnimateImmediately = index < 6;
+
   return (
     <motion.div
       className="motion-safe"
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      animate={shouldAnimateImmediately ? { opacity: 1, y: 0 } : undefined}
+      whileInView={!shouldAnimateImmediately ? { opacity: 1, y: 0 } : undefined}
+      viewport={!shouldAnimateImmediately ? VIEWPORT.default : undefined}
+      transition={{
+        duration: DURATION.normal,
+        ease: EASING.default,
+        delay: shouldAnimateImmediately ? index * 0.1 : 0
+      }}
     >
-      <Card className="group h-full hover:shadow-lg hover:border-brand-primary/50 transition-all duration-300">
+      <Card className="group h-full hover:shadow-lg hover:border-brand-primary/40 transition-all duration-300">
         {/* Project Image or Code Icon */}
         <div className="relative w-full h-48 overflow-hidden rounded-t-[20px] bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 flex items-center justify-center">
           {image ? (

@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getContactInfo } from "@/data/facts";
 
-export async function POST(_request: NextRequest) {
+export const runtime = "edge";
+
+export async function POST() {
   try {
     const contact = getContactInfo();
     return NextResponse.json({

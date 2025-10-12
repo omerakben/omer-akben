@@ -1,14 +1,31 @@
-import Link from "next/link";
-import { Download, Mail, Linkedin, FileText, Clock, DollarSign, Rocket, Briefcase, TrendingUp, Zap } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { createMetadata } from "@/lib/metadata";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { facts } from "@/data/facts";
+import { createMetadata } from "@/lib/metadata";
+import {
+  Award,
+  Briefcase,
+  Clock,
+  DollarSign,
+  Download,
+  ExternalLink,
+  Eye,
+  FileText,
+  FileUser,
+  Linkedin,
+  Mail,
+  Rocket,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export const metadata = createMetadata({
-  title: "For Recruiters",
-  description: "Quick overview, resume downloads, and contact information for recruiters and hiring managers.",
+  title: "Recruiters",
+  description:
+    "Quick overview, resume downloads, and contact information for recruiters and hiring managers.",
   path: "/recruiter",
 });
 
@@ -16,8 +33,10 @@ const tldr = {
   availability: facts.professional.availability,
   location: facts.professional.workPreferences.location,
   experience: `${facts.professional.yearsOfExperience}+ years`,
-  specialization: "AI/ML Engineering & Full-Stack Development",
-  topSkills: facts.skills.languages.slice(0, 3).concat(facts.skills.frameworks.slice(0, 3)),
+  specialization: "Full-Stack Developer • AI Engineer • SDET",
+  topSkills: facts.skills.languages
+    .slice(0, 3)
+    .concat(facts.skills.frameworks.slice(0, 3)),
   preferredRoles: facts.professional.workPreferences.roles,
   salary: "Competitive (Open to discussion)",
 };
@@ -26,54 +45,144 @@ export default function RecruiterPage() {
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-4xl">
-        {/* Page Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-1 mb-6">
-            For Recruiters
-          </h1>
-          <p className="text-lg text-text-2 max-w-2xl mx-auto">
-            Quick overview and resources for recruiters and hiring managers.
-          </p>
+        {/* Enhanced Hero Section */}
+        <div className="relative mb-20">
+          {/* Background Gradient */}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-primary/5 via-transparent to-accent-primary/5 rounded-3xl blur-3xl" />
+
+          <div className="text-center">
+            {/* Profile Photo - Larger & More Prominent */}
+            <div className="mb-8 flex justify-center">
+              <div className="relative">
+                {/* Decorative rings */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-brand-primary to-accent-primary opacity-20 blur-xl scale-110" />
+                <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-brand-primary shadow-2xl ring-4 ring-brand-primary/20">
+                  <Image
+                    src="/assets/me.jpeg"
+                    alt="Omer Akben - Profile Photo"
+                    width={192}
+                    height={192}
+                    className="w-full h-full object-cover"
+                    priority
+                  />
+                </div>
+                {/* Status Badge */}
+                <div className="absolute top-0 -right-4 md:-right-6 flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                  Open to Work
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surf-1 border border-border-line">
+                <FileUser className="w-5 h-5 text-brand-primary" />
+                <span className="text-sm font-medium text-text-2">
+                  For Recruiters & Hiring Managers
+                </span>
+              </div>
+
+              <h1 className="text-5xl md:text-6xl font-bold text-text-1 tracking-tight">
+                Omer{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-accent-primary">
+                  &quot;Ozzy&quot;
+                </span>{" "}
+                Akben
+              </h1>
+
+              <p className="text-xl md:text-2xl text-text-2 font-medium">
+                {tldr.specialization}
+              </p>
+
+              <p className="text-lg text-text-2 max-w-2xl mx-auto">
+                {tldr.experience} of experience building production AI systems
+                and Full-Stack applications
+              </p>
+
+              {/* Quick Stats */}
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                <Badge variant="outline" className="text-sm px-4 py-2">
+                  <Clock className="w-4 h-4 mr-2" />
+                  {tldr.availability}
+                </Badge>
+                <Badge variant="outline" className="text-sm px-4 py-2">
+                  <Briefcase className="w-4 h-4 mr-2" />6 Live Projects
+                </Badge>
+                <Badge variant="outline" className="text-sm px-4 py-2">
+                  <Award className="w-4 h-4 mr-2" />
+                  AWS Certified
+                </Badge>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Production Metrics Dashboard */}
-        <Card className="mb-12 border-brand-primary/30 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5">
+        {/* Production Metrics Dashboard - Enhanced */}
+        <Card className="mb-16 border-brand-primary/30 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5 shadow-lg">
           <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Rocket className="h-6 w-6 text-brand-primary" />
-              <CardTitle className="text-2xl">Production Portfolio Metrics</CardTitle>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 rounded-xl bg-brand-primary/10">
+                <Rocket className="h-6 w-6 text-brand-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-3xl">
+                  Production Portfolio Metrics
+                </CardTitle>
+                <p className="text-text-2 text-sm mt-1">
+                  Live systems demonstrating production-ready skills
+                </p>
+              </div>
             </div>
-            <p className="text-text-2 text-sm">Live systems demonstrating production-ready skills</p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
-                <div className="text-3xl font-bold text-brand-primary mb-1">6</div>
-                <div className="text-sm text-text-2">Live Projects</div>
-                <Badge variant="outline" className="mt-2 text-xs">
-                  ● Public URLs
-                </Badge>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              {/* Live Projects - Enhanced Card */}
+              <div className="group relative text-center p-6 bg-surf-1 rounded-xl border border-border-line hover:border-brand-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="relative">
+                  <div className="text-4xl font-bold text-brand-primary mb-2 group-hover:scale-110 transition-transform">
+                    6
+                  </div>
+                  <div className="text-sm font-medium text-text-1 mb-2">
+                    Live Projects
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-pulse" />
+                    Public URLs
+                  </Badge>
+                </div>
               </div>
-              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
-                <div className="text-3xl font-bold text-green-600 mb-1">2</div>
-                <div className="text-sm text-text-2">Client Projects</div>
-                <Badge variant="outline" className="mt-2 text-xs">
-                  Production Use
-                </Badge>
+
+              {/* Client Projects */}
+              <div className="group relative text-center p-6 bg-surf-1 rounded-xl border border-border-line hover:border-green-500/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="relative">
+                  <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform">
+                    2
+                  </div>
+                  <div className="text-sm font-medium text-text-1 mb-2">
+                    Client Projects
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    Production Use
+                  </Badge>
+                </div>
               </div>
-              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
-                <div className="text-3xl font-bold text-accent-primary mb-1">9</div>
-                <div className="text-sm text-text-2">Total Projects</div>
-                <Badge variant="outline" className="mt-2 text-xs">
-                  Full Portfolio
-                </Badge>
-              </div>
-              <div className="text-center p-4 bg-surf-1 rounded-lg border border-border-line">
-                <div className="text-3xl font-bold text-emerald-600 mb-1">$0</div>
-                <div className="text-sm text-text-2">Deployment Cost</div>
-                <Badge variant="outline" className="mt-2 text-xs">
-                  /month
-                </Badge>
+
+              {/* Total Projects */}
+              <div className="group relative text-center p-6 bg-surf-1 rounded-xl border border-border-line hover:border-accent-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="relative">
+                  <div className="text-4xl font-bold text-accent-primary mb-2 group-hover:scale-110 transition-transform">
+                    9
+                  </div>
+                  <div className="text-sm font-medium text-text-1 mb-2">
+                    Total Projects
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    Full Portfolio
+                  </Badge>
+                </div>
               </div>
             </div>
 
@@ -81,27 +190,37 @@ export default function RecruiterPage() {
               <div className="flex items-start gap-3 p-3 bg-surf-1 rounded-lg border border-border-line">
                 <Briefcase className="h-5 w-5 text-brand-primary mt-0.5 shrink-0" />
                 <div className="flex-1">
-                  <p className="font-medium text-text-1 mb-1">Real Client Work</p>
+                  <p className="font-medium text-text-1 mb-1">
+                    Real Client Work
+                  </p>
                   <p className="text-sm text-text-2">
-                    <strong>North Glass LLC</strong> - Live commercial website with AI integration, serving real customers
+                    <strong>North Glass LLC</strong> - Live commercial website
+                    with AI integration, serving real customers
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-surf-1 rounded-lg border border-border-line">
                 <TrendingUp className="h-5 w-5 text-brand-primary mt-0.5 shrink-0" />
                 <div className="flex-1">
-                  <p className="font-medium text-text-1 mb-1">Production-Validated AI</p>
+                  <p className="font-medium text-text-1 mb-1">
+                    Production-Validated AI
+                  </p>
                   <p className="text-sm text-text-2">
-                    <strong>Elon AI Agent</strong> - Business plan generator achieving 3-4x speedup, validated by real client usage
+                    <strong>Elon AI Agent</strong> - Business plan generator
+                    achieving 3-4x speedup, validated by real client usage
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-surf-1 rounded-lg border border-border-line">
                 <Zap className="h-5 w-5 text-brand-primary mt-0.5 shrink-0" />
                 <div className="flex-1">
-                  <p className="font-medium text-text-1 mb-1">Mixed Infrastructure</p>
+                  <p className="font-medium text-text-1 mb-1">
+                    Mixed Infrastructure
+                  </p>
                   <p className="text-sm text-text-2">
-                    5 Vercel deployments (free tier) + 1 Azure Container Apps backend (free tier) - demonstrates multi-cloud expertise and cost optimization
+                    5 Vercel deployments (free tier) + 1 Azure Container Apps
+                    backend (free tier) - demonstrates multi-cloud expertise and
+                    cost optimization
                   </p>
                 </div>
               </div>
@@ -118,58 +237,98 @@ export default function RecruiterPage() {
           </CardContent>
         </Card>
 
-        {/* TL;DR Section */}
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle className="text-2xl">TL;DR</CardTitle>
-            <p className="text-text-2 text-sm">Quick overview of profile</p>
+        {/* TL;DR Section - Enhanced */}
+        <Card className="mb-16 border-2 border-accent-primary/20 shadow-lg">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-accent-primary/10">
+                <Zap className="h-6 w-6 text-accent-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-3xl">TL;DR</CardTitle>
+                <p className="text-text-2 text-sm mt-1">
+                  Quick overview for busy recruiters
+                </p>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-brand-primary mt-1 shrink-0" />
-                <div>
-                  <p className="font-medium text-text-1">Availability</p>
-                  <p className="text-text-2">{tldr.availability}</p>
-                </div>
+          <CardContent className="space-y-6">
+            {/* Key Info Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-brand-primary/5 to-transparent border border-border-line">
+                <Clock className="h-5 w-5 text-brand-primary mb-2" />
+                <p className="text-xs font-medium text-text-2 mb-1">
+                  Availability
+                </p>
+                <p className="text-lg font-bold text-text-1">
+                  {tldr.availability}
+                </p>
               </div>
 
-              <div className="flex items-start gap-3">
-                <FileText className="h-5 w-5 text-brand-primary mt-1 shrink-0" />
-                <div>
-                  <p className="font-medium text-text-1">Experience</p>
-                  <p className="text-text-2">{tldr.experience}</p>
-                </div>
+              <div className="p-4 rounded-xl bg-gradient-to-br from-accent-primary/5 to-transparent border border-border-line">
+                <FileText className="h-5 w-5 text-accent-primary mb-2" />
+                <p className="text-xs font-medium text-text-2 mb-1">
+                  Experience
+                </p>
+                <p className="text-lg font-bold text-text-1">
+                  {tldr.experience}
+                </p>
               </div>
 
-              <div className="flex items-start gap-3">
-                <DollarSign className="h-5 w-5 text-brand-primary mt-1 shrink-0" />
-                <div>
-                  <p className="font-medium text-text-1">Salary Expectations</p>
-                  <p className="text-text-2">{tldr.salary}</p>
-                </div>
+              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/5 to-transparent border border-border-line">
+                <DollarSign className="h-5 w-5 text-emerald-600 mb-2" />
+                <p className="text-xs font-medium text-text-2 mb-1">Salary</p>
+                <p className="text-lg font-bold text-text-1">{tldr.salary}</p>
               </div>
             </div>
 
-            <div>
-              <p className="font-medium text-text-1 mb-2">Specialization</p>
-              <p className="text-text-2">{tldr.specialization}</p>
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-border-line to-transparent" />
+
+            {/* Specialization Highlight */}
+            <div className="p-6 rounded-xl bg-gradient-to-br from-brand-primary/10 via-accent-primary/5 to-transparent border-2 border-brand-primary/20">
+              <p className="text-sm font-semibold text-brand-primary mb-2">
+                Core Specialization
+              </p>
+              <p className="text-xl font-bold text-text-1">
+                {tldr.specialization}
+              </p>
             </div>
 
+            {/* Skills with Better Grouping */}
             <div>
-              <p className="font-medium text-text-1 mb-2">Top Skills</p>
+              <div className="flex items-center gap-2 mb-3">
+                <Zap className="h-4 w-4 text-brand-primary" />
+                <p className="font-semibold text-text-1">
+                  Top Technical Skills
+                </p>
+              </div>
               <div className="flex flex-wrap gap-2">
-                {tldr.topSkills.map((skill) => (
-                  <Badge key={skill}>{skill}</Badge>
+                {tldr.topSkills.map((skill, index) => (
+                  <Badge
+                    key={skill}
+                    variant={index < 3 ? "default" : "outline"}
+                    className="text-sm px-3 py-1.5"
+                  >
+                    {skill}
+                  </Badge>
                 ))}
               </div>
             </div>
 
+            {/* Preferred Roles */}
             <div>
-              <p className="font-medium text-text-1 mb-2">Preferred Roles</p>
+              <div className="flex items-center gap-2 mb-3">
+                <Briefcase className="h-4 w-4 text-accent-primary" />
+                <p className="font-semibold text-text-1">Preferred Roles</p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {tldr.preferredRoles.map((role) => (
-                  <Badge key={role} variant="outline">
+                  <Badge
+                    key={role}
+                    variant="outline"
+                    className="text-sm px-3 py-1.5"
+                  >
                     {role}
                   </Badge>
                 ))}
@@ -178,75 +337,372 @@ export default function RecruiterPage() {
           </CardContent>
         </Card>
 
-        {/* Resources & Contact - Side by Side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Downloads Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Resources</CardTitle>
-              <p className="text-text-2 text-sm">Download resume and other materials</p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button asChild size="lg" className="w-full justify-start">
-                <a href="/resume.pdf" download>
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Full Resume (PDF)
-                </a>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="w-full justify-start">
-                <a href="/resume-short.pdf" download>
-                  <Download className="mr-2 h-5 w-5" />
-                  Download One-Page Resume (PDF)
-                </a>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="w-full justify-start">
-                <Link href="/projects">
-                  <FileText className="mr-2 h-5 w-5" />
-                  View Portfolio & Projects
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Professional Documents Section - Enhanced */}
+        <Card className="mb-16 shadow-lg">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-brand-primary/10">
+                <FileText className="h-6 w-6 text-brand-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-3xl">
+                  Professional Documents
+                </CardTitle>
+                <p className="text-text-2 text-sm mt-1">
+                  Resume, portfolio, and certifications - choose your preferred
+                  format
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-8">
+              {/* Resume Section */}
+              <div>
+                <h3 className="text-sm font-semibold text-text-1 mb-3 flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-brand-primary" />
+                  Resume
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Full Resume PDF - Primary */}
+                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-brand-primary" />
+                      <h3 className="font-medium text-text-1">Full Resume</h3>
+                    </div>
+                    <p className="text-xs text-text-2">PDF • ~450KB</p>
+                    <div className="space-y-1.5">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="https://drive.google.com/file/d/14kf-JMInLElPHm5kZK20cIKq1Od6CN8r/view?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show Resume
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                      >
+                        <a
+                          href="/assets/Omer_Akben_Resume_2025-10.pdf"
+                          download="Omer_Akben_Resume_Full.pdf"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download PDF
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
 
-          {/* Contact Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Get in Touch</CardTitle>
-              <p className="text-text-2 text-sm">
-                Interested in working together? Let&apos;s connect!
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button asChild size="lg" className="w-full justify-start">
+                  {/* Full Resume DOCX */}
+                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-brand-primary" />
+                      <h3 className="font-medium text-text-1">
+                        Editable Format
+                      </h3>
+                    </div>
+                    <p className="text-xs text-text-2">DOCX • ~85KB</p>
+                    <div className="space-y-1.5">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="https://docs.google.com/document/d/1ifrptY0myCerp5cQkX1sqEA9_jwI1gBftv2Mx4hygY4/edit?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show in Google Docs
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                      >
+                        <a
+                          href="/assets/Omer_Akben_Resume_2025-10.docx"
+                          download="Omer_Akben_Resume.docx"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download DOCX
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* 3-Page PDF */}
+                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-brand-primary" />
+                      <h3 className="font-medium text-text-1">3-Page Resume</h3>
+                    </div>
+                    <p className="text-xs text-text-2">PDF • ~400KB</p>
+                    <div className="space-y-1.5">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="https://drive.google.com/file/d/1uPiQseGg7Rk-wkCVf_16wUxjY4k1sOT8/view?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show Resume
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                      >
+                        <a
+                          href="/assets/Omer_Akben_Resume_2pg_2025-10.pdf"
+                          download="Omer_Akben_Resume_3pg.pdf"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download PDF
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* 1-Page PDF */}
+                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-brand-primary" />
+                      <h3 className="font-medium text-text-1">1-Page Resume</h3>
+                    </div>
+                    <p className="text-xs text-text-2">PDF • ~180KB</p>
+                    <div className="space-y-1.5">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="https://drive.google.com/file/d/1r0vqR3w11_CdIblnEpjFSMXan5n1fRgz/view?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show Resume
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                      >
+                        <a
+                          href="/assets/Omer_Akben_Resume_1pg_2025-10.pdf"
+                          download="Omer_Akben_Resume_1pg.pdf"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download PDF
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Certifications Section */}
+              <div>
+                <h3 className="text-sm font-semibold text-text-1 mb-3 flex items-center gap-2">
+                  <Award className="h-4 w-4 text-brand-primary" />
+                  Certifications
+                </h3>
+                <div className="space-y-2">
+                  <div className="p-3 border border-border-line rounded-lg bg-surf-1">
+                    <p className="text-sm font-medium text-text-1 mb-2">
+                      AWS Certified Solutions Architect (2024)
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="flex-1 bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="/assets/Omer-Akben-AWS-Certificate.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show Certificate
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        title="Download PDF"
+                      >
+                        <a
+                          href="/assets/Omer-Akben-AWS-Certificate.pdf"
+                          download="Omer_Akben_AWS_Certificate.pdf"
+                          aria-label="Download AWS Certificate PDF"
+                        >
+                          <Download className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="p-3 border border-border-line rounded-lg bg-surf-1">
+                    <p className="text-sm font-medium text-text-1 mb-2">
+                      Nashville Software School Graduate (2025)
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="flex-1 bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="/assets/Omer-Akben-NSS-Certificate.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show Certificate
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        title="Download PDF"
+                      >
+                        <a
+                          href="/assets/Omer-Akben-NSS-Certificate.pdf"
+                          download="Omer_Akben_NSS_Certificate.pdf"
+                          aria-label="Download Nashville Software School Certificate PDF"
+                        >
+                          <Download className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Portfolio Link */}
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full justify-start mt-4"
+            >
+              <Link href="/projects">
+                <FileText className="mr-2 h-5 w-5" />
+                View Portfolio & Projects
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Contact Section - Enhanced */}
+        <Card className="border-2 border-brand-primary/20 shadow-xl bg-gradient-to-br from-brand-primary/5 to-transparent">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-brand-primary/10">
+                <Mail className="h-6 w-6 text-brand-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-3xl">Let&apos;s Connect</CardTitle>
+                <p className="text-text-2 text-sm mt-1">
+                  Ready to discuss opportunities? I typically respond within 24
+                  hours
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Primary CTA - Email */}
+            <div className="p-1 rounded-xl bg-gradient-to-r from-brand-primary to-accent-primary">
+              <Button
+                asChild
+                size="lg"
+                className="w-full bg-surf-0 hover:bg-surf-1 text-text-1"
+              >
                 <a href={`mailto:${facts.personal.email}`}>
                   <Mail className="mr-2 h-5 w-5" />
-                  Email: {facts.personal.email}
+                  <span className="font-semibold">
+                    Email: {facts.personal.email}
+                  </span>
+                  <ExternalLink className="ml-2 h-4 w-4 opacity-70" />
                 </a>
               </Button>
+            </div>
+
+            {/* Secondary CTAs Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Button
                 asChild
                 variant="outline"
                 size="lg"
-                className="w-full justify-start"
+                className="w-full justify-start hover:border-brand-primary/50 hover:bg-brand-primary/5"
               >
                 <a
                   href="https://linkedin.com/in/omerakben"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Linkedin className="mr-2 h-5 w-5" />
-                  Connect on LinkedIn
+                  <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2]" />
+                  <span className="font-medium">LinkedIn</span>
+                  <ExternalLink className="ml-auto h-4 w-4 opacity-50" />
                 </a>
               </Button>
-              <Button asChild variant="outline" size="lg" className="w-full justify-start">
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="w-full justify-start hover:border-accent-primary/50 hover:bg-accent-primary/5"
+              >
                 <Link href="/contact">
-                  <Mail className="mr-2 h-5 w-5" />
-                  Contact Form
+                  <Mail className="mr-2 h-5 w-5 text-accent-primary" />
+                  <span className="font-medium">Contact Form</span>
                 </Link>
               </Button>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+
+            {/* Response Time Badge */}
+            <div className="flex items-center justify-center gap-2 pt-4 pb-2 text-sm text-text-2">
+              <Clock className="h-4 w-4 text-green-500" />
+              <span>
+                Usually responds within{" "}
+                <strong className="text-text-1">24 hours</strong>
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 import { facts } from "@/data/facts";
+import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import Link from "next/link";
 
 const footerLinks = {
   navigation: [
@@ -12,7 +12,7 @@ const footerLinks = {
   resources: [
     { href: "/credentials", label: "Credentials" },
     { href: "/contact", label: "Contact" },
-    { href: "/recruiter", label: "For Recruiters" },
+    { href: "/recruiter", label: "Recruiters" },
   ],
 } as const;
 
@@ -50,8 +50,9 @@ export function AppFooter() {
           <div>
             <h3 className="text-xl font-bold text-text-1 mb-4">Omer Akben</h3>
             <p className="text-text-2 mb-6">
-              Building intelligent systems and elegant solutions. Specializing in
-              AI/ML engineering, full-stack development, and agentic workflows.
+              Building intelligent systems and elegant solutions. Specializing
+              in AI/ML engineering, full-stack development, and agentic
+              workflows.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => {
@@ -74,7 +75,9 @@ export function AppFooter() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-semibold text-text-1 mb-4">Navigation</h4>
+            <h4 className="text-sm font-semibold text-text-1 mb-4">
+              Navigation
+            </h4>
             <ul className="space-y-2">
               {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
@@ -91,7 +94,9 @@ export function AppFooter() {
 
           {/* Connect Section */}
           <div>
-            <h4 className="text-sm font-semibold text-text-1 mb-4">Resources</h4>
+            <h4 className="text-sm font-semibold text-text-1 mb-4">
+              Resources
+            </h4>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>

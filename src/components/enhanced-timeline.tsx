@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, CheckCircle2, MapPin, Building2 } from "lucide-react";
 import { useState, memo } from "react";
+import { DURATION } from "@/lib/animations";
 
 export interface TimelineItem {
   year: string;
@@ -42,7 +43,7 @@ const TimelineCard = memo(function TimelineCard({ item, index }: { item: Timelin
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: DURATION.normal, delay: index * 0.1 }}
       className="relative flex items-start md:flex-row"
     >
       {/* Content */}
@@ -159,7 +160,7 @@ const TimelineCard = memo(function TimelineCard({ item, index }: { item: Timelin
           initial={{ scale: 0 }}
           whileInView={{ scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
+          transition={{ duration: DURATION.normal, delay: index * 0.1 }}
           className="relative flex flex-col items-center"
         >
           {/* Glowing dot container */}

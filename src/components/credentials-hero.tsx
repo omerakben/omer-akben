@@ -1,7 +1,8 @@
 "use client";
 
+import { DURATION } from "@/lib/animations";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
-import { GraduationCap, Award, Briefcase } from "lucide-react";
+import { Award, Briefcase, GraduationCap } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 interface StatCardProps {
@@ -40,7 +41,13 @@ function AnimatedCounter({ value }: { value: number }) {
   return <span ref={ref}>0</span>;
 }
 
-function StatCard({ icon: Icon, value, label, suffix = "", delay }: StatCardProps) {
+function StatCard({
+  icon: Icon,
+  value,
+  label,
+  suffix = "",
+  delay,
+}: StatCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -98,21 +105,33 @@ export function CredentialsHero() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: DURATION.normal, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-sm font-medium mb-6"
           >
             <GraduationCap className="w-4 h-4" />
             Professional Credentials
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-1 mb-6">
-            Education & Certifications
-          </h1>
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: DURATION.normal, delay: 0.3 }}
+              className="p-3 rounded-xl bg-brand-primary/10"
+            >
+              <GraduationCap className="w-10 h-10 md:w-12 md:h-12 text-brand-primary" />
+            </motion.div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-1">
+              Education & Certifications
+            </h1>
+          </div>
 
           <p className="text-lg md:text-xl text-text-2 max-w-3xl mx-auto">
-            Formal education, professional certifications, and continuous learning—
+            Formal education, professional certifications, and continuous
+            learning—
             <br className="hidden md:block" />
-            building expertise through rigorous training and real-world application.
+            building expertise through rigorous training and real-world
+            application.
           </p>
         </motion.div>
 
@@ -149,7 +168,9 @@ export function CredentialsHero() {
           className="text-center"
         >
           <div className="inline-flex flex-col items-center">
-            <p className="text-sm text-text-3 mb-4">Scroll to explore my credentials</p>
+            <p className="text-sm text-text-3 mb-4">
+              Scroll to explore my credentials
+            </p>
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{

@@ -9,19 +9,19 @@ export const facts = {
   personal: {
     fullName: "Omer Akben",
     nickname: "Ozzy",
-    title: "Full-Stack Developer / AI Engineer • QA - SDET",
+    title: "Full-Stack Developer • AI Engineer • SDET",
     location: "Raleigh, NC",
     timezone: "EST (UTC-5)",
-    email: "akbenof@gmail.com",
-    phone: "+1 (919) 555-0123",
+    email: "me@omerakben.com",
+    phone: "+1 (267) 512-4566",
   },
 
   professional: {
-    yearsOfExperience: 6,
-    currentRole: "AI Full Stack Software Engineer",
+    yearsOfExperience: 7,
+    currentRole: "Full-Stack Developer • AI Engineer",
     currentCompany: "Freelancer",
     specializations: [
-      "AI/ML Engineering",
+      "AI Engineering",
       "Full-Stack Development",
       "QA Test Automation",
       "Test-Driven Development",
@@ -31,14 +31,25 @@ export const facts = {
     workPreferences: {
       remote: true,
       location: "Raleigh, NC or Remote",
-      roles: ["Senior AI/ML Engineer", "Full-Stack Engineer", "QA Automation Architect", "SDET"],
+      roles: [
+        "AI Engineer",
+        "Full-Stack Developer",
+        "QA Automation Architect",
+        "SDET",
+      ],
     },
   },
 
   skills: {
     languages: ["TypeScript", "Python", "JavaScript", "SQL", "Go"],
     frameworks: ["React", "Next.js", "Node.js", "FastAPI", "TensorFlow"],
-    aiml: ["OpenAI API", "LangChain", "Vector Databases", "MLOps", "Agentic Workflows"],
+    aiml: [
+      "OpenAI API",
+      "LangChain",
+      "Vector Databases",
+      "MLOps",
+      "Agentic Workflows",
+    ],
     cloud: ["AWS", "Docker", "Kubernetes", "CI/CD", "Terraform"],
     tools: ["Git", "VS Code", "Figma", "Postman"],
   },
@@ -71,14 +82,9 @@ export const facts = {
       year: "2024",
     },
     {
-      name: "Machine Learning Specialization",
-      issuer: "Stanford University / Coursera",
-      year: "2023",
-    },
-    {
-      name: "Professional Scrum Master I",
-      issuer: "Scrum.org",
-      year: "2023",
+      name: "Nashville Software School Graduate",
+      issuer: "Nashville Software School",
+      year: "2025",
     },
   ],
 
@@ -129,7 +135,7 @@ export const facts = {
   ],
 
   about:
-    "Omer 'Ozzy' Akben is a Full-Stack Developer, AI Engineer, and QA - SDET with 6+ years of experience building agentic systems, robust QA automation, and full-stack applications. Specializing in test automation frameworks, AI-powered development tools, and enterprise-scale automation solutions. Based in Raleigh, NC and available for remote opportunities.",
+    "Omer 'Ozzy' Akben is a Full-Stack Developer, AI Engineer, and SDET with 7+ years of experience building agentic systems, robust QA automation, and full-stack applications. Specializing in test automation frameworks, AI-powered development tools, and enterprise-scale automation solutions. Based in Raleigh, NC and available for remote opportunities.",
 };
 
 // Helper functions for agents

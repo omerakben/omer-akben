@@ -3,10 +3,12 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Zap, Search } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { skillsData, getLevelColor } from "@/data/skills";
+import { SkillIcon } from "@/lib/skill-icons";
 
 const LEVEL_FILTER_OPTIONS = ["All", "Expert", "Advanced", "Proficient"] as const;
 type LevelFilterOption = (typeof LEVEL_FILTER_OPTIONS)[number];
@@ -84,16 +86,11 @@ export default function SkillsPage() {
     <div className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-6xl">
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-text-1 mb-6 flex items-center justify-center gap-4">
-            <Zap className="w-12 h-12 text-brand-primary" />
-            Skills & Expertise
-          </h1>
-          <p className="text-lg text-text-2 max-w-2xl mx-auto">
-            A comprehensive overview of my technical skills, tools, and
-            technologies I work with.
-          </p>
-        </div>
+        <PageHeader
+          icon={Zap}
+          title="Skills & Expertise"
+          description="A comprehensive overview of my technical skills, tools, and technologies I work with."
+        />
 
         {/* Search and Filter Section */}
         <Card className="mb-12 border-border-line">
@@ -122,7 +119,7 @@ export default function SkillsPage() {
                     <button
                       key={level}
                       onClick={() => setSelectedLevel(level)}
-                      className={getLevelButtonClasses(level, selectedLevel)}
+                      className={`${getLevelButtonClasses(level, selectedLevel)} focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none`}
                     >
                       {level}
                     </button>
@@ -140,7 +137,7 @@ export default function SkillsPage() {
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                      className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none ${
                         selectedCategory === category
                           ? "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg"
                           : "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50"
@@ -259,7 +256,7 @@ export default function SkillsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
               >
-                <Card className="border-border-line hover:border-brand-primary/30 transition-all">
+                <Card className="border-border-line hover:border-brand-primary/40 transition-all">
                   <CardHeader className="border-b border-border-line bg-surf-1/50">
                     <CardTitle className="text-2xl flex items-center gap-3">
                       <div className="w-2 h-8 bg-gradient-to-b from-brand-primary to-accent-primary rounded-full"></div>
@@ -277,20 +274,11 @@ export default function SkillsPage() {
                           className="group flex items-center justify-between p-4 bg-surf-0 border-2 border-border-line rounded-xl hover:border-brand-primary hover:shadow-lg hover:shadow-brand-primary/10 transition-all"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-primary/20 to-accent-primary/20 flex items-center justify-center group-hover:from-brand-primary/30 group-hover:to-accent-primary/30 transition-all">
-                              <svg
-                                className="w-3.5 h-3.5 text-brand-primary"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2.5}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 flex items-center justify-center group-hover:from-brand-primary/20 group-hover:to-accent-primary/20 transition-all border border-border-line group-hover:border-brand-primary/30">
+                              <SkillIcon
+                                skillName={skill.name}
+                                className="w-5 h-5 text-brand-primary group-hover:scale-110 transition-transform"
+                              />
                             </div>
                             <span className="text-text-1 font-medium">{skill.name}</span>
                           </div>

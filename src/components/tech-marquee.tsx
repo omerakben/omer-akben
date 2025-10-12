@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import * as SimpleIcons from "simple-icons";
 import type { Technology } from "@/data/technologies";
-import { CustomTechIcons } from "./custom-tech-icons";
+import { CustomTechIcons } from "@/components/custom-tech-icons";
+import { DURATION } from "@/lib/animations";
 
 interface TechMarqueeProps {
   technologies: Technology[];
@@ -120,7 +121,7 @@ export function TechMarqueeSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: DURATION.normal }}
           className="text-center mb-12"
         >
           <h2 className="text-2xl md:text-3xl font-bold text-text-1 mb-2">

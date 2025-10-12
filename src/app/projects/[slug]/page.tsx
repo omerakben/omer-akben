@@ -1,8 +1,10 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getProjectBySlug, projects } from "@/data/projects";
+import { roleColors, statusColors } from "@/lib/constants";
+import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -37,19 +39,6 @@ export default async function ProjectDetailPage({ params }: Props) {
   if (!project) {
     notFound();
   }
-
-  const statusColors = {
-    completed: "bg-green-500/10 text-green-400 border-green-500/20",
-    "in-progress": "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-    planned: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  };
-
-  const roleColors = {
-    "Full-Stack": "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    AI: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-    QA: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-    "QA/AI": "bg-pink-500/10 text-pink-400 border-pink-500/20",
-  };
 
   return (
     <main className="min-h-screen bg-surf-0 py-20">
@@ -98,26 +87,28 @@ export default async function ProjectDetailPage({ params }: Props) {
           {/* Action buttons */}
           <div className="flex flex-wrap gap-4">
             {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-surf-0 rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
-                <ExternalLink className="w-4 h-4" />
-                View Live Demo
-              </a>
+              <Button asChild size="lg">
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View Live Demo
+                </a>
+              </Button>
             )}
             {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-surf-1 text-text-1 border border-border-line rounded-lg font-medium hover:bg-surf-2 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-                View Source
-              </a>
+              <Button asChild variant="outline" size="lg">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Github className="w-4 h-4" />
+                  View Source
+                </a>
+              </Button>
             )}
           </div>
         </div>
