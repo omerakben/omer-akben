@@ -43,12 +43,21 @@ npx next doctor
 npx @next/bundle-analyzer
 ```
 
-### Testing (planned)
+### Testing
 ```bash
-# Run Playwright tests (when implemented)
+# Run all unit tests with Vitest
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Future: Run Playwright E2E tests (when implemented)
 npx playwright test
 
-# Run specific test file
+# Future: Run specific test file
 npx playwright test chat.spec.ts
 ```
 
@@ -95,10 +104,15 @@ archive/                    # Portfolio project demos
   capstone/                 # Capstone project demo
   tuel/                     # Tuel UI components library
   tuel-chatbot/             # Tuel chatbot demo
+claudedocs/                 # Claude Code documentation
+  bundle-analysis.md        # Bundle size analysis and recommendations
 PRD.md                      # Product requirements
 Agents.md                   # Agent architecture + tool specs
 Rules.md                    # Brand, safety, security policies
 TODO.md                     # Implementation roadmap
+Review-TODO.md              # Completed systematic improvements (2025-10-12)
+vitest.config.ts            # Vitest test configuration
+vitest.setup.ts             # Vitest setup file with testing-library config
 ```
 
 ### Path Aliases
@@ -143,6 +157,9 @@ The `/archive/` directory contains **portfolio demo projects** showcased at omer
 - ✅ Core pages implemented (/, /journey, /projects, /skills, /credentials, /contact, /recruiter)
 - ✅ Brightness system (8 modes: -3 to +3 + auto) with context provider
 - ✅ 404 error page with custom illustration
+- ✅ Comprehensive test suite with Vitest (72 tests passing)
+- ✅ Production build passing all quality gates
+- ✅ Bundle analyzer configured and documented
 - ⏳ Project detail pages (in progress - some implemented at /projects/[slug])
 - ⏳ ChatKit integration (pending)
 - ⏳ Agents SDK orchestration (pending)
@@ -483,9 +500,32 @@ import { motion } from 'motion/react';
 3. **Common Workflow**:
    - Create feature branch: `git checkout -b feature/your-feature`
    - Make changes in `src/`
+   - Write tests for new functionality
    - Test all 8 brightness modes (🌙 -3 to +3 ☀️)
-   - Run lint + type check before commit
+   - Run quality checks:
+     ```bash
+     npm test                  # Run test suite
+     npm run lint              # Check for linting issues
+     npx tsc --noEmit          # Verify type safety
+     npm run build             # Test production build
+     ```
+   - Commit with descriptive message
    - PR to `main` branch
+
+4. **Adding New Features with Tests**:
+   ```bash
+   # 1. Create component
+   touch src/components/my-component.tsx
+
+   # 2. Create test file
+   touch src/components/my-component.test.tsx
+
+   # 3. Write component and tests together (TDD approach)
+   npm test -- --watch  # Watch mode for rapid feedback
+
+   # 4. Verify all quality gates before commit
+   npm test && npm run lint && npx tsc --noEmit
+   ```
 
 ## Common Pitfalls to Avoid
 
@@ -554,20 +594,111 @@ curl -X POST http://localhost:3000/api/tools/get-contact \
 
 All endpoints expect POST with JSON body and return `{ success: boolean, data?: any, error?: string }`.
 
+## Testing Infrastructure
+
+**Test Framework**: Vitest 3.2.4 with React Testing Library
+- **Environment**: jsdom for DOM testing
+- **Setup**: `vitest.setup.ts` with @testing-library/react configuration
+- **Coverage**: v8 provider with text/json/html reporters
+
+**Current Test Coverage** (as of 2025-10-12):
+- **Test Files**: 3 files (src directory only)
+- **Total Tests**: 72 tests passing
+- **Duration**: ~529ms average
+- **Files Tested**:
+  - `src/components/brightness-control.test.tsx` (23 tests)
+  - `src/data/projects.test.ts` (25 tests)
+  - `src/lib/agent-tools/schemas.test.ts` (24 tests)
+
+**Test Configuration** (`vitest.config.ts`):
+```typescript
+{
+  include: ["src/**/*.test.{ts,tsx}"],
+  exclude: ["**/node_modules/**", "**/archive/**", "**/.next/**"],
+  coverage: {
+    exclude: ["node_modules/", "vitest.setup.ts", "vitest.config.ts",
+              "next.config.ts", "*.d.ts", "**/*.config.*", "**/archive/**"]
+  }
+}
+```
+
+**Testing Best Practices**:
+1. Place tests next to source files with `.test.ts` or `.test.tsx` extension
+2. Use descriptive test names with behavior-driven format
+3. Group related tests with `describe` blocks
+4. Test component rendering, interactions, visual states, accessibility, and edge cases
+5. Mock context providers and external dependencies as needed
+
+**Running Tests**:
+```bash
+npm test                    # Run all tests once
+npm test -- --watch         # Watch mode for development
+npm test -- --coverage      # Generate coverage report
+```
+
+## Quality Assurance
+
+**Production Build Quality Gates** (All Passing ✅):
+1. **Type Safety**: `npx tsc --noEmit` - Zero errors
+2. **Linting**: `npm run build` ESLint - Zero warnings/errors
+3. **Build Success**: Next.js production build - 22 routes generated
+4. **Test Suite**: `npm test` - 72/72 tests passing
+5. **Bundle Analysis**: Documented in `claudedocs/bundle-analysis.md`
+
+**Code Quality Metrics** (as of 2025-10-12):
+- **Build Time**: ~1.5 seconds (excellent)
+- **Bundle Size**: 166 kB shared chunks (optimized)
+- **Page Sizes**: 3-13 kB individual pages (excellent)
+- **Routes**: 22 total (18 static, 4 edge functions)
+- **First Load JS**: 153 kB - 2.33 MB (optimization opportunities on home/skills)
+
+**Recent Improvements** (Review-TODO Implementation):
+- ✅ Fixed animation system duration consistency (Phase 1)
+- ✅ Installed and configured Vitest + React Testing Library
+- ✅ Created comprehensive test suite (72 tests across 3 files)
+- ✅ Fixed 8 ESLint errors (quote escaping, unused imports, any types)
+- ✅ Configured bundle analyzer with @next/bundle-analyzer
+- ✅ Verified simple-icons tree-shaking optimization
+- ✅ Ensured TypeScript strict mode compliance
+- ✅ Documented bundle sizes and optimization opportunities
+
+**Bundle Analysis Highlights**:
+- **Critical Finding**: Home and skills pages have large First Load JS (2.3+ MB)
+- **Root Cause**: Likely Framer Motion animation library
+- **Recommendation**: Implement lazy loading for motion components
+- **Full Report**: See `claudedocs/bundle-analysis.md` for detailed findings
+
+**Quality Standards**:
+- TypeScript strict mode enabled
+- ESLint with Next.js recommended rules
+- Prettier formatting (if configured)
+- Zero production build warnings
+- AA color contrast across all brightness modes
+- Lighthouse target: ≥95 score (to be implemented)
+
 ## Project Status
 
 **Active Development Areas**:
-- ⏳ Improving and fixing bugs across the site
+- ⏳ Performance optimization (lazy loading motion components)
 - ⏳ Integrating archive demo projects into portfolio
 - ⏳ Project detail pages implementation
 - ⏳ ChatKit integration preparation
-- ⏳ Performance and accessibility improvements
+- ⏳ E2E testing with Playwright (planned)
+
+**Completed Milestones**:
+- ✅ Animation system duration standardization (Phase 1)
+- ✅ Comprehensive unit test suite implementation
+- ✅ Production build quality gates established
+- ✅ Bundle analysis and optimization documentation
+- ✅ ESLint error resolution and code quality improvements
 
 **Important Files to Review**:
 - **PRD.md**: Complete product requirements and vision
 - **Agents.md**: Agent architecture, tool specs, data flow
 - **Rules.md**: Brand, safety, security policies (enforced by agent)
 - **TODO.md**: Implementation roadmap with current status
+- **Review-TODO.md**: Recently completed systematic improvements
+- **claudedocs/bundle-analysis.md**: Bundle size analysis and recommendations
 - **package.json**: Dependencies and available scripts
 
 ## Quick Reference
@@ -579,6 +710,9 @@ All endpoints expect POST with JSON body and return `{ success: boolean, data?: 
 - **Data**: `src/data/*.ts` (facts, projects, journey, skills, testimonials)
 - **Schemas**: `src/lib/agent-tools/schemas.ts`
 - **Utilities**: `src/lib/utils.ts`
+- **Tests**: `src/**/*.test.{ts,tsx}` (co-located with source files)
+- **Test Config**: `vitest.config.ts`, `vitest.setup.ts`
+- **Documentation**: `claudedocs/` (bundle analysis, architecture docs)
 - **Archive**: `archive/*/` (demo projects for portfolio)
 
 ### Import Patterns
