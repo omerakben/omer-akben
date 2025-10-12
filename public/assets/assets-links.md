@@ -15,3 +15,18 @@ Omer-Akben-AWS-Certificate.pdf
 
 Omer-Akben-AWS-Certificate.pdf
 <https://drive.google.com/file/d/1uQ5dbvGXVVbjMfjJENlAHPLyS-1b201k/view?usp=sharing>
+
+Email:
+<mailto:me@omerakben.com>
+
+Phone:
+<tel:+2675124566>
+
+Portfolio:
+<https://omerakben.com>
+
+LinkedIn:
+<https://www.linkedin.com/in/omerakben/>
+
+GitHub:
+[omerakben](https://github.com/omerakben)

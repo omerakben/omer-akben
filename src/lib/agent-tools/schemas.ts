@@ -9,13 +9,15 @@ export const toolResponseSchema = z.object({
 
 // download_resume tool schema
 export const downloadResumeInputSchema = z.object({
-  format: z.enum(["full", "short"]).optional().default("full"),
+  format: z.enum(["full", "short", "two-page", "docx"]).optional().default("full"),
 });
 
 export const downloadResumeOutputSchema = z.object({
   url: z.string().url(),
   filename: z.string(),
   size: z.number(),
+  format: z.string().describe("File format (pdf or docx)"),
+  googleDriveUrl: z.string().url().optional().describe("Fallback Google Drive link"),
 });
 
 // list_projects tool schema
@@ -76,6 +78,22 @@ export const getContactOutputSchema = z.object({
   contact: contactInfoSchema,
 });
 
+// download_certificate tool schema
+export const downloadCertificateInputSchema = z.object({
+  type: z.enum(["aws", "nss"]).describe("Certificate type: aws (AWS Solutions Architect) or nss (Nashville Software School)"),
+});
+
+export const downloadCertificateOutputSchema = z.object({
+  url: z.string().url(),
+  filename: z.string(),
+  size: z.number(),
+  format: z.string().describe("File format (pdf)"),
+  googleDriveUrl: z.string().url().optional().describe("Fallback Google Drive link"),
+  certificateName: z.string().describe("Full certificate name"),
+  issuer: z.string().describe("Certificate issuing organization"),
+  year: z.string().describe("Year certificate was issued"),
+});
+
 // Type exports
 export type DownloadResumeInput = z.infer<typeof downloadResumeInputSchema>;
 export type DownloadResumeOutput = z.infer<typeof downloadResumeOutputSchema>;
@@ -85,3 +103,5 @@ export type OpenProjectInput = z.infer<typeof openProjectInputSchema>;
 export type OpenProjectOutput = z.infer<typeof openProjectOutputSchema>;
 export type GetContactInput = z.infer<typeof getContactInputSchema>;
 export type GetContactOutput = z.infer<typeof getContactOutputSchema>;
+export type DownloadCertificateInput = z.infer<typeof downloadCertificateInputSchema>;
+export type DownloadCertificateOutput = z.infer<typeof downloadCertificateOutputSchema>;

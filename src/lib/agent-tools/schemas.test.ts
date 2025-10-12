@@ -19,6 +19,12 @@ describe("Agent Tools Schemas", () => {
       expect(downloadResumeInputSchema.parse({ format: "short" })).toEqual({
         format: "short",
       });
+      expect(downloadResumeInputSchema.parse({ format: "two-page" })).toEqual({
+        format: "two-page",
+      });
+      expect(downloadResumeInputSchema.parse({ format: "docx" })).toEqual({
+        format: "docx",
+      });
     });
 
     it("should default to 'full' when format is not provided", () => {
@@ -38,6 +44,8 @@ describe("Agent Tools Schemas", () => {
         url: "https://example.com/resume.pdf",
         filename: "resume.pdf",
         size: 1024,
+        format: "pdf",
+        googleDriveUrl: "https://drive.google.com/file/d/abc123/view?usp=sharing",
       };
       expect(downloadResumeOutputSchema.parse(validOutput)).toEqual(
         validOutput
@@ -50,6 +58,7 @@ describe("Agent Tools Schemas", () => {
           url: "not-a-url",
           filename: "resume.pdf",
           size: 1024,
+          format: "pdf",
         })
       ).toThrow();
     });
@@ -60,6 +69,7 @@ describe("Agent Tools Schemas", () => {
           url: "https://example.com/resume.pdf",
           filename: "resume.pdf",
           size: "1024",
+          format: "pdf",
         })
       ).toThrow();
     });
