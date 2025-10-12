@@ -62,9 +62,9 @@ export default function RootLayout({
             <main className="min-h-screen">{children}</main>
             <AppFooter />
             <Toaster richColors position="top-center" />
+            <Analytics />
           </BrightnessProvider>
         </ErrorBoundary>
-        <Analytics />
       </body>
     </html>
   );
