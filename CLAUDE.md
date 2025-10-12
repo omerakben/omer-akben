@@ -71,7 +71,8 @@ src/
     page.tsx                # Home page
     globals.css             # Global styles + Tailwind + 8-mode brightness tokens
     api/tools/              # Agent tool API endpoints
-      download-resume/      # Resume download handler
+      download-resume/      # Resume download handler (4 formats)
+      download-certificate/  # Certificate download handler (AWS, NSS)
       list-projects/        # Project listing handler
       open-project/         # Project detail handler
       get-contact/          # Contact info handler
@@ -142,7 +143,8 @@ The `/archive/` directory contains **portfolio demo projects** showcased at omer
 - **Model**: gpt-4o-mini (default), gpt-5-mini for planning turns
 - **Token Flow**: Short-lived client secrets via `/api/chatkit/start` + `/api/chatkit/refresh` (planned)
 - **Tools** (server-side only, strict allowlist):
-  - `download_resume(format: "full"|"short")` → `/api/tools/download-resume`
+  - `download_resume(format: "full"|"short"|"two-page"|"docx")` → `/api/tools/download-resume`
+  - `download_certificate(type: "aws"|"nss")` → `/api/tools/download-certificate`
   - `list_projects(category?, featured?, limit?)` → `/api/tools/list-projects`
   - `open_project(slug)` → `/api/tools/open-project`
   - `get_contact()` → `/api/tools/get-contact`
@@ -151,10 +153,15 @@ The `/archive/` directory contains **portfolio demo projects** showcased at omer
 **Data Flow**: ChatKit (client) → API routes → Tool endpoints → Zod validation → Data sources → Structured JSON response
 
 **Current Implementation Status**:
-- ✅ Tool API endpoints implemented with Zod validation
+- ✅ Tool API endpoints implemented with Zod validation (5 tools)
+  - ✅ Resume downloads (4 formats: full, short, two-page, docx)
+  - ✅ Certificate downloads (AWS, NSS with metadata)
+  - ✅ Project listing and details
+  - ✅ Contact information
 - ✅ Data sources (facts.ts, projects.ts) populated with actual data
 - ✅ Schemas defined in `lib/agent-tools/schemas.ts`
 - ✅ Core pages implemented (/, /journey, /projects, /skills, /credentials, /contact, /recruiter)
+  - ✅ Recruiter page with profile photo and download grid
 - ✅ Brightness system (8 modes: -3 to +3 + auto) with context provider
 - ✅ 404 error page with custom illustration
 - ✅ Comprehensive test suite with Vitest (72 tests passing)
@@ -572,10 +579,15 @@ import { motion } from 'motion/react';
 Agent tool endpoints can be tested directly:
 
 ```bash
-# Test download-resume endpoint
+# Test download-resume endpoint (4 formats available)
 curl -X POST http://localhost:3000/api/tools/download-resume \
   -H "Content-Type: application/json" \
-  -d '{"format": "pdf"}'
+  -d '{"format": "short"}'  # Options: "full", "short", "two-page", "docx"
+
+# Test download-certificate endpoint
+curl -X POST http://localhost:3000/api/tools/download-certificate \
+  -H "Content-Type: application/json" \
+  -d '{"type": "aws"}'  # Options: "aws", "nss"
 
 # Test list-projects endpoint
 curl -X POST http://localhost:3000/api/tools/list-projects \
@@ -691,6 +703,11 @@ npm test -- --coverage      # Generate coverage report
 - ✅ Production build quality gates established
 - ✅ Bundle analysis and optimization documentation
 - ✅ ESLint error resolution and code quality improvements
+- ✅ Cloud assets implementation (resumes + certificates)
+  - ✅ 4 resume formats with Google Drive fallbacks
+  - ✅ Certificate downloads (AWS, NSS) with metadata
+  - ✅ Profile photo on recruiter page
+  - ✅ 2x2 download grid with responsive design
 
 **Important Files to Review**:
 - **PRD.md**: Complete product requirements and vision
@@ -698,6 +715,7 @@ npm test -- --coverage      # Generate coverage report
 - **Rules.md**: Brand, safety, security policies (enforced by agent)
 - **TODO.md**: Implementation roadmap with current status
 - **Review-TODO.md**: Recently completed systematic improvements
+- **CLOUD-ASSETS-TODO.md**: Cloud assets implementation (resumes + certificates) - COMPLETE
 - **claudedocs/bundle-analysis.md**: Bundle size analysis and recommendations
 - **package.json**: Dependencies and available scripts
 
