@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -38,9 +39,16 @@ export function AppHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-brand-primary to-accent-primary text-surf-0 font-bold text-lg hover:opacity-90 transition-opacity"
+            className="flex items-center justify-center w-10 h-10 hover:opacity-90 transition-opacity"
           >
-            OA
+            <Image
+              src="/OA-logo.svg"
+              alt="OA Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
