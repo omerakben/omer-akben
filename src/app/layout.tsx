@@ -2,6 +2,7 @@ import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { BrightnessProvider } from "@/lib/brightness-context";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
@@ -63,6 +64,7 @@ export default function RootLayout({
             <Toaster richColors position="top-center" />
           </BrightnessProvider>
         </ErrorBoundary>
+        <Analytics />
       </body>
     </html>
   );
