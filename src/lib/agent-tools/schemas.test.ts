@@ -1,13 +1,13 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
+  contactInfoSchema,
   downloadResumeInputSchema,
   downloadResumeOutputSchema,
+  getContactOutputSchema,
   listProjectsInputSchema,
   listProjectsOutputSchema,
   openProjectInputSchema,
-  getContactOutputSchema,
   projectSchema,
-  contactInfoSchema,
 } from "./schemas";
 
 describe("Agent Tools Schemas", () => {
@@ -19,9 +19,11 @@ describe("Agent Tools Schemas", () => {
       expect(downloadResumeInputSchema.parse({ format: "short" })).toEqual({
         format: "short",
       });
-      expect(downloadResumeInputSchema.parse({ format: "two-page" })).toEqual({
-        format: "two-page",
-      });
+      expect(downloadResumeInputSchema.parse({ format: "three-page" })).toEqual(
+        {
+          format: "three-page",
+        }
+      );
       expect(downloadResumeInputSchema.parse({ format: "docx" })).toEqual({
         format: "docx",
       });
@@ -45,7 +47,8 @@ describe("Agent Tools Schemas", () => {
         filename: "resume.pdf",
         size: 1024,
         format: "pdf",
-        googleDriveUrl: "https://drive.google.com/file/d/abc123/view?usp=sharing",
+        googleDriveUrl:
+          "https://drive.google.com/file/d/abc123/view?usp=sharing",
       };
       expect(downloadResumeOutputSchema.parse(validOutput)).toEqual(
         validOutput
@@ -77,7 +80,14 @@ describe("Agent Tools Schemas", () => {
 
   describe("listProjectsInputSchema", () => {
     it("should accept valid category values", () => {
-      const validCategories = ["all", "ai-ml", "web", "mobile", "tools", "other"];
+      const validCategories = [
+        "all",
+        "ai-ml",
+        "web",
+        "mobile",
+        "tools",
+        "other",
+      ];
       validCategories.forEach((category) => {
         expect(listProjectsInputSchema.parse({ category })).toEqual({
           category,

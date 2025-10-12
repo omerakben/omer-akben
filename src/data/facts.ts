@@ -9,7 +9,7 @@ export const facts = {
   personal: {
     fullName: "Omer Akben",
     nickname: "Ozzy",
-    title: "AI Full Stack Software Developer • QA - SDET",
+    title: "Full-Stack Developer • AI Engineer • SDET",
     location: "Raleigh, NC",
     timezone: "EST (UTC-5)",
     email: "me@omerakben.com",
@@ -18,10 +18,10 @@ export const facts = {
 
   professional: {
     yearsOfExperience: 7,
-    currentRole: "AI Full Stack Software Developer",
+    currentRole: "Full-Stack Developer • AI Engineer",
     currentCompany: "Freelancer",
     specializations: [
-      "AI/ML Development",
+      "AI Engineering",
       "Full-Stack Development",
       "QA Test Automation",
       "Test-Driven Development",
@@ -32,7 +32,7 @@ export const facts = {
       remote: true,
       location: "Raleigh, NC or Remote",
       roles: [
-        "Senior AI/ML Developer",
+        "AI Engineer",
         "Full-Stack Developer",
         "QA Automation Architect",
         "SDET",
@@ -135,7 +135,7 @@ export const facts = {
   ],
 
   about:
-    "Omer 'Ozzy' Akben is a Full-Stack Developer, AI Developer, and QA - SDET with 7+ years of experience building agentic systems, robust QA automation, and full-stack applications. Specializing in test automation frameworks, AI-powered development tools, and enterprise-scale automation solutions. Based in Raleigh, NC and available for remote opportunities.",
+    "Omer 'Ozzy' Akben is a Full-Stack Developer, AI Engineer, and SDET with 7+ years of experience building agentic systems, robust QA automation, and full-stack applications. Specializing in test automation frameworks, AI-powered development tools, and enterprise-scale automation solutions. Based in Raleigh, NC and available for remote opportunities.",
 };
 
 // Helper functions for agents

@@ -1,12 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, Compass, Briefcase, Zap, GraduationCap, MessageSquare, MessageCircle } from "lucide-react";
+import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { BrightnessControl } from "@/components/brightness-control";
 import { cn } from "@/lib/utils";
+import {
+  Briefcase,
+  Compass,
+  FileUser,
+  GraduationCap,
+  Menu,
+  MessageCircle,
+  MessageSquare,
+  Zap,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const routes = [
@@ -14,6 +23,7 @@ const routes = [
   { href: "/projects", label: "Projects", icon: Briefcase },
   { href: "/skills", label: "Skills", icon: Zap },
   { href: "/credentials", label: "Credentials", icon: GraduationCap },
+  { href: "/recruiter", label: "Recruiters", icon: FileUser },
   { href: "/contact", label: "Contact", icon: MessageSquare },
 ] as const;
 

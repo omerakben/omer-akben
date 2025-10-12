@@ -1,9 +1,10 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getProjectBySlug, projects } from "@/data/projects";
-import { statusColors, roleColors } from "@/lib/constants";
+import { roleColors, statusColors } from "@/lib/constants";
+import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -86,26 +87,28 @@ export default async function ProjectDetailPage({ params }: Props) {
           {/* Action buttons */}
           <div className="flex flex-wrap gap-4">
             {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-surf-0 rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
-                <ExternalLink className="w-4 h-4" />
-                View Live Demo
-              </a>
+              <Button asChild size="lg">
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View Live Demo
+                </a>
+              </Button>
             )}
             {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-surf-1 text-text-1 border border-border-line rounded-lg font-medium hover:bg-surf-2 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-                View Source
-              </a>
+              <Button asChild variant="outline" size="lg">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Github className="w-4 h-4" />
+                  View Source
+                </a>
+              </Button>
             )}
           </div>
         </div>

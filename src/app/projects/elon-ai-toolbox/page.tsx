@@ -1,13 +1,15 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
+import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Elon AI Toolbox | Omer Akben",
-  description: "A case study of the Elon AI Toolbox project, a curated catalog of AI tools for Elon University.",
+  description:
+    "A case study of the Elon AI Toolbox project, a curated catalog of AI tools for Elon University.",
 };
 
 export default function ElonAiToolboxPage() {
@@ -35,26 +37,28 @@ export default function ElonAiToolboxPage() {
           <p className="text-xl text-text-2 mb-6">{project.description}</p>
           <div className="flex flex-wrap gap-4">
             {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-surf-0 rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
-                <ExternalLink className="w-4 h-4" />
-                View Live Demo
-              </a>
+              <Button asChild size="lg">
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View Live Demo
+                </a>
+              </Button>
             )}
             {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-surf-1 text-text-1 border border-border-line rounded-lg font-medium hover:bg-surf-2 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-                View Source
-              </a>
+              <Button asChild variant="outline" size="lg">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Github className="w-4 h-4" />
+                  View Source
+                </a>
+              </Button>
             )}
           </div>
         </div>
@@ -62,14 +66,24 @@ export default function ElonAiToolboxPage() {
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed">
-            Elon University needed a centralized platform to help students, faculty, and staff discover and utilize the growing number of AI tools. The challenge was to create a user-friendly and comprehensive resource that would be easy to navigate and search, while also reflecting the university&apos;s brand and academic mission.
+            Elon University needed a centralized platform to help students,
+            faculty, and staff discover and utilize the growing number of AI
+            tools. The challenge was to create a user-friendly and comprehensive
+            resource that would be easy to navigate and search, while also
+            reflecting the university&apos;s brand and academic mission.
           </p>
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed">
-            I developed the Elon AI Toolbox, a web application that provides a curated and searchable catalog of over 130 AI tools. The application features a clean and intuitive interface, smart filtering and search functionality, and a responsive design that works seamlessly across all devices. The toolbox is built with Next.js, React, and TypeScript, and it leverages Fuse.js for fast and accurate search results.
+            I developed the Elon AI Toolbox, a web application that provides a
+            curated and searchable catalog of over 130 AI tools. The application
+            features a clean and intuitive interface, smart filtering and search
+            functionality, and a responsive design that works seamlessly across
+            all devices. The toolbox is built with Next.js, React, and
+            TypeScript, and it leverages Fuse.js for fast and accurate search
+            results.
           </p>
         </div>
 

@@ -1,14 +1,14 @@
-import Link from "next/link";
-import { ArrowRight, Quote, Mail, UserCheck, Briefcase } from "lucide-react";
 import { HeroSection } from "@/components/hero-section";
-import { TechMarqueeSection } from "@/components/tech-marquee";
 import { ProjectCard } from "@/components/project-card";
-import { Card, CardContent } from "@/components/ui/card";
+import { TechMarqueeSection } from "@/components/tech-marquee";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { getFeaturedProjects } from "@/data/projects";
 import { testimonials } from "@/data/testimonials";
 import { createMetadata } from "@/lib/metadata";
+import { ArrowRight, Briefcase, Mail, Quote, UserCheck } from "lucide-react";
+import Link from "next/link";
 
 export const metadata = createMetadata({});
 
@@ -22,7 +22,9 @@ export default function HomePage() {
     if (b.slug === "elon-ai-toolbox") return 1;
     return 0;
   });
-  const leadershipTestimonials = testimonials.filter((t) => t.type === "leadership");
+  const leadershipTestimonials = testimonials.filter(
+    (t) => t.type === "leadership"
+  );
   const teamTestimonials = testimonials.filter((t) => t.type === "team");
 
   return (
@@ -42,8 +44,8 @@ export default function HomePage() {
                 Featured Projects
               </h2>
               <p className="text-lg text-text-2 max-w-2xl">
-                A selection of recent work in AI/ML engineering, web development,
-                and innovative solutions.
+                A selection of recent work in AI/ML engineering, web
+                development, and innovative solutions.
               </p>
             </div>
             <Button asChild variant="outline" className="hidden md:flex">
@@ -59,30 +61,9 @@ export default function HomePage() {
           <div className="space-y-6">
             {/* First Row - 3 Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredProjects.slice(0, FEATURED_PROJECTS_FIRST_ROW_COUNT).map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  title={project.title}
-                  description={project.description}
-                  technologies={project.technologies}
-                  demoUrl={project.demoUrl}
-                  githubUrl={project.githubUrl}
-                  slug={project.slug}
-                  status={project.status}
-                  index={index}
-                />
-              ))}
-            </div>
-
-            {/* Second Row - 2 Wider Cards */}
-            {featuredProjects.length > FEATURED_PROJECTS_FIRST_ROW_COUNT && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {featuredProjects
-                  .slice(
-                    FEATURED_PROJECTS_FIRST_ROW_COUNT,
-                    FEATURED_PROJECTS_FIRST_ROW_COUNT + FEATURED_PROJECTS_SECOND_ROW_COUNT
-                  )
-                  .map((project, index) => (
+              {featuredProjects
+                .slice(0, FEATURED_PROJECTS_FIRST_ROW_COUNT)
+                .map((project, index) => (
                   <ProjectCard
                     key={project.id}
                     title={project.title}
@@ -92,9 +73,33 @@ export default function HomePage() {
                     githubUrl={project.githubUrl}
                     slug={project.slug}
                     status={project.status}
-                    index={FEATURED_PROJECTS_FIRST_ROW_COUNT + index}
+                    index={index}
                   />
                 ))}
+            </div>
+
+            {/* Second Row - 2 Wider Cards */}
+            {featuredProjects.length > FEATURED_PROJECTS_FIRST_ROW_COUNT && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {featuredProjects
+                  .slice(
+                    FEATURED_PROJECTS_FIRST_ROW_COUNT,
+                    FEATURED_PROJECTS_FIRST_ROW_COUNT +
+                      FEATURED_PROJECTS_SECOND_ROW_COUNT
+                  )
+                  .map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      title={project.title}
+                      description={project.description}
+                      technologies={project.technologies}
+                      demoUrl={project.demoUrl}
+                      githubUrl={project.githubUrl}
+                      slug={project.slug}
+                      status={project.status}
+                      index={FEATURED_PROJECTS_FIRST_ROW_COUNT + index}
+                    />
+                  ))}
               </div>
             )}
 
@@ -105,17 +110,20 @@ export default function HomePage() {
                   length: Math.ceil(
                     (featuredProjects.length - FEATURED_PROJECTS_GROUP_SIZE) /
                       FEATURED_PROJECTS_GROUP_SIZE
-                  )
+                  ),
                 }).map((_, groupIndex) => {
                   const startIndex =
-                    FEATURED_PROJECTS_GROUP_SIZE + groupIndex * FEATURED_PROJECTS_GROUP_SIZE;
+                    FEATURED_PROJECTS_GROUP_SIZE +
+                    groupIndex * FEATURED_PROJECTS_GROUP_SIZE;
                   const row1Projects = featuredProjects.slice(
                     startIndex,
                     startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT
                   );
                   const row2Projects = featuredProjects.slice(
                     startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT,
-                    startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT + FEATURED_PROJECTS_SECOND_ROW_COUNT
+                    startIndex +
+                      FEATURED_PROJECTS_FIRST_ROW_COUNT +
+                      FEATURED_PROJECTS_SECOND_ROW_COUNT
                   );
 
                   return (
@@ -190,15 +198,22 @@ export default function HomePage() {
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-6">
               <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-brand-primary/30" />
-              <h3 className="text-text-2 text-sm md:text-base px-4">Leadership & Management</h3>
+              <h3 className="text-text-2 text-sm md:text-base px-4">
+                Leadership & Management
+              </h3>
               <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-brand-primary/30" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {leadershipTestimonials.map((testimonial) => (
-                <Card key={testimonial.id} className="border-border-line hover:border-brand-primary/40 transition-all">
+                <Card
+                  key={testimonial.id}
+                  className="border-border-line hover:border-brand-primary/40 transition-all"
+                >
                   <CardContent className="pt-6 space-y-4">
                     <Quote className="w-8 h-8 text-brand-primary" />
-                    <p className="text-text-2 italic">&ldquo;{testimonial.quote}&rdquo;</p>
+                    <p className="text-text-2 italic">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
                     <div className="flex items-center gap-3 pt-4">
                       <Avatar className="w-10 h-10">
                         <AvatarFallback className="bg-gradient-to-br from-brand-primary to-accent-primary text-surf-0">
@@ -210,7 +225,9 @@ export default function HomePage() {
                       </Avatar>
                       <div>
                         <div className="text-text-1">{testimonial.author}</div>
-                        <div className="text-text-3 text-sm">{testimonial.role}</div>
+                        <div className="text-text-3 text-sm">
+                          {testimonial.role}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -223,15 +240,22 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 mb-6">
               <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-accent-primary/30" />
-              <h3 className="text-text-2 text-sm md:text-base px-4">Teammates & Colleagues</h3>
+              <h3 className="text-text-2 text-sm md:text-base px-4">
+                Teammates & Colleagues
+              </h3>
               <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-accent-primary/30" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {teamTestimonials.map((testimonial) => (
-                <Card key={testimonial.id} className="border-border-line hover:border-brand-primary/40 transition-all">
+                <Card
+                  key={testimonial.id}
+                  className="border-border-line hover:border-brand-primary/40 transition-all"
+                >
                   <CardContent className="pt-6 space-y-4">
                     <Quote className="w-8 h-8 text-brand-primary" />
-                    <p className="text-text-2 italic">&ldquo;{testimonial.quote}&rdquo;</p>
+                    <p className="text-text-2 italic">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
                     <div className="flex items-center gap-3 pt-4">
                       <Avatar className="w-10 h-10">
                         <AvatarFallback className="bg-gradient-to-br from-brand-primary to-accent-primary text-surf-0">
@@ -243,7 +267,9 @@ export default function HomePage() {
                       </Avatar>
                       <div>
                         <div className="text-text-1">{testimonial.author}</div>
-                        <div className="text-text-3 text-sm">{testimonial.role}</div>
+                        <div className="text-text-3 text-sm">
+                          {testimonial.role}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -274,7 +300,7 @@ export default function HomePage() {
             <Button asChild variant="outline" size="lg">
               <Link href="/recruiter">
                 <UserCheck className="mr-2 h-4 w-4" />
-                For Recruiters
+                Recruiters
               </Link>
             </Button>
           </div>
