@@ -13,8 +13,8 @@ import { Variants } from "framer-motion";
 export const DURATION = {
   /** Quick micro-interactions (0.2s) */
   fast: 0.2,
-  /** Standard UI animations (0.4s) */
-  normal: 0.4,
+  /** Standard UI animations (0.3s) - optimized for responsive feel */
+  normal: 0.3,
   /** Slower, more dramatic animations (0.6s) */
   slow: 0.6,
   /** Very slow, emphasis animations (0.8s) */

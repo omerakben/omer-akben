@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, ExternalLink, Github, CheckCircle2, Zap, Shield, Database, Layers, Users, Eye } from "lucide-react";
 import { getProjectBySlug } from "@/data/projects";
 import { notFound } from "next/navigation";
@@ -82,7 +81,7 @@ export default function DeadlineCaseStudyPage() {
             Software developers manage hundreds of critical artifacts across multiple projects: environment variables, API keys, database URLs, AI prompts, documentation links, and configuration snippets. These artifacts are scattered across .env files, Notion docs, Slack threads, and developer notebooks, making them difficult to find, share, and keep secure.
           </p>
           <p className="text-text-2 leading-relaxed">
-            Traditional solutions like password managers aren't designed for development workflows, and cloud secret managers are often overkill for individual developers or small teams. The challenge was to create a <strong className="text-text-1">centralized command center</strong> that could organize these polymorphic artifacts while providing instant demo access for recruiters and technical evaluators.
+            Traditional solutions like password managers aren&apos;t designed for development workflows, and cloud secret managers are often overkill for individual developers or small teams. The challenge was to create a <strong className="text-text-1">centralized command center</strong> that could organize these polymorphic artifacts while providing instant demo access for recruiters and technical evaluators.
           </p>
         </div>
 
@@ -128,7 +127,7 @@ export default function DeadlineCaseStudyPage() {
               <div>
                 <h3 className="text-lg font-bold text-text-1 mb-2">Zero-Signup Demo Mode</h3>
                 <p className="text-text-2">
-                  Instant access for recruiters via prominent "Launch Demo" button. Session-based authentication with pre-populated sample workspaces demonstrating real-world DevOps workflows. Demo data resets daily for consistent evaluation experience.
+                  Instant access for recruiters via prominent &ldquo;Launch Demo&rdquo; button. Session-based authentication with pre-populated sample workspaces demonstrating real-world DevOps workflows. Demo data resets daily for consistent evaluation experience.
                 </p>
               </div>
             </div>
@@ -198,7 +197,7 @@ export default function DeadlineCaseStudyPage() {
             <div>
               <h3 className="text-lg font-bold text-text-1 mb-2">Backend Architecture</h3>
               <p className="text-text-2 mb-2">
-                Django 5 REST API deployed on Railway with PostgreSQL database. Implements Django REST Framework for API endpoints, Firebase Admin SDK for authentication verification, and polymorphic artifact models using Django's ContentType framework. Alembic migrations manage schema evolution.
+                Django 5 REST API deployed on Railway with PostgreSQL database. Implements Django REST Framework for API endpoints, Firebase Admin SDK for authentication verification, and polymorphic artifact models using Django&apos;s ContentType framework. Alembic migrations manage schema evolution.
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
                 <span className="px-2 py-1 bg-surf-2 text-text-3 rounded text-sm border border-border-line">Django 5</span>
@@ -270,7 +269,7 @@ export default function DeadlineCaseStudyPage() {
               <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
               <div>
                 <strong className="text-text-1">Phase 4: Demo Mode & UI Polish</strong>
-                <p className="text-text-2 text-sm mt-1">Implemented zero-signup demo authentication with session tokens. Created Django management command for demo data seeding. Added prominent "Launch Demo" CTA with recruiter-focused UX. Seeded sample workspaces with realistic artifacts.</p>
+                <p className="text-text-2 text-sm mt-1">Implemented zero-signup demo authentication with session tokens. Created Django management command for demo data seeding. Added prominent &ldquo;Launch Demo&rdquo; CTA with recruiter-focused UX. Seeded sample workspaces with realistic artifacts.</p>
               </div>
             </div>
 

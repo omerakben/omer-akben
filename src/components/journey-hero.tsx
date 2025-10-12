@@ -3,6 +3,7 @@
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import { Briefcase, Code2, Building2, TrendingUp } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { DURATION } from "@/lib/animations";
 
 interface StatCardProps {
   icon: React.ElementType;
@@ -98,7 +99,7 @@ export function JourneyHero() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: DURATION.normal, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-sm font-medium mb-6"
           >
             <TrendingUp className="w-4 h-4" />

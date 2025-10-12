@@ -283,7 +283,7 @@ html {
   .card,
   .button,
   .nav-item {
-    transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
   }
 
   .motion-safe {

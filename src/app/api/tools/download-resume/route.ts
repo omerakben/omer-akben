@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { downloadResumeInputSchema } from "@/lib/agent-tools/schemas";
 
+export const runtime = "edge";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

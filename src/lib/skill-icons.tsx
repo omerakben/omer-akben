@@ -82,7 +82,8 @@ export function getSkillIcon(skillName: string): string | null {
   if (!iconSlug) return null;
 
   try {
-    // Get icon from simple-icons
+    // Get icon from simple-icons - dynamic lookup requires any cast
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const icon = (SimpleIcons as any)[`si${iconSlug.charAt(0).toUpperCase()}${iconSlug.slice(1).replace(/-/g, "")}`];
     if (!icon) return null;
 

@@ -28,6 +28,21 @@ npm run lint
 npx tsc --noEmit
 ```
 
+### Quality Assurance
+```bash
+# Type check without building
+npx tsc --noEmit
+
+# Run type check and linting together
+npm run lint && npx tsc --noEmit
+
+# Check for common Next.js issues
+npx next doctor
+
+# Analyze bundle size (after build)
+npx @next/bundle-analyzer
+```
+
 ### Testing (planned)
 ```bash
 # Run Playwright tests (when implemented)
@@ -98,6 +113,12 @@ The `/archive/` directory contains **portfolio demo projects** showcased at omer
 - **Note**: `omer-akben-design/` is the Figma reference implementation for design patterns
 - **Integration**: Projects are being integrated into the main portfolio site
 - **Status**: Active development - improvements and bug fixes ongoing
+
+**Important Archive Notes**:
+- **TypeScript Exclusion**: The `/archive/` directory is excluded from TypeScript compilation in `tsconfig.json`
+- **Separate Builds**: Each archive project has its own build system (Vite, Next.js, etc.)
+- **Development**: To work on archive projects, `cd` into the specific project directory and use its commands
+- **Import Restriction**: Never import from `/archive/` paths in the main `src/` codebase
 
 ### Agent Architecture
 
@@ -175,6 +196,17 @@ The `/archive/` directory contains **portfolio demo projects** showcased at omer
 - Server-side API routes for all agent tools
 - TypeScript strict mode enabled
 - Turbopack for builds
+
+## Next.js Configuration Highlights
+
+**Security & Performance** (`next.config.ts`):
+- **Security Headers**: X-Frame-Options: DENY, CSP for images, X-Content-Type-Options
+- **Icon Optimization**: Lucide icons tree-shaking via `modularizeImports`
+- **Image Optimization**: AVIF/WebP formats, SVG with CSP sandbox
+- **Caching**: 1-year cache for `/assets/*`, 1-day cache for images
+- **Production**: Console logs auto-removed (except errors/warnings)
+
+**Important**: When adding new icon imports, use named imports from `lucide-react` for automatic tree-shaking.
 
 ## Key Architectural Decisions
 
@@ -432,6 +464,29 @@ import { motion } from 'motion/react';
 - Helper functions: `getProjectBySlug()`, `getFeaturedProjects()`, `getProjectsByCategory()`
 - Categories: `"ai-ml" | "web" | "mobile" | "tools" | "other"`
 
+## Quick Start for New Developers
+
+1. **Initial Setup**:
+   ```bash
+   npm install
+   npm run dev
+   ```
+   Visit http://localhost:3000
+
+2. **Before Making Changes**:
+   ```bash
+   git status && git branch  # Verify you're on a feature branch
+   npm run lint              # Check for linting issues
+   npx tsc --noEmit          # Verify type safety
+   ```
+
+3. **Common Workflow**:
+   - Create feature branch: `git checkout -b feature/your-feature`
+   - Make changes in `src/`
+   - Test all 8 brightness modes (🌙 -3 to +3 ☀️)
+   - Run lint + type check before commit
+   - PR to `main` branch
+
 ## Common Pitfalls to Avoid
 
 ### 1. Archive Directory Usage
@@ -456,6 +511,48 @@ import { motion } from 'motion/react';
 - **Do**: Update `src/data/facts.ts` for personal info changes
 - **Don't**: Assume or make up information
 - **Source**: All data comes from actual resume
+
+## Common Issues & Troubleshooting
+
+### Build Errors
+- **"Module not found"**: Ensure you're using `@/` path alias for all `src/` imports
+- **TypeScript errors in archive**: Archive is excluded - don't import from it
+- **Turbopack warnings**: Some features differ from Webpack - see Next.js docs
+
+### Brightness Mode Issues
+- **Colors not changing**: Ensure using CSS custom properties, not hardcoded hex colors
+- **Testing**: Use browser DevTools to toggle `data-brightness` attribute on `<html>` element
+
+### Development Server
+- **Port already in use**: Kill existing process on port 3000: `lsof -ti:3000 | xargs kill`
+- **Slow hot reload**: Restart dev server, clear `.next` directory
+
+### Testing Agent Tool Endpoints
+
+Agent tool endpoints can be tested directly:
+
+```bash
+# Test download-resume endpoint
+curl -X POST http://localhost:3000/api/tools/download-resume \
+  -H "Content-Type: application/json" \
+  -d '{"format": "pdf"}'
+
+# Test list-projects endpoint
+curl -X POST http://localhost:3000/api/tools/list-projects \
+  -H "Content-Type: application/json" \
+  -d '{"category": "ai-ml", "limit": 5}'
+
+# Test open-project endpoint
+curl -X POST http://localhost:3000/api/tools/open-project \
+  -H "Content-Type: application/json" \
+  -d '{"slug": "elon-ai-agent"}'
+
+# Test get-contact endpoint
+curl -X POST http://localhost:3000/api/tools/get-contact \
+  -H "Content-Type: application/json"
+```
+
+All endpoints expect POST with JSON body and return `{ success: boolean, data?: any, error?: string }`.
 
 ## Project Status
 

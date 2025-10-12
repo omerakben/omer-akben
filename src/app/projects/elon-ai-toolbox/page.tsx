@@ -62,7 +62,7 @@ export default function ElonAiToolboxPage() {
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed">
-            Elon University needed a centralized platform to help students, faculty, and staff discover and utilize the growing number of AI tools. The challenge was to create a user-friendly and comprehensive resource that would be easy to navigate and search, while also reflecting the university's brand and academic mission.
+            Elon University needed a centralized platform to help students, faculty, and staff discover and utilize the growing number of AI tools. The challenge was to create a user-friendly and comprehensive resource that would be easy to navigate and search, while also reflecting the university&apos;s brand and academic mission.
           </p>
         </div>
 

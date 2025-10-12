@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 
 type BrightnessMode = '-3' | '-2' | '-1' | '0' | '+1' | '+2' | '+3' | 'auto';
 
@@ -76,8 +76,14 @@ export function BrightnessProvider({ children }: { children: React.ReactNode }) 
     localStorage.setItem('brightness-mode', mode);
   };
 
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({ brightness, setBrightness }),
+    [brightness]
+  );
+
   return (
-    <BrightnessContext.Provider value={{ brightness, setBrightness }}>
+    <BrightnessContext.Provider value={contextValue}>
       {children}
     </BrightnessContext.Provider>
   );

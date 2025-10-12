@@ -5,6 +5,7 @@ import { Award, CheckCircle2, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Credential } from "@/data/credentials";
+import { DURATION } from "@/lib/animations";
 
 interface CredentialsShowcaseProps {
   credentials: Credential[];
@@ -42,7 +43,7 @@ export function CredentialsShowcase({
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            transition={{ duration: DURATION.normal, delay: index * 0.1 }}
           >
             <Card className="group h-full border-border-line hover:border-brand-primary/50 transition-all hover:shadow-xl hover:shadow-brand-primary/10 overflow-hidden">
               {/* Visual Badge Header */}

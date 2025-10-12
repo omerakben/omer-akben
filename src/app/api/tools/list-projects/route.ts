@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { listProjectsInputSchema } from "@/lib/agent-tools/schemas";
 import { projects } from "@/data/projects";
 
+export const runtime = "edge";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { getProjectBySlug, projects } from "@/data/projects";
+import { statusColors, roleColors } from "@/lib/constants";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -37,19 +38,6 @@ export default async function ProjectDetailPage({ params }: Props) {
   if (!project) {
     notFound();
   }
-
-  const statusColors = {
-    completed: "bg-green-500/10 text-green-400 border-green-500/20",
-    "in-progress": "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-    planned: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  };
-
-  const roleColors = {
-    "Full-Stack": "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    AI: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-    QA: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-    "QA/AI": "bg-pink-500/10 text-pink-400 border-pink-500/20",
-  };
 
   return (
     <main className="min-h-screen bg-surf-0 py-20">
