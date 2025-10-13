@@ -39,14 +39,14 @@ export function AppHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center justify-center w-10 h-10 hover:opacity-90 transition-opacity"
+            className="flex items-center justify-center w-16 h-16 hover:opacity-90 transition-opacity"
           >
             <Image
               src="/OA-logo.svg"
               alt="OA Logo"
-              width={40}
-              height={40}
-              className="w-10 h-10"
+              width={64}
+              height={64}
+              className="w-16 h-16"
               priority
             />
           </Link>
