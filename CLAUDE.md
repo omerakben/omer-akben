@@ -2,6 +2,31 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## TL;DR - Quick Start
+
+**What**: Personal portfolio site with embedded AI assistant (ChatKit + Agents SDK)
+**Stack**: Next.js 15 + React 19 + TypeScript + Tailwind 4 + Turbopack
+**Key Feature**: 8-mode brightness system (-3 to +3 plus auto)
+
+**Essential Commands**:
+```bash
+npm run dev                           # Start development server
+npm test                              # Run test suite
+npm run lint && npx tsc --noEmit      # Quality checks
+npm run build                         # Production build
+```
+
+**Critical Rules**:
+- ✅ Use `@/` path alias for all src imports
+- ✅ Test all 8 brightness modes (-3 to +3)
+- ✅ Use CSS custom properties (not hex colors)
+- ❌ Never import from `/archive/` in main src
+- ❌ Never expose API keys in browser
+
+**Start Here**: Read [Quick Start for New Developers](#quick-start-for-new-developers) section below.
+
+---
+
 ## Project Overview
 
 This is **omerakben.com** — a personal portfolio and recruiter-magnet site showcasing Omer "Ozzy" Akben's work. The site features an embedded AI assistant ("Ozzy") built with OpenAI's ChatKit and Agents SDK, demonstrating modern agentic UX patterns.
@@ -116,21 +141,33 @@ vitest.setup.ts             # Vitest setup file with testing-library config
 ### Path Aliases
 - `@/*` → `./src/*` (configured in tsconfig.json)
 
-### Archive Directory
-The `/archive/` directory contains **portfolio demo projects** showcased at omerakben.com:
-- **Purpose**: Live demo projects that demonstrate technical capabilities
-- **Projects**: Includes Elon AI Chat, AI Toolbar, North Glass, Oteemo AI Roadmap, and more
-- **Tech**: Various stacks - Vite, Next.js, React, Wouter, Python, etc.
-- **Usage**: You can search, analyze, improve, and reference any code in the archive
-- **Note**: `omer-akben-design/` is the Figma reference implementation for design patterns
-- **Integration**: Projects are being integrated into the main portfolio site
-- **Status**: Active development - improvements and bug fixes ongoing
+## 🎨 Archive Directory - Demo Projects
 
-**Important Archive Notes**:
-- **TypeScript Exclusion**: The `/archive/` directory is excluded from TypeScript compilation in `tsconfig.json`
-- **Separate Builds**: Each archive project has its own build system (Vite, Next.js, etc.)
-- **Development**: To work on archive projects, `cd` into the specific project directory and use its commands
-- **Import Restriction**: Never import from `/archive/` paths in the main `src/` codebase
+The `/archive/` directory is a **key feature** containing live portfolio demos showcased at omerakben.com:
+
+**Projects** (9 total):
+- **omer-akben-design/**: Figma reference implementation (Vite + Wouter) - **use as design pattern reference**
+- **elon-ai-agent/**: Elon AI Chat demo (Next.js + OpenAI)
+- **elon-ai-toolbox/**: AI Toolbar demo (Next.js + Chrome Extension)
+- **north-glass/**: North Glass LLC website (React + Vite)
+- **oteemo-ai-roadmap/**: Oteemo AI Roadmap (React + D3.js)
+- **developer-cheat-sheets/**: Developer cheat sheets (HTML/CSS/JS)
+- **capstone/**: Capstone project (FastAPI + React)
+- **tuel/**: Tuel UI components library (React + TypeScript)
+- **tuel-chatbot/**: Tuel chatbot demo (React + AI)
+
+**Usage Patterns**:
+- ✅ **Search & analyze**: Use grep/search to find implementation patterns
+- ✅ **Reference designs**: Use `omer-akben-design/` for spacing, layout, interactions
+- ✅ **Adapt patterns**: Convert Wouter routing → Next.js Link/routing
+- ❌ **Never import**: Don't import from `/archive/` paths in main `src/` code
+- ❌ **Don't copy directly**: Adapt patterns to Next.js App Router structure
+
+**Development Notes**:
+- **TypeScript**: Archive excluded from main tsconfig.json compilation
+- **Separate builds**: Each project has own build system (see project README)
+- **Working on archive**: `cd archive/[project-name]` and use project-specific commands
+- **Integration status**: Active development - being integrated into main portfolio
 
 ### Agent Architecture
 
@@ -189,6 +226,36 @@ The `/archive/` directory contains **portfolio demo projects** showcased at omer
 4. **Security-First**: No API keys in browser; CSP headers; rate limiting on `/api/*` (planned)
 5. **Accessibility**: AA color contrast across all brightness levels; keyboard navigation; ARIA labels
 6. **Performance**: Code-split demos; lazy-load heavy sections; Lighthouse ≥95 target
+
+## ⚠️ Critical Don'ts
+
+**These mistakes will break the build or compromise security:**
+
+1. **🚫 Archive Imports**: Never `import` from `/archive/` paths in `src/` code
+   - ❌ `import { Component } from '../../../archive/project/component'`
+   - ✅ Reference patterns, then reimplement in `src/` using `@/` imports
+
+2. **🚫 Hardcoded Colors**: Never use hex colors - always use CSS custom properties
+   - ❌ `className="bg-[#00FFC6]"` or `style={{ color: '#00FFC6' }}`
+   - ✅ `className="bg-brand-primary text-brand-primary"`
+
+3. **🚫 API Keys in Browser**: Never expose OpenAI/API keys in client-side code
+   - ❌ Direct API calls from React components
+   - ✅ Server-side API routes (`/api/tools/*`) with Zod validation
+
+4. **🚫 Relative Imports in src**: Never use relative imports - always use `@/` alias
+   - ❌ `import { utils } from '../../lib/utils'`
+   - ✅ `import { utils } from '@/lib/utils'`
+
+5. **🚫 Skip Brightness Testing**: Never ship without testing all 8 modes
+   - ❌ Test only at mode 0 (default)
+   - ✅ Test modes: -3, -2, -1, 0, +1, +2, +3, auto (check contrast/borders)
+
+6. **🚫 Assume Data**: Never make up personal information
+   - ❌ Guess email, phone, or project details
+   - ✅ Use only data from `src/data/facts.ts` (source of truth)
+
+---
 
 ## Critical Rules & Conventions
 
@@ -712,9 +779,35 @@ npm test -- --coverage      # Generate coverage report
 - **Rules.md**: Brand, safety, security policies (enforced by agent)
 - **TODO.md**: Implementation roadmap with current status
 - **Review-TODO.md**: Recently completed systematic improvements
+- **Analyze.md**: Pre-launch QA checklist + site analysis (performance, SEO, accessibility)
 - **CLOUD-ASSETS-TODO.md**: Cloud assets implementation (resumes + certificates) - COMPLETE
 - **claudedocs/bundle-analysis.md**: Bundle size analysis and recommendations
 - **package.json**: Dependencies and available scripts
+
+## 📋 Pre-Launch Analysis
+
+**Analyze.md** contains comprehensive site analysis and pre-launch QA:
+
+**Key Sections**:
+1. **What's Working**: Current strengths (positioning, tech stack, projects, testimonials)
+2. **Areas for Improvement**: Pre-launch polish recommendations
+3. **QA Checklist**: 10-category validation framework
+   - Performance & Metrics (Lighthouse, bundle size, CLS)
+   - Cross-Browser & Device Testing
+   - Accessibility (keyboard nav, screen readers, contrast)
+   - SEO/Metadata/Social Sharing
+   - Links & Navigation
+   - Forms & Contact flows
+   - Security Basics (HTTPS, CSP headers)
+   - Analytics & Monitoring
+   - Deployment & Infrastructure
+   - Backup & Version Control
+
+**When to Use**:
+- Before deploying major updates
+- Pre-launch final review
+- Post-release validation
+- Performance optimization planning
 
 ## Quick Reference
 

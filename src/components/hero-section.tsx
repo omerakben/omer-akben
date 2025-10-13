@@ -105,7 +105,10 @@ export function HeroSection() {
                   size="lg"
                   className="sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all"
                 >
-                  <a href="/resume.pdf" download>
+                  <a
+                    href="/assets/Omer_Akben_Resume_2025-10.pdf"
+                    download="Omer_Akben_Resume_Full.pdf"
+                  >
                     <Download className="mr-2 h-4 w-4" />
                     Download Resume
                   </a>
