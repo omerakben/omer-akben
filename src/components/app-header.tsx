@@ -3,6 +3,7 @@
 import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LOGO_SIZE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -39,14 +40,17 @@ export function AppHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center justify-center w-16 h-16 hover:opacity-90 transition-opacity"
+            className={cn(
+              "flex items-center justify-center hover:opacity-90 transition-opacity",
+              LOGO_SIZE.className
+            )}
           >
             <Image
               src="/OA-logo.svg"
               alt="OA Logo"
-              width={64}
-              height={64}
-              className="w-16 h-16"
+              width={LOGO_SIZE.width}
+              height={LOGO_SIZE.height}
+              className={LOGO_SIZE.className}
               priority
             />
           </Link>

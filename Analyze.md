@@ -127,4 +127,6 @@ Since you come from a quality / automation background, here’s a checklist you 
     * Tag the release
     * Backup static assets
 
----# Next Steps
+---
+
+# Next Steps

@@ -2,10 +2,18 @@
 
 import { RobotIllustration } from "@/components/robot-illustration";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { DURATION, EASING, slideUp, staggerContainer } from "@/lib/animations";
+import { RESUME } from "@/lib/constants";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  ChevronDown,
   Download,
   Mail,
   UserCheck,
@@ -49,48 +57,64 @@ export function HeroSection() {
               className="text-base sm:text-lg text-text-2 mb-8"
               variants={slideUp}
             >
-              Building intelligent automation systems that eliminate repetitive
-              work for engineering teams — 7 years shipping production AI tools
-              and enterprise automation
+              I build GenAI/LLM apps and workflow automations with OpenAI
+              Responses API and LangGraph—shipped with SDET-grade reliability.
+              6+ years across QA and software engineering.
             </motion.p>
 
-            {/* Proof Chips */}
-            <motion.ul
-              aria-label="Highlights"
+            {/* Proof & Capability Chips */}
+            <motion.div
               className="flex flex-wrap gap-2 text-sm text-text-3 mb-8"
               variants={slideUp}
             >
+              {/* Proof Chips (metrics/outcomes) */}
               {[
-                { text: "15+ workflow automations", title: undefined },
+                {
+                  text: "15+ workflow automations",
+                  title: "Shipped 15+ production automation workflows",
+                },
                 {
                   text: "90% critical-path tests",
                   title:
                     "Achieved 90% test coverage on critical features and workflows",
                 },
                 {
-                  text: "RAG + pgvector",
+                  text: "~98% suite pass rates",
                   title:
-                    "Built AI retrieval systems using RAG (Retrieval-Augmented Generation) and vector databases",
+                    "Maintained ~98% test suite pass rates in enterprise environments",
                 },
-                { text: "Playwright + Selenium", title: undefined },
-                { text: "Nashville Software School", title: undefined },
               ].map((chip) => (
-                <li
+                <span
                   key={chip.text}
                   title={chip.title}
                   className="rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
                 >
                   {chip.text}
-                </li>
+                </span>
               ))}
-            </motion.ul>
+
+              {/* Capability Chips (skills/stack) - shown on desktop, hidden on mobile for space */}
+              <span
+                className="hidden md:inline-block rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
+                title="GenAI with OpenAI Responses API"
+              >
+                GenAI (OpenAI Responses API)
+              </span>
+              <span
+                className="hidden lg:inline-block rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
+                title="Agent Builder and LangGraph"
+              >
+                Agents / LangGraph
+              </span>
+            </motion.div>
 
             {/* CTA Buttons */}
             <motion.div className="flex flex-col gap-3" variants={slideUp}>
-              {/* Tier 1: Primary Gradient CTA */}
+              {/* Primary CTA */}
               <Button
                 asChild
                 size="lg"
+                aria-label="View projects by Omer Akben"
                 className="bg-gradient-to-r from-[#10B981] to-[#2563EB] hover:from-[#0EA472] hover:to-[#1D4ED8] text-surf-0 font-semibold group focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
               >
                 <Link href="/projects">
@@ -99,11 +123,13 @@ export function HeroSection() {
                 </Link>
               </Button>
 
-              {/* Tier 2: Secondary Solid CTA */}
+              {/* Secondary CTA */}
               <Button
                 asChild
                 size="lg"
-                className="bg-accent-primary hover:bg-accent-primary/90 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                variant="outline"
+                aria-label="Information for recruiters"
+                className="border-2 border-text-1/20 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
               >
                 <Link href="/recruiter">
                   <UserCheck className="mr-2 h-4 w-4" />
@@ -111,41 +137,65 @@ export function HeroSection() {
                 </Link>
               </Button>
 
-              {/* Tier 3 & 4: Ghost CTAs */}
+              {/* Utility CTA Group */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="lg"
-                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
-                >
-                  <a
-                    href="/assets/Omer_Akben_Resume_2025-10.pdf"
-                    download="Omer_Akben_Resume_Full.pdf"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Resume
-                  </a>
-                </Button>
+                {/* Download Resume Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="lg"
+                      aria-label="Download resume options: one-page or full"
+                      className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Resume
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <a
+                        href="/assets/Omer_Akben_Resume_1Page_2025-10.pdf"
+                        download="Omer_Akben_Resume_OnePage.pdf"
+                        className="cursor-pointer"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        One-page (PDF)
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a
+                        href={RESUME.path}
+                        download={RESUME.downloadName}
+                        className="cursor-pointer"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Full (3-page PDF)
+                      </a>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
+                {/* Contact Omer */}
                 <Button
                   asChild
                   variant="ghost"
                   size="lg"
-                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
-                  aria-label="Talk to Ozzy"
+                  aria-label="Contact Omer"
+                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
                 >
                   <Link href="/contact">
                     <Mail className="mr-2 h-4 w-4" />
-                    Talk to Ozzy
+                    Contact Omer
                   </Link>
                 </Button>
               </div>
 
-              {/* SDET Acknowledgment */}
-              <p className="mt-4 text-sm text-text-2">
-                Previously: Built enterprise test automation reducing QA time by
-                70%
+              {/* Micro-proof footer */}
+              <p className="mt-4 text-sm text-text-3">
+                Previously: assetized an enterprise test framework; mature
+                suites achieved ~98% pass rates.
               </p>
             </motion.div>
           </motion.div>
