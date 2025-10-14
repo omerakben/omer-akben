@@ -6,8 +6,6 @@ import { DURATION, EASING, slideUp, staggerContainer } from "@/lib/animations";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Briefcase,
-  Circle,
   Download,
   Mail,
   UserCheck,
@@ -17,11 +15,16 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Background gradient accent */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-primary/5 rounded-full blur-3xl" />
-      </div>
+      {/* Background gradient accent - Dual radial gradients for depth */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(40% 40% at 60% 45%, rgba(16, 185, 129, 0.08), transparent 60%), radial-gradient(28% 28% at 48% 62%, rgba(37, 99, 235, 0.07), transparent 60%)",
+          filter: "blur(40px)",
+        }}
+      />
 
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -33,77 +36,88 @@ export function HeroSection() {
           >
             {/* Main Heading */}
             <motion.h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 w-full"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
               variants={slideUp}
             >
-              <span className="flex items-center gap-3 mb-2 whitespace-nowrap">
-                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                  Full-Stack Developer
-                </span>
-                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
-              </span>
-              <span className="flex items-center gap-3 mb-2">
-                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                  AI Engineer
-                </span>
-                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
-              </span>
-              <span className="flex items-center gap-3">
-                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                  SDET
-                </span>
-                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
+              <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
+                AI Engineer & Full-Stack Developer
               </span>
             </motion.h1>
 
-            {/* Description */}
+            {/* Subheadline */}
             <motion.p
               className="text-base sm:text-lg text-text-2 mb-8"
               variants={slideUp}
             >
-              I build agentic systems, robust QA automation, and full-stack
-              apps. 6+ years shipping testable web applications and enterprise
-              automation frameworks.
+              Building intelligent automation systems that eliminate repetitive
+              work for engineering teams — 7 years shipping production AI tools
+              and enterprise automation
             </motion.p>
 
-            {/* CTA Buttons */}
-            <motion.div className="flex flex-col gap-4" variants={slideUp}>
-              {/* First Row - Get in Touch & Recruiters */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="group sm:flex-1">
-                  <Link href="/contact">
-                    <Mail className="mr-2 h-4 w-4" />
-                    Get in Touch
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" className="sm:flex-1">
-                  <Link href="/recruiter">
-                    <UserCheck className="mr-2 h-4 w-4" />
-                    Recruiters
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Second Row - View My Work & Download Resume */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="lg"
-                  className="group sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all"
+            {/* Proof Chips */}
+            <motion.ul
+              aria-label="Highlights"
+              className="flex flex-wrap gap-2 text-sm text-text-3 mb-8"
+              variants={slideUp}
+            >
+              {[
+                { text: "15+ workflow automations", title: undefined },
+                {
+                  text: "90% critical-path tests",
+                  title:
+                    "Achieved 90% test coverage on critical features and workflows",
+                },
+                {
+                  text: "RAG + pgvector",
+                  title:
+                    "Built AI retrieval systems using RAG (Retrieval-Augmented Generation) and vector databases",
+                },
+                { text: "Playwright + Selenium", title: undefined },
+                { text: "Nashville Software School", title: undefined },
+              ].map((chip) => (
+                <li
+                  key={chip.text}
+                  title={chip.title}
+                  className="rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
                 >
-                  <Link href="/projects">
-                    <Briefcase className="mr-2 h-4 w-4" />
-                    View My Work
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
+                  {chip.text}
+                </li>
+              ))}
+            </motion.ul>
+
+            {/* CTA Buttons */}
+            <motion.div className="flex flex-col gap-3" variants={slideUp}>
+              {/* Tier 1: Primary Gradient CTA */}
+              <Button
+                asChild
+                size="lg"
+                className="bg-gradient-to-r from-[#10B981] to-[#2563EB] hover:from-[#0EA472] hover:to-[#1D4ED8] text-surf-0 font-semibold group focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+              >
+                <Link href="/projects">
+                  View Projects
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+
+              {/* Tier 2: Secondary Solid CTA */}
+              <Button
+                asChild
+                size="lg"
+                className="bg-accent-primary hover:bg-accent-primary/90 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+              >
+                <Link href="/recruiter">
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  For Recruiters
+                </Link>
+              </Button>
+
+              {/* Tier 3 & 4: Ghost CTAs */}
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   asChild
                   variant="ghost"
                   size="lg"
-                  className="sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all"
+                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
                 >
                   <a
                     href="/assets/Omer_Akben_Resume_2025-10.pdf"
@@ -113,13 +127,32 @@ export function HeroSection() {
                     Download Resume
                   </a>
                 </Button>
+
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="lg"
+                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                  aria-label="Talk to Ozzy"
+                >
+                  <Link href="/contact">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Talk to Ozzy
+                  </Link>
+                </Button>
               </div>
+
+              {/* SDET Acknowledgment */}
+              <p className="mt-4 text-sm text-text-2">
+                Previously: Built enterprise test automation reducing QA time by
+                70%
+              </p>
             </motion.div>
           </motion.div>
 
           {/* Right Column - Robot Illustration */}
           <motion.div
-            className="hidden lg:block"
+            className="hidden lg:block relative"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
@@ -128,7 +161,28 @@ export function HeroSection() {
               ease: EASING.default,
             }}
           >
-            <RobotIllustration />
+            {/* Glow effect behind robot */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60"
+              style={{
+                background:
+                  "radial-gradient(50% 50% at 50% 50%, rgba(56, 189, 248, 0.18), transparent 60%)",
+              }}
+            />
+            {/* Robot with breathe animation */}
+            <motion.div
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="motion-reduce:animate-none"
+              title="Talk to my AI twin, Ozzy"
+            >
+              <RobotIllustration />
+            </motion.div>
           </motion.div>
         </div>
       </div>

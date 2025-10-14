@@ -5,25 +5,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## TL;DR - Quick Start
 
 **What**: Personal portfolio site with embedded AI assistant (ChatKit + Agents SDK)
-**Stack**: Next.js 15 + React 19 + TypeScript + Tailwind 4 + Turbopack
+**Stack**: Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + Turbopack
 **Key Feature**: 8-mode brightness system (-3 to +3 plus auto)
 
 **Essential Commands**:
 ```bash
-npm run dev                           # Start development server
-npm test                              # Run test suite
-npm run lint && npx tsc --noEmit      # Quality checks
-npm run build                         # Production build
+npm run dev                      # Start dev server (http://localhost:3000)
+npm test                         # Run Vitest test suite (72 tests)
+npm test -- --watch              # Watch mode for TDD
+npm run lint                     # ESLint check
+npx tsc --noEmit                 # TypeScript check
+npm run build                    # Production build (validates all quality gates)
+npm run analyze                  # Bundle size analysis
 ```
 
 **Critical Rules**:
-- ✅ Use `@/` path alias for all src imports
-- ✅ Test all 8 brightness modes (-3 to +3)
-- ✅ Use CSS custom properties (not hex colors)
-- ❌ Never import from `/archive/` in main src
-- ❌ Never expose API keys in browser
-
-**Start Here**: Read [Quick Start for New Developers](#quick-start-for-new-developers) section below.
+- ✅ Use `@/` path alias for all src imports (never relative imports)
+- ✅ Test all 8 brightness modes (-3 to +3 plus auto)
+- ✅ Use CSS custom properties (not hex colors like `bg-[#00FFC6]`)
+- ❌ Never import from `/archive/` paths in main `src/` code
+- ❌ Never expose API keys in browser (always server-side API routes)
 
 ---
 
@@ -298,78 +299,51 @@ The `/archive/` directory is a **key feature** containing live portfolio demos s
 
 ## Key Architectural Decisions
 
-### Turbopack Build System
-- **Why**: Faster builds and hot reload compared to Webpack
-- **Impact**: All commands use `--turbopack` flag (`npm run dev`, `npm run build`)
-- **Note**: Some features may differ from standard Next.js Webpack builds
-
-### 8-Mode Brightness System
+### 8-Mode Brightness System (Critical Understanding Required)
 - **Why**: More granular control than binary dark/light mode
-- **Implementation**: 7 manual stops (-3 to +3) plus auto mode = 8 total modes
-- **Range**: 🌙 -3 (darkest) → 0 (baseline) → +3 (brightest) ☀️
-- **Benefits**: Users can fine-tune contrast for comfort/accessibility
-- **Challenge**: Requires testing all components across all modes
+- **Implementation**: `data-brightness` attribute on `<html>` element (managed by BrightnessProvider)
+- **Range**: 🌙 -3 (darkest) → 0 (baseline) → +3 (brightest) ☀️ + `auto` mode
+- **CSS Tokens**: All colors defined as CSS custom properties in `globals.css` that adapt per mode
+- **Challenge**: Every component must work across all 8 modes - test thoroughly
 
-### Server-Side Agent Tools Only
-- **Why**: Security - never expose OpenAI API keys in browser
-- **Pattern**: All agent tools are Next.js API routes with Zod validation
-- **Flow**: ChatKit (client) → API route → Tool handler → Data source
-- **Future**: Short-lived client secrets for ChatKit authentication
+**Critical Rule**: Never use hardcoded colors (like `#00FFC6` or `bg-[#00FFC6]`). Always use design tokens:
+- `bg-surf-0/1/2` for surfaces
+- `text-text-1/2/3` for text hierarchy
+- `bg-brand-primary` for brand colors
+- `border-border-line` for borders
+
+### Server-Side Agent Tools Only (Security Pattern)
+- **Why**: Never expose OpenAI API keys in browser
+- **Pattern**: All agent tools are Next.js API routes (`/api/tools/*`) with Zod validation
+- **Flow**: ChatKit client → API route → Zod validate → Tool handler → Data source → JSON response
+- **Response Format**: `{ success: boolean, data?: any, error?: string }`
 
 ### Single Source of Truth for Data
-- **Personal Data**: `src/data/facts.ts` (agent grounding - uses actual resume data)
-- **Projects**: `src/data/projects.ts` (catalog + metadata)
-- **Content**: Journey, skills, testimonials in dedicated `data/` files
-- **Why**: Consistency across pages and agent responses
+- `src/data/facts.ts` → Personal info, skills, education (uses actual resume data)
+- `src/data/projects.ts` → Project catalog with 9 projects across 3 tiers
+- Helper functions exported from each file (e.g., `getContactInfo()`, `getFeaturedProjects()`)
+
+### Archive Directory Pattern (Reference, Never Import)
+- `/archive/*` contains 9 portfolio demo projects
+- **Use for**: Design patterns, reference implementations, code analysis
+- **Never**: Import from archive paths in main `src/` code
+- **Adapt, Don't Copy**: Convert patterns to Next.js App Router structure
 
 ## Common Development Patterns
 
 ### Creating New Agent Tools
-1. Define input/output schemas in `lib/agent-tools/schemas.ts` (Zod)
-   ```typescript
-   export const myToolInputSchema = z.object({
-     param: z.string(),
-   });
-   export const myToolOutputSchema = z.object({
-     result: z.string(),
-   });
-   ```
-
-2. Implement handler in `src/app/api/tools/[tool-name]/route.ts`
-   ```typescript
-   import { NextRequest, NextResponse } from "next/server";
-   import { myToolInputSchema } from "@/lib/agent-tools/schemas";
-
-   export async function POST(request: NextRequest) {
-     try {
-       const body = await request.json();
-       const input = myToolInputSchema.parse(body);
-
-       // Your logic here
-
-       return NextResponse.json({
-         success: true,
-         data: { /* result */ },
-       });
-     } catch (error) {
-       return NextResponse.json(
-         { success: false, error: error.message },
-         { status: 400 }
-       );
-     }
-   }
-   ```
-
-3. Register tool in Agents SDK agent definition (when implementing ChatKit)
-4. Add integration test in `tests/tools/[tool-name].spec.ts` (when implementing Playwright)
+1. Define Zod schemas in `lib/agent-tools/schemas.ts`
+2. Implement POST handler in `src/app/api/tools/[tool-name]/route.ts`
+3. Validate input with `schema.parse(body)`, return `{ success, data?, error? }`
+4. Test with curl: `curl -X POST http://localhost:3000/api/tools/[tool-name] -H "Content-Type: application/json" -d '{}'`
 5. Update `Agents.md` documentation
 
+**Pattern**: All agent tools are Next.js API routes with Zod validation, never expose tools directly to browser.
+
 ### Adding New Pages
-1. Create route in `src/app/[route]/page.tsx`
-2. Add metadata (title, description, OG image)
-3. Implement JSON-LD structured data
-4. Ensure AA color contrast at all brightness levels
-5. Add keyboard navigation support
+1. Create route in `src/app/[route]/page.tsx` with metadata export
+2. Test all 8 brightness modes for color contrast (AA compliance)
+3. Ensure keyboard navigation and ARIA labels work properly
 
 ### Theming Pattern
 ```tsx
@@ -523,6 +497,8 @@ import { Bot, Download, ExternalLink } from 'lucide-react';
 </Button>
 ```
 
+**Critical Design Rule**: 🚫 **Never use emojis** - always use Lucide React icons for consistency across all 8 brightness modes and professional design standards.
+
 **Animation**: Framer Motion (`motion`)
 ```tsx
 import { motion } from 'motion/react';
@@ -536,6 +512,53 @@ import { motion } from 'motion/react';
   {content}
 </motion.div>
 ```
+
+### Robot Illustration Component (`src/components/robot-illustration.tsx`)
+
+**Purpose**: Animated hero illustration demonstrating automation workflow through conversation-style speech balloons.
+
+**Key Features**:
+- **Speech Balloons**: 4 sequential messages with Lucide React icons (Code2, Brain, TestTube, Rocket)
+- **12-Second Animation Cycle**: Staggered timing (0.8s, 2.8s, 4.8s, 6.8s delays)
+- **Conversation Flow**: "Writing code" → "AI enhanced" → "Running tests" → "Deployed! 90% coverage"
+- **Accessibility**: Full `prefers-reduced-motion` support
+- **Positioning**: Speech balloons at `top-12` for proper spacing
+
+**Animation Pattern**:
+```tsx
+// Animation cycle state triggers restart via keyed components
+const [animationCycle, setAnimationCycle] = useState(0);
+
+useEffect(() => {
+  if (prefersReducedMotion) return;
+  const timer = setInterval(() => {
+    setAnimationCycle((prev) => prev + 1);
+  }, 12000);
+  return () => clearInterval(timer);
+}, [prefersReducedMotion]);
+
+// Keyed components restart animation on cycle change
+<motion.div key={`${animationCycle}-msg-${message.id}`}>
+```
+
+**Speech Balloon Design**:
+- Full `rounded-xl` borders (no cut-off corners)
+- Border: `border-brand-primary/50`
+- Background: `bg-surf-1` with `backdrop-blur-sm`
+- SVG tail with matching border stroke for seamless connection
+- Icon + text layout: `flex items-center gap-2`
+
+**Floating Code Elements**:
+- `</>` symbol: `bottom-8 right-10` (bottom-right position)
+- `{ }` symbol: `bottom-20 left-10` (bottom-left position)
+- `[ ]` symbol: `top-1/2 right-5` (right-side position)
+
+**Critical Rules**:
+- ✅ Always use Lucide React icons (never emojis)
+- ✅ GPU-accelerated animations (transform/opacity only)
+- ✅ Respect `prefers-reduced-motion` for accessibility
+- ✅ Use design tokens (never hardcoded colors)
+- ❌ No positioning that creates awkward visual overlaps
 
 ## Working with Data Files
 
@@ -554,49 +577,27 @@ import { motion } from 'motion/react';
 
 ## Quick Start for New Developers
 
-1. **Initial Setup**:
+**Initial Setup**:
+```bash
+npm install
+npm run dev  # Visit http://localhost:3000
+```
+
+**Development Workflow**:
+1. Always work on feature branches: `git checkout -b feature/your-feature`
+2. Make changes in `src/` using `@/` imports (never relative paths)
+3. Write co-located tests: `src/components/my-component.test.tsx`
+4. Use TDD with watch mode: `npm test -- --watch`
+5. Test all 8 brightness modes (-3 to +3 plus auto)
+6. Run quality gates before commit:
    ```bash
-   npm install
-   npm run dev
-   ```
-   Visit http://localhost:3000
-
-2. **Before Making Changes**:
-   ```bash
-   git status && git branch  # Verify you're on a feature branch
-   npm run lint              # Check for linting issues
-   npx tsc --noEmit          # Verify type safety
+   npm test && npm run lint && npx tsc --noEmit && npm run build
    ```
 
-3. **Common Workflow**:
-   - Create feature branch: `git checkout -b feature/your-feature`
-   - Make changes in `src/`
-   - Write tests for new functionality
-   - Test all 8 brightness modes (🌙 -3 to +3 ☀️)
-   - Run quality checks:
-     ```bash
-     npm test                  # Run test suite
-     npm run lint              # Check for linting issues
-     npx tsc --noEmit          # Verify type safety
-     npm run build             # Test production build
-     ```
-   - Commit with descriptive message
-   - PR to `main` branch
-
-4. **Adding New Features with Tests**:
-   ```bash
-   # 1. Create component
-   touch src/components/my-component.tsx
-
-   # 2. Create test file
-   touch src/components/my-component.test.tsx
-
-   # 3. Write component and tests together (TDD approach)
-   npm test -- --watch  # Watch mode for rapid feedback
-
-   # 4. Verify all quality gates before commit
-   npm test && npm run lint && npx tsc --noEmit
-   ```
+**First Steps**:
+- Review `PRD.md` for project vision and goals
+- Check `Agents.md` for agent architecture and tool specs
+- Read `src/data/facts.ts` (single source of truth for personal data)
 
 ## Common Pitfalls to Avoid
 
@@ -625,50 +626,27 @@ import { motion } from 'motion/react';
 
 ## Common Issues & Troubleshooting
 
-### Build Errors
-- **"Module not found"**: Ensure you're using `@/` path alias for all `src/` imports
-- **TypeScript errors in archive**: Archive is excluded - don't import from it
-- **Turbopack warnings**: Some features differ from Webpack - see Next.js docs
+**Build Errors**:
+- "Module not found" → Use `@/` path alias, never relative imports or archive imports
+- TypeScript errors in archive → Archive excluded from tsconfig, don't import from it
 
-### Brightness Mode Issues
-- **Colors not changing**: Ensure using CSS custom properties, not hardcoded hex colors
-- **Testing**: Use browser DevTools to toggle `data-brightness` attribute on `<html>` element
+**Brightness Testing**:
+- Toggle `data-brightness` attribute on `<html>` in DevTools to test all 8 modes
+- If colors don't change → You're using hardcoded hex instead of CSS custom properties
 
-### Development Server
-- **Port already in use**: Kill existing process on port 3000: `lsof -ti:3000 | xargs kill`
-- **Slow hot reload**: Restart dev server, clear `.next` directory
+**Development Server**:
+- Port 3000 in use → `lsof -ti:3000 | xargs kill`
+- Slow hot reload → Restart dev server, clear `.next/` directory
 
-### Testing Agent Tool Endpoints
-
-Agent tool endpoints can be tested directly:
-
+**Testing Agent Tools** (curl examples):
 ```bash
-# Test download-resume endpoint (4 formats available)
+# All endpoints: POST with JSON body → { success, data?, error? }
 curl -X POST http://localhost:3000/api/tools/download-resume \
-  -H "Content-Type: application/json" \
-  -d '{"format": "short"}'  # Options: "full", "short", "two-page", "docx"
+  -H "Content-Type: application/json" -d '{"format": "short"}'
 
-# Test download-certificate endpoint
-curl -X POST http://localhost:3000/api/tools/download-certificate \
-  -H "Content-Type: application/json" \
-  -d '{"type": "aws"}'  # Options: "aws", "nss"
-
-# Test list-projects endpoint
 curl -X POST http://localhost:3000/api/tools/list-projects \
-  -H "Content-Type: application/json" \
-  -d '{"category": "ai-ml", "limit": 5}'
-
-# Test open-project endpoint
-curl -X POST http://localhost:3000/api/tools/open-project \
-  -H "Content-Type: application/json" \
-  -d '{"slug": "elon-ai-agent"}'
-
-# Test get-contact endpoint
-curl -X POST http://localhost:3000/api/tools/get-contact \
-  -H "Content-Type: application/json"
+  -H "Content-Type: application/json" -d '{"category": "ai-ml", "limit": 5}'
 ```
-
-All endpoints expect POST with JSON body and return `{ success: boolean, data?: any, error?: string }`.
 
 ## Testing Infrastructure
 
@@ -715,126 +693,42 @@ npm test -- --coverage      # Generate coverage report
 ## Quality Assurance
 
 **Production Build Quality Gates** (All Passing ✅):
-1. **Type Safety**: `npx tsc --noEmit` - Zero errors
-2. **Linting**: `npm run build` ESLint - Zero warnings/errors
-3. **Build Success**: Next.js production build - 22 routes generated
-4. **Test Suite**: `npm test` - 72/72 tests passing
-5. **Bundle Analysis**: Documented in `claudedocs/bundle-analysis.md`
+```bash
+npm test                # 72/72 tests passing (Vitest)
+npm run lint            # Zero errors/warnings (ESLint)
+npx tsc --noEmit        # Zero type errors (strict mode)
+npm run build           # 22 routes, ~1.5s build time
+```
 
-**Code Quality Metrics** (as of 2025-10-12):
-- **Build Time**: ~1.5 seconds (excellent)
-- **Bundle Size**: 166 kB shared chunks (optimized)
-- **Page Sizes**: 3-13 kB individual pages (excellent)
-- **Routes**: 22 total (18 static, 4 edge functions)
-- **First Load JS**: 153 kB - 2.33 MB (optimization opportunities on home/skills)
+**Current Metrics**:
+- Build Time: ~1.5-1.7 seconds (excellent)
+- Bundle: 166 kB shared chunks, 3-13 kB per page
+- First Load JS: 153 kB - 2.33 MB (home/skills use Framer Motion)
+- Actual Transfer: ~30KB gzipped (excellent)
 
-**Recent Improvements** (Latest Updates - 2025-10-13):
-
-**Logo Enhancement**:
-- ✅ Applied brand gradient design (green #10B981 → blue #2563EB) with glow effect
-- ✅ Increased navigation logo size from 40px to 64px (60% increase)
-- ✅ Universal visibility across all 8 brightness modes (🌙 -3 to +3 ☀️)
-- ✅ Eye-catching shine effect using SVG filters
-
-**QA Testing & Production Readiness**:
-- ✅ Comprehensive systematic testing (documented in `qa-test-results-2025-10-13.md`)
-- ✅ All quality gates passed: lint, TypeScript, build, 72/72 tests
-- ✅ Fixed critical resume download 404 error in hero section
-- ✅ Verified all 4 CTAs functional (Get in Touch, Recruiters, View My Work, Download Resume)
-- ✅ Production build: 22 routes, ~1.7s build time, zero errors
-
-**Performance Analysis & Optimization**:
-- ✅ Investigated bundle size (~2.3MB First Load JS on home/skills pages)
-- ✅ Root cause: Framer Motion animation library (~100KB uncompressed)
-- ✅ Actual performance: ~30KB gzipped transfer (excellent)
-- ✅ LazyMotion evaluation: Incompatible with complex animation requirements
-- ✅ Decision: Accept current bundle, prioritize accessibility/mobile testing
-- ✅ Full analysis: `performance-solution-final.md` + `performance-optimization-2025-10-13.md`
-
-**Previous Improvements** (Review-TODO Implementation):
-- ✅ Fixed animation system duration consistency (Phase 1)
-- ✅ Installed and configured Vitest + React Testing Library
-- ✅ Created comprehensive test suite (72 tests across 3 files)
-- ✅ Fixed 8 ESLint errors (quote escaping, unused imports, any types)
-- ✅ Configured bundle analyzer with @next/bundle-analyzer
-- ✅ Verified simple-icons tree-shaking optimization
-- ✅ Ensured TypeScript strict mode compliance
-
-**Bundle Analysis Summary**:
-- **Actual Performance**: ~30KB gzipped transfer (excellent) vs 2.3MB metric (misleading)
-- **Build Time**: ~1.5-1.7 seconds (excellent)
-- **Shared Chunks**: 102-166 kB (optimized)
-- **Page Sizes**: 3-13 kB individual pages (excellent)
-- **Decision**: Accept current bundle size, focus on accessibility audit and mobile testing
-- **Full Report**: See `claudedocs/bundle-analysis.md` for detailed findings
-
-**Quality Standards**:
+**Key Quality Decisions**:
 - TypeScript strict mode enabled
 - ESLint with Next.js recommended rules
-- Prettier formatting (if configured)
-- Zero production build warnings
-- AA color contrast across all brightness modes
-- Lighthouse target: ≥95 score (to be implemented)
+- AA color contrast across all 8 brightness modes
+- Bundle size accepted (Framer Motion required for animations)
+- See `claudedocs/bundle-analysis.md` for detailed performance analysis
 
-## Project Status
+## Important Documentation Files
 
-**Active Development Areas**:
-- ⏳ Performance optimization (lazy loading motion components)
-- ⏳ Integrating archive demo projects into portfolio
-- ⏳ Project detail pages implementation
-- ⏳ ChatKit integration preparation
-- ⏳ E2E testing with Playwright (planned)
+**Product & Architecture**:
+- `PRD.md` - Product requirements and vision
+- `Agents.md` - Agent architecture, tools, data flow
+- `TODO.md` - Implementation roadmap
 
-**Completed Milestones**:
-- ✅ Animation system duration standardization (Phase 1)
-- ✅ Comprehensive unit test suite implementation
-- ✅ Production build quality gates established
-- ✅ Bundle analysis and optimization documentation
-- ✅ ESLint error resolution and code quality improvements
-- ✅ Cloud assets implementation (resumes + certificates)
-  - ✅ 4 resume formats with Google Drive fallbacks
-  - ✅ Certificate downloads (AWS, NSS) with metadata
-  - ✅ Profile photo on recruiter page
-  - ✅ 2x2 download grid with responsive design
+**Code References**:
+- `src/data/facts.ts` - Single source of truth for personal data
+- `src/data/projects.ts` - Project catalog (9 projects)
+- `src/lib/agent-tools/schemas.ts` - Zod schemas for all agent tools
 
-**Important Files to Review**:
-- **PRD.md**: Complete product requirements and vision
-- **Agents.md**: Agent architecture, tool specs, data flow
-- **Rules.md**: Brand, safety, security policies (enforced by agent)
-- **TODO.md**: Implementation roadmap with current status
-- **Review-TODO.md**: Recently completed systematic improvements
-- **Analyze.md**: Pre-launch QA checklist + site analysis (performance, SEO, accessibility)
-- **CLOUD-ASSETS-TODO.md**: Cloud assets implementation (resumes + certificates) - COMPLETE
-- **claudedocs/qa-test-results-2025-10-13.md**: Comprehensive QA testing results (2025-10-13)
-- **claudedocs/performance-solution-final.md**: Performance analysis final decision (2025-10-13)
-- **claudedocs/performance-optimization-2025-10-13.md**: Detailed performance investigation (2025-10-13)
-- **claudedocs/bundle-analysis.md**: Bundle size analysis and recommendations
-- **package.json**: Dependencies and available scripts
+**Quality & Analysis**:
+- `claudedocs/bundle-analysis.md` - Bundle size analysis
+- `Analyze.md` - Pre-launch QA checklist
 
-## 📋 Pre-Launch Analysis
-
-**Analyze.md** contains comprehensive site analysis and pre-launch QA:
-
-**Key Sections**:
-1. **What's Working**: Current strengths (positioning, tech stack, projects, testimonials)
-2. **Areas for Improvement**: Pre-launch polish recommendations
-3. **QA Checklist**: 10-category validation framework
-   - Performance & Metrics (Lighthouse, bundle size, CLS)
-   - Cross-Browser & Device Testing
-   - Accessibility (keyboard nav, screen readers, contrast)
-   - SEO/Metadata/Social Sharing
-   - Links & Navigation
-   - Forms & Contact flows
-   - Security Basics (HTTPS, CSP headers)
-   - Analytics & Monitoring
-   - Deployment & Infrastructure
-   - Backup & Version Control
-
-**When to Use**:
-- Before deploying major updates
-- Pre-launch final review
-- Post-release validation
-- Performance optimization planning
 
 ## Quick Reference
 
