@@ -1,6 +1,7 @@
 import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { BrightnessProvider } from "@/lib/brightness-context";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
@@ -61,6 +62,7 @@ export default function RootLayout({
             <AppHeader />
             <main className="min-h-screen">{children}</main>
             <AppFooter />
+            <ScrollToTop />
             <Toaster richColors position="top-center" />
             <Analytics />
           </BrightnessProvider>

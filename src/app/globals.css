@@ -29,55 +29,59 @@
   --radius: 0.625rem;
 
   /* Brand Blue scale */
-  --brand-50:  #EFF6FF;
-  --brand-100: #DBEAFE;
-  --brand-200: #BFDBFE;
-  --brand-300: #93C5FD;
-  --brand-400: #60A5FA;
-  --brand-500: #3B82F6;
-  --brand-600: #2563EB;
-  --brand-700: #1D4ED8;
-  --brand-800: #1E40AF;
-  --brand-900: #1E3A8A;
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-200: #bfdbfe;
+  --brand-300: #93c5fd;
+  --brand-400: #60a5fa;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --brand-800: #1e40af;
+  --brand-900: #1e3a8a;
 
   /* Accent Emerald scale */
-  --emerald-50:  #ECFDF5;
-  --emerald-100: #D1FAE5;
-  --emerald-200: #A7F3D0;
-  --emerald-300: #6EE7B7;
-  --emerald-400: #34D399;
-  --emerald-500: #10B981;
+  --emerald-50: #ecfdf5;
+  --emerald-100: #d1fae5;
+  --emerald-200: #a7f3d0;
+  --emerald-300: #6ee7b7;
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
   --emerald-600: #059669;
   --emerald-700: #047857;
 
   /* Cool blue-gray neutrals for text/borders */
-  --neutral-50:  #F6F9FF;
-  --neutral-100: #EDF2FA;
-  --neutral-200: #DCE6F6;
-  --neutral-300: #C6D3EA;
-  --neutral-400: #A8B6D3;
-  --neutral-500: #8897BB;
-  --neutral-600: #6A779F;
-  --neutral-700: #4E5A7F;
+  --neutral-50: #f6f9ff;
+  --neutral-100: #edf2fa;
+  --neutral-200: #dce6f6;
+  --neutral-300: #c6d3ea;
+  --neutral-400: #a8b6d3;
+  --neutral-500: #8897bb;
+  --neutral-600: #6a779f;
+  --neutral-700: #4e5a7f;
   --neutral-800: #344062;
-  --neutral-900: #1F273E;
+  --neutral-900: #1f273e;
 
   /* Focus ring derived from brand */
   --ring: color-mix(in oklab, var(--brand-500) 30%, transparent);
 
   /* Hero/card gradients */
-  --bg-hero: radial-gradient(1200px 600px at 30% -10%,
-                 color-mix(in oklab, var(--brand-primary) 20%, transparent) 0%,
-                 transparent 60%)
-             ,radial-gradient(800px 400px at 80% 0%,
-                 color-mix(in oklab, var(--accent-primary) 16%, transparent) 0%,
-                 transparent 70%);
+  --bg-hero: radial-gradient(
+      1200px 600px at 30% -10%,
+      color-mix(in oklab, var(--brand-primary) 20%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 400px at 80% 0%,
+      color-mix(in oklab, var(--accent-primary) 16%, transparent) 0%,
+      transparent 70%
+    );
 
   /* Subtle card overlay for glass look */
   --card-overlay: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--surf-1) 85%, transparent) 0%,
-      color-mix(in oklab, var(--surf-2) 85%, transparent) 100%
+    180deg,
+    color-mix(in oklab, var(--surf-1) 85%, transparent) 0%,
+    color-mix(in oklab, var(--surf-2) 85%, transparent) 100%
   );
 
   /* Shadows tuned for both modes */
@@ -86,133 +90,133 @@
   --shadow-lg: 0 18px 50px color-mix(in oklab, #000 28%, transparent);
 
   /* 8-Mode Brightness System - Mode 0 (baseline) */
-  --surf-0: #0B1328;
-  --surf-1: #121A35;
-  --surf-2: #17213F;
-  --border-line: #2B355C;
-  --text-1: #E4ECFF;
-  --text-2: #B5C1DF;
-  --text-3: #8998C0;
-  --brand-primary: #10B981;
-  --accent-primary: #2563EB;
+  --surf-0: #0b1328;
+  --surf-1: #121a35;
+  --surf-2: #17213f;
+  --border-line: #2b355c;
+  --text-1: #e4ecff;
+  --text-2: #b5c1df;
+  --text-3: #8998c0;
+  --brand-primary: #10b981;
+  --accent-primary: #2563eb;
 
   /* Technology brand colors */
-  --brand-python: #3776AB;
-  --brand-typescript: #3178C6;
-  --brand-react: #61DAFB;
+  --brand-python: #3776ab;
+  --brand-typescript: #3178c6;
+  --brand-react: #61dafb;
   --brand-node: #339933;
-  --brand-postgresql: #4169E1;
-  --brand-docker: #2496ED;
-  --brand-aws: #FF9900;
-  --brand-playwright: #2EAD33;
-  --brand-selenium: #43B02A;
-  --brand-git: #F05032;
-  --brand-postman: #FF6C37;
-  --brand-figma: #F24E1E;
-  --brand-javascript: #F7DF1E;
-  --brand-go: #00ADD8;
-  --brand-vue: #4FC08D;
-  --brand-tailwind: #06B6D4;
+  --brand-postgresql: #4169e1;
+  --brand-docker: #2496ed;
+  --brand-aws: #ff9900;
+  --brand-playwright: #2ead33;
+  --brand-selenium: #43b02a;
+  --brand-git: #f05032;
+  --brand-postman: #ff6c37;
+  --brand-figma: #f24e1e;
+  --brand-javascript: #f7df1e;
+  --brand-go: #00add8;
+  --brand-vue: #4fc08d;
+  --brand-tailwind: #06b6d4;
   --brand-fastapi: #009688;
-  --brand-mongodb: #47A248;
-  --brand-redis: #DC382D;
-  --brand-kubernetes: #326CE5;
-  --brand-tensorflow: #FF6F00;
-  --brand-jenkins: #D24939;
-  --brand-jest: #C21325;
-  --brand-cypress: #17202C;
-  --brand-vscode: #007ACC;
+  --brand-mongodb: #47a248;
+  --brand-redis: #dc382d;
+  --brand-kubernetes: #326ce5;
+  --brand-tensorflow: #ff6f00;
+  --brand-jenkins: #d24939;
+  --brand-jest: #c21325;
+  --brand-cypress: #17202c;
+  --brand-vscode: #007acc;
 }
 
 /* Brightness Mode -3 (Darkest) */
 [data-brightness="-3"] {
-  --surf-0: #0A1224;
-  --surf-1: #0E1830;
-  --surf-2: #13203E;
-  --border-line: #22325A;
-  --text-1: #ECF2FF;
-  --text-2: #C8D2EE;
-  --text-3: #9EABD4;
-  --brand-primary: #34D399;
-  --accent-primary: #5F8EFF;
+  --surf-0: #0a1224;
+  --surf-1: #0e1830;
+  --surf-2: #13203e;
+  --border-line: #22325a;
+  --text-1: #ecf2ff;
+  --text-2: #c8d2ee;
+  --text-3: #9eabd4;
+  --brand-primary: #34d399;
+  --accent-primary: #5f8eff;
 }
 
 /* Brightness Mode -2 */
 [data-brightness="-2"] {
-  --surf-0: #0C162C;
-  --surf-1: #111C36;
+  --surf-0: #0c162c;
+  --surf-1: #111c36;
   --surf-2: #172443;
-  --border-line: #2B3B67;
-  --text-1: #EAF0FF;
-  --text-2: #C2CCEA;
-  --text-3: #96A3CF;
-  --brand-primary: #10B981;
-  --accent-primary: #4C7FFF;
+  --border-line: #2b3b67;
+  --text-1: #eaf0ff;
+  --text-2: #c2ccea;
+  --text-3: #96a3cf;
+  --brand-primary: #10b981;
+  --accent-primary: #4c7fff;
 }
 
 /* Brightness Mode -1 */
 [data-brightness="-1"] {
-  --surf-0: #0F1A33;
-  --surf-1: #15213F;
-  --surf-2: #1C2A4D;
+  --surf-0: #0f1a33;
+  --surf-1: #15213f;
+  --surf-2: #1c2a4d;
   --border-line: #334574;
-  --text-1: #E7EEFF;
-  --text-2: #BCC7E6;
-  --text-3: #8FA0CB;
-  --brand-primary: #10B981;
-  --accent-primary: #386CF8;
+  --text-1: #e7eeff;
+  --text-2: #bcc7e6;
+  --text-3: #8fa0cb;
+  --brand-primary: #10b981;
+  --accent-primary: #386cf8;
 }
 
 /* Brightness Mode 0 (Baseline) */
 [data-brightness="0"] {
-  --surf-0: #0B1328;
-  --surf-1: #121A35;
-  --surf-2: #17213F;
-  --border-line: #2B355C;
-  --text-1: #E4ECFF;
-  --text-2: #B5C1DF;
-  --text-3: #8998C0;
-  --brand-primary: #10B981;
-  --accent-primary: #2563EB;
+  --surf-0: #0b1328;
+  --surf-1: #121a35;
+  --surf-2: #17213f;
+  --border-line: #2b355c;
+  --text-1: #e4ecff;
+  --text-2: #b5c1df;
+  --text-3: #8998c0;
+  --brand-primary: #10b981;
+  --accent-primary: #2563eb;
 }
 
 /* Brightness Mode +1 (Soft blue-tinted light) */
 [data-brightness="+1"] {
-  --surf-0: #EAF0FE;
-  --surf-1: #F3F7FF;
-  --surf-2: #FFFFFF;
-  --border-line: #D2DBF2;
-  --text-1: #0B1020;
+  --surf-0: #eaf0fe;
+  --surf-1: #f3f7ff;
+  --surf-2: #ffffff;
+  --border-line: #d2dbf2;
+  --text-1: #0b1020;
   --text-2: #293651;
-  --text-3: #4C5B80;
-  --brand-primary: #1D4ED8;
-  --accent-primary: #0FAE8E;
+  --text-3: #4c5b80;
+  --brand-primary: #1d4ed8;
+  --accent-primary: #0fae8e;
 }
 
 /* Brightness Mode +2 */
 [data-brightness="+2"] {
-  --surf-0: #F2F6FF;
-  --surf-1: #FFFFFF;
-  --surf-2: #FFFFFF;
-  --border-line: #D9E2F7;
-  --text-1: #0A1020;
+  --surf-0: #f2f6ff;
+  --surf-1: #ffffff;
+  --surf-2: #ffffff;
+  --border-line: #d9e2f7;
+  --text-1: #0a1020;
   --text-2: #243351;
-  --text-3: #4A5E87;
-  --brand-primary: #1E40AF;
-  --accent-primary: #0A9F82;
+  --text-3: #4a5e87;
+  --brand-primary: #1e40af;
+  --accent-primary: #0a9f82;
 }
 
 /* Brightness Mode +3 (Lightest) */
 [data-brightness="+3"] {
-  --surf-0: #F6F9FF;
-  --surf-1: #FFFFFF;
-  --surf-2: #FFFFFF;
-  --border-line: #E3EAFC;
-  --text-1: #0A1020;
-  --text-2: #2A395A;
+  --surf-0: #f6f9ff;
+  --surf-1: #ffffff;
+  --surf-2: #ffffff;
+  --border-line: #e3eafc;
+  --text-1: #0a1020;
+  --text-2: #2a395a;
   --text-3: #516089;
-  --brand-primary: #1E3A8A;
-  --accent-primary: #08977A;
+  --brand-primary: #1e3a8a;
+  --accent-primary: #08977a;
 }
 
 @theme inline {
@@ -266,7 +270,8 @@
 
 html {
   font-size: var(--font-size);
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 
 @layer base {
@@ -283,7 +288,8 @@ html {
   .card,
   .button,
   .nav-item {
-    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+    transition: background-color 200ms ease, color 200ms ease,
+      border-color 200ms ease;
   }
 
   .motion-safe {
@@ -293,7 +299,8 @@ html {
 
 /* Performance-optimized pulse animation for timeline dots */
 @keyframes pulse-ring {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.5;
   }

@@ -24,3 +24,23 @@ export const roleColors = {
  */
 export type ProjectStatus = keyof typeof statusColors;
 export type ProjectRole = keyof typeof roleColors;
+
+/**
+ * Logo size configuration
+ * Used for consistent logo sizing across the application
+ */
+export const LOGO_SIZE = {
+  width: 64,
+  height: 64,
+  className: "w-16 h-16", // Tailwind equivalent of 64px
+} as const;
+
+/**
+ * Resume configuration
+ * Makes it easy to update resume details without changing code
+ */
+export const RESUME = {
+  filename: "Omer_Akben_Resume_2025-10.pdf",
+  path: "/assets/Omer_Akben_Resume_2025-10.pdf",
+  downloadName: "Omer_Akben_Resume_Full.pdf",
+} as const;

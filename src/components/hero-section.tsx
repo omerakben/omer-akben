@@ -2,12 +2,18 @@
 
 import { RobotIllustration } from "@/components/robot-illustration";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { DURATION, EASING, slideUp, staggerContainer } from "@/lib/animations";
+import { RESUME } from "@/lib/constants";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Briefcase,
-  Circle,
+  ChevronDown,
   Download,
   Mail,
   UserCheck,
@@ -17,11 +23,16 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Background gradient accent */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-primary/5 rounded-full blur-3xl" />
-      </div>
+      {/* Background gradient accent - Dual radial gradients for depth */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(40% 40% at 60% 45%, rgba(16, 185, 129, 0.08), transparent 60%), radial-gradient(28% 28% at 48% 62%, rgba(37, 99, 235, 0.07), transparent 60%)",
+          filter: "blur(40px)",
+        }}
+      />
 
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -33,90 +44,165 @@ export function HeroSection() {
           >
             {/* Main Heading */}
             <motion.h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 w-full"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
               variants={slideUp}
             >
-              <span className="flex items-center gap-3 mb-2 whitespace-nowrap">
-                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                  Full-Stack Developer
-                </span>
-                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
-              </span>
-              <span className="flex items-center gap-3 mb-2">
-                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                  AI Engineer
-                </span>
-                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
-              </span>
-              <span className="flex items-center gap-3">
-                <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                  SDET
-                </span>
-                <Circle className="w-3 h-3 fill-[#10B981] stroke-[#10B981] flex-shrink-0" />
+              <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
+                AI Engineer & Full-Stack Developer
               </span>
             </motion.h1>
 
-            {/* Description */}
+            {/* Subheadline */}
             <motion.p
               className="text-base sm:text-lg text-text-2 mb-8"
               variants={slideUp}
             >
-              I build agentic systems, robust QA automation, and full-stack
-              apps. 6+ years shipping testable web applications and enterprise
-              automation frameworks.
+              I build GenAI/LLM apps and workflow automations with OpenAI
+              Responses API and LangGraph—shipped with SDET-grade reliability.
+              6+ years across QA and software engineering.
             </motion.p>
 
+            {/* Proof & Capability Chips */}
+            <motion.div
+              className="flex flex-wrap gap-2 text-sm text-text-3 mb-8"
+              variants={slideUp}
+            >
+              {/* Proof Chips (metrics/outcomes) */}
+              {[
+                {
+                  text: "15+ workflow automations",
+                  title: "Shipped 15+ production automation workflows",
+                },
+                {
+                  text: "90% critical-path tests",
+                  title:
+                    "Achieved 90% test coverage on critical features and workflows",
+                },
+                {
+                  text: "~98% suite pass rates",
+                  title:
+                    "Maintained ~98% test suite pass rates in enterprise environments",
+                },
+              ].map((chip) => (
+                <span
+                  key={chip.text}
+                  title={chip.title}
+                  className="rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
+                >
+                  {chip.text}
+                </span>
+              ))}
+
+              {/* Capability Chips (skills/stack) - shown on desktop, hidden on mobile for space */}
+              <span
+                className="hidden md:inline-block rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
+                title="GenAI with OpenAI Responses API"
+              >
+                GenAI (OpenAI Responses API)
+              </span>
+              <span
+                className="hidden lg:inline-block rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
+                title="Agent Builder and LangGraph"
+              >
+                Agents / LangGraph
+              </span>
+            </motion.div>
+
             {/* CTA Buttons */}
-            <motion.div className="flex flex-col gap-4" variants={slideUp}>
-              {/* First Row - Get in Touch & Recruiters */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="group sm:flex-1">
+            <motion.div className="flex flex-col gap-3" variants={slideUp}>
+              {/* Primary CTA */}
+              <Button
+                asChild
+                size="lg"
+                aria-label="View projects by Omer Akben"
+                className="bg-gradient-to-r from-[#10B981] to-[#2563EB] hover:from-[#0EA472] hover:to-[#1D4ED8] text-surf-0 font-semibold group focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+              >
+                <Link href="/projects">
+                  View Projects
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+
+              {/* Secondary CTA */}
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                aria-label="Information for recruiters"
+                className="border-2 border-text-1/20 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+              >
+                <Link href="/recruiter">
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  For Recruiters
+                </Link>
+              </Button>
+
+              {/* Utility CTA Group */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Download Resume Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="lg"
+                      aria-label="Download resume options: one-page or full"
+                      className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Resume
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <a
+                        href="/assets/Omer_Akben_Resume_1Page_2025-10.pdf"
+                        download="Omer_Akben_Resume_OnePage.pdf"
+                        className="cursor-pointer"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        One-page (PDF)
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a
+                        href={RESUME.path}
+                        download={RESUME.downloadName}
+                        className="cursor-pointer"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Full (3-page PDF)
+                      </a>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Contact Omer */}
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="lg"
+                  aria-label="Contact Omer"
+                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                >
                   <Link href="/contact">
                     <Mail className="mr-2 h-4 w-4" />
-                    Get in Touch
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" className="sm:flex-1">
-                  <Link href="/recruiter">
-                    <UserCheck className="mr-2 h-4 w-4" />
-                    Recruiters
+                    Contact Omer
                   </Link>
                 </Button>
               </div>
 
-              {/* Second Row - View My Work & Download Resume */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="lg"
-                  className="group sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all"
-                >
-                  <Link href="/projects">
-                    <Briefcase className="mr-2 h-4 w-4" />
-                    View My Work
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="lg"
-                  className="sm:flex-1 bg-transparent hover:bg-text-1 text-text-1 hover:text-surf-0 border-2 border-text-1/20 hover:border-text-1 transition-all"
-                >
-                  <a href="/resume.pdf" download>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Resume
-                  </a>
-                </Button>
-              </div>
+              {/* Micro-proof footer */}
+              <p className="mt-4 text-sm text-text-3">
+                Previously: assetized an enterprise test framework; mature
+                suites achieved ~98% pass rates.
+              </p>
             </motion.div>
           </motion.div>
 
           {/* Right Column - Robot Illustration */}
           <motion.div
-            className="hidden lg:block"
+            className="hidden lg:block relative"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
@@ -125,7 +211,28 @@ export function HeroSection() {
               ease: EASING.default,
             }}
           >
-            <RobotIllustration />
+            {/* Glow effect behind robot */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60"
+              style={{
+                background:
+                  "radial-gradient(50% 50% at 50% 50%, rgba(56, 189, 248, 0.18), transparent 60%)",
+              }}
+            />
+            {/* Robot with breathe animation */}
+            <motion.div
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="motion-reduce:animate-none"
+              title="Talk to my AI twin, Ozzy"
+            >
+              <RobotIllustration />
+            </motion.div>
           </motion.div>
         </div>
       </div>
