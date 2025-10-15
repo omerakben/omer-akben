@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DURATION, EASING, slideUp, staggerContainer } from "@/lib/animations";
-import { RESUME } from "@/lib/constants";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -153,25 +152,25 @@ export function HeroSection() {
                       <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuContent align="start" className="w-56">
                     <DropdownMenuItem asChild>
                       <a
-                        href="/assets/Omer_Akben_Resume_1Page_2025-10.pdf"
-                        download="Omer_Akben_Resume_OnePage.pdf"
+                        href="/assets/Omer_Akben_Resume_3pg_2025-10.pdf"
+                        download="Omer_Akben_Resume.pdf"
                         className="cursor-pointer"
                       >
                         <Download className="mr-2 h-4 w-4" />
-                        One-page (PDF)
+                        Resume (3-page PDF)
                       </a>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <a
-                        href={RESUME.path}
-                        download={RESUME.downloadName}
+                        href="/assets/Omer_Akben_Resume_2025-10.pdf"
+                        download="Omer_Akben_Extended_Resume.pdf"
                         className="cursor-pointer"
                       >
                         <Download className="mr-2 h-4 w-4" />
-                        Full (3-page PDF)
+                        Extended Resume (PDF)
                       </a>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

@@ -2,21 +2,16 @@
 
 ## Resumes
 
-### 1-Page Resume
-File: Omer_Akben_Resume_1pg_2025-10.pdf
-Google Drive: <https://drive.google.com/file/d/1r0vqR3w11_CdIblnEpjFSMXan5n1fRgz/view?usp=sharing>
-
-### 3-Page Resume (Updated from 2-page)
-File: Omer_Akben_Resume_2pg_2025-10.pdf
+### Resume (Standard 3-Page)
+File: Omer_Akben_Resume_3pg_2025-10.pdf
 Google Drive: <https://drive.google.com/file/d/1uPiQseGg7Rk-wkCVf_16wUxjY4k1sOT8/view?usp=sharing>
+Format: PDF only (for visitors)
 
-### Full Resume (PDF)
+### Extended Resume (Full Details)
 File: Omer_Akben_Resume_2025-10.pdf
 Google Drive: <https://drive.google.com/file/d/14kf-JMInLElPHm5kZK20cIKq1Od6CN8r/view?usp=sharing>
-
-### Full Resume (DOCX)
-File: Omer_Akben_Resume_2025-10.docx
-Google Drive: <https://docs.google.com/document/d/1ifrptY0myCerp5cQkX1sqEA9_jwI1gBftv2Mx4hygY4/edit?usp=sharing>
+Format: PDF only (for visitors)
+Markdown Reference: Omer_Akben_Resume_2025_Extended.md (for AI agent reference)
 
 ## Certificates
 

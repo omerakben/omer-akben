@@ -3,9 +3,30 @@
  *
  * This file contains facts and information about Omer Akben
  * that AI agents can use to answer questions accurately.
+ * 
+ * For detailed resume information, see:
+ * - /public/assets/Omer_Akben_Resume_2025_Extended.md (markdown reference for AI)
+ * - Resume PDFs available for download: standard (3-page) and extended (full)
  */
 
 export const facts = {
+  resumes: {
+    available: [
+      {
+        name: "Resume",
+        description: "Standard 3-page resume",
+        format: "PDF",
+        filename: "Omer_Akben_Resume_3pg_2025-10.pdf",
+      },
+      {
+        name: "Extended Resume",
+        description: "Extended resume with full details",
+        format: "PDF",
+        filename: "Omer_Akben_Resume_2025-10.pdf",
+        markdownReference: "Omer_Akben_Resume_2025_Extended.md",
+      },
+    ],
+  },
   personal: {
     fullName: "Omer Akben",
     nickname: "Ozzy",

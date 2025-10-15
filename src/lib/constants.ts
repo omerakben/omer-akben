@@ -37,10 +37,18 @@ export const LOGO_SIZE = {
 
 /**
  * Resume configuration
- * Makes it easy to update resume details without changing code
+ * Two resume versions: standard (3-page) and extended (full details)
+ * Only PDF versions available for visitors
  */
 export const RESUME = {
-  filename: "Omer_Akben_Resume_2025-10.pdf",
-  path: "/assets/Omer_Akben_Resume_2025-10.pdf",
-  downloadName: "Omer_Akben_Resume_Full.pdf",
+  standard: {
+    filename: "Omer_Akben_Resume_3pg_2025-10.pdf",
+    path: "/assets/Omer_Akben_Resume_3pg_2025-10.pdf",
+    downloadName: "Omer_Akben_Resume.pdf",
+  },
+  extended: {
+    filename: "Omer_Akben_Resume_2025-10.pdf",
+    path: "/assets/Omer_Akben_Resume_2025-10.pdf",
+    downloadName: "Omer_Akben_Extended_Resume.pdf",
+  },
 } as const;
