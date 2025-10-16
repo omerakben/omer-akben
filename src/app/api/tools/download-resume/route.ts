@@ -5,33 +5,19 @@ export const runtime = "edge";
 
 // File mapping for all resume formats
 const FILE_MAP = {
-  full: {
-    filename: "Omer_Akben_Resume_2025-10.pdf",
+  resume: {
+    filename: "Omer_Akben_Resume.pdf",
     size: 450000, // ~450KB
     format: "pdf",
     googleDriveUrl:
-      "https://drive.google.com/file/d/14kf-JMInLElPHm5kZK20cIKq1Od6CN8r/view?usp=sharing",
+      "https://drive.google.com/file/d/1Dmgi4MpU2iGBxeEE_VmaK9kiuEM_guJM/view?usp=sharing",
   },
-  short: {
-    filename: "Omer_Akben_Resume_1pg_2025-10.pdf",
-    size: 180000, // ~180KB
+  extended: {
+    filename: "Omer_Akben_Extended_Resume.pdf",
+    size: 500000, // ~500KB
     format: "pdf",
     googleDriveUrl:
-      "https://drive.google.com/file/d/1r0vqR3w11_CdIblnEpjFSMXan5n1fRgz/view?usp=sharing",
-  },
-  "three-page": {
-    filename: "Omer_Akben_Resume_3pg_2025-10.pdf",
-    size: 400000, // ~400KB (updated size for 3 pages)
-    format: "pdf",
-    googleDriveUrl:
-      "https://drive.google.com/file/d/1uPiQseGg7Rk-wkCVf_16wUxjY4k1sOT8/view?usp=sharing",
-  },
-  docx: {
-    filename: "Omer_Akben_Resume_2025-10.docx",
-    size: 85000, // ~85KB
-    format: "docx",
-    googleDriveUrl:
-      "https://docs.google.com/document/d/1ifrptY0myCerp5cQkX1sqEA9_jwI1gBftv2Mx4hygY4/edit?usp=sharing",
+      "https://drive.google.com/file/d/1D2i7bSz3p4RMZXiHAnTQarSnEzB7hgJ-/view?usp=sharing",
   },
 } as const;
 

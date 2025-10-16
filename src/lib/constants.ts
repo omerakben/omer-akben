@@ -40,7 +40,7 @@ export const LOGO_SIZE = {
  * Makes it easy to update resume details without changing code
  */
 export const RESUME = {
-  filename: "Omer_Akben_Resume_2025-10.pdf",
-  path: "/assets/Omer_Akben_Resume_2025-10.pdf",
-  downloadName: "Omer_Akben_Resume_Full.pdf",
+  filename: "Omer_Akben_Resume.pdf",
+  path: "/assets/Omer_Akben_Resume.pdf",
+  downloadName: "Omer_Akben_Resume.pdf",
 } as const;
