@@ -364,38 +364,23 @@ export default function RecruiterPage() {
                   Resume
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Full Resume PDF - Primary */}
+                  {/* Resume PDF */}
                   <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-brand-primary" />
-                      <h3 className="font-medium text-text-1">Full Resume</h3>
+                      <h3 className="font-medium text-text-1">Resume (PDF)</h3>
                     </div>
                     <p className="text-xs text-text-2">PDF • ~450KB</p>
                     <div className="space-y-1.5">
                       <Button
                         asChild
-                        size="sm"
-                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
-                      >
-                        <a
-                          href="https://drive.google.com/file/d/14kf-JMInLElPHm5kZK20cIKq1Od6CN8r/view?usp=sharing"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show Resume
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
                         variant="outline"
                         size="sm"
                         className="w-full"
                       >
                         <a
-                          href="/assets/Omer_Akben_Resume_2025-10.pdf"
-                          download="Omer_Akben_Resume_Full.pdf"
+                          href="/assets/Omer_Akben_Resume.pdf"
+                          download="Omer_Akben_Resume.pdf"
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Download PDF
@@ -404,31 +389,16 @@ export default function RecruiterPage() {
                     </div>
                   </div>
 
-                  {/* Full Resume DOCX */}
+                  {/* Extended Resume PDF */}
                   <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-brand-primary" />
                       <h3 className="font-medium text-text-1">
-                        Editable Format
+                        Extended Resume (PDF)
                       </h3>
                     </div>
-                    <p className="text-xs text-text-2">DOCX • ~85KB</p>
+                    <p className="text-xs text-text-2">PDF • ~500KB</p>
                     <div className="space-y-1.5">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
-                      >
-                        <a
-                          href="https://docs.google.com/document/d/1ifrptY0myCerp5cQkX1sqEA9_jwI1gBftv2Mx4hygY4/edit?usp=sharing"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show in Google Docs
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
                       <Button
                         asChild
                         variant="outline"
@@ -436,88 +406,8 @@ export default function RecruiterPage() {
                         className="w-full"
                       >
                         <a
-                          href="/assets/Omer_Akben_Resume_2025-10.docx"
-                          download="Omer_Akben_Resume.docx"
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download DOCX
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* 3-Page PDF */}
-                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-brand-primary" />
-                      <h3 className="font-medium text-text-1">3-Page Resume</h3>
-                    </div>
-                    <p className="text-xs text-text-2">PDF • ~400KB</p>
-                    <div className="space-y-1.5">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
-                      >
-                        <a
-                          href="https://drive.google.com/file/d/1uPiQseGg7Rk-wkCVf_16wUxjY4k1sOT8/view?usp=sharing"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show Resume
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                      >
-                        <a
-                          href="/assets/Omer_Akben_Resume_2pg_2025-10.pdf"
-                          download="Omer_Akben_Resume_3pg.pdf"
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download PDF
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* 1-Page PDF */}
-                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-brand-primary" />
-                      <h3 className="font-medium text-text-1">1-Page Resume</h3>
-                    </div>
-                    <p className="text-xs text-text-2">PDF • ~180KB</p>
-                    <div className="space-y-1.5">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
-                      >
-                        <a
-                          href="https://drive.google.com/file/d/1r0vqR3w11_CdIblnEpjFSMXan5n1fRgz/view?usp=sharing"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show Resume
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                      >
-                        <a
-                          href="/assets/Omer_Akben_Resume_1pg_2025-10.pdf"
-                          download="Omer_Akben_Resume_1pg.pdf"
+                          href="/assets/Omer_Akben_Extended_Resume.pdf"
+                          download="Omer_Akben_Extended_Resume.pdf"
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Download PDF

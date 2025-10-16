@@ -17,7 +17,7 @@ export const facts = {
   },
 
   professional: {
-    yearsOfExperience: 7,
+    yearsOfExperience: 6,
     currentRole: "Full-Stack Developer • AI Engineer",
     currentCompany: "Freelancer",
     specializations: [
@@ -135,7 +135,7 @@ export const facts = {
   ],
 
   about:
-    "Omer 'Ozzy' Akben is a Full-Stack Developer, AI Engineer, and SDET with 7+ years of experience building agentic systems, robust QA automation, and full-stack applications. Specializing in test automation frameworks, AI-powered development tools, and enterprise-scale automation solutions. Based in Raleigh, NC and available for remote opportunities.",
+    "Omer 'Ozzy' Akben is a Full-Stack Developer, AI Engineer, and SDET with 6+ years of experience building agentic systems, robust QA automation, and full-stack applications. Specializing in test automation frameworks, AI-powered development tools, and enterprise-scale automation solutions. Based in Raleigh, NC and available for remote opportunities.",
 };
 
 // Helper functions for agents
