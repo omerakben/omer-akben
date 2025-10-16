@@ -10,9 +10,9 @@ export const toolResponseSchema = z.object({
 // download_resume tool schema
 export const downloadResumeInputSchema = z.object({
   format: z
-    .enum(["full", "short", "three-page", "docx"])
+    .enum(["resume", "extended"])
     .optional()
-    .default("full"),
+    .default("resume"),
 });
 
 export const downloadResumeOutputSchema = z.object({

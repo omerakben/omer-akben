@@ -13,29 +13,30 @@ import {
 describe("Agent Tools Schemas", () => {
   describe("downloadResumeInputSchema", () => {
     it("should accept valid format values", () => {
-      expect(downloadResumeInputSchema.parse({ format: "full" })).toEqual({
-        format: "full",
+      expect(downloadResumeInputSchema.parse({ format: "resume" })).toEqual({
+        format: "resume",
       });
-      expect(downloadResumeInputSchema.parse({ format: "short" })).toEqual({
-        format: "short",
-      });
-      expect(downloadResumeInputSchema.parse({ format: "three-page" })).toEqual(
-        {
-          format: "three-page",
-        }
-      );
-      expect(downloadResumeInputSchema.parse({ format: "docx" })).toEqual({
-        format: "docx",
+      expect(downloadResumeInputSchema.parse({ format: "extended" })).toEqual({
+        format: "extended",
       });
     });
 
-    it("should default to 'full' when format is not provided", () => {
-      expect(downloadResumeInputSchema.parse({})).toEqual({ format: "full" });
+    it("should default to 'resume' when format is not provided", () => {
+      expect(downloadResumeInputSchema.parse({})).toEqual({ format: "resume" });
     });
 
     it("should reject invalid format values", () => {
       expect(() =>
         downloadResumeInputSchema.parse({ format: "invalid" })
+      ).toThrow();
+      expect(() =>
+        downloadResumeInputSchema.parse({ format: "full" })
+      ).toThrow();
+      expect(() =>
+        downloadResumeInputSchema.parse({ format: "short" })
+      ).toThrow();
+      expect(() =>
+        downloadResumeInputSchema.parse({ format: "docx" })
       ).toThrow();
     });
   });
