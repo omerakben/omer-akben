@@ -47,7 +47,7 @@ export default function ChatPage() {
         input={input}
         onInputChange={(e) => setInput(e.target.value)}
         onSubmit={handleSubmit}
-        isLoading={status === "streaming"}
+        isLoading={status === "submitted" || status === "streaming"}
         error={error}
         onClearError={() => setError(null)}
       />

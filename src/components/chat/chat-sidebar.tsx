@@ -239,7 +239,6 @@ export function ChatSidebar() {
                         id: message.id,
                         role: message.role,
                         parts: message.parts,
-                        toolInvocations: (message as any).toolInvocations,
                       });
                     }
 
@@ -334,15 +333,15 @@ export function ChatSidebar() {
                             {/* Navigation Links */}
                             {message.role === "assistant" && message.parts && (() => {
                               // Filter parts array for tool calls
-                              const toolParts = message.parts.filter((part: any) =>
-                                part.type === "tool-provide_navigation_links" && part.result
+                              const toolParts = message.parts.filter((part): part is typeof part & { type: string; result: unknown } =>
+                                'type' in part && 'result' in part && part.type === "tool-provide_navigation_links"
                               );
 
                               if (toolParts.length === 0) return null;
 
                               return (
                                 <div className="mt-2 flex flex-wrap gap-2">
-                                  {toolParts.map((toolPart: any, partIndex: number) => {
+                                  {toolParts.map((toolPart, partIndex: number) => {
                                     const result = toolPart.result as { success: boolean; data?: { links: Array<{ label: string; href: string; type: "internal" | "external" }> } };
                                     if (!result.success || !result.data?.links) return null;
 
