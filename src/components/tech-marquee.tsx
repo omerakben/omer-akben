@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import * as SimpleIcons from "simple-icons";
+import DOMPurify from "dompurify";
 import type { Technology } from "@/data/technologies";
 import { CustomTechIcons } from "@/components/custom-tech-icons";
 import { DURATION } from "@/lib/animations";
@@ -57,7 +58,9 @@ export function TechMarquee({
                   role="img"
                   aria-label={`${tech.name} icon`}
                   dangerouslySetInnerHTML={{
-                    __html: iconSvg
+                    __html: DOMPurify.sanitize(iconSvg, {
+                      USE_PROFILES: { svg: true }
+                    })
                   }}
                 />
               ) : (

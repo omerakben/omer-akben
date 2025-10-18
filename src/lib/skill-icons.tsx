@@ -4,6 +4,7 @@
  */
 
 import * as SimpleIcons from "simple-icons";
+import DOMPurify from "dompurify";
 
 // Map skill names to simple-icons slugs
 const SKILL_ICON_MAP: Record<string, string> = {
@@ -123,7 +124,11 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
   return (
     <div
       className={className}
-      dangerouslySetInnerHTML={{ __html: svgString }}
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(svgString, {
+          USE_PROFILES: { svg: true }
+        })
+      }}
     />
   );
 }
