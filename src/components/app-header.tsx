@@ -4,6 +4,7 @@ import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LOGO_SIZE } from "@/lib/constants";
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -32,6 +33,7 @@ const routes = [
 export function AppHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { openSidebar } = useChatSidebar();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border-line bg-surf-0/80 backdrop-blur-lg">
@@ -85,6 +87,7 @@ export function AppHeader() {
 
             <Button
               size="sm"
+              onClick={openSidebar}
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-brand-primary to-[#2563EB] hover:opacity-90"
             >
               <MessageCircle className="h-4 w-4" />

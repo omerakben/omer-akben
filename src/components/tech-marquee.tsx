@@ -46,21 +46,24 @@ export function TechMarquee({
           const iconSvg = resolveSimpleIconSvg(tech.iconName);
           const iconClasses = `${iconWrapperClass} ${tech.colorClass} [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current`;
 
+          // Only sanitize on client side (DOMPurify requires DOM)
+          const sanitizedIconSvg = iconSvg && typeof window !== "undefined"
+            ? DOMPurify.sanitize(iconSvg, { USE_PROFILES: { svg: true } })
+            : iconSvg;
+
           return (
             <div
               key={`${tech.iconName}-${index}`}
               className="group flex flex-col items-center gap-2 flex-shrink-0"
             >
               {/* Icon */}
-              {iconSvg ? (
+              {sanitizedIconSvg ? (
                 <div
                   className={iconClasses}
                   role="img"
                   aria-label={`${tech.name} icon`}
                   dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(iconSvg, {
-                      USE_PROFILES: { svg: true }
-                    })
+                    __html: sanitizedIconSvg
                   }}
                 />
               ) : (

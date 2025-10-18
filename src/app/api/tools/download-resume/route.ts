@@ -13,7 +13,7 @@ const FILE_MAP = {
       "https://drive.google.com/file/d/1Dmgi4MpU2iGBxeEE_VmaK9kiuEM_guJM/view?usp=sharing",
   },
   extended: {
-    filename: "Omer_Akben_Extended_Resume.pdf",
+    filename: "Omer_Akben_Resume_Extended.pdf",
     size: 500000, // ~500KB
     format: "pdf",
     googleDriveUrl:

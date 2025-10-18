@@ -165,8 +165,8 @@ export function HeroSection() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <a
-                        href="/assets/Omer_Akben_Extended_Resume.pdf"
-                        download="Omer_Akben_Extended_Resume.pdf"
+                        href="/assets/Omer_Akben_Resume_Extended.pdf"
+                        download="Omer_Akben_Resume_Extended.pdf"
                         className="cursor-pointer"
                       >
                         <Download className="mr-2 h-4 w-4" />

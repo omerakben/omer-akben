@@ -76,7 +76,7 @@ Comprehensive testing of the omerakben.com portfolio application and all 9 demo 
 
 ### 1. ✅ Developer Cheat Sheets
 
-**URL:** <https://developer-cheat-sheets-ha3dfgvz4-omera.vercel.app>
+**URL:** <https://developer-cheat-sheets.vercel.app/>
 **Status:** PASSED
 
 **Verified Features:**

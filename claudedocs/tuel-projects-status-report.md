@@ -356,7 +356,7 @@ function MyApp() {
    - Status: Production-validated
 
 3. **Developer Cheat Sheets** ✅ LIVE
-   - URL: <https://developer-cheat-sheets-ha3dfgvz4-omera.vercel.app>
+   - URL: <https://developer-cheat-sheets.vercel.app/>
    - Status: Live with syntax highlighting
 
 ### Tier 2: Ready to Deploy (3 projects) ✅

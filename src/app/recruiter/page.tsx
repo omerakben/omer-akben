@@ -36,7 +36,8 @@ const tldr = {
   specialization: "Full-Stack Developer • AI Engineer • SDET",
   topSkills: facts.skills.languages
     .slice(0, 3)
-    .concat(facts.skills.frameworks.slice(0, 3)),
+    .concat(facts.skills.frontend.slice(0, 2))
+    .concat(facts.skills.aiml.slice(0, 2)),
   preferredRoles: facts.professional.workPreferences.roles,
   salary: "Competitive (Open to discussion)",
 };
@@ -406,8 +407,8 @@ export default function RecruiterPage() {
                         className="w-full"
                       >
                         <a
-                          href="/assets/Omer_Akben_Extended_Resume.pdf"
-                          download="Omer_Akben_Extended_Resume.pdf"
+                          href="/assets/Omer_Akben_Resume_Extended.pdf"
+                          download="Omer_Akben_Resume_Extended.pdf"
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Download PDF
