@@ -120,7 +120,7 @@ export function ChatInterface({
               // Extract text from message parts (AI SDK uses parts array)
               const textContent = message.parts
                 .filter((part) => part.type === "text")
-                .map((part: any) => part.text)
+                .map((part) => ("text" in part ? part.text : ""))
                 .join("");
 
               return (

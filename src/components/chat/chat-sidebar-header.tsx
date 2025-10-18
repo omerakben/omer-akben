@@ -4,13 +4,8 @@ import { Bot, X, Maximize2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { Button } from "@/components/ui/button";
-import { type UIMessage } from "ai";
 
-interface ChatSidebarHeaderProps {
-  messages?: UIMessage[];
-}
-
-export function ChatSidebarHeader({ messages = [] }: ChatSidebarHeaderProps) {
+export function ChatSidebarHeader() {
   const router = useRouter();
   const { closeSidebar } = useChatSidebar();
 

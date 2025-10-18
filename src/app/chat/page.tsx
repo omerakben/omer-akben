@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { type UIMessage } from "ai";
 import { ChatInterface } from "@/components/chat/chat-interface";
 
 export default function ChatPage() {

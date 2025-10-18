@@ -120,7 +120,7 @@ export function ChatSidebar() {
             aria-label="Chat with AI Ozzy"
           >
             {/* Header */}
-            <ChatSidebarHeader messages={messages} />
+            <ChatSidebarHeader />
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto">

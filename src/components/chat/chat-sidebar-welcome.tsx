@@ -14,7 +14,7 @@ export function ChatSidebarWelcome() {
         <div className="flex-1">
           <div className="bg-surf-1 rounded-lg px-4 py-3 border border-border-line">
             <p className="text-text-1 leading-relaxed">
-              👋 Hi! I'm AI Ozzy (Omer's clone), personal guide to my portfolio.
+              👋 Hi! I&apos;m AI Ozzy (Omer&apos;s clone), personal guide to my portfolio.
               I know everything about my experience, projects, and skills. What
               would you like to explore?
             </p>
