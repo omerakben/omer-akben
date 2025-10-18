@@ -2,6 +2,7 @@ import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { SkipToContent } from "@/components/skip-to-content";
 import { BrightnessProvider } from "@/lib/brightness-context";
 import { ChatSidebarProvider } from "@/lib/chat-sidebar-context";
 import { ChatSidebar } from "@/components/chat/chat-sidebar";
@@ -59,11 +60,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased">
+        <SkipToContent />
         <ErrorBoundary>
           <BrightnessProvider>
             <ChatSidebarProvider>
               <AppHeader />
-              <main className="min-h-screen">{children}</main>
+              <main id="main-content" className="min-h-screen">{children}</main>
               <AppFooter />
               <ScrollToTop />
               <ChatSidebar />
