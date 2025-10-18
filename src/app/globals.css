@@ -538,4 +538,116 @@ html {
       scroll-behavior: auto;
     }
   }
+
+  /* ============================================ */
+  /* Hero Section Static Animations (CSS-only)   */
+  /* ============================================ */
+  
+  /* Slide up animation with stagger delays */
+  @keyframes hero-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-slide-up {
+    animation: hero-slide-up 0.6s ease-out forwards;
+  }
+
+  .hero-slide-up-delay-1 {
+    opacity: 0;
+    animation: hero-slide-up 0.6s ease-out 0.15s forwards;
+  }
+
+  .hero-slide-up-delay-2 {
+    opacity: 0;
+    animation: hero-slide-up 0.6s ease-out 0.3s forwards;
+  }
+
+  .hero-slide-up-delay-3 {
+    opacity: 0;
+    animation: hero-slide-up 0.6s ease-out 0.45s forwards;
+  }
+
+  /* Fade in from right for robot illustration */
+  @keyframes hero-fade-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .hero-fade-in-right {
+    animation: hero-fade-in-right 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+  }
+
+  /* Breathing animation for robot */
+  @keyframes hero-robot-breathe {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  .hero-robot-breathe {
+    animation: hero-robot-breathe 6s ease-in-out infinite;
+  }
+
+  /* Scroll indicator animations */
+  @keyframes hero-scroll-bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(12px);
+    }
+  }
+
+  .hero-scroll-dot {
+    animation: hero-scroll-bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes hero-scroll-fade {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-scroll-indicator {
+    animation: hero-scroll-fade 0.6s ease-out 1s forwards;
+    opacity: 0;
+  }
+
+  /* Disable animations for reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide-up,
+    .hero-slide-up-delay-1,
+    .hero-slide-up-delay-2,
+    .hero-slide-up-delay-3,
+    .hero-fade-in-right,
+    .hero-robot-breathe,
+    .hero-scroll-dot,
+    .hero-scroll-indicator {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
