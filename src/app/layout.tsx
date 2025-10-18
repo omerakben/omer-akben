@@ -3,6 +3,8 @@ import { AppHeader } from "@/components/app-header";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { BrightnessProvider } from "@/lib/brightness-context";
+import { ChatSidebarProvider } from "@/lib/chat-sidebar-context";
+import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -59,12 +61,15 @@ export default function RootLayout({
       <body className="antialiased">
         <ErrorBoundary>
           <BrightnessProvider>
-            <AppHeader />
-            <main className="min-h-screen">{children}</main>
-            <AppFooter />
-            <ScrollToTop />
-            <Toaster richColors position="top-center" />
-            <Analytics />
+            <ChatSidebarProvider>
+              <AppHeader />
+              <main className="min-h-screen">{children}</main>
+              <AppFooter />
+              <ScrollToTop />
+              <ChatSidebar />
+              <Toaster richColors position="top-center" />
+              <Analytics />
+            </ChatSidebarProvider>
           </BrightnessProvider>
         </ErrorBoundary>
       </body>
