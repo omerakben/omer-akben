@@ -414,4 +414,47 @@ html {
   .text-brand-vscode {
     color: var(--brand-vscode);
   }
+
+  /* Enhanced Focus Indicators for Accessibility */
+  /* Ensure all interactive elements have visible focus states */
+  *:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
+  /* Button focus states */
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand-primary) 20%, transparent);
+  }
+
+  /* Link focus states */
+  a:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    text-decoration: underline;
+  }
+
+  /* Input focus states */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 0;
+    border-color: var(--brand-primary);
+  }
+
+  /* Skip to content link - ensure it's visible when focused */
+  .skip-to-content:focus {
+    clip: auto;
+    height: auto;
+    width: auto;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 9999;
+  }
 }

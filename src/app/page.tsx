@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getFeaturedProjects } from "@/data/projects";
 import { testimonials } from "@/data/testimonials";
 import { createMetadata } from "@/lib/metadata";
+import { getPersonSchema, getWebSiteSchema } from "@/lib/structured-data";
 import { ArrowRight, Briefcase, Mail, Quote, UserCheck } from "lucide-react";
 import Link from "next/link";
 
@@ -33,6 +34,20 @@ export default function HomePage() {
 
   return (
     <>
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(getPersonSchema()),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(getWebSiteSchema()),
+        }}
+      />
+
       {/* Hero Section */}
       <HeroSection />
 
