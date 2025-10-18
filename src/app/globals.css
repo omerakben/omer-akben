@@ -139,6 +139,10 @@
   --text-3: #9eabd4;
   --brand-primary: #34d399;
   --accent-primary: #5f8eff;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #070f1c;
+  --chat-gradient-to: #0a1224;
 }
 
 /* Brightness Mode -2 */
@@ -152,6 +156,10 @@
   --text-3: #96a3cf;
   --brand-primary: #10b981;
   --accent-primary: #4c7fff;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #091224;
+  --chat-gradient-to: #0c162c;
 }
 
 /* Brightness Mode -1 */
@@ -165,6 +173,10 @@
   --text-3: #8fa0cb;
   --brand-primary: #10b981;
   --accent-primary: #386cf8;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #0b1428;
+  --chat-gradient-to: #0f1a33;
 }
 
 /* Brightness Mode 0 (Baseline) */
@@ -178,6 +190,10 @@
   --text-3: #8998c0;
   --brand-primary: #10b981;
   --accent-primary: #2563eb;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #0a1020;
+  --chat-gradient-to: #0b1328;
 }
 
 /* Brightness Mode +1 (Soft blue-tinted light) */
@@ -191,6 +207,10 @@
   --text-3: #4c5b80;
   --brand-primary: #1d4ed8;
   --accent-primary: #0fae8e;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #f8faff;
+  --chat-gradient-to: #eaf0fe;
 }
 
 /* Brightness Mode +2 */
@@ -204,6 +224,10 @@
   --text-3: #4a5e87;
   --brand-primary: #1e40af;
   --accent-primary: #0a9f82;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #fafcff;
+  --chat-gradient-to: #f2f6ff;
 }
 
 /* Brightness Mode +3 (Lightest) */
@@ -217,6 +241,10 @@
   --text-3: #516089;
   --brand-primary: #1e3a8a;
   --accent-primary: #08977a;
+
+  /* Chat page gradient */
+  --chat-gradient-from: #ffffff;
+  --chat-gradient-to: #f6f9ff;
 }
 
 @theme inline {
@@ -463,5 +491,51 @@ html {
   /* Using class-based approach for better accessibility and state management */
   body.overflow-hidden {
     overflow: hidden;
+  }
+
+  /* Glass-morphism utilities for chat interface */
+  .glass-message {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-input {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Custom scrollbar for chat messages */
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-line);
+    border-radius: 3px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-3);
+  }
+
+  /* Firefox scrollbar */
+  .chat-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-line) transparent;
+  }
+
+  /* Smooth scroll behavior for chat */
+  .chat-scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chat-scroll-smooth {
+      scroll-behavior: auto;
+    }
   }
 }

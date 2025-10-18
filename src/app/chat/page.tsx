@@ -36,7 +36,12 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 h-[calc(100vh-8rem)]">
+    <div
+      className="h-[calc(100vh-4rem)] w-full"
+      style={{
+        background: `linear-gradient(to bottom, var(--chat-gradient-from), var(--chat-gradient-to))`,
+      }}
+    >
       <ChatInterface
         messages={messages}
         input={input}

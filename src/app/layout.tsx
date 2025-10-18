@@ -1,3 +1,5 @@
+"use client";
+
 import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -7,9 +9,9 @@ import { BrightnessProvider } from "@/lib/brightness-context";
 import { ChatSidebarProvider } from "@/lib/chat-sidebar-context";
 import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { Analytics } from "@vercel/analytics/next";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { usePathname } from "next/navigation";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,45 +20,14 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Omer Akben - Software Engineer & SDET",
-  description:
-    "Personal portfolio and recruiter-magnet site showcasing Omer 'Ozzy' Akben's work in AI and automation.",
-  icons: {
-    icon: [
-      {
-        url: "/favicon_io/favicon-16x16.png",
-        sizes: "16x16",
-        type: "image/png",
-      },
-      {
-        url: "/favicon_io/favicon-32x32.png",
-        sizes: "32x32",
-        type: "image/png",
-      },
-      { url: "/favicon_io/favicon.ico", sizes: "any" },
-    ],
-    apple: "/favicon_io/apple-touch-icon.png",
-    other: [
-      {
-        rel: "android-chrome",
-        url: "/favicon_io/android-chrome-192x192.png",
-        sizes: "192x192",
-      },
-      {
-        rel: "android-chrome",
-        url: "/favicon_io/android-chrome-512x512.png",
-        sizes: "512x512",
-      },
-    ],
-  },
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isChatPage = pathname === "/chat";
+
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased">
@@ -66,7 +37,7 @@ export default function RootLayout({
             <ChatSidebarProvider>
               <AppHeader />
               <main id="main-content" className="min-h-screen">{children}</main>
-              <AppFooter />
+              {!isChatPage && <AppFooter />}
               <ScrollToTop />
               <ChatSidebar />
               <Toaster richColors position="top-center" />
