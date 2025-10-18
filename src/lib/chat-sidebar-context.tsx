@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
 interface ChatSidebarContextType {
   isOpen: boolean;
@@ -23,13 +23,14 @@ export function ChatSidebarProvider({
   const openSidebar = useCallback(() => {
     setIsOpen(true);
     // Prevent body scroll when sidebar is open
-    document.body.style.overflow = "hidden";
+    // Using CSS class for better accessibility and predictability
+    document.body.classList.add("overflow-hidden");
   }, []);
 
   const closeSidebar = useCallback(() => {
     setIsOpen(false);
     // Restore body scroll
-    document.body.style.overflow = "";
+    document.body.classList.remove("overflow-hidden");
   }, []);
 
   const toggleSidebar = useCallback(() => {

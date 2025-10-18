@@ -188,7 +188,7 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:3001
    - Status: Production-validated business plan generator
 
 3. **Developer Cheat Sheets** ✅ LIVE
-   - URL: <https://developer-cheat-sheets-ha3dfgvz4-omera.vercel.app>
+   - URL: <https://developer-cheat-sheets.vercel.app/>
    - Stack: Next.js 15, React 19, Tailwind CSS 4
    - Status: Technical reference with syntax highlighting
 

@@ -428,7 +428,8 @@ html {
   [role="button"]:focus-visible {
     outline: 2px solid var(--brand-primary);
     outline-offset: 2px;
-    box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand-primary) 20%, transparent);
+    box-shadow: 0 0 0 4px
+      color-mix(in oklab, var(--brand-primary) 20%, transparent);
   }
 
   /* Link focus states */
@@ -456,5 +457,11 @@ html {
     top: 1rem;
     left: 1rem;
     z-index: 9999;
+  }
+
+  /* Prevent body scroll when chat sidebar or modal is open */
+  /* Using class-based approach for better accessibility and state management */
+  body.overflow-hidden {
+    overflow: hidden;
   }
 }

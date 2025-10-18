@@ -84,7 +84,7 @@ export const projects: Project[] = [
     role: "Full-Stack",
     category: "tools",
     featured: true,
-    demoUrl: "https://developer-cheat-sheets-ha3dfgvz4-omera.vercel.app",
+    demoUrl: "https://developer-cheat-sheets.vercel.app/",
     githubUrl: "https://github.com/omerakben/developer-cheat-sheets",
     status: "completed",
   },

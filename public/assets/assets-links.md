@@ -19,7 +19,7 @@ Google Drive: <https://docs.google.com/document/d/18bPwKR51zq3jAJjwWx9jbZXBkUF_4
 
 ### Extended Resume (PDF)
 
-File: Omer_Akben_Extended_Resume.pdf
+File: Omer_Akben_Resume_Extended.pdf
 Google Drive: <https://drive.google.com/file/d/1D2i7bSz3p4RMZXiHAnTQarSnEzB7hgJ-/view?usp=sharing>
 
 ## Certificates
