@@ -54,9 +54,753 @@
 
 ## 🚨 CRITICAL ISSUES (Fix Before Launch)
 
-### P0 - Blocker Issues
+### ⚠️ **HEALTH SCORE TARGET: 72/100 → 100/100**
 
-#### 1. ✅ ESLint Errors - FIXED (2025-10-18)
+**Current Blockers Preventing 100/100:**
+1. 🔴 **EXPOSED API KEY** (Security: -15 points)
+2. 🔴 **BUNDLE SIZE 2.3MB** (Performance: -10 points)
+3. 🟡 **RATE LIMITING IN-MEMORY** (Security: -3 points)
+
+---
+
+### P0 - IMMEDIATE ACTION REQUIRED (Next 24 Hours)
+
+#### 1. 🔴 CRITICAL: Rotate Exposed OpenAI API Key
+**Status:** ⚠️ URGENT - API KEY COMPROMISED
+**Impact:** Critical security vulnerability (-15 health points)
+**Timeline:** **IMMEDIATE (within 1 hour)**
+
+**Problem:**
+```
+File: .env (line 8)
+OPENAI_API_KEY=sk-proj-U6bQrJqRNCPuNx18Gd63... [FULL 172-CHAR KEY EXPOSED]
+```
+
+**Action Plan:**
+- [ ] **Step 1:** Rotate key in OpenAI dashboard (5 min)
+  - Go to https://platform.openai.com/api-keys
+  - Delete compromised key immediately
+  - Generate new key
+  - Copy to secure password manager
+
+- [ ] **Step 2:** Update Vercel environment variables (5 min)
+  ```bash
+  vercel env add OPENAI_API_KEY production
+  # Paste new key when prompted
+  vercel env add OPENAI_API_KEY preview
+  vercel env add OPENAI_API_KEY development
+  ```
+
+- [ ] **Step 3:** Remove from Git history (10 min)
+  ```bash
+  # DANGER: Rewrites Git history
+  git filter-branch --force --index-filter \
+    "git rm --cached --ignore-unmatch .env" \
+    --prune-empty --tag-name-filter cat -- --all
+
+  # Force push to remote
+  git push origin --force --all
+  ```
+
+- [ ] **Step 4:** Update local .env (1 min)
+  ```bash
+  # Replace with new key in .env file
+  # Verify .env in .gitignore
+  grep "^\.env$" .gitignore || echo ".env" >> .gitignore
+  ```
+
+- [ ] **Step 5:** Verify security (5 min)
+  ```bash
+  # Check Git history
+  git log --all --full-history -- .env
+  # Should return: fatal: ambiguous argument '.env'
+
+  # Check OpenAI usage dashboard for unauthorized calls
+  ```
+
+**Verification:**
+- [ ] Old key deleted from OpenAI dashboard
+- [ ] New key working in local dev
+- [ ] Vercel env vars updated
+- [ ] `.env` not in Git history
+- [ ] No unauthorized API usage detected
+
+**Health Impact:** +15 points (Security score: 65 → 80)
+
+---
+
+#### 2. 🔴 CRITICAL: Fix Bundle Size (2.3MB → <500KB)
+**Status:** ⚠️ PERFORMANCE BLOCKER
+**Impact:** Poor mobile UX, SEO penalties (-10 health points)
+**Timeline:** **24-48 hours**
+
+**Problem:**
+```
+Route (app)                Size      First Load JS
+├ ○ /                      13.2 kB   2.33 MB ⚠️⚠️⚠️
+└ ○ /skills                4.32 kB   2.32 MB ⚠️⚠️⚠️
+```
+
+**Root Cause:** Framer Motion + simple-icons loaded eagerly
+
+**Action Plan:**
+
+**Phase 1: Remove Framer Motion from Critical Pages (8 hours)**
+
+- [ ] **Step 1:** Create CSS-only hero section
+  ```bash
+  # Create new static version
+  touch src/components/hero-section-static.tsx
+  ```
+
+  ```tsx
+  // src/components/hero-section-static.tsx
+  export function HeroSectionStatic() {
+    return (
+      <section className="transition-transform duration-700 hover:scale-[1.02]">
+        {/* Static hero with CSS animations only */}
+      </section>
+    );
+  }
+  ```
+
+- [ ] **Step 2:** Lazy load animated version
+  ```tsx
+  // src/app/page.tsx
+  import dynamic from 'next/dynamic';
+
+  const HeroSection = dynamic(
+    () => import('@/components/hero-section-static'),
+    { ssr: true }
+  );
+
+  const AnimatedHero = dynamic(
+    () => import('@/components/hero-section'),
+    {
+      ssr: false,
+      loading: () => <HeroSectionStatic />
+    }
+  );
+
+  // Use AnimatedHero only after user interaction
+  ```
+
+- [ ] **Step 3:** Remove Framer Motion from Skills page
+  ```tsx
+  // Replace motion.div with regular div + CSS transitions
+  // Use Intersection Observer for scroll animations
+  ```
+
+**Phase 2: Optimize Icon Loading (4 hours)**
+
+- [ ] **Step 4:** Code-split simple-icons
+  ```tsx
+  // src/components/skill-icons-loader.tsx
+  import dynamic from 'next/dynamic';
+
+  const SkillIcons = dynamic(
+    () => import('@/components/skill-icons'),
+    { loading: () => <SkeletonGrid /> }
+  );
+  ```
+
+- [ ] **Step 5:** Implement virtual scrolling for icons
+  ```bash
+  npm install react-window
+  ```
+
+**Phase 3: Measure & Validate (2 hours)**
+
+- [ ] **Step 6:** Run bundle analysis
+  ```bash
+  npm run build
+  npm run analyze
+  ```
+
+  **Target:**
+  ```
+  / (Home)     13.2 kB   < 500 KB ✅
+  /skills      4.32 kB   < 500 KB ✅
+  ```
+
+- [ ] **Step 7:** Lighthouse audit
+  ```bash
+  # Target: Performance Score ≥95
+  npm run build
+  npm start
+  # Run Lighthouse in Chrome DevTools
+  ```
+
+**Verification:**
+- [ ] First Load JS < 500KB on all pages
+- [ ] Lighthouse Performance ≥95
+- [ ] LCP < 2.5s
+- [ ] No visual regressions
+- [ ] Animations still smooth
+
+**Health Impact:** +10 points (Performance score: 45 → 95)
+
+---
+
+#### 3. 🟡 HIGH: Implement Production Rate Limiting
+**Status:** ⚠️ SECURITY GAP
+**Impact:** DDoS vulnerability (-3 health points)
+**Timeline:** **8 hours**
+
+**Problem:**
+```typescript
+// middleware.ts - In-memory store (resets on deploy)
+const rateLimitMap = new Map<string, number[]>();
+```
+
+**Action Plan:**
+
+- [ ] **Step 1:** Install Upstash Redis (15 min)
+  ```bash
+  npm install @upstash/redis @upstash/ratelimit
+  ```
+
+- [ ] **Step 2:** Set up Upstash account (10 min)
+  - Sign up at https://upstash.com
+  - Create Redis database (free tier)
+  - Copy UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN
+
+- [ ] **Step 3:** Create rate limit utility (30 min)
+  ```typescript
+  // src/lib/rate-limit.ts
+  import { Ratelimit } from "@upstash/ratelimit";
+  import { Redis } from "@upstash/redis";
+
+  const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_URL!,
+    token: process.env.UPSTASH_REDIS_TOKEN!,
+  });
+
+  // 30 requests per minute for chat
+  export const chatRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(30, "1 m"),
+    analytics: true,
+    prefix: "ratelimit:chat",
+  });
+
+  // 60 requests per minute for tools
+  export const toolsRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(60, "1 m"),
+    analytics: true,
+    prefix: "ratelimit:tools",
+  });
+  ```
+
+- [ ] **Step 4:** Update middleware (30 min)
+  ```typescript
+  // src/middleware.ts
+  import { NextRequest, NextResponse } from "next/server";
+  import { chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
+
+  export async function middleware(request: NextRequest) {
+    const ip = request.headers.get("x-forwarded-for") ?? "anonymous";
+
+    // Choose rate limiter based on path
+    const limiter = request.nextUrl.pathname.startsWith("/api/chat")
+      ? chatRateLimit
+      : toolsRateLimit;
+
+    const { success, reset } = await limiter.limit(ip);
+
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil((reset - Date.now()) / 1000))
+          }
+        }
+      );
+    }
+
+    return NextResponse.next();
+  }
+
+  export const config = {
+    matcher: "/api/:path*",
+  };
+  ```
+
+- [ ] **Step 5:** Add environment variables (5 min)
+  ```bash
+  # .env.local
+  UPSTASH_REDIS_URL=https://your-db.upstash.io
+  UPSTASH_REDIS_TOKEN=your-token
+
+  # Vercel
+  vercel env add UPSTASH_REDIS_URL production
+  vercel env add UPSTASH_REDIS_TOKEN production
+  ```
+
+- [ ] **Step 6:** Test rate limiting (15 min)
+  ```bash
+  # Test script
+  for i in {1..35}; do
+    curl http://localhost:3000/api/chat -X POST \
+      -H "Content-Type: application/json" \
+      -d '{"messages":[{"role":"user","content":"test"}]}'
+    echo ""
+  done
+  # Should see 429 after 30 requests
+  ```
+
+**Verification:**
+- [ ] Rate limiting persists across deployments
+- [ ] 429 status returned after limit exceeded
+- [ ] Retry-After header present
+- [ ] Different limits for chat vs tools
+- [ ] Upstash dashboard shows metrics
+
+**Health Impact:** +3 points (Security score: 80 → 95)
+
+---
+
+### P1 - HIGH PRIORITY (Next 48-72 Hours)
+
+#### 5. 🟡 Fix CSS/HTML Validation Errors
+**Status:** ⚠️ NEEDS FIXING
+**Impact:** Accessibility, standards compliance (-2 health points)
+**Timeline:** **4 hours**
+
+**Problems Identified:**
+
+**A. Inline Styles (5 instances)**
+- `src/components/chat/chat-sidebar.tsx:420, 424`
+- `src/app/chat/page.tsx:39`
+- `src/components/hero-section.tsx:26, 214`
+
+**Action:**
+- [ ] Move inline styles to CSS modules or Tailwind
+  ```typescript
+  // BEFORE (❌):
+  <div className="w-2 h-2 rounded-full bg-text-3 animate-bounce" />
+
+  // AFTER (✅):
+  <div className="loading-dot" />
+  ```
+
+- [ ] Add to `globals.css`:
+  ```css
+  @keyframes bounce-delay-1 {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+  }
+  .loading-dot:nth-child(1) { animation: bounce-delay-1 1s infinite; }
+  .loading-dot:nth-child(2) { animation: bounce-delay-1 1s infinite 0.2s; }
+  .loading-dot:nth-child(3) { animation: bounce-delay-1 1s infinite 0.4s; }
+  ```
+
+**B. Invalid HTML - Lists Outside Containers**
+- `src/components/chat/chat-sidebar.tsx:308`
+- `src/components/chat/chat-interface.tsx:357`
+
+**Action:**
+- [ ] Fix markdown component mapping:
+  ```typescript
+  // ReactMarkdown components prop
+  components={{
+    ul: ({ children }) => <ul className="list-disc pl-4 space-y-1">{children}</ul>,
+    ol: ({ children }) => <ol className="list-decimal pl-4 space-y-1">{children}</ol>,
+    li: ({ children }) => <li className="ml-2">{children}</li>,
+    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+  }}
+  ```
+
+**C. CSS Browser Compatibility**
+- `src/app/globals.css:527-528` - `scrollbar-width`, `scrollbar-color` not supported in Safari
+- `src/app/globals.css:498, 503` - `backdrop-filter` ordering
+
+**Action:**
+- [ ] Add fallbacks:
+  ```css
+  /* globals.css */
+  .custom-scrollbar {
+    -webkit-backdrop-filter: blur(20px); /* Safari first */
+    backdrop-filter: blur(20px);
+
+    /* Scrollbar with fallback */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--border-line) transparent;
+  }
+
+  /* Safari/WebKit fallback */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-line);
+    border-radius: 4px;
+  }
+  ```
+
+**Verification:**
+- [ ] `npm run lint` - 0 HTML/CSS errors
+- [ ] Test on Safari (macOS + iOS)
+- [ ] Validate HTML with W3C validator
+- [ ] Check accessibility with axe DevTools
+
+**Health Impact:** +2 points (Code Quality: 82 → 92)
+
+---
+
+#### 6. 🟡 Remove Debug Console Logs
+**Status:** ⚠️ NEEDS CLEANUP
+**Impact:** Information leakage, professional polish (-1 health point)
+**Timeline:** **2 hours**
+
+**Problem:** 11 console.log/error statements in production code
+
+**Action Plan:**
+
+- [ ] **Step 1:** Install Sentry (30 min)
+  ```bash
+  npm install @sentry/nextjs
+  npx @sentry/wizard@latest -i nextjs
+  ```
+
+- [ ] **Step 2:** Create logger utility (30 min)
+  ```typescript
+  // src/lib/logger.ts
+  import * as Sentry from '@sentry/nextjs';
+
+  export const logger = {
+    error: (message: string, context?: any) => {
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(new Error(message), { extra: context });
+      } else {
+        console.error(message, context);
+      }
+    },
+
+    info: (message: string, context?: any) => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(message, context);
+      }
+    },
+
+    warn: (message: string, context?: any) => {
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureMessage(message, { level: 'warning', extra: context });
+      } else {
+        console.warn(message, context);
+      }
+    }
+  };
+  ```
+
+- [ ] **Step 3:** Replace console statements (1 hour)
+  ```bash
+  # Files to update:
+  # src/app/global-error.tsx:20
+  # src/components/error-boundary.tsx:29
+  # src/components/chat/chat-sidebar.tsx:53, 78, 96, 110, 238
+  # src/components/chat/chat-interface.tsx:266
+  # src/app/error.tsx:22
+  # src/app/chat/page.tsx:13, 33
+  ```
+
+  ```typescript
+  // BEFORE:
+  console.error("Chat error:", error);
+
+  // AFTER:
+  import { logger } from '@/lib/logger';
+  logger.error("Chat error", { error, stack: error.stack });
+  ```
+
+**Verification:**
+- [ ] No console.log in production build
+- [ ] Sentry receiving errors in test
+- [ ] Source maps uploaded to Sentry
+
+**Health Impact:** +1 point (Code Quality: 92 → 95)
+
+---
+
+#### 7. 🟡 Increase Test Coverage (55% → 80%)
+**Status:** ⚠️ NEEDS TESTS
+**Impact:** Risk of regressions (-2 health points)
+**Timeline:** **8 hours**
+
+**Current Coverage:** 3 test files, 72 tests (minimal coverage)
+
+**Action Plan:**
+
+- [ ] **Step 1:** Test agent knowledge base (2 hours)
+  ```typescript
+  // src/lib/agent-knowledge-base.test.ts
+  import { describe, it, expect } from 'vitest';
+  import { buildEnhancedSystemPrompt } from './agent-knowledge-base';
+  import { facts } from '@/data/facts';
+
+  describe('buildEnhancedSystemPrompt', () => {
+    it('should include contact information', () => {
+      const prompt = buildEnhancedSystemPrompt();
+      expect(prompt).toContain(facts.personal.email);
+      expect(prompt).toContain(facts.social.linkedin);
+    });
+
+    it('should include domain awareness', () => {
+      const prompt = buildEnhancedSystemPrompt();
+      expect(prompt).toContain('omerakben.com');
+      expect(prompt).toContain('ALREADY on omerakben.com');
+    });
+
+    it('should include all project details', () => {
+      const prompt = buildEnhancedSystemPrompt();
+      expect(prompt).toContain('North Glass');
+      expect(prompt).toContain('Elon AI Agent');
+    });
+  });
+  ```
+
+- [ ] **Step 2:** Test API routes (3 hours)
+  ```typescript
+  // src/app/api/chat/route.test.ts
+  import { describe, it, expect, vi } from 'vitest';
+  import { POST } from './route';
+
+  describe('POST /api/chat', () => {
+    it('should require messages array', async () => {
+      const req = new Request('http://localhost/api/chat', {
+        method: 'POST',
+        body: JSON.stringify({})
+      });
+
+      const res = await POST(req);
+      expect(res.status).toBe(400);
+    });
+
+    it('should stream responses', async () => {
+      const req = new Request('http://localhost/api/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: 'Hello' }]
+        })
+      });
+
+      const res = await POST(req);
+      expect(res.headers.get('content-type')).toContain('text/event-stream');
+    });
+  });
+  ```
+
+- [ ] **Step 3:** Test tool endpoints (2 hours)
+  ```typescript
+  // src/app/api/tools/list-projects/route.test.ts
+  // src/app/api/tools/download-resume/route.test.ts
+  // src/app/api/tools/get-contact/route.test.ts
+  ```
+
+- [ ] **Step 4:** Test context providers (1 hour)
+  ```typescript
+  // src/lib/brightness-context.test.tsx (expand existing)
+  // src/lib/chat-sidebar-context.test.tsx
+  ```
+
+- [ ] **Step 5:** Run coverage report
+  ```bash
+  npm run test:coverage
+  # Target: >80% coverage for /src/lib and /src/app/api
+  ```
+
+**Verification:**
+- [ ] Overall coverage >80%
+- [ ] All API routes tested
+- [ ] All critical utilities tested
+- [ ] CI/CD runs tests automatically
+
+**Health Impact:** +2 points (Testing: 55 → 80)
+
+---
+
+### P2 - MEDIUM PRIORITY (Next Week)
+
+#### 8. 🟢 Security Headers Audit
+**Status:** ⊡ NEEDS REVIEW
+**Impact:** Security hardening (+1 health point)
+**Timeline:** **2 hours**
+
+**Action:**
+- [ ] Review CSP headers in `next.config.ts`
+- [ ] Test with <https://securityheaders.com>
+- [ ] Tighten `unsafe-inline` and `unsafe-eval` where possible
+- [ ] Add Subresource Integrity (SRI) for CDN resources
+
+**Health Impact:** +1 point (Security: 95 → 97)
+
+---
+
+#### 9. 🟢 Add Missing `.env` to `.gitignore`
+**Status:** ✅ LIKELY COMPLETE (verify)
+**Impact:** Prevent future key leaks (+0.5 health point)
+**Timeline:** **5 minutes**
+
+**Action:**
+- [ ] Verify `.env` in `.gitignore`:
+  ```bash
+  grep "^\.env$" .gitignore || echo ".env" >> .gitignore
+  ```
+
+**Health Impact:** +0.5 points (Security: 97 → 98)
+
+---
+
+#### 10. 🟢 Performance Budget Enforcement
+**Status:** ⊡ NEEDS SETUP
+**Impact:** Prevent future regressions (+1 health point)
+**Timeline:** **1 hour**
+
+**Action:**
+- [ ] Install bundlesize:
+  ```bash
+  npm install --save-dev bundlesize
+  ```
+
+- [ ] Add to `package.json`:
+  ```json
+  {
+    "scripts": {
+      "check-bundle": "bundlesize"
+    },
+    "bundlesize": [
+      {
+        "path": ".next/static/chunks/pages/*.js",
+        "maxSize": "500 KB"
+      }
+    ]
+  }
+  ```
+
+- [ ] Add to GitHub Actions CI
+
+**Health Impact:** +1 point (Performance: 95 → 97)
+
+---
+
+#### 11. 🟢 Accessibility Audit
+**Status:** ⊡ NEEDS EXECUTION
+**Impact:** WCAG compliance (+0.5 health point)
+**Timeline:** **4 hours**
+
+**Action:**
+- [ ] Run axe DevTools on all pages
+- [ ] Fix color contrast issues (if any)
+- [ ] Test keyboard navigation
+- [ ] Add missing ARIA labels
+- [ ] Test with screen reader (VoiceOver/NVDA)
+
+**Health Impact:** +0.5 points (Accessibility: 95 → 98)
+
+---
+
+## 📊 Health Score Projection
+
+| Priority    | Task                | Health Impact | Cumulative Score |
+| ----------- | ------------------- | ------------- | ---------------- |
+| **Current** | -                   | -             | **72/100**       |
+| P0-1        | Rotate API Key      | +15           | 87/100           |
+| P0-2        | Fix Bundle Size     | +10           | 97/100           |
+| P0-3        | Rate Limiting       | +3            | 100/100 🎉        |
+| P1-5        | CSS/HTML Fixes      | +2            | **100/100** ✅    |
+| P1-6        | Remove Console Logs | +1            | **100/100** ✅    |
+| P1-7        | Test Coverage       | +2            | **100/100** ✅    |
+| P2-8        | Security Headers    | +1            | **100/100** ✅    |
+| P2-9        | .gitignore          | +0.5          | **100/100** ✅    |
+| P2-10       | Performance Budget  | +1            | **100/100** ✅    |
+| P2-11       | Accessibility       | +0.5          | **100/100** ✅    |
+
+**Note:** Tasks P0-1 through P0-3 are **REQUIRED** to hit 100/100. All other tasks provide redundancy and excellence beyond the threshold.
+
+---
+
+## ⏱️ Timeline to 100/100
+
+### Day 1 (Today - 8 hours)
+- ✅ Hour 1: Rotate API key + Git cleanup
+- ✅ Hours 2-6: Fix bundle size (Phase 1-2)
+- ✅ Hours 7-8: Implement rate limiting
+
+**End of Day 1: 100/100 Health Score** 🎯
+
+### Day 2 (Polish - 8 hours)
+- Hours 1-4: CSS/HTML validation fixes
+- Hours 5-6: Remove console logs + Sentry
+- Hours 7-8: Add API route tests
+
+### Day 3 (Excellence - 8 hours)
+- Hours 1-4: Increase test coverage to 80%
+- Hours 5-6: Security headers audit
+- Hours 7-8: Accessibility audit
+
+**End of Day 3: Bulletproof 100/100 + Future-Proof** 🚀
+
+---
+
+## 🎯 Success Criteria for 100/100
+
+### ✅ Code Quality (25/25 points)
+- [✓] 0 ESLint errors/warnings
+- [ ] 0 TypeScript errors
+- [ ] 0 inline styles
+- [ ] 0 HTML validation errors
+- [ ] >80% test coverage
+
+### ✅ Performance (25/25 points)
+- [ ] First Load JS < 500KB on all pages
+- [ ] Lighthouse Performance ≥95
+- [ ] LCP < 2.5s
+- [ ] CLS < 0.1
+- [ ] Performance budget enforced
+
+### ✅ Security (25/25 points)
+- [ ] No exposed API keys
+- [ ] Production rate limiting (Redis)
+- [ ] CSP headers strict
+- [ ] HTTPS enforced
+- [ ] No PII in logs
+
+### ✅ Testing (25/25 points)
+- [ ] >80% code coverage
+- [ ] All API routes tested
+- [ ] E2E tests for critical paths
+- [ ] No failing tests
+- [ ] CI/CD automated
+
+---
+
+## 🚨 Emergency Rollback Plan
+
+If any P0 task breaks functionality:
+
+```bash
+# Revert specific commit
+git revert <commit-hash>
+
+# Or rollback to last known good state
+git checkout <last-good-tag>
+vercel rollback
+
+# Verify functionality
+npm test
+npm run build
+npm run test:e2e
+```
+
+---
+
+#### 4. ✅ ESLint Errors - FIXED (2025-10-18)
 **Status:** COMPLETE
 **Impact:** Code quality, production readiness
 **Files Fixed:**
