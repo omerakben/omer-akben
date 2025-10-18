@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Skill Icon Mapping
  * Maps skill names to simple-icons or lucide-react icons
@@ -121,13 +123,16 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
     );
   }
 
+  // Only sanitize on client side (DOMPurify requires DOM)
+  const sanitizedSvg = typeof window !== "undefined"
+    ? DOMPurify.sanitize(svgString, { USE_PROFILES: { svg: true } })
+    : svgString;
+
   return (
     <div
       className={className}
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(svgString, {
-          USE_PROFILES: { svg: true }
-        })
+        __html: sanitizedSvg
       }}
     />
   );

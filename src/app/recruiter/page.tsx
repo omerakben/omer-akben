@@ -36,7 +36,8 @@ const tldr = {
   specialization: "Full-Stack Developer • AI Engineer • SDET",
   topSkills: facts.skills.languages
     .slice(0, 3)
-    .concat(facts.skills.frameworks.slice(0, 3)),
+    .concat(facts.skills.frontend.slice(0, 2))
+    .concat(facts.skills.aiml.slice(0, 2)),
   preferredRoles: facts.professional.workPreferences.roles,
   salary: "Competitive (Open to discussion)",
 };

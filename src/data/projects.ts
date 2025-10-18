@@ -39,6 +39,7 @@ export const projects: Project[] = [
     category: "web",
     featured: true,
     demoUrl: "https://www.northglassnc.com",
+    githubUrl: "https://github.com/omerakben/north-glass",
     status: "completed",
   },
   {
@@ -62,6 +63,7 @@ export const projects: Project[] = [
     featured: true,
     demoUrl:
       "https://elon-ai-agent.happyplant-fd188d6c.canadacentral.azurecontainerapps.io/docs",
+    githubUrl: "https://github.com/omerakben/elon-ai-agent",
     status: "completed",
   },
   {
@@ -83,6 +85,7 @@ export const projects: Project[] = [
     category: "tools",
     featured: true,
     demoUrl: "https://developer-cheat-sheets-ha3dfgvz4-omera.vercel.app",
+    githubUrl: "https://github.com/omerakben/developer-cheat-sheets",
     status: "completed",
   },
 
@@ -108,7 +111,7 @@ export const projects: Project[] = [
     featured: true,
     displayOrder: 1,
     demoUrl: "https://elon-ai-toolbox-mdxazqewk-omera.vercel.app",
-    githubUrl: "https://github.com/your-username/elon-ai-toolbox",
+    githubUrl: "https://github.com/omerakben/elon-ai-toolbox",
     status: "completed",
   },
   {
@@ -161,6 +164,7 @@ export const projects: Project[] = [
     category: "ai-ml",
     featured: false,
     demoUrl: "https://oteemo-ai-roadmap.vercel.app",
+    githubUrl: "https://github.com/omerakben/oteemo-ai-roadmap",
     status: "completed",
   },
 
@@ -185,6 +189,7 @@ export const projects: Project[] = [
     role: "AI",
     category: "ai-ml",
     featured: false,
+    githubUrl: "https://github.com/omerakben/tuel-chatbot",
     status: "completed",
   },
   {
@@ -209,6 +214,7 @@ export const projects: Project[] = [
     role: "AI",
     category: "ai-ml",
     featured: false,
+    githubUrl: "https://github.com/omerakben/ai-tutor",
     status: "in-progress",
   },
   {
@@ -231,6 +237,7 @@ export const projects: Project[] = [
     role: "Full-Stack",
     category: "tools",
     featured: false,
+    githubUrl: "https://github.com/omerakben/tuel",
     status: "in-progress",
   },
 ];
