@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChat } from "@ai-sdk/react";
-import { Send, Bot, User, AlertCircle, X } from "lucide-react";
+import { Send, Bot, User, AlertCircle, X, Briefcase, Zap, FileText, ExternalLink, ArrowRight, Github, Mail } from "lucide-react";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { ChatSidebarHeader } from "./chat-sidebar-header";
 import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useRouter } from "next/navigation";
 
 const suggestedQuestions = [
   "What problems do you solve with AI?",
@@ -24,7 +25,22 @@ const followUpQuestions = [
   "What's your recent work experience?",
 ];
 
+// Icon mapping for navigation links
+const getIconComponent = (iconName?: string) => {
+  const iconMap: Record<string, React.ElementType> = {
+    briefcase: Briefcase,
+    github: Github,
+    "external-link": ExternalLink,
+    "arrow-right": ArrowRight,
+    "file-text": FileText,
+    zap: Zap,
+    mail: Mail,
+  };
+  return iconMap[iconName || "arrow-right"] || ArrowRight;
+};
+
 export function ChatSidebar() {
+  const router = useRouter();
   const { isOpen, closeSidebar } = useChatSidebar();
   const [input, setInput] = useState("");
   const [showMessages, setShowMessages] = useState(false);
@@ -217,6 +233,16 @@ export function ChatSidebar() {
               ) : (
                 <div className="px-4 py-4 space-y-4">
                   {messages.map((message, index) => {
+                    // Debug logging
+                    if (message.role === "assistant") {
+                      console.log("🤖 Sidebar Assistant message:", {
+                        id: message.id,
+                        role: message.role,
+                        parts: message.parts,
+                        toolInvocations: (message as any).toolInvocations,
+                      });
+                    }
+
                     const textContent = message.parts
                       .filter((part) => part.type === "text")
                       .map((part) => ("text" in part ? part.text : ""))
@@ -304,6 +330,52 @@ export function ChatSidebar() {
                             >
                               {textContent}
                             </ReactMarkdown>
+
+                            {/* Navigation Links */}
+                            {message.role === "assistant" && message.parts && (() => {
+                              // Filter parts array for tool calls
+                              const toolParts = message.parts.filter((part: any) =>
+                                part.type === "tool-provide_navigation_links" && part.result
+                              );
+
+                              if (toolParts.length === 0) return null;
+
+                              return (
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {toolParts.map((toolPart: any, partIndex: number) => {
+                                    const result = toolPart.result as { success: boolean; data?: { links: Array<{ label: string; href: string; type: "internal" | "external" }> } };
+                                    if (!result.success || !result.data?.links) return null;
+
+                                    return result.data.links.map((link, linkIndex) => {
+                                      const Icon = getIconComponent();
+                                      const isExternal = link.type === "external";
+
+                                      return (
+                                        <button
+                                          key={`${partIndex}-${linkIndex}`}
+                                          type="button"
+                                          onClick={() => {
+                                            if (isExternal) {
+                                              window.open(link.href, "_blank", "noopener,noreferrer");
+                                            } else {
+                                              closeSidebar();
+                                              router.push(link.href);
+                                            }
+                                          }}
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
+                                        >
+                                          <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                            <Icon className="w-2.5 h-2.5 text-brand-primary" />
+                                          </div>
+                                          <span>{link.label}</span>
+                                          {isExternal && <ExternalLink className="w-2.5 h-2.5" />}
+                                        </button>
+                                      );
+                                    });
+                                  })}
+                                </div>
+                              );
+                            })()}
                           </div>
                           {message.role === "user" && (
                             <div className="flex-shrink-0">

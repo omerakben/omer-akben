@@ -1,7 +1,7 @@
 "use client";
 
 import type { UIMessage } from "ai";
-import { AlertCircle, Bot, Copy, RefreshCw, Send, User, X, Briefcase, Zap, FileText } from "lucide-react";
+import { AlertCircle, Bot, Copy, RefreshCw, Send, User, X, Briefcase, Zap, FileText, ExternalLink, ArrowRight, Github, Mail } from "lucide-react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -20,6 +20,20 @@ const followUpQuestions = [
   "Tell me more about your technical skills",
   "What's your recent work experience?",
 ];
+
+// Icon mapping for navigation links
+const getIconComponent = (iconName?: string) => {
+  const iconMap: Record<string, React.ElementType> = {
+    briefcase: Briefcase,
+    github: Github,
+    "external-link": ExternalLink,
+    "arrow-right": ArrowRight,
+    "file-text": FileText,
+    zap: Zap,
+    mail: Mail,
+  };
+  return iconMap[iconName || "arrow-right"] || ArrowRight;
+};
 
 interface ChatInterfaceProps {
   messages: UIMessage[];
@@ -247,6 +261,16 @@ export function ChatInterface({
           {/* Messages */}
           <AnimatePresence initial={false}>
             {messages.map((message, index) => {
+              // Debug logging
+              if (message.role === "assistant") {
+                console.log("🤖 Assistant message:", {
+                  id: message.id,
+                  role: message.role,
+                  parts: message.parts,
+                  toolInvocations: (message as any).toolInvocations,
+                });
+              }
+
               // Extract text from message parts
               const textContent = message.parts
                 .filter((part) => part.type === "text")
@@ -347,6 +371,53 @@ export function ChatInterface({
                         >
                           {textContent}
                         </ReactMarkdown>
+
+                        {/* Navigation Links */}
+                        {!isUser && message.parts && (() => {
+                          // Filter parts array for tool calls
+                          const toolParts = message.parts.filter((part: any) =>
+                            part.type === "tool-provide_navigation_links" && part.result
+                          );
+
+                          if (toolParts.length === 0) return null;
+
+                          return (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {toolParts.map((toolPart: any, partIndex: number) => {
+                                const result = toolPart.result as { success: boolean; data?: { links: Array<{ label: string; href: string; type: "internal" | "external" }> } };
+                                if (!result.success || !result.data?.links) return null;
+
+                                return result.data.links.map((link, linkIndex) => {
+                                  const Icon = getIconComponent();
+                                  const isExternal = link.type === "external";
+
+                                  return (
+                                    <motion.button
+                                      key={`${partIndex}-${linkIndex}`}
+                                      type="button"
+                                      onClick={() => {
+                                        if (isExternal) {
+                                          window.open(link.href, "_blank", "noopener,noreferrer");
+                                        } else {
+                                          router.push(link.href);
+                                        }
+                                      }}
+                                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
+                                    >
+                                      <div className="w-4 h-4 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <Icon className="w-3 h-3 text-brand-primary" />
+                                      </div>
+                                      <span>{link.label}</span>
+                                      {isExternal && <ExternalLink className="w-3 h-3" />}
+                                    </motion.button>
+                                  );
+                                });
+                              })}
+                            </div>
+                          );
+                        })()}
 
                         {/* Message Actions */}
                         {!isUser && hoveredMessageId === message.id && (

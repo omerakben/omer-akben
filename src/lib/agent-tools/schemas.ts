@@ -111,6 +111,42 @@ export const downloadCertificateOutputSchema = z.object({
   year: z.string().describe("Year certificate was issued"),
 });
 
+// provide_navigation_links tool schema
+export const provideNavigationLinksInputSchema = z.object({
+  links: z.array(
+    z.object({
+      label: z.string().describe("Button label text"),
+      href: z.string().describe("URL or path to navigate to"),
+      icon: z
+        .enum([
+          "briefcase",
+          "github",
+          "external-link",
+          "arrow-right",
+          "file-text",
+          "zap",
+          "mail",
+        ])
+        .optional()
+        .describe("Icon name from lucide-react"),
+      type: z
+        .enum(["internal", "external"])
+        .describe("internal for same-site navigation, external for new tab"),
+    })
+  ),
+});
+
+export const provideNavigationLinksOutputSchema = z.object({
+  links: z.array(
+    z.object({
+      label: z.string(),
+      href: z.string(),
+      icon: z.string().optional(),
+      type: z.enum(["internal", "external"]),
+    })
+  ),
+});
+
 // Type exports
 export type DownloadResumeInput = z.infer<typeof downloadResumeInputSchema>;
 export type DownloadResumeOutput = z.infer<typeof downloadResumeOutputSchema>;
@@ -125,4 +161,10 @@ export type DownloadCertificateInput = z.infer<
 >;
 export type DownloadCertificateOutput = z.infer<
   typeof downloadCertificateOutputSchema
+>;
+export type ProvideNavigationLinksInput = z.infer<
+  typeof provideNavigationLinksInputSchema
+>;
+export type ProvideNavigationLinksOutput = z.infer<
+  typeof provideNavigationLinksOutputSchema
 >;
