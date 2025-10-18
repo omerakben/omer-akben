@@ -113,6 +113,46 @@ claudedocs/                 # Claude Code documentation
 - ✅ Sidebar with quick actions
 - ✅ Test suite (72 unit tests + E2E setup)
 
+**AI SDK v5 Message Architecture** (Critical for Tool Rendering):
+- **Message Parts Array**: Tool invocations stored in `message.parts`, NOT in separate `toolInvocations` property
+- **Part Types**: `type: "text"`, `type: "step-start"`, `type: "tool-{toolName}"` (e.g., `type: "tool-provide_navigation_links"`)
+- **Tool Call Structure**: `{ type: "tool-provide_navigation_links", toolCallId: "...", result: {...} }`
+- **Rendering Pattern**: Filter `message.parts` array to find tool calls, then extract `result` data
+
+**Tool Invocation Rendering Pattern**:
+```tsx
+{/* Check message.parts for tool calls, NOT toolInvocations */}
+{!isUser && message.parts && (() => {
+  // Filter parts array for specific tool calls
+  const toolParts = message.parts.filter((part: any) =>
+    part.type === "tool-provide_navigation_links" && part.result
+  );
+
+  if (toolParts.length === 0) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {toolParts.map((toolPart: any, partIndex: number) => {
+        const result = toolPart.result as { success: boolean; data?: { links: Array<...> } };
+        if (!result.success || !result.data?.links) return null;
+
+        return result.data.links.map((link, linkIndex) => (
+          <button key={`${partIndex}-${linkIndex}`} {...}>
+            {link.label}
+          </button>
+        ));
+      })}
+    </div>
+  );
+})()}
+```
+
+**Important Notes**:
+- Use IIFE pattern `(() => { ... })()` for complex conditional rendering in JSX
+- Always check `part.result` exists before accessing data
+- `toolInvocations` property does NOT exist in AI SDK v5 - use `message.parts` array
+- Tool parts have format: `type: "tool-{toolName}"` (e.g., `"tool-provide_navigation_links"`)
+
 ### Key Design Patterns
 
 **1. 8-Mode Brightness System** (Critical Understanding Required)
@@ -404,6 +444,63 @@ curl -X POST http://localhost:3000/api/tools/download-resume \
 
 curl -X POST http://localhost:3000/api/tools/list-projects \
   -H "Content-Type: application/json" -d '{"category": "ai-ml", "limit": 5}'
+```
+
+**Debugging AI SDK v5 Tool Invocations**:
+
+**Problem**: Navigation buttons not appearing after AI response
+**Diagnosis Steps**:
+1. Open browser DevTools console while testing chat
+2. Look for console logs from chat components
+3. Check `message.parts` array structure:
+   ```javascript
+   console.log("🤖 Assistant message:", {
+     id: message.id,
+     role: message.role,
+     parts: message.parts,
+   });
+   ```
+
+**Expected Tool Call Structure**:
+```javascript
+{
+  id: "msg_...",
+  role: "assistant",
+  parts: [
+    { type: "text", text: "Here's the project..." },
+    {
+      type: "tool-provide_navigation_links",
+      toolCallId: "call_...",
+      result: {
+        success: true,
+        data: {
+          links: [
+            { label: "View North Glass", href: "/projects/north-glass", type: "internal" }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+**Common Issues**:
+1. **AI not invoking tool** → Check system prompt in `agent-knowledge-base.ts`, verify tool description is clear
+2. **`toolInvocations` is undefined** → This is expected in AI SDK v5, use `message.parts` instead
+3. **Empty `parts` array** → AI responded with text only, didn't invoke tool
+4. **Part exists but no `result`** → Tool call in progress, wait for streaming to complete
+5. **Rendering logic not triggering** → Verify filtering `part.type === "tool-{toolName}"` matches exactly
+
+**Debug Code Pattern**:
+```tsx
+// Add to chat components for debugging
+{message.parts && message.parts.forEach((part: any, idx: number) => {
+  console.log(`Part ${idx}:`, {
+    type: part.type,
+    hasResult: !!part.result,
+    result: part.result
+  });
+})}
 ```
 
 ## Quality Metrics
