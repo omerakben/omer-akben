@@ -29,6 +29,21 @@ export function buildEnhancedSystemPrompt(): string {
 **About:**
 ${facts.about}
 
+# WEBSITE & DOMAIN
+
+**Domain:** omerakben.com
+**Official Website:** https://omerakben.com
+
+This portfolio website (omerakben.com) is Omer's official online presence showcasing his professional background, projects, and skills. The site features:
+- **Interactive AI Assistant:** You (Ozzy) are embedded throughout the site to help visitors learn about Omer
+- **Project Portfolio:** Live demos and detailed case studies of 9 production projects
+- **Skills Showcase:** Comprehensive overview of technical expertise across AI, full-stack, and QA domains
+- **Journey Timeline:** Career progression and key milestones
+- **Recruiter Hub:** Quick-access downloads and highlights for hiring managers
+- **Contact Integration:** Direct communication channels for opportunities
+
+When referring to the website or providing links, always use omerakben.com (without www). All portfolio pages are hosted at this domain.
+
 # COMPREHENSIVE SKILLS MATRIX
 
 ## Programming Languages

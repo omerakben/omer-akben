@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, useRef, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChat } from "@ai-sdk/react";
 import { Send, Bot, User } from "lucide-react";
@@ -9,19 +9,27 @@ import { ChatSidebarHeader } from "./chat-sidebar-header";
 import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
 import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
 import { Button } from "@/components/ui/button";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const suggestedQuestions = [
   "What problems do you solve with AI?",
   "Show me your best projects",
 ];
 
+// Follow-up questions that appear after AI responses
+const followUpQuestions = [
+  "Tell me more about your technical skills",
+  "What's your recent work experience?",
+];
+
 export function ChatSidebar() {
   const { isOpen, closeSidebar } = useChatSidebar();
   const [input, setInput] = useState("");
   const [showMessages, setShowMessages] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status } = useChat({
-    api: "/api/chat",
     onError: (error) => {
       console.error("Chat error:", error);
     },
@@ -81,6 +89,11 @@ export function ChatSidebar() {
     }
   }, [isOpen]);
 
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -107,7 +120,7 @@ export function ChatSidebar() {
             aria-label="Chat with AI Ozzy"
           >
             {/* Header */}
-            <ChatSidebarHeader />
+            <ChatSidebarHeader messages={messages} />
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto">
@@ -138,42 +151,120 @@ export function ChatSidebar() {
                 </>
               ) : (
                 <div className="px-4 py-4 space-y-4">
-                  {messages.map((message) => {
+                  {messages.map((message, index) => {
                     const textContent = message.parts
                       .filter((part) => part.type === "text")
                       .map((part) => ("text" in part ? part.text : ""))
                       .join("");
 
+                    const isLastAssistantMessage =
+                      message.role === "assistant" &&
+                      index === messages.length - 1;
+
                     return (
-                      <div
-                        key={message.id}
-                        className={`flex gap-3 ${
-                          message.role === "user"
-                            ? "justify-end"
-                            : "justify-start"
-                        }`}
-                      >
-                        {message.role === "assistant" && (
-                          <div className="flex-shrink-0">
-                            <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                              <Bot className="w-4 h-4 text-brand-primary" />
-                            </div>
-                          </div>
-                        )}
+                      <div key={message.id} className="space-y-2">
                         <div
-                          className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
+                          className={`flex gap-3 ${
                             message.role === "user"
-                              ? "bg-brand-primary text-white"
-                              : "bg-surf-1 border border-border-line text-text-1"
+                              ? "justify-end"
+                              : "justify-start"
                           }`}
                         >
-                          <p className="whitespace-pre-wrap">{textContent}</p>
-                        </div>
-                        {message.role === "user" && (
-                          <div className="flex-shrink-0">
-                            <div className="w-8 h-8 rounded-full bg-surf-2 flex items-center justify-center">
-                              <User className="w-4 h-4 text-text-2" />
+                          {message.role === "assistant" && (
+                            <div className="flex-shrink-0">
+                              <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
+                                <Bot className="w-4 h-4 text-brand-primary" />
+                              </div>
                             </div>
+                          )}
+                          <div
+                            className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
+                              message.role === "user"
+                                ? "bg-brand-primary text-white"
+                                : "bg-surf-1 border border-border-line text-text-1"
+                            }`}
+                          >
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                a: ({ href, children }) => (
+                                  <a
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`underline hover:no-underline ${
+                                      message.role === "user"
+                                        ? "text-white"
+                                        : "text-brand-primary"
+                                    }`}
+                                  >
+                                    {children}
+                                  </a>
+                                ),
+                                p: ({ children }) => (
+                                  <p className="mb-2 last:mb-0">{children}</p>
+                                ),
+                                ul: ({ children }) => (
+                                  <ul className="list-disc ml-4 mb-2 space-y-1">
+                                    {children}
+                                  </ul>
+                                ),
+                                ol: ({ children }) => (
+                                  <ol className="list-decimal ml-4 mb-2 space-y-1">
+                                    {children}
+                                  </ol>
+                                ),
+                                li: ({ children }) => <li>{children}</li>,
+                                strong: ({ children }) => (
+                                  <strong className="font-semibold">
+                                    {children}
+                                  </strong>
+                                ),
+                                h1: ({ children }) => (
+                                  <h1 className="text-lg font-bold mb-2">
+                                    {children}
+                                  </h1>
+                                ),
+                                h2: ({ children }) => (
+                                  <h2 className="text-base font-bold mb-2">
+                                    {children}
+                                  </h2>
+                                ),
+                                h3: ({ children }) => (
+                                  <h3 className="text-sm font-bold mb-1">
+                                    {children}
+                                  </h3>
+                                ),
+                              }}
+                            >
+                              {textContent}
+                            </ReactMarkdown>
+                          </div>
+                          {message.role === "user" && (
+                            <div className="flex-shrink-0">
+                              <div className="w-8 h-8 rounded-full bg-surf-2 flex items-center justify-center">
+                                <User className="w-4 h-4 text-text-2" />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Follow-up questions after last assistant message */}
+                        {isLastAssistantMessage && !isLoading && (
+                          <div className="ml-11 space-y-2">
+                            <p className="text-xs text-text-3 mb-1">
+                              Suggested questions:
+                            </p>
+                            {followUpQuestions.map((question, qIndex) => (
+                              <button
+                                key={qIndex}
+                                type="button"
+                                onClick={() => handleSuggestedQuestion(question)}
+                                className="w-full text-left px-3 py-2 rounded-lg bg-surf-1 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-2 transition-all font-medium"
+                              >
+                                {question}
+                              </button>
+                            ))}
                           </div>
                         )}
                       </div>
@@ -201,6 +292,7 @@ export function ChatSidebar() {
                       </div>
                     </div>
                   )}
+                  <div ref={messagesEndRef} />
                 </div>
               )}
             </div>

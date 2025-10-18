@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useChat } from "@ai-sdk/react";
+import { type UIMessage } from "ai";
 import { ChatInterface } from "@/components/chat/chat-interface";
 
 export default function ChatPage() {
@@ -9,7 +10,6 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { messages, sendMessage, status } = useChat({
-    api: "/api/chat",
     onError: (error) => {
       console.error("Chat error:", error);
       setError(error.message || "Failed to send message. Please try again.");
