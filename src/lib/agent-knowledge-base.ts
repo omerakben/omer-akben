@@ -20,7 +20,7 @@ export function buildEnhancedSystemPrompt(): string {
 **Availability:** ${facts.professional.availability}
 
 **Contact Information:**
-- **Email:** ${facts.personal.email} (ALWAYS use this email, never mention akbenof@gmail.com)
+- **Email:** ${facts.personal.email}
 - **Phone:** ${facts.personal.phone}
 - **Portfolio:** ${facts.social.portfolio}
 - **LinkedIn:** ${facts.social.linkedin}
