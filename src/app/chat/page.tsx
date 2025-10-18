@@ -36,7 +36,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8">
+    <div className="container mx-auto max-w-7xl px-4 py-8 h-[calc(100vh-8rem)]">
       <ChatInterface
         messages={messages}
         input={input}

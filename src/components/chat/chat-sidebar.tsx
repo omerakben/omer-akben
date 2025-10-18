@@ -3,12 +3,13 @@
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChat } from "@ai-sdk/react";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, AlertCircle, X } from "lucide-react";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { ChatSidebarHeader } from "./chat-sidebar-header";
 import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
 import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -27,11 +28,18 @@ export function ChatSidebar() {
   const { isOpen, closeSidebar } = useChatSidebar();
   const [input, setInput] = useState("");
   const [showMessages, setShowMessages] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastFailedMessage, setLastFailedMessage] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status } = useChat({
     onError: (error) => {
       console.error("Chat error:", error);
+      setError(error.message || "Failed to send message. Please check your internet connection.");
+    },
+    onFinish: () => {
+      setError(null); // Clear errors on success
+      setLastFailedMessage(""); // Clear failed message on success
     },
   });
 
@@ -44,6 +52,7 @@ export function ChatSidebar() {
     const userMessage = input.trim();
     setInput("");
     setShowMessages(true);
+    setError(null); // Clear previous errors
 
     try {
       await sendMessage({
@@ -51,17 +60,41 @@ export function ChatSidebar() {
       });
     } catch (err) {
       console.error("Error sending message:", err);
+      setError("Failed to send message. Please try again.");
+      setLastFailedMessage(userMessage); // Save message for retry
+      setInput(userMessage); // Restore input for user to retry
+    }
+  };
+
+  const handleRetry = async () => {
+    if (!lastFailedMessage.trim()) return;
+
+    setError(null);
+    setInput("");
+
+    try {
+      await sendMessage({
+        text: lastFailedMessage,
+      });
+    } catch (err) {
+      console.error("Error retrying message:", err);
+      setError("Failed to send message. Please try again.");
+      setInput(lastFailedMessage); // Restore input again
     }
   };
 
   const handleSuggestedQuestion = async (question: string) => {
     setShowMessages(true);
+    setError(null); // Clear previous errors
     try {
       await sendMessage({
         text: question,
       });
     } catch (err) {
       console.error("Error sending suggested question:", err);
+      setError("Failed to send message. Please try again.");
+      setLastFailedMessage(question); // Save for retry
+      setInput(question); // Show in input
     }
   };
 
@@ -121,6 +154,38 @@ export function ChatSidebar() {
           >
             {/* Header */}
             <ChatSidebarHeader />
+
+            {/* Error Alert */}
+            {error && (
+              <div className="px-4 pt-4">
+                <Alert variant="destructive" className="mb-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="flex items-center justify-between gap-2">
+                    <span className="flex-1">{error}</span>
+                    <div className="flex items-center gap-1">
+                      {lastFailedMessage && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleRetry}
+                          className="h-7 px-2 text-xs"
+                        >
+                          Retry
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setError(null)}
+                        className="h-7 w-7 p-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              </div>
+            )}
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto">
