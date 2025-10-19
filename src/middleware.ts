@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// TODO: Uncomment when Upstash Redis is configured (P0-2 task)
-// import { apiRateLimit, chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
-
-// In-memory rate limiting (temporary until Upstash Redis is implemented)
-const FALLBACK_RATE_LIMIT = {
-  windowMs: 60 * 1000, // 1 minute
-  max: 30, // 30 requests per minute per IP
-};
-
-const rateLimitMap = new Map<string, number[]>();
+import { apiRateLimit, chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
 
 function getRateLimitKey(request: NextRequest): string {
   // Use IP address from x-forwarded-for header or fallback to anonymous
@@ -17,74 +8,51 @@ function getRateLimitKey(request: NextRequest): string {
   return ip;
 }
 
-function fallbackRateLimitCheck(key: string): {
-  success: boolean;
-  remaining: number;
-} {
-  const now = Date.now();
-  const windowStart = now - FALLBACK_RATE_LIMIT.windowMs;
-
-  // Get existing requests for this key
-  const requests = rateLimitMap.get(key) || [];
-
-  // Filter out requests outside the current window
-  const recentRequests = requests.filter(
-    (timestamp) => timestamp > windowStart
-  );
-
-  // Update the map with filtered requests
-  rateLimitMap.set(key, recentRequests);
-
-  // Check if rate limit exceeded
-  if (recentRequests.length >= FALLBACK_RATE_LIMIT.max) {
-    return { success: false, remaining: 0 };
-  }
-
-  // Add current request timestamp
-  recentRequests.push(now);
-  rateLimitMap.set(key, recentRequests);
-
-  return {
-    success: true,
-    remaining: FALLBACK_RATE_LIMIT.max - recentRequests.length,
-  };
-}
-
 export async function middleware(request: NextRequest) {
   // Only apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const ip = getRateLimitKey(request);
 
-    // TODO: When Upstash Redis is configured, use Redis-based rate limiting
-    // For now, using in-memory fallback for all routes
-    const result = fallbackRateLimitCheck(ip);
-
-    if (!result.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Too many requests. Please try again later.",
-        },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": "60",
-            "X-RateLimit-Limit": FALLBACK_RATE_LIMIT.max.toString(),
-            "X-RateLimit-Remaining": "0",
-          },
-        }
-      );
+    // Select rate limiter based on route
+    let rateLimit;
+    if (request.nextUrl.pathname.startsWith("/api/chat")) {
+      rateLimit = chatRateLimit;
+    } else if (request.nextUrl.pathname.startsWith("/api/tools/")) {
+      rateLimit = toolsRateLimit;
+    } else {
+      rateLimit = apiRateLimit;
     }
 
-    // Add rate limit headers to successful responses
-    const response = NextResponse.next();
-    response.headers.set(
-      "X-RateLimit-Limit",
-      FALLBACK_RATE_LIMIT.max.toString()
-    );
-    response.headers.set("X-RateLimit-Remaining", result.remaining.toString());
+    // Apply rate limiting if Redis is configured
+    if (rateLimit) {
+      const result = await rateLimit.limit(ip);
 
-    return response;
+      if (!result.success) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Too many requests. Please try again later.",
+          },
+          {
+            status: 429,
+            headers: {
+              "Retry-After": "60",
+              "X-RateLimit-Limit": result.limit.toString(),
+              "X-RateLimit-Remaining": "0",
+              "X-RateLimit-Reset": result.reset.toString(),
+            },
+          }
+        );
+      }
+
+      // Add rate limit headers to successful responses
+      const response = NextResponse.next();
+      response.headers.set("X-RateLimit-Limit", result.limit.toString());
+      response.headers.set("X-RateLimit-Remaining", result.remaining.toString());
+      response.headers.set("X-RateLimit-Reset", result.reset.toString());
+
+      return response;
+    }
   }
 
   return NextResponse.next();

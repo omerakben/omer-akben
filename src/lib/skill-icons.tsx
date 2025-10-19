@@ -5,7 +5,7 @@
  * Maps skill names to simple-icons or lucide-react icons
  */
 
-import * as SimpleIcons from "simple-icons";
+import { getIconBySlug } from "@/lib/icon-manifest";
 import DOMPurify from "dompurify";
 
 // Map skill names to simple-icons slugs
@@ -85,9 +85,8 @@ export function getSkillIcon(skillName: string): string | null {
   if (!iconSlug) return null;
 
   try {
-    // Get icon from simple-icons - dynamic lookup requires any cast
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const icon = (SimpleIcons as any)[`si${iconSlug.charAt(0).toUpperCase()}${iconSlug.slice(1).replace(/-/g, "")}`];
+    // Get icon from manifest (selective simple-icons imports)
+    const icon = getIconBySlug(iconSlug);
     if (!icon) return null;
 
     return `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
