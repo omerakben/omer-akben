@@ -650,4 +650,13 @@ html {
       transform: none;
     }
   }
+
+  /* Animation delay utilities */
+  .animate-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animate-delay-400 {
+    animation-delay: 0.4s;
+  }
 }
