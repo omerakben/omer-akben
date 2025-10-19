@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiRateLimit, chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
+// TODO: Uncomment when Upstash Redis is configured (P0-2 task)
+// import { apiRateLimit, chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
 
-// Fallback in-memory rate limiting for development (when Redis is not configured)
+// In-memory rate limiting (temporary until Upstash Redis is implemented)
 const FALLBACK_RATE_LIMIT = {
   windowMs: 60 * 1000, // 1 minute
   max: 30, // 30 requests per minute per IP
@@ -27,7 +28,9 @@ function fallbackRateLimitCheck(key: string): {
   const requests = rateLimitMap.get(key) || [];
 
   // Filter out requests outside the current window
-  const recentRequests = requests.filter((timestamp) => timestamp > windowStart);
+  const recentRequests = requests.filter(
+    (timestamp) => timestamp > windowStart
+  );
 
   // Update the map with filtered requests
   rateLimitMap.set(key, recentRequests);
@@ -52,71 +55,36 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const ip = getRateLimitKey(request);
 
-    // Choose rate limiter based on path
-    let limiter = apiRateLimit;
-    if (request.nextUrl.pathname.startsWith("/api/chat")) {
-      limiter = chatRateLimit;
-    } else if (request.nextUrl.pathname.startsWith("/api/tools")) {
-      limiter = toolsRateLimit;
-    }
+    // TODO: When Upstash Redis is configured, use Redis-based rate limiting
+    // For now, using in-memory fallback for all routes
+    const result = fallbackRateLimitCheck(ip);
 
-    // Use Redis-based rate limiting if available, otherwise fallback to in-memory
-    if (limiter) {
-      const { success, reset } = await limiter.limit(ip);
-
-      if (!success) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Too many requests. Please try again later.",
+    if (!result.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Too many requests. Please try again later.",
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": "60",
+            "X-RateLimit-Limit": FALLBACK_RATE_LIMIT.max.toString(),
+            "X-RateLimit-Remaining": "0",
           },
-          {
-            status: 429,
-            headers: {
-              "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
-              "X-RateLimit-Limit": limiter === chatRateLimit ? "30" : limiter === toolsRateLimit ? "60" : "100",
-              "X-RateLimit-Remaining": "0",
-            },
-          }
-        );
-      }
-
-      // Add rate limit headers to successful responses
-      const response = NextResponse.next();
-      response.headers.set(
-        "X-RateLimit-Limit",
-        limiter === chatRateLimit ? "30" : limiter === toolsRateLimit ? "60" : "100"
+        }
       );
-
-      return response;
-    } else {
-      // Fallback to in-memory rate limiting for development
-      const result = fallbackRateLimitCheck(ip);
-
-      if (!result.success) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Too many requests. Please try again later.",
-          },
-          {
-            status: 429,
-            headers: {
-              "Retry-After": "60",
-              "X-RateLimit-Limit": FALLBACK_RATE_LIMIT.max.toString(),
-              "X-RateLimit-Remaining": "0",
-            },
-          }
-        );
-      }
-
-      // Add rate limit headers to successful responses
-      const response = NextResponse.next();
-      response.headers.set("X-RateLimit-Limit", FALLBACK_RATE_LIMIT.max.toString());
-      response.headers.set("X-RateLimit-Remaining", result.remaining.toString());
-
-      return response;
     }
+
+    // Add rate limit headers to successful responses
+    const response = NextResponse.next();
+    response.headers.set(
+      "X-RateLimit-Limit",
+      FALLBACK_RATE_LIMIT.max.toString()
+    );
+    response.headers.set("X-RateLimit-Remaining", result.remaining.toString());
+
+    return response;
   }
 
   return NextResponse.next();
