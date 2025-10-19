@@ -36,12 +36,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div
-      className="h-[calc(100vh-4rem)] w-full"
-      style={{
-        background: `linear-gradient(to bottom, var(--chat-gradient-from), var(--chat-gradient-to))`,
-      }}
-    >
+    <div className="h-[calc(100vh-4rem)] w-full bg-gradient-to-b from-[var(--chat-gradient-from)] to-[var(--chat-gradient-to)]">
       <ChatInterface
         messages={messages}
         input={input}

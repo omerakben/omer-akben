@@ -233,15 +233,6 @@ export function ChatSidebar() {
               ) : (
                 <div className="px-4 py-4 space-y-4">
                   {messages.map((message, index) => {
-                    // Debug logging
-                    if (message.role === "assistant") {
-                      console.log("🤖 Sidebar Assistant message:", {
-                        id: message.id,
-                        role: message.role,
-                        parts: message.parts,
-                      });
-                    }
-
                     const textContent = message.parts
                       .filter((part) => part.type === "text")
                       .map((part) => ("text" in part ? part.text : ""))
@@ -416,14 +407,8 @@ export function ChatSidebar() {
                       <div className="bg-surf-1 border border-border-line rounded-lg px-3 py-2">
                         <div className="flex gap-1">
                           <span className="w-2 h-2 rounded-full bg-text-3 animate-bounce" />
-                          <span
-                            className="w-2 h-2 rounded-full bg-text-3 animate-bounce"
-                            style={{ animationDelay: "0.2s" }}
-                          />
-                          <span
-                            className="w-2 h-2 rounded-full bg-text-3 animate-bounce"
-                            style={{ animationDelay: "0.4s" }}
-                          />
+                          <span className="w-2 h-2 rounded-full bg-text-3 animate-bounce animate-delay-200" />
+                          <span className="w-2 h-2 rounded-full bg-text-3 animate-bounce animate-delay-400" />
                         </div>
                       </div>
                     </div>

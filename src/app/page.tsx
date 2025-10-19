@@ -1,4 +1,4 @@
-import { HeroSection } from "@/components/hero-section";
+import { HeroSectionStatic } from "@/components/hero-section-static";
 import { ProjectCard } from "@/components/project-card";
 import { TechMarqueeSection } from "@/components/tech-marquee";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -49,7 +49,7 @@ export default function HomePage() {
       />
 
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSectionStatic />
 
       {/* Technology Marquee */}
       <TechMarqueeSection />

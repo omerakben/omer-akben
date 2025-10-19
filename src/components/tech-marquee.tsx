@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import * as SimpleIcons from "simple-icons";
+import { getIconBySlug } from "@/lib/icon-manifest";
 import DOMPurify from "dompurify";
 import type { Technology } from "@/data/technologies";
 import { CustomTechIcons } from "@/components/custom-tech-icons";
@@ -179,9 +179,8 @@ function resolveSimpleIconSvg(iconName: string) {
     return CustomTechIcons[customIconMap[iconName]];
   }
 
-  // Fall back to simple-icons
-  const normalizedKey = `si${iconName.charAt(0).toUpperCase()}${iconName.slice(1)}` as keyof typeof SimpleIcons;
-  const icon = SimpleIcons[normalizedKey];
+  // Fall back to icon manifest (selective simple-icons imports)
+  const icon = getIconBySlug(iconName);
 
   // Type guard: check if icon is a SimpleIcon object (has an svg property)
   if (icon && typeof icon === 'object' && 'svg' in icon) {

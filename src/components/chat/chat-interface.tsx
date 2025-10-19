@@ -261,15 +261,6 @@ export function ChatInterface({
           {/* Messages */}
           <AnimatePresence initial={false}>
             {messages.map((message, index) => {
-              // Debug logging
-              if (message.role === "assistant") {
-                console.log("🤖 Assistant message:", {
-                  id: message.id,
-                  role: message.role,
-                  parts: message.parts,
-                });
-              }
-
               // Extract text from message parts
               const textContent = message.parts
                 .filter((part) => part.type === "text")

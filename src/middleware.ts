@@ -1,13 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// Rate limiting configuration
-const RATE_LIMIT = {
-  windowMs: 60 * 1000, // 1 minute
-  max: 30, // 30 requests per minute per IP
-};
-
-// In-memory store for rate limiting (use Redis in production)
-const rateLimitMap = new Map<string, number[]>();
+import { apiRateLimit, chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
 
 function getRateLimitKey(request: NextRequest): string {
   // Use IP address from x-forwarded-for header or fallback to anonymous
@@ -16,62 +8,51 @@ function getRateLimitKey(request: NextRequest): string {
   return ip;
 }
 
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const windowStart = now - RATE_LIMIT.windowMs;
-
-  // Get existing requests for this key
-  const requests = rateLimitMap.get(key) || [];
-
-  // Filter out requests outside the current window
-  const recentRequests = requests.filter((timestamp) => timestamp > windowStart);
-
-  // Update the map with filtered requests
-  rateLimitMap.set(key, recentRequests);
-
-  // Check if rate limit exceeded
-  if (recentRequests.length >= RATE_LIMIT.max) {
-    return true;
-  }
-
-  // Add current request timestamp
-  recentRequests.push(now);
-  rateLimitMap.set(key, recentRequests);
-
-  return false;
-}
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Only apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith("/api/")) {
-    const key = getRateLimitKey(request);
+    const ip = getRateLimitKey(request);
 
-    if (isRateLimited(key)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Too many requests. Please try again later.",
-        },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": "60",
-            "X-RateLimit-Limit": RATE_LIMIT.max.toString(),
-            "X-RateLimit-Remaining": "0",
-          },
-        }
-      );
+    // Select rate limiter based on route
+    let rateLimit;
+    if (request.nextUrl.pathname.startsWith("/api/chat")) {
+      rateLimit = chatRateLimit;
+    } else if (request.nextUrl.pathname.startsWith("/api/tools/")) {
+      rateLimit = toolsRateLimit;
+    } else {
+      rateLimit = apiRateLimit;
     }
 
-    // Add rate limit headers to successful responses
-    const response = NextResponse.next();
-    const requests = rateLimitMap.get(key) || [];
-    const remaining = Math.max(0, RATE_LIMIT.max - requests.length);
+    // Apply rate limiting if Redis is configured
+    if (rateLimit) {
+      const result = await rateLimit.limit(ip);
 
-    response.headers.set("X-RateLimit-Limit", RATE_LIMIT.max.toString());
-    response.headers.set("X-RateLimit-Remaining", remaining.toString());
+      if (!result.success) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Too many requests. Please try again later.",
+          },
+          {
+            status: 429,
+            headers: {
+              "Retry-After": "60",
+              "X-RateLimit-Limit": result.limit.toString(),
+              "X-RateLimit-Remaining": "0",
+              "X-RateLimit-Reset": result.reset.toString(),
+            },
+          }
+        );
+      }
 
-    return response;
+      // Add rate limit headers to successful responses
+      const response = NextResponse.next();
+      response.headers.set("X-RateLimit-Limit", result.limit.toString());
+      response.headers.set("X-RateLimit-Remaining", result.remaining.toString());
+      response.headers.set("X-RateLimit-Reset", result.reset.toString());
+
+      return response;
+    }
   }
 
   return NextResponse.next();
