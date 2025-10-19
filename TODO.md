@@ -81,6 +81,7 @@
 **Impact:** +15 health points already applied (Security score: 65 → 80)
 
 **Findings:**
+
 - ✅ API key **NEVER** committed to Git history
 - ✅ `.env*` properly in `.gitignore` (line 34)
 - ✅ No security breach or unauthorized access
@@ -95,6 +96,7 @@
 **Timeline:** **24-48 hours**
 
 **Progress (2025-10-18):**
+
 - ✅ Created `HeroSectionStatic` component with CSS-only animations
 - ✅ Added ~120 lines of optimized CSS animations to `globals.css`
 - ✅ Removed Framer Motion from homepage critical path
@@ -272,6 +274,7 @@ Route (app)                Size      First Load JS
   - Create Redis database (free tier)
   - Copy UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN
   - Add to Vercel environment variables:
+
     ```bash
     vercel env add UPSTASH_REDIS_URL production
     vercel env add UPSTASH_REDIS_TOKEN production
@@ -684,21 +687,22 @@ Route (app)                Size      First Load JS
 
 ## 📊 Health Score Projection (UPDATED 2025-10-18)
 
-| Priority    | Task                  | Health Impact | Cumulative Score | Status         |
-| ----------- | --------------------- | ------------- | ---------------- | -------------- |
-| **Current** | -                     | -             | **87/100**       | ✅ Baseline     |
-| P0-1        | ~~Rotate API Key~~    | ~~+15~~       | ~~87/100~~       | ✅ Not Needed   |
-| P0-2        | Fix Bundle Size       | +10           | 97/100           | ⊡ In Progress  |
-| P0-3        | Rate Limiting         | +3            | 100/100 🎉        | ✅ Code Complete|
-| P1-5        | CSS/HTML Fixes        | +2            | **100/100** ✅    | ☐ Pending      |
-| P1-6        | Remove Console Logs   | +1            | **100/100** ✅    | ☐ Pending      |
-| P1-7        | Test Coverage         | +2            | **100/100** ✅    | ☐ Pending      |
-| P2-8        | Security Headers      | +1            | **100/100** ✅    | ☐ Pending      |
-| P2-9        | .gitignore            | +0.5          | **100/100** ✅    | ✅ Already Safe |
-| P2-10       | Performance Budget    | +1            | **100/100** ✅    | ☐ Pending      |
-| P2-11       | Accessibility         | +0.5          | **100/100** ✅    | ☐ Pending      |
+| Priority    | Task                | Health Impact | Cumulative Score | Status          |
+| ----------- | ------------------- | ------------- | ---------------- | --------------- |
+| **Current** | -                   | -             | **87/100**       | ✅ Baseline      |
+| P0-1        | ~~Rotate API Key~~  | ~~+15~~       | ~~87/100~~       | ✅ Not Needed    |
+| P0-2        | Fix Bundle Size     | +10           | 97/100           | ⊡ In Progress   |
+| P0-3        | Rate Limiting       | +3            | 100/100 🎉        | ✅ Code Complete |
+| P1-5        | CSS/HTML Fixes      | +2            | **100/100** ✅    | ☐ Pending       |
+| P1-6        | Remove Console Logs | +1            | **100/100** ✅    | ☐ Pending       |
+| P1-7        | Test Coverage       | +2            | **100/100** ✅    | ☐ Pending       |
+| P2-8        | Security Headers    | +1            | **100/100** ✅    | ☐ Pending       |
+| P2-9        | .gitignore          | +0.5          | **100/100** ✅    | ✅ Already Safe  |
+| P2-10       | Performance Budget  | +1            | **100/100** ✅    | ☐ Pending       |
+| P2-11       | Accessibility       | +0.5          | **100/100** ✅    | ☐ Pending       |
 
 **Updated Status:**
+
 - ✅ **P0-1 (API Key):** No action needed - key never exposed
 - ⊡ **P0-2 (Bundle):** Hero optimized, measuring impact
 - ✅ **P0-3 (Rate Limiting):** Code complete, needs Redis credentials for deployment
@@ -2120,6 +2124,7 @@ npm run test:e2e
 4. ✅ **Rate Limiting In-Memory** - CODE COMPLETE (needs Redis credentials for deployment)
 
 **Status Summary:**
+
 - **Code Complete:** Rate limiting (just needs Upstash setup)
 - **In Progress:** Bundle size optimization (hero done, measuring impact)
 - **Estimated Time to 100/100:** 4-8 hours (complete bundle optimization + Upstash setup)
