@@ -135,15 +135,14 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
 
     // Use the coordinator agent to stream the workflow output
     // Pass workflow output as system instructions, not as a message
+    // Note: Memory parameter removed to prevent Mastra's auto-injection of "prepare-memory-step"
+    // which was causing intermittent "Invalid system message format" errors
     const stream = await this.stream(workflowMessages, {
       instructions: {
         role: "system",
         content: `Present the following pre-formatted workflow results exactly as provided, without modification or additional commentary:\n\n${workflowOutput}`
       },
-      memory: {
-        thread: { id: context.threadId },
-        resource: "portfolio-chat",
-      },
+      // Memory removed - workflow results are pre-formatted and don't need memory context
       format: "aisdk" as const,
     });
 

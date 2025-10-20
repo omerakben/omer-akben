@@ -3,6 +3,7 @@ import { z } from "zod";
 import { loadThreadMessages } from "@/lib/mastra/memory/checkpointer";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
+import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
 
 export const maxDuration = 30;
 
@@ -83,10 +84,14 @@ export async function POST(req: Request) {
     return stream.toUIMessageStreamResponse({
       onFinish: async ({ messages: final }) => {
         const finalMessages = final ?? messages;
+        const effectiveUserId = userId ?? "anonymous";
+
         try {
+          // Persist conversation memory and extract user facts in parallel
           await Promise.all([
             memoryManager.saveSTM(chatId, finalMessages),
             memoryManager.saveLTM(chatId, finalMessages),
+            extractAndSaveFacts(effectiveUserId, finalMessages),
           ]);
         } catch (error) {
           console.error("[ChatRoute] Failed to persist memory", error);

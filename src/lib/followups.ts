@@ -13,6 +13,7 @@ import {
   TOPIC_FOLLOWUPS,
   containsAnyKeyword,
 } from '@/config/assistantFaq';
+import type { SemanticMemory } from '@/lib/memory/types';
 
 // ============================================================================
 // INTENT CLASSIFICATION
@@ -52,6 +53,136 @@ export function detectTopics(message: string): Topic[] {
   }
 
   return topics;
+}
+
+// ============================================================================
+// PERSONALIZED FOLLOW-UP GENERATION
+// ============================================================================
+
+/**
+ * Personalized follow-up templates based on semantic memory
+ * Maps user context to relevant follow-up questions
+ */
+const PERSONALIZED_FOLLOWUPS = {
+  recruiter: {
+    general: [
+      "Which projects best demonstrate leadership at scale?",
+      "Tell me about team collaboration in your projects",
+      "What metrics did you achieve in production systems?",
+    ],
+    withInterests: (interests: string[]) => [
+      `Which projects use ${interests[0]}?`,
+      `Tell me about production experience with ${interests.slice(0, 2).join(" and ")}`,
+    ],
+    jobSearch: [
+      "What kind of engineering team are you looking for?",
+      "Which projects best showcase relevant skills for your search?",
+    ],
+  },
+  developer: {
+    junior: [
+      "Which projects are good for learning ${interests}?",
+      "Can you explain the architecture of a beginner-friendly project?",
+      "What resources helped you learn these technologies?",
+    ],
+    mid: [
+      "How did you handle scalability in your projects?",
+      "Tell me about debugging complex issues",
+      "What's your approach to code quality and testing?",
+    ],
+    senior: [
+      "What architectural decisions did you make in ${project}?",
+      "How did you mentor team members on these projects?",
+      "Tell me about system design trade-offs you considered",
+    ],
+    withInterests: (interests: string[]) => [
+      `Tell me about ${interests[0]} implementation details`,
+      `What challenges did you solve with ${interests.slice(0, 2).join(" and ")}?`,
+    ],
+  },
+  hiring_manager: [
+    "How do you evaluate technical candidates?",
+    "Tell me about building high-performing engineering teams",
+    "What's your approach to technical leadership?",
+  ],
+  student: [
+    "Which projects are best for learning?",
+    "Can you recommend resources for getting started?",
+    "What would you advise someone starting their career?",
+  ],
+  founder: [
+    "How do you balance technical work and business needs?",
+    "Tell me about scaling challenges you've faced",
+    "What's your approach to product development?",
+  ],
+};
+
+/**
+ * Generate personalized follow-ups based on semantic memory
+ * Returns null if no semantic memory or can't generate good personalized follow-ups
+ */
+function generatePersonalizedFollowups(
+  semanticMemory: SemanticMemory | null,
+  recentlyShown: string[]
+): string[] | null {
+  if (!semanticMemory) {
+    return null;
+  }
+
+  const { role, experienceLevel, interests, techFocus, jobSearch } = semanticMemory;
+
+  // Skip if role is unknown and no other context
+  if (role === 'unknown' && interests.length === 0 && techFocus.length === 0) {
+    return null;
+  }
+
+  const followups: string[] = [];
+
+  // Role-based personalization
+  if (role === 'recruiter') {
+    if (jobSearch) {
+      followups.push(...PERSONALIZED_FOLLOWUPS.recruiter.jobSearch);
+    }
+    if (interests.length > 0) {
+      followups.push(...PERSONALIZED_FOLLOWUPS.recruiter.withInterests(interests));
+    }
+    followups.push(...PERSONALIZED_FOLLOWUPS.recruiter.general);
+  } else if (role === 'developer') {
+    if (interests.length > 0) {
+      followups.push(...PERSONALIZED_FOLLOWUPS.developer.withInterests(interests));
+    }
+    if (experienceLevel === 'junior') {
+      followups.push(...PERSONALIZED_FOLLOWUPS.developer.junior);
+    } else if (experienceLevel === 'mid') {
+      followups.push(...PERSONALIZED_FOLLOWUPS.developer.mid);
+    } else if (experienceLevel === 'senior' || experienceLevel === 'lead') {
+      followups.push(...PERSONALIZED_FOLLOWUPS.developer.senior);
+    }
+  } else if (role === 'hiring_manager') {
+    followups.push(...PERSONALIZED_FOLLOWUPS.hiring_manager);
+  } else if (role === 'student') {
+    followups.push(...PERSONALIZED_FOLLOWUPS.student);
+  } else if (role === 'founder') {
+    followups.push(...PERSONALIZED_FOLLOWUPS.founder);
+  }
+
+  // Tech focus-based personalization (if no role-specific questions added yet)
+  if (followups.length === 0 && techFocus.length > 0) {
+    followups.push(
+      `Tell me about your ${techFocus[0]} expertise`,
+      `Which projects best demonstrate ${techFocus[0]} skills?`
+    );
+  }
+
+  // Filter out recently shown
+  const available = followups.filter(q => !recentlyShown.includes(q));
+
+  // Return 2 personalized follow-ups if available
+  if (available.length >= 2) {
+    return [available[0], available[1]];
+  }
+
+  return null;
 }
 
 // ============================================================================
@@ -172,19 +303,29 @@ async function generateLLMFollowups(
 
 /**
  * Generate 2 follow-up questions after assistant message
- * Uses LLM-first approach with heuristic fallback
+ * Uses personalized → LLM → heuristic cascade approach
  *
  * @param userMessage - Last user message
  * @param assistantMessage - Last assistant message
  * @param recentlyShown - Array of recently shown follow-ups to avoid duplicates
+ * @param semanticMemory - Optional user semantic memory for personalization
  * @returns Array of exactly 2 follow-up question strings
  */
 export async function getFollowups(
   userMessage: string,
   assistantMessage: string,
-  recentlyShown: string[] = []
+  recentlyShown: string[] = [],
+  semanticMemory: SemanticMemory | null = null
 ): Promise<string[]> {
-  // Try LLM first if enabled
+  // Try personalized follow-ups first if semantic memory available
+  if (semanticMemory) {
+    const personalizedFollowups = generatePersonalizedFollowups(semanticMemory, recentlyShown);
+    if (personalizedFollowups) {
+      return personalizedFollowups;
+    }
+  }
+
+  // Try LLM if enabled
   const llmFollowups = await generateLLMFollowups(userMessage, assistantMessage, recentlyShown);
   if (llmFollowups) {
     return llmFollowups;
