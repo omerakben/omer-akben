@@ -124,25 +124,21 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
       workflowOutput += chunk;
     }
 
-    // Create a modified history with the workflow output as the system message
+    // Create a user message requesting presentation of the workflow results
     const workflowMessages: UIMessage[] = [
-      {
-        id: `workflow-${Date.now()}`,
-        role: "system" as const,
-        parts: [{ type: "text" as const, text: workflowOutput }],
-      },
       {
         id: `workflow-user-${Date.now()}`,
         role: "user" as const,
-        parts: [{ type: "text" as const, text: "Present the above information." }],
+        parts: [{ type: "text" as const, text: "Present the workflow results that follow." }],
       },
     ];
 
     // Use the coordinator agent to stream the workflow output
+    // Pass workflow output as system instructions, not as a message
     const stream = await this.stream(workflowMessages, {
       instructions: {
         role: "system",
-        content: "Present the pre-formatted workflow results exactly as provided in the context, without modification or additional commentary."
+        content: `Present the following pre-formatted workflow results exactly as provided, without modification or additional commentary:\n\n${workflowOutput}`
       },
       memory: {
         thread: { id: context.threadId },
