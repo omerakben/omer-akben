@@ -2,582 +2,290 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## TL;DR - Quick Start
+## TL;DR
 
-**What**: Personal portfolio site with embedded AI assistant
-**Stack**: Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4 + Turbopack + AI SDK
-**Key Feature**: 8-mode brightness system (-3 to +3 plus auto)
+Personal portfolio with AI assistant powered by Vercel AI SDK. Next.js 15 + React 19 + TypeScript + Tailwind 4.
 
-**Essential Commands**:
+**Commands**:
 ```bash
-npm run dev                      # Dev server (http://localhost:3000)
-npm test                         # Run Vitest unit tests (72 tests)
-npm test -- --watch              # TDD watch mode
-npm run test:e2e                 # Playwright E2E tests
-npm run lint                     # ESLint check
-npx tsc --noEmit                 # TypeScript check
-npm run build                    # Production build + quality gates
-npm run analyze                  # Bundle size analysis
+npm run dev                                      # Dev server (Turbopack)
+npm test                                         # Unit tests (run all)
+npm test -- --watch                              # TDD mode
+npm test -- global-chat-button.test.tsx         # Single test file
+npm run test:e2e                                 # E2E tests (Playwright)
+npm run test:e2e -- agentic-sidebar.spec.ts     # Single E2E test
+npm run build                                    # Production build
+npm run analyze                                  # Bundle analysis
+npm run lint                                     # ESLint check
+npx tsc --noEmit                                 # TypeScript check
 ```
 
 **Critical Rules**:
-- ✅ Use `@/` path alias for all src imports (never relative imports)
-- ✅ Test all 8 brightness modes (-3 to +3 plus auto)
-- ✅ Use CSS custom properties (never hardcoded colors like `#00FFC6`)
-- ❌ Never import from `/archive/` paths in main `src/` code
-- ❌ Never expose API keys in browser (always server-side API routes)
+- Use `@/` imports only (never relative or `/archive/` imports - **archive is reference only**)
+- Test all 8 brightness modes (-3 to +3, auto)
+- Use CSS custom properties only (never hardcoded colors)
+- All API calls server-side (never expose keys in browser)
+- Never use emojis in UI (use Lucide icons)
+- Redis rate limiting active (requires UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN env vars)
 
 ---
 
-## Project Overview
+## Architecture
 
-**omerakben.com** is a personal portfolio showcasing Omer "Ozzy" Akben's work with an embedded AI assistant built using Vercel AI SDK. The site demonstrates modern agentic UX patterns with server-side tool execution.
+### Key Directories
+- `src/app/` - Next.js App Router pages and API routes
+- `src/components/` - React components (40+ shadcn/ui in `ui/`)
+- `src/data/` - Source of truth for personal info, projects, skills
+- `src/lib/` - Utilities, contexts, AI agent tools and schemas
+- `archive/` - Portfolio demo projects (reference only, never import)
+- Path alias: `@/*` → `./src/*`
 
-**Tech Stack**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS 4, Turbopack, Vercel AI SDK
+### AI Agent (Vercel AI SDK v5)
 
-## Architecture Overview
+**10 Server-Side Tools** (all in `src/app/api/tools/`):
+1. `download_resume` - 4 formats (full, short, two-page, docx)
+2. `download_certificate` - AWS, NSS certs
+3. `list_projects` - Filter by category, featured, limit
+4. `open_project` - Get project details by slug
+5. `get_contact` - Contact information
+6. `navigate_page` - Page navigation links
+7. `provide_navigation_links` - Navigation menu structure
+8. `extract_summary` - Extract summaries from content
+9. `profile_performance` - Performance profiling
+10. `trigger_workflow` - Workflow execution
 
-### Directory Structure
-```
-src/
-  app/
-    layout.tsx              # Root layout with BrightnessProvider
-    page.tsx                # Home page with hero + projects
-    globals.css             # Global styles + 8-mode brightness tokens
-    chat/                   # AI chat interface with AI SDK
-      page.tsx              # Chat UI with sidebar
-      layout.tsx            # Chat-specific layout
-    api/
-      chat/                 # AI SDK chat endpoint (streaming)
-      tools/                # Agent tool API endpoints (6 tools)
-        download-resume/    # Resume downloads (4 formats)
-        download-certificate/ # Certificates (AWS, NSS)
-        list-projects/      # Project listing
-        open-project/       # Project details
-        get-contact/        # Contact info
-        navigate-page/      # Page navigation
-  components/
-    ui/                     # shadcn/ui primitives (40+ components)
-    chat/                   # Chat-specific components
-      chat-interface.tsx    # Main chat UI
-      chat-sidebar.tsx      # Sidebar with quick actions
-    brightness-control.tsx  # 8-stop brightness slider
-    hero-section.tsx        # Animated hero with RobotIllustration
-    robot-illustration.tsx  # Animated robot with speech balloons
-  data/
-    facts.ts                # Agent grounding data (source of truth)
-    projects.ts             # Project catalog (9 projects)
-    journey.ts              # Career timeline
-    skills.ts               # Skills and expertise
-    credentials.ts          # Certifications and credentials
-  lib/
-    agent-tools/schemas.ts  # Zod schemas for all tools
-    agent-knowledge-base.ts # Curated knowledge for AI agent
-    brightness-context.tsx  # Brightness state management
-    chat-sidebar-context.tsx # Chat sidebar state
-    structured-data.ts      # JSON-LD for SEO
-    metadata.ts             # SEO metadata utilities
-archive/                    # Portfolio demos (9 projects)
-  omer-akben-design/        # Figma reference (Vite + Wouter)
-  [8 other demo projects]   # See "Archive Directory" section
-claudedocs/                 # Claude Code documentation
-  bundle-analysis.md        # Bundle performance analysis
-```
+**Data Flow**: Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JSON response
 
-### Path Aliases
-- `@/*` → `./src/*` (configured in `tsconfig.json`)
+**Knowledge Base**: `lib/agent-knowledge-base.ts` - curated context for AI (single source of truth)
 
-### Agent Architecture
+**AI SDK v5 Tool Rendering** (Critical):
+- Tool invocations in `message.parts` array, NOT `toolInvocations` property
+- Filter by `part.type === "tool-{toolName}"` and check `part.result` exists
+- Use IIFE `(() => { ... })()` for complex conditional JSX rendering
+- Structure: `{ type: "tool-{name}", toolCallId: "...", result: {...} }`
 
-**AI Chat Interface** (implemented with Vercel AI SDK):
-- **Model**: gpt-4o-mini (via AI SDK)
-- **UI**: Custom chat interface at `/chat` with sidebar
-- **Tools**: 6 server-side tools with Zod validation
-- **Security**: All tool execution server-side, no API keys in browser
-- **Knowledge Base**: `lib/agent-knowledge-base.ts` provides curated context
+**Chat System Features** (Ozzy AI Agent - Portfolio Centerpiece):
+- **Sidebar Assistant**: Pinned/unpinned mode with localStorage persistence, resizable width (320-800px)
+- **Thread Memory**: `thread-memory.ts` - conversation state persistence with pinned/width state
+- **Global Chat Button**: `global-chat-button.tsx` - floating access from any page (tested: 32 tests)
+- **Follow-up Suggestions**: `FollowupChips.tsx` - contextual question suggestions after each response
+- **Action Buttons**: Email (`EmailActionButton.tsx`) and Resume download (`ResumeDownloadButton.tsx`) integrated in sidebar
+- **Keyboard Shortcuts**: Cmd/Ctrl+Shift+N for new chat
+- **Hydration-Safe**: `isMounted` pattern prevents Next.js hydration mismatches
+- **Layout Integration**: Single `LayoutContainer` applies margin when sidebar pinned, navbar/footer naturally constrained
 
-**Tool Allowlist** (all server-side POST endpoints):
-1. `download_resume(format: "full"|"short"|"two-page"|"docx")` → Resume downloads
-2. `download_certificate(type: "aws"|"nss")` → Certificate downloads with metadata
-3. `list_projects(category?, featured?, limit?)` → Project listing with filtering
-4. `open_project(slug)` → Project details and links
-5. `get_contact()` → Contact information
-6. `navigate_page(page)` → Page navigation with URL response
+### Unique Design Patterns
 
-**Data Flow**: Chat UI → AI SDK → Tool call → API route → Zod validation → Handler → Structured JSON response
+**1. 8-Mode Brightness System** ⚠️ **Critical**
+- Modes: -3 (darkest) → 0 (baseline) → +3 (brightest) + auto
+- Implementation: `data-brightness` attribute on `<html>`, CSS custom properties in `globals.css`
+- State: `lib/brightness-context.tsx`
+- **Always use design tokens**: `bg-surf-{0,1,2}`, `text-text-{1,2,3}`, `bg-brand-primary`, `border-border-line`
+- **Never hardcode colors**: No `#00FFC6` or `bg-[#00FFC6]`
 
-**Implementation Status**:
-- ✅ Chat interface with AI SDK streaming
-- ✅ 6 agent tools implemented and validated
-- ✅ Knowledge base with curated facts
-- ✅ Sidebar with quick actions
-- ✅ Test suite (72 unit tests + E2E setup)
+**2. Data Architecture**
+- `data/facts.ts` - Single source of truth for personal info
+- `data/projects.ts` - Project catalog with helper functions
+- All data files export typed objects + helper functions
 
-**AI SDK v5 Message Architecture** (Critical for Tool Rendering):
-- **Message Parts Array**: Tool invocations stored in `message.parts`, NOT in separate `toolInvocations` property
-- **Part Types**: `type: "text"`, `type: "step-start"`, `type: "tool-{toolName}"` (e.g., `type: "tool-provide_navigation_links"`)
-- **Tool Call Structure**: `{ type: "tool-provide_navigation_links", toolCallId: "...", result: {...} }`
-- **Rendering Pattern**: Filter `message.parts` array to find tool calls, then extract `result` data
+**3. Archive Directory** ⚠️ **Important**
+- Contains 9 portfolio demos (reference only)
+- `omer-akben-design/` - Figma implementation patterns
+- **Never import from `/archive/`** - adapt patterns to `src/` with `@/` imports
 
-**Tool Invocation Rendering Pattern**:
-```tsx
-{/* Check message.parts for tool calls, NOT toolInvocations */}
-{!isUser && message.parts && (() => {
-  // Filter parts array for specific tool calls
-  const toolParts = message.parts.filter((part: any) =>
-    part.type === "tool-provide_navigation_links" && part.result
-  );
+**4. Sidebar Assistant Architecture** ⚠️ **Critical**
+- **Context**: `lib/chat-sidebar-context.tsx` - manages state (isOpen, isPinned, width, threadId)
+- **Component**: `components/chat/chat-sidebar.tsx` - main sidebar UI with resizing, pinning
+- **Thread Memory**: `lib/thread-memory.ts` - localStorage persistence with pinned/width state
+- **Layout Integration**: `app/layout.tsx` - `LayoutContainer` applies marginRight when pinned
+- **Hydration Safety**: Uses `isMounted` pattern to prevent Next.js hydration mismatches
+- **State Persistence**: localStorage keys: `sidebar_pinned`, `sidebar_width`
+- **Constraints**: Width 320-800px, single source of layout constraint (LayoutContainer)
+- **Follow-ups**: `lib/followups.ts` + `components/chat/FollowupChips.tsx` - contextual suggestions
+- **Actions**: `components/actions/` - EmailActionButton, ResumeDownloadButton
 
-  if (toolParts.length === 0) return null;
-
-  return (
-    <div className="mt-3 flex flex-wrap gap-2">
-      {toolParts.map((toolPart: any, partIndex: number) => {
-        const result = toolPart.result as { success: boolean; data?: { links: Array<...> } };
-        if (!result.success || !result.data?.links) return null;
-
-        return result.data.links.map((link, linkIndex) => (
-          <button key={`${partIndex}-${linkIndex}`} {...}>
-            {link.label}
-          </button>
-        ));
-      })}
-    </div>
-  );
-})()}
-```
-
-**Important Notes**:
-- Use IIFE pattern `(() => { ... })()` for complex conditional rendering in JSX
-- Always check `part.result` exists before accessing data
-- `toolInvocations` property does NOT exist in AI SDK v5 - use `message.parts` array
-- Tool parts have format: `type: "tool-{toolName}"` (e.g., `"tool-provide_navigation_links"`)
-
-### Key Design Patterns
-
-**1. 8-Mode Brightness System** (Critical Understanding Required)
-- **Implementation**: `data-brightness` attribute on `<html>` element
-- **Range**: 🌙 -3 (darkest) → 0 (baseline) → +3 (brightest) ☀️ + `auto` mode
-- **CSS Tokens**: All colors as custom properties in `globals.css`
-- **Context**: `lib/brightness-context.tsx` manages state
-- **Auto Mode**: System preference + time-based adjustment
-
-**Design Tokens** (never use hardcoded colors):
-```tsx
-// Surfaces
-bg-surf-0  // Page background
-bg-surf-1  // Card backgrounds
-bg-surf-2  // Elevated surfaces
-
-// Text hierarchy
-text-text-1  // Primary text (headings)
-text-text-2  // Body text
-text-text-3  // Captions, labels
-
-// Brand
-bg-brand-primary  // Primary brand color
-border-border-line  // All borders
-```
-
-**2. Tool Validation Pattern**
-- All tool inputs validated with Zod schemas (`lib/agent-tools/schemas.ts`)
-- Response format: `{ success: boolean, data?: any, error?: string }`
-- Server-side only execution (never expose API keys)
-
-**3. Data Architecture**
-- **Source of Truth**: `data/facts.ts` (personal info, skills, education)
-- **Project Catalog**: `data/projects.ts` (9 projects across 3 tiers)
-- **Helper Functions**: Exported from each data file (e.g., `getContactInfo()`)
-
-**4. Archive Directory Pattern**
-- **Purpose**: Portfolio demos referenced but never imported
-- **Use for**: Design patterns, reference implementations
-- **Never**: Import from `/archive/` in `src/` code
-- **Adapt**: Convert patterns to Next.js App Router structure
-
-## 🎨 Archive Directory - Demo Projects
-
-Contains 9 portfolio demos showcased at omerakben.com:
-
-- **omer-akben-design/**: Figma reference implementation (Vite + Wouter) - **use as design pattern reference**
-- **elon-ai-agent/**: Elon AI Chat demo (Next.js + OpenAI)
-- **elon-ai-toolbox/**: AI Toolbar demo (Next.js + Chrome Extension)
-- **north-glass/**: North Glass LLC website (React + Vite)
-- **oteemo-ai-roadmap/**: Oteemo AI Roadmap (React + D3.js)
-- **developer-cheat-sheets/**: Developer cheat sheets (HTML/CSS/JS)
-- **capstone/**: Capstone project (FastAPI + React)
-- **tuel/**: Tuel UI components library (React + TypeScript)
-- **tuel-chatbot/**: Tuel chatbot demo (React + AI)
-
-**Usage**: Search and analyze for patterns, adapt to Next.js App Router, never import directly.
-
-## ⚠️ Critical Don'ts
-
-**These mistakes will break the build or compromise security:**
-
-1. **🚫 Archive Imports**: Never `import` from `/archive/` paths in `src/` code
-   - ❌ `import { Component } from '../../../archive/project/component'`
-   - ✅ Reference patterns, then reimplement in `src/` using `@/` imports
-
-2. **🚫 Hardcoded Colors**: Never use hex colors - always use CSS custom properties
-   - ❌ `className="bg-[#00FFC6]"` or `style={{ color: '#00FFC6' }}`
-   - ✅ `className="bg-brand-primary text-brand-primary"`
-
-3. **🚫 API Keys in Browser**: Never expose OpenAI/API keys in client-side code
-   - ❌ Direct API calls from React components
-   - ✅ Server-side API routes (`/api/*`) with Zod validation
-
-4. **🚫 Relative Imports**: Never use relative imports - always use `@/` alias
-   - ❌ `import { utils } from '../../lib/utils'`
-   - ✅ `import { utils } from '@/lib/utils'`
-
-5. **🚫 Skip Brightness Testing**: Never ship without testing all 8 modes
-   - ❌ Test only at mode 0 (default)
-   - ✅ Test modes: -3, -2, -1, 0, +1, +2, +3, auto
-
-6. **🚫 Assume Data**: Never make up personal information
-   - ❌ Guess email, phone, or project details
-   - ✅ Use only data from `src/data/facts.ts` (source of truth)
-
-7. **🚫 Use Emojis in UI**: Never use emojis - always use Lucide React icons
-   - ❌ Display emojis in buttons, cards, or UI components
-   - ✅ Use Lucide icons for consistent design across all brightness modes
+**5. Icon Optimization** ⚠️ **Critical**
+- **Never wildcard import simple-icons** - use generated manifest
+- Icon manifest: `src/lib/icon-manifest.ts` (42 curated icons)
+- Generation script: `scripts/generate-icons.js` (run during build)
+- Achievement: 90% bundle reduction (2.33MB → 236KB)
+- Pattern: `import { getIcon } from '@/lib/icon-manifest'` then `getIcon('react')`
 
 ---
 
-## Development Workflow
+## Development
 
-### Quality Gates (Run Before Commit)
+### Quality Gates (All Must Pass)
 ```bash
-npm test                    # 72/72 tests must pass
-npm run lint                # Zero errors/warnings
-npx tsc --noEmit            # Zero type errors (strict mode)
-npm run build               # Production build must succeed
+npm test          # All unit tests (currently 175)
+npm run lint      # Zero errors (scripts/ excluded)
+npx tsc --noEmit  # Strict TypeScript compilation
+npm run build     # Production build successful
 ```
 
-### Testing Patterns
+**Recent Quality Achievements**:
+- ✅ ESLint clean (0 errors, 0 warnings) - achieved 2025-10-18
+- ✅ Bundle optimization (236KB homepage, 193KB /skills) - achieved 2025-10-19
+- ✅ Redis rate limiting implemented - achieved 2025-10-18
+- ✅ No inline styles (all converted to Tailwind/CSS) - achieved 2025-10-19
+- ✅ Debug logs removed (console.error retained for production) - achieved 2025-10-19
+- ✅ Sidebar assistant with pinning, resizing, persistence - achieved 2025-10-19
+- ✅ Hydration-safe Next.js patterns (isMounted) - achieved 2025-10-19
+- ✅ 175 unit tests passing (from 72) - achieved 2025-10-19
 
-**Unit Tests** (Vitest + React Testing Library):
+### Test Configuration
+- **Unit Tests**: Vitest + React Testing Library (`src/**/*.test.{ts,tsx}`) - **175 tests**
+  - `global-chat-button.test.tsx` (32 tests) - Global chat button behavior
+  - `thread-memory.test.ts` (27 tests) - Conversation persistence, pinned state
+  - `schemas.test.ts` (68 tests) - Agent tool Zod validation
+  - `brightness-control.test.tsx` (23 tests) - Brightness mode switching
+  - `projects.test.ts` (25 tests) - Project data helpers
+  - Watch mode: `npm test -- --watch`
+  - Coverage: `npm test -- --coverage`
+
+- **E2E Tests**: Playwright (`e2e/*.spec.ts`)
+  - `agentic-sidebar.spec.ts` - Sidebar pinning, resizing, persistence
+  - `brightness-modes.spec.ts` - Brightness mode switching (8 modes)
+  - Run all: `npm run test:e2e`
+  - UI mode: `npm run test:e2e:ui`
+  - Headed: `npm run test:e2e:headed`
+
+### Rate Limiting (Production-Ready)
+- **Implementation**: Redis-backed via Upstash (`@upstash/ratelimit`)
+- **Configuration**: `src/lib/rate-limit.ts` with route-specific limits
+- **Middleware**: `src/middleware.ts` applies limits before request processing
+
+**Rate Limit Tiers**:
+- Chat API (`/api/chat`): 30 requests/min (OpenAI cost control)
+- Tools API (`/api/tools/*`): 60 requests/min (lightweight operations)
+- Generic API (`/api/*`): 100 requests/min (other endpoints)
+
+**Environment Variables Required**:
 ```bash
-npm test                    # Run all unit tests
-npm test -- --watch         # TDD watch mode
-npm test -- --coverage      # Generate coverage report
+UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-token
 ```
 
-**E2E Tests** (Playwright):
+**Graceful Degradation**: Falls back to in-memory rate limiting if Redis unavailable (dev mode)
+
+### Environment Variables
+Required environment variables for development and production:
+
 ```bash
-npm run test:e2e            # Run all E2E tests
-npm run test:e2e:ui         # Run with Playwright UI
-npm run test:e2e:headed     # Run in headed mode
+# OpenAI API (Required)
+OPENAI_API_KEY=sk-...
+
+# Redis Rate Limiting (Required for Production)
+UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-token
+
+# Optional
+NODE_ENV=development|production
+ANALYZE=true  # Enable bundle analyzer
 ```
 
-**Test Configuration**:
-- **Unit Tests**: `vitest.config.ts` - tests in `src/**/*.test.{ts,tsx}`
-- **E2E Tests**: `playwright.config.ts` - tests in root directory
-- Place unit tests next to source files with `.test.ts` or `.test.tsx`
+**Setup**:
+1. Copy `.env.example` to `.env.local`
+2. Add your API keys
+3. Never commit `.env*` files (already in `.gitignore`)
 
-**Current Coverage**:
-- 72 unit tests passing (~529ms)
-- Test files: `brightness-control.test.tsx`, `projects.test.ts`, `schemas.test.ts`
-
-### Common Development Tasks
-
-**Creating New Agent Tools**:
-1. Define Zod schema in `lib/agent-tools/schemas.ts`
-2. Implement POST handler in `src/app/api/tools/[tool-name]/route.ts`
-3. Validate input: `schema.parse(body)` → return `{ success, data?, error? }`
-4. Test with curl:
-   ```bash
-   curl -X POST http://localhost:3000/api/tools/[tool-name] \
-     -H "Content-Type: application/json" -d '{}'
-   ```
-5. Update knowledge base in `lib/agent-knowledge-base.ts`
-
-**Adding New Pages**:
-1. Create route in `src/app/[route]/page.tsx` with metadata export
-2. Test all 8 brightness modes for color contrast (AA compliance)
-3. Ensure keyboard navigation works
-4. Add to sitemap if public page
-
-**Working with Data Files**:
-- **facts.ts**: Personal info, professional background, skills (source of truth)
-- **projects.ts**: Project catalog with helper functions
-- **journey.ts**: Career timeline data
-- **skills.ts**: Skills organized by category
-- **credentials.ts**: Certifications and credentials
+### Adding Agent Tools
+1. Schema in `lib/agent-tools/schemas.ts` (Zod)
+2. Handler in `src/app/api/tools/[name]/route.ts` (POST, validate, return `{success, data?, error?}`)
+3. Update `lib/agent-knowledge-base.ts`
+4. Test: `curl -X POST http://localhost:3000/api/tools/[name] -H "Content-Type: application/json" -d '{}'`
 
 ## Design System
 
-### Figma Integration
+**Components**: 40+ shadcn/ui primitives in `src/components/ui/`
+**Icons**: Lucide React (never emojis) - use named imports for tree-shaking
+**Animation**: Framer Motion (`motion` from `motion/react`)
+**Font**: Inter with fallbacks
+**Figma**: [Design file](https://www.figma.com/design/GGCkxSgirBbmjQlioQKWEa/omerakben.com?node-id=0-1) + `/archive/omer-akben-design/` patterns
 
-**Design File**: [omerakben.com Figma](https://www.figma.com/design/GGCkxSgirBbmjQlioQKWEa/omerakben.com?node-id=0-1)
-- **Design Mode**: Visual designs and prototypes
-- **Dev Mode**: Inspect spacing, colors, typography
-- **Reference**: `/archive/omer-akben-design/` for implementation patterns
+### Next.js Config Highlights
+- **Security**: CSP headers, X-Frame-Options, X-Content-Type-Options, Permissions-Policy
+- **Performance**: Lucide tree-shaking via `modularizeImports` (prevents full library import)
+- **Images**: AVIF/WebP optimization, lazy loading, responsive sizing
+- **Caching**: Aggressive (1-year `/assets/*`, 1-day images with stale-while-revalidate)
+- **Console**: Logs removed in production (except `error`/`warn` for monitoring)
+- **Bundle Analysis**: Enable with `ANALYZE=true npm run build`
 
-### Component Library (shadcn/ui)
+### Middleware (`src/middleware.ts`)
+- **Rate Limiting**: Redis-backed request throttling per route pattern
+- **Monitoring**: Request tracking and limit violation logging
+- **Headers**: Rate limit info in response (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `Retry-After`)
+- **Paths**: Applies to `/api/*` routes only (excludes static assets)
 
-**Available Components** (40+ in `src/components/ui/`):
-- Layout: `card`, `dialog`, `sheet`, `drawer`, `popover`
-- Form: `button`, `input`, `textarea`, `select`, `checkbox`, `slider`
-- Navigation: `dropdown-menu`, `tabs`
-- Feedback: `alert`, `badge`, `avatar`
-- And 30+ more components
+## Common Pitfalls
 
-**Usage Pattern**:
-```tsx
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-<Card className="bg-surf-1 border-border-line">
-  <CardHeader>
-    <CardTitle className="text-text-1">Title</CardTitle>
-  </CardHeader>
-  <CardContent className="text-text-2">Content</CardContent>
-</Card>
-```
-
-### Icons & Animation
-
-**Icons**: Lucide React (`lucide-react`)
-```tsx
-import { Bot, Download, ExternalLink } from 'lucide-react';
-
-<Button>
-  <Download className="w-4 h-4 mr-2" />
-  Download Resume
-</Button>
-```
-
-**Critical Design Rule**: 🚫 **Never use emojis** - always use Lucide React icons for consistency across all 8 brightness modes and professional design standards.
-
-**Animation**: Framer Motion (`motion`)
-```tsx
-import { motion } from 'motion/react';
-
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
->
-  {content}
-</motion.div>
-```
-
-### Typography Scale
-
-**Font Family**: Inter (with fallbacks)
-```css
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-```
-
-**Text Styles** (Tailwind utilities):
-```tsx
-// Hero headings
-className="text-[40px] md:text-[56px] leading-[48px] md:leading-[64px] font-bold"
-
-// Section headings
-className="text-[32px] md:text-[40px] leading-[40px] md:leading-[48px] font-bold"
-
-// Body text
-className="text-[16px] md:text-[18px] leading-[28px]"
-
-// Small text
-className="text-[14px] leading-[20px]"
-```
-
-## Next.js Configuration
-
-**Security & Performance** (`next.config.ts`):
-- **Security Headers**: X-Frame-Options, CSP, X-Content-Type-Options
-- **Icon Optimization**: Lucide icons tree-shaking via `modularizeImports`
-- **Image Optimization**: AVIF/WebP formats, lazy loading
-- **Caching**: 1-year for `/assets/*`, 1-day for images
-- **Production**: Console logs removed (except errors/warnings)
-
-**Important**: Use named imports from `lucide-react` for automatic tree-shaking.
-
-## Common Pitfalls to Avoid
-
-### 1. Archive Directory Usage
-- ✅ Search, analyze, and reference archive projects
-- ✅ Use `omer-akben-design/` for design patterns
-- ✅ Adapt patterns to Next.js App Router
-- ❌ Copy files directly without adaptation
-- ❌ Import from archive paths in main `src/`
-
-### 2. Brightness Mode Testing
-- ✅ Test all 8 modes (-3 to +3, plus auto)
-- ✅ Verify text contrast and borders
-- ❌ Test only at default brightness (0)
-- **Range**: 🌙 -3 (darkest) → 0 → +3 (brightest) ☀️
-
-### 3. Color Usage
-- ✅ Use CSS custom properties (`bg-brand-primary`)
-- ❌ Hardcode hex colors (`#00FFC6` or `bg-[#00FFC6]`)
-- **Why**: Colors must adapt to brightness mode changes
-
-### 4. Data Source of Truth
-- ✅ Update `src/data/facts.ts` for personal info
-- ❌ Assume or make up information
-- **Source**: All data from actual resume
+1. **Icon imports**: Never `import * as Icons from 'simple-icons'` - use `getIcon()` from icon-manifest (2.3MB → 236KB)
+2. **Archive imports**: Never `import from '/archive/'` - reference patterns only, adapt to `src/` with `@/` imports
+3. **Hardcoded colors**: Only use CSS custom properties (`bg-brand-primary`), never hex (`#00FFC6`)
+4. **Brightness testing**: Test all 8 modes (-3 to +3, auto), not just default
+5. **Data fabrication**: Use `data/facts.ts` only, never assume personal info
+6. **Client API calls**: All OpenAI calls server-side, never expose keys in browser
+7. **Inline styles**: Use Tailwind classes or CSS custom properties, never `style={{...}}`
+8. **Hydration mismatches**: Always use `isMounted` pattern when using localStorage/client-only state (see `app/layout.tsx`, `components/app-header.tsx`)
+9. **Layout constraints**: Single source of truth is `LayoutContainer` in root layout - never duplicate width calculations
 
 ## Troubleshooting
 
 **Build Errors**:
-- "Module not found" → Use `@/` path alias, never relative imports or archive imports
-- TypeScript errors in archive → Archive excluded from tsconfig
+- "Module not found" → use `@/` imports, not relative or `/archive/`
+- TypeScript errors → run `npx tsc --noEmit` to see all errors
+- ESLint errors → `npm run lint` (scripts/ excluded from linting)
 
-**Brightness Testing**:
-- Toggle `data-brightness` attribute on `<html>` in DevTools
-- If colors don't change → Using hardcoded hex instead of CSS custom properties
+**Development**:
+- Port occupied → `lsof -ti:3000 | xargs kill`
+- Brightness modes → Toggle `data-brightness` on `<html>` in DevTools (-3 to +3, auto)
+- Bundle size → `npm run analyze` to see bundle composition
 
-**Development Server**:
-- Port 3000 in use → `lsof -ti:3000 | xargs kill`
-- Slow hot reload → Restart server, clear `.next/` directory
+**AI Chat Debugging**:
+- Tool rendering → Check `message.parts` array (NOT `toolInvocations`)
+- Filter by `part.type === "tool-{name}"` and verify `part.result` exists
+- Rate limits → Check middleware logs, verify Redis env vars in production
+- Hydration errors → Ensure `isMounted` pattern used for localStorage state
+- Sidebar state → Check localStorage keys: `sidebar_pinned`, `sidebar_width`
 
-**Testing Agent Tools**:
-```bash
-# All endpoints: POST with JSON body → { success, data?, error? }
-curl -X POST http://localhost:3000/api/tools/download-resume \
-  -H "Content-Type: application/json" -d '{"format": "short"}'
+**Tests**:
+- Single test → `npm test -- filename.test.tsx`
+- E2E failures → `npm run test:e2e:headed` to see browser
+- Coverage → `npm test -- --coverage`
 
-curl -X POST http://localhost:3000/api/tools/list-projects \
-  -H "Content-Type: application/json" -d '{"category": "ai-ml", "limit": 5}'
-```
+## Key Files
 
-**Debugging AI SDK v5 Tool Invocations**:
-
-**Problem**: Navigation buttons not appearing after AI response
-**Diagnosis Steps**:
-1. Open browser DevTools console while testing chat
-2. Look for console logs from chat components
-3. Check `message.parts` array structure:
-   ```javascript
-   console.log("🤖 Assistant message:", {
-     id: message.id,
-     role: message.role,
-     parts: message.parts,
-   });
-   ```
-
-**Expected Tool Call Structure**:
-```javascript
-{
-  id: "msg_...",
-  role: "assistant",
-  parts: [
-    { type: "text", text: "Here's the project..." },
-    {
-      type: "tool-provide_navigation_links",
-      toolCallId: "call_...",
-      result: {
-        success: true,
-        data: {
-          links: [
-            { label: "View North Glass", href: "/projects/north-glass", type: "internal" }
-          ]
-        }
-      }
-    }
-  ]
-}
-```
-
-**Common Issues**:
-1. **AI not invoking tool** → Check system prompt in `agent-knowledge-base.ts`, verify tool description is clear
-2. **`toolInvocations` is undefined** → This is expected in AI SDK v5, use `message.parts` instead
-3. **Empty `parts` array** → AI responded with text only, didn't invoke tool
-4. **Part exists but no `result`** → Tool call in progress, wait for streaming to complete
-5. **Rendering logic not triggering** → Verify filtering `part.type === "tool-{toolName}"` matches exactly
-
-**Debug Code Pattern**:
-```tsx
-// Add to chat components for debugging
-{message.parts && message.parts.forEach((part: any, idx: number) => {
-  console.log(`Part ${idx}:`, {
-    type: part.type,
-    hasResult: !!part.result,
-    result: part.result
-  });
-})}
-```
-
-## Quality Metrics
-
-**Production Build** (All Passing ✅):
-- Build Time: ~1.5-1.7 seconds
-- Bundle: 166 kB shared chunks, 3-13 kB per page
-- First Load JS: 153 kB - 2.33 MB
-- Actual Transfer: ~30KB gzipped
-- TypeScript: Strict mode, zero errors
-- ESLint: Zero errors/warnings
-- Tests: 72/72 passing
-
-**Performance Analysis**: See `claudedocs/bundle-analysis.md`
-
-## Documentation Files
-
-**Product & Architecture**:
-- `PRD.md` - Product requirements and vision
-- `Agents.md` - Agent architecture, tools, data flow
-- `TODO.md` - Implementation roadmap
-
-**Code References**:
-- `src/data/facts.ts` - Source of truth for personal data
+**Data** (source of truth):
+- `src/data/facts.ts` - Personal info, skills
 - `src/data/projects.ts` - Project catalog
-- `src/lib/agent-tools/schemas.ts` - Zod schemas for tools
-- `src/lib/agent-knowledge-base.ts` - Curated agent knowledge
+- `src/lib/agent-knowledge-base.ts` - AI agent context
+- `src/config/assistantFaq.ts` - Fact Bank and intent libraries for follow-ups
 
-**Quality & Analysis**:
-- `claudedocs/bundle-analysis.md` - Bundle size analysis
+**Sidebar Assistant** (Ozzy AI):
+- `src/lib/chat-sidebar-context.tsx` - State management (isOpen, isPinned, width, threadId)
+- `src/components/chat/chat-sidebar.tsx` - Main sidebar UI with resizing, pinning
+- `src/lib/thread-memory.ts` - Conversation persistence with pinned/width state
+- `src/lib/followups.ts` - Intent detection and follow-up generation
+- `src/components/chat/FollowupChips.tsx` - Contextual question suggestions
+- `src/components/global-chat-button.tsx` - Floating chat access
+- `src/components/actions/EmailActionButton.tsx` - mailto integration
+- `src/components/actions/ResumeDownloadButton.tsx` - Multi-format download
 
-## Quick Reference
+**Config**:
+- `src/lib/agent-tools/schemas.ts` - Zod validation schemas
+- `src/lib/rate-limit.ts` - Redis rate limiting configuration
+- `src/middleware.ts` - Rate limiting and request processing
+- `next.config.ts` - Security headers, optimizations, Lucide tree-shaking
+- `vitest.config.ts` - Unit test config (excludes archive/)
+- `playwright.config.ts` - E2E test config
+- `.gitignore` - Test artifacts excluded (playwright-report/, test-results/, .playwright-mcp/)
 
-### File Locations
-- **Pages**: `src/app/[route]/page.tsx`
-- **API Routes**: `src/app/api/[endpoint]/route.ts`
-- **Components**: `src/components/` (custom) or `src/components/ui/` (shadcn)
-- **Data**: `src/data/*.ts` (facts, projects, journey, skills, credentials)
-- **Schemas**: `src/lib/agent-tools/schemas.ts`
-- **Tests**: `src/**/*.test.{ts,tsx}` (co-located)
-- **E2E Tests**: Root directory `*.spec.ts`
-- **Documentation**: `claudedocs/`
-- **Archive**: `archive/*/` (demo projects)
+**Scripts**:
+- `scripts/generate-icons.js` - Build-time icon manifest generation (42 icons, 90% bundle reduction)
+- `scripts/health-100-day1.sh` - Health score improvement automation
 
-### Import Patterns
-```typescript
-// Components and UI
-import { Button } from '@/components/ui/button';
-import { HeroSection } from '@/components/hero-section';
-
-// Data
-import { facts } from '@/data/facts';
-import { projects } from '@/data/projects';
-
-// Utilities
-import { cn } from '@/lib/utils';
-import { useBrightness } from '@/lib/brightness-context';
-
-// Next.js
-import Link from 'next/link';
-import { NextRequest, NextResponse } from 'next/server';
-```
-
-### Theming Pattern
-```tsx
-import { useBrightness } from "@/lib/brightness-context";
-
-const { brightness, setBrightness } = useBrightness();
-// brightness: '-3' | '-2' | '-1' | '0' | '+1' | '+2' | '+3' | 'auto'
-
-// Use design tokens
-<div className="bg-surf-0">           {/* Page background */}
-<Card className="bg-surf-1 border-border-line">  {/* Cards */}
-<h1 className="text-text-1">          {/* Primary text */}
-<Button className="bg-brand-primary"> {/* Brand CTA */}
-```
-
----
-
-**Note**: The project emphasizes security (server-side tools), accessibility (AA contrast), and performance (Lighthouse ≥95). All agent tools are server-side only with strict input validation.
+**Docs**:
+- `README.md` - PRD and architecture docs
+- `TODO.md` - Implementation roadmap with health score tracking
+- `AI_AGENT.md` - Agent documentation and capabilities
+- `claudedocs/` - Additional documentation and analyses

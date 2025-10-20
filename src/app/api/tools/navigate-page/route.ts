@@ -1,65 +1,54 @@
-import { NextRequest, NextResponse } from "next/server";
-import { navigatePageSchema, pageMetadata, type PageKey } from "@/lib/agent-tools/navigation-schema";
+import { NextRequest, NextResponse } from 'next/server';
+import { navigatePageInputSchema } from '@/lib/agent-tools/schemas';
 
-export const maxDuration = 30;
+const ALLOWED_DOMAINS = ['omerakben.com', 'localhost'];
 
-/**
- * Navigate Page Tool
- *
- * Provides navigation suggestions to the AI agent.
- * The actual navigation happens client-side via the chat interface.
- */
+function validateDomain(url: string): boolean {
+  try {
+    const hostname = new URL(url).hostname;
+    return ALLOWED_DOMAINS.some(domain =>
+      hostname === domain || hostname.endsWith(`.${domain}`)
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const input = navigatePageSchema.parse(body);
+    const { url, waitUntil } = navigatePageInputSchema.parse(body);
 
-    const { page, slug, reason } = input;
-    const metadata = pageMetadata[page as PageKey];
-
-    // Validate project slug if required
-    if ("requiresSlug" in metadata && metadata.requiresSlug && !slug) {
+    // Domain validation for security
+    if (!validateDomain(url)) {
       return NextResponse.json({
         success: false,
-        error: "Project slug is required for project-detail page",
-      }, { status: 400 });
+        error: 'Navigation restricted to omerakben.com domain',
+      }, { status: 403 });
     }
 
-    // Build the full path
-    let fullPath: string = metadata.path;
-    if (slug && page === "project-detail") {
-      fullPath = fullPath.replace("[slug]", slug);
-    }
-
+    // For MVP, return success with navigation instruction
+    // Client-side will handle actual navigation
+    // Future: Integrate Playwright MCP for server-side browser automation
     return NextResponse.json({
       success: true,
       data: {
-        page,
-        title: metadata.title,
-        description: metadata.description,
-        path: fullPath,
-        reason,
-        // Include navigation instruction for the agent
-        instruction: `To help the user navigate, suggest: "You can view this at ${fullPath}"`,
+        url,
+        waitUntil,
+        message: `Navigating to ${url}`,
       },
     });
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: error.message,
-        },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        success: false,
+        error: error.message,
+      }, { status: 400 });
     }
 
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Invalid request",
-      },
-      { status: 400 }
-    );
+    return NextResponse.json({
+      success: false,
+      error: 'Invalid request',
+    }, { status: 400 });
   }
 }

@@ -23,6 +23,12 @@ const eslintConfig = [
       "scripts/**",
     ],
   },
+  {
+    rules: {
+      // Allow inline styles for dynamic runtime values (e.g., sidebar width)
+      "@next/next/no-css-tags": "off",
+    },
+  },
 ];
 
 export default eslintConfig;

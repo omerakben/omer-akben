@@ -1,28 +1,47 @@
 "use client";
 
-import { useEffect, useState, useRef, type FormEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useChat } from "@ai-sdk/react";
-import { Send, Bot, User, AlertCircle, X, Briefcase, Zap, FileText, ExternalLink, ArrowRight, Github, Mail } from "lucide-react";
-import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import { ChatSidebarHeader } from "./chat-sidebar-header";
-import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
-import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { getFollowups } from "@/lib/followups";
+import {
+  cleanExpiredThreads,
+  loadThread,
+  saveThread,
+  type Message,
+} from "@/lib/thread-memory";
+import { useChat } from "@ai-sdk/react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertCircle,
+  ArrowRight,
+  Bot,
+  Briefcase,
+  ExternalLink,
+  FileText,
+  Github,
+  GripVertical,
+  Mail,
+  MessageSquarePlus,
+  Pin,
+  PinOff,
+  Send,
+  Trash2,
+  User,
+  X,
+  Zap,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useRouter } from "next/navigation";
+import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
+import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
+import { FollowupChips } from "./FollowupChips";
 
 const suggestedQuestions = [
   "What problems do you solve with AI?",
   "Show me your best projects",
-];
-
-// Follow-up questions that appear after AI responses
-const followUpQuestions = [
-  "Tell me more about your technical skills",
-  "What's your recent work experience?",
 ];
 
 // Icon mapping for navigation links
@@ -41,17 +60,35 @@ const getIconComponent = (iconName?: string) => {
 
 export function ChatSidebar() {
   const router = useRouter();
-  const { isOpen, closeSidebar } = useChatSidebar();
+  const {
+    isOpen,
+    isPinned,
+    width,
+    closeSidebar,
+    setPinned,
+    setWidth,
+    newChat,
+    clearConversation,
+  } = useChatSidebar();
   const [input, setInput] = useState("");
   const [showMessages, setShowMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string>("");
+  const [isResizing, setIsResizing] = useState(false);
+  const [currentFollowups, setCurrentFollowups] = useState<string[]>([]);
+  const [recentlyShownFollowups, setRecentlyShownFollowups] = useState<
+    string[]
+  >([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status } = useChat({
     onError: (error) => {
       console.error("Chat error:", error);
-      setError(error.message || "Failed to send message. Please check your internet connection.");
+      setError(
+        error.message ||
+          "Failed to send message. Please check your internet connection."
+      );
     },
     onFinish: () => {
       setError(null); // Clear errors on success
@@ -114,17 +151,17 @@ export function ChatSidebar() {
     }
   };
 
-  // Handle ESC key to close
+  // Handle ESC key to close (only when unpinned)
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === "Escape" && isOpen && !isPinned) {
         closeSidebar();
       }
     };
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, closeSidebar]);
+  }, [isOpen, isPinned, closeSidebar]);
 
   // Focus input when sidebar opens
   useEffect(() => {
@@ -143,33 +180,232 @@ export function ChatSidebar() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle resize drag
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = window.innerWidth - e.clientX;
+      setWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    document.body.style.cursor = "ew-resize";
+    document.body.style.userSelect = "none";
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing, setWidth]);
+
+  // Load thread from localStorage on mount
+  // TODO: Implement proper message persistence
+  // KNOWN LIMITATION: @ai-sdk/react v2's useChat does NOT support initialMessages or body params
+  // To fix this CRITICAL issue flagged by Gemini Code Assist:
+  // 1. Migrate to server-side session management
+  // 2. Store messages in database with threadId
+  // 3. API endpoint should load history and stream responses
+  // Current workaround: Messages save to localStorage but don't reload on mount
+  useEffect(() => {
+    const threadId = "main"; // Single thread for MVP, could be page-specific later
+    const savedMessages = loadThread(threadId);
+
+    if (savedMessages && savedMessages.length > 0) {
+      console.log(
+        "[ThreadMemory] Loaded",
+        savedMessages.length,
+        "messages from localStorage"
+      );
+      console.warn(
+        "[ThreadMemory] LIMITATION: Cannot restore messages to useChat hook - requires server-side persistence"
+      );
+    }
+
+    // Clean expired threads on mount
+    cleanExpiredThreads();
+  }, []);
+
+  // Save thread to localStorage whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      const threadId = "main";
+      // Cast AI SDK messages to our Message type
+      saveThread(threadId, messages as unknown as Message[]);
+    }
+  }, [messages]);
+
+  // Generate dynamic follow-ups after each assistant message
+  useEffect(() => {
+    const generateFollowupsAsync = async () => {
+      if (messages.length < 2) {
+        setCurrentFollowups([]);
+        return;
+      }
+
+      // Get last user and assistant messages
+      const lastMessage = messages[messages.length - 1];
+      const prevMessage = messages[messages.length - 2];
+
+      // Only generate if last message is from assistant
+      if (lastMessage.role !== "assistant") {
+        setCurrentFollowups([]);
+        return;
+      }
+
+      // Extract text content from messages
+      const userText = prevMessage.parts
+        .filter((part) => part.type === "text")
+        .map((part) => ("text" in part ? part.text : ""))
+        .join("");
+
+      const assistantText = lastMessage.parts
+        .filter((part) => part.type === "text")
+        .map((part) => ("text" in part ? part.text : ""))
+        .join("");
+
+      if (!userText || !assistantText) {
+        setCurrentFollowups([]);
+        return;
+      }
+
+      try {
+        const followups = await getFollowups(
+          userText,
+          assistantText,
+          recentlyShownFollowups
+        );
+        setCurrentFollowups(followups);
+
+        // Track these as recently shown
+        setRecentlyShownFollowups((prev) => [...prev, ...followups].slice(-10)); // Keep last 10
+      } catch (error) {
+        console.error("[ChatSidebar] Failed to generate followups:", error);
+        setCurrentFollowups([]);
+      }
+    };
+
+    // Only generate when not loading
+    if (!isLoading) {
+      generateFollowupsAsync();
+    }
+  }, [messages, isLoading, recentlyShownFollowups]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-            onClick={closeSidebar}
-          />
+          {/* Backdrop - only show when unpinned */}
+          {!isPinned && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              onClick={closeSidebar}
+            />
+          )}
 
           {/* Sidebar */}
           <motion.div
+            ref={sidebarRef}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-surf-0 shadow-2xl z-50 flex flex-col"
+            style={{ width: `${width}px` }}
+            className="fixed top-0 right-0 h-full max-w-full bg-surf-0 shadow-2xl z-50 flex flex-col"
             role="dialog"
-            aria-modal="true"
+            aria-modal={!isPinned}
             aria-label="Chat with AI Ozzy"
           >
+            {/* Resize Handle */}
+            <div
+              className={`absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize transition-colors group ${
+                isPinned ? "bg-brand-primary/50" : "hover:bg-brand-primary/50"
+              }`}
+              onMouseDown={() => setIsResizing(true)}
+              aria-label="Resize sidebar"
+            >
+              <div
+                className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity ${
+                  isPinned ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
+              >
+                <GripVertical className="w-4 h-4 text-brand-primary" />
+              </div>
+            </div>
+
             {/* Header */}
-            <ChatSidebarHeader />
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border-line bg-surf-0">
+              <div className="flex items-center gap-2">
+                <Bot className="w-5 h-5 text-brand-primary" />
+                <span className="font-semibold text-text-1">AI Ozzy</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={newChat}
+                  className="h-8 w-8 p-0"
+                  title="New Chat"
+                  aria-label="Start new chat"
+                >
+                  <MessageSquarePlus className="w-4 h-4" />
+                </Button>
+                {showMessages && messages.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      clearConversation();
+                      setShowMessages(false);
+                    }}
+                    className="h-8 w-8 p-0"
+                    title="Clear Conversation"
+                    aria-label="Clear conversation"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setPinned(!isPinned)}
+                  className="h-8 w-8 p-0"
+                  title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                  aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                  aria-pressed={isPinned}
+                >
+                  {isPinned ? (
+                    <PinOff className="w-4 h-4" />
+                  ) : (
+                    <Pin className="w-4 h-4" />
+                  )}
+                </Button>
+                {!isPinned && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={closeSidebar}
+                    className="h-8 w-8 p-0"
+                    aria-label="Close sidebar"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
 
             {/* Error Alert */}
             {error && (
@@ -295,7 +531,9 @@ export function ChatSidebar() {
                                     {children}
                                   </ol>
                                 ),
-                                li: ({ children }) => <li>{children}</li>,
+                                li: ({ children }) => (
+                                  <li className="ml-0">{children}</li>
+                                ),
                                 strong: ({ children }) => (
                                   <strong className="font-semibold">
                                     {children}
@@ -322,50 +560,85 @@ export function ChatSidebar() {
                             </ReactMarkdown>
 
                             {/* Navigation Links */}
-                            {message.role === "assistant" && message.parts && (() => {
-                              // Filter parts array for tool calls
-                              const toolParts = message.parts.filter((part): part is typeof part & { type: string; result: unknown } =>
-                                'type' in part && 'result' in part && part.type === "tool-provide_navigation_links"
-                              );
+                            {message.role === "assistant" &&
+                              message.parts &&
+                              (() => {
+                                // Filter parts array for tool calls
+                                const toolParts = message.parts.filter(
+                                  (
+                                    part
+                                  ): part is typeof part & {
+                                    type: string;
+                                    result: unknown;
+                                  } =>
+                                    "type" in part &&
+                                    "result" in part &&
+                                    part.type ===
+                                      "tool-provide_navigation_links"
+                                );
 
-                              if (toolParts.length === 0) return null;
+                                if (toolParts.length === 0) return null;
 
-                              return (
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                  {toolParts.map((toolPart, partIndex: number) => {
-                                    const result = toolPart.result as { success: boolean; data?: { links: Array<{ label: string; href: string; type: "internal" | "external" }> } };
-                                    if (!result.success || !result.data?.links) return null;
+                                return (
+                                  <div className="mt-2 flex flex-wrap gap-2">
+                                    {toolParts.map(
+                                      (toolPart, partIndex: number) => {
+                                        const result = toolPart.result as {
+                                          success: boolean;
+                                          data?: {
+                                            links: Array<{
+                                              label: string;
+                                              href: string;
+                                              type: "internal" | "external";
+                                            }>;
+                                          };
+                                        };
+                                        if (
+                                          !result.success ||
+                                          !result.data?.links
+                                        )
+                                          return null;
 
-                                    return result.data.links.map((link, linkIndex) => {
-                                      const Icon = getIconComponent();
-                                      const isExternal = link.type === "external";
+                                        return result.data.links.map(
+                                          (link, linkIndex) => {
+                                            const Icon = getIconComponent();
+                                            const isExternal =
+                                              link.type === "external";
 
-                                      return (
-                                        <button
-                                          key={`${partIndex}-${linkIndex}`}
-                                          type="button"
-                                          onClick={() => {
-                                            if (isExternal) {
-                                              window.open(link.href, "_blank", "noopener,noreferrer");
-                                            } else {
-                                              closeSidebar();
-                                              router.push(link.href);
-                                            }
-                                          }}
-                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
-                                        >
-                                          <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                                            <Icon className="w-2.5 h-2.5 text-brand-primary" />
-                                          </div>
-                                          <span>{link.label}</span>
-                                          {isExternal && <ExternalLink className="w-2.5 h-2.5" />}
-                                        </button>
-                                      );
-                                    });
-                                  })}
-                                </div>
-                              );
-                            })()}
+                                            return (
+                                              <button
+                                                key={`${partIndex}-${linkIndex}`}
+                                                type="button"
+                                                onClick={() => {
+                                                  if (isExternal) {
+                                                    window.open(
+                                                      link.href,
+                                                      "_blank",
+                                                      "noopener,noreferrer"
+                                                    );
+                                                  } else {
+                                                    closeSidebar();
+                                                    router.push(link.href);
+                                                  }
+                                                }}
+                                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
+                                              >
+                                                <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                                  <Icon className="w-2.5 h-2.5 text-brand-primary" />
+                                                </div>
+                                                <span>{link.label}</span>
+                                                {isExternal && (
+                                                  <ExternalLink className="w-2.5 h-2.5" />
+                                                )}
+                                              </button>
+                                            );
+                                          }
+                                        );
+                                      }
+                                    )}
+                                  </div>
+                                );
+                              })()}
                           </div>
                           {message.role === "user" && (
                             <div className="flex-shrink-0">
@@ -376,24 +649,17 @@ export function ChatSidebar() {
                           )}
                         </div>
 
-                        {/* Follow-up questions after last assistant message */}
-                        {isLastAssistantMessage && !isLoading && (
-                          <div className="ml-11 space-y-2">
-                            <p className="text-xs text-text-3 mb-1">
-                              Suggested questions:
-                            </p>
-                            {followUpQuestions.map((question, qIndex) => (
-                              <button
-                                key={qIndex}
-                                type="button"
-                                onClick={() => handleSuggestedQuestion(question)}
-                                className="w-full text-left px-3 py-2 rounded-lg bg-surf-1 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-2 transition-all font-medium"
-                              >
-                                {question}
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                        {/* Dynamic follow-up questions after last assistant message */}
+                        {isLastAssistantMessage &&
+                          !isLoading &&
+                          currentFollowups.length > 0 && (
+                            <div className="ml-11 mt-3">
+                              <FollowupChips
+                                followups={currentFollowups}
+                                onSend={handleSuggestedQuestion}
+                              />
+                            </div>
+                          )}
                       </div>
                     );
                   })}

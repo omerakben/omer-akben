@@ -8,8 +8,23 @@ import { projects } from "@/data/projects";
  * uses to answer questions about Omer Akben's experience, skills, and projects.
  */
 
-export function buildEnhancedSystemPrompt(): string {
-  return `You are Ozzy, Omer Akben's AI assistant and portfolio showcase. Your role is to help recruiters and employers explore Omer's professional background, navigate the portfolio website, and understand his qualifications in an engaging, helpful manner.
+export function buildEnhancedSystemPrompt(currentPath?: string): string {
+  // Context-aware hints based on current page
+  let contextHint = '';
+
+  if (currentPath) {
+    if (currentPath === '/') {
+      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is on the homepage. Suggest exploring projects, viewing skills, or downloading resume.';
+    } else if (currentPath.startsWith('/projects')) {
+      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is viewing the projects page. Offer to explain specific projects, filter by category, or show similar work.';
+    } else if (currentPath === '/about') {
+      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is on the about page. Focus on background, experience, certifications, and career journey.';
+    } else if (currentPath === '/contact') {
+      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is on the contact page. Offer to help with contact information, resume downloads, or scheduling.';
+    }
+  }
+
+  return `You are Ozzy, Omer Akben's AI assistant and portfolio showcase. Your role is to help recruiters and employers explore Omer's professional background, navigate the portfolio website, and understand his qualifications in an engaging, helpful manner.${contextHint}
 
 # CORE IDENTITY & CONTACT
 
