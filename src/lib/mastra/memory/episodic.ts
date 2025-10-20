@@ -2,6 +2,12 @@ import type { UIMessage } from "ai";
 import OpenAI from "openai";
 import { getRedisClient } from "@/lib/redis/client";
 import { knnSearch } from "@/lib/redis/vector-search";
+import {
+  getCachedEmbedding,
+  setCachedEmbedding,
+  recordCacheHit,
+  recordCacheMiss,
+} from "@/lib/cache/openai-cache";
 
 const EMBEDDING_MODEL = "text-embedding-3-small";
 const EPISODIC_PREFIX = "memory:episodic:";
@@ -79,19 +85,64 @@ export class RedisEpisodicMemory {
       return;
     }
 
-    const openai = getOpenAIClient();
-    const embeddings = await openai.embeddings.create({
-      model: EMBEDDING_MODEL,
-      input: chunks,
+    // Check cache for all chunks in parallel
+    const cacheResults = await Promise.all(
+      chunks.map((chunk) => getCachedEmbedding(chunk, EMBEDDING_MODEL))
+    );
+
+    // Identify chunks that need embeddings (cache misses)
+    const uncachedIndices: number[] = [];
+    const uncachedChunks: string[] = [];
+
+    cacheResults.forEach((cachedEmbedding, index) => {
+      if (cachedEmbedding === null) {
+        uncachedIndices.push(index);
+        uncachedChunks.push(chunks[index]);
+      }
     });
+
+    // Generate embeddings for cache misses (batch call)
+    let newEmbeddings: number[][] = [];
+    if (uncachedChunks.length > 0) {
+      const openai = getOpenAIClient();
+      const result = await openai.embeddings.create({
+        model: EMBEDDING_MODEL,
+        input: uncachedChunks,
+      });
+
+      newEmbeddings = result.data.map((entry) => entry.embedding);
+
+      // Store new embeddings in cache
+      await Promise.all(
+        uncachedChunks.map((chunk, idx) =>
+          setCachedEmbedding(chunk, newEmbeddings[idx], EMBEDDING_MODEL)
+        )
+      );
+    }
+
+    // Combine cached and new embeddings
+    const allEmbeddings: number[][] = [];
+    let newEmbeddingIndex = 0;
+
+    for (let i = 0; i < chunks.length; i++) {
+      if (cacheResults[i] !== null) {
+        allEmbeddings[i] = cacheResults[i] as number[];
+        await recordCacheHit("embedding");
+      } else {
+        allEmbeddings[i] = newEmbeddings[newEmbeddingIndex];
+        newEmbeddingIndex++;
+        await recordCacheMiss("embedding");
+      }
+    }
 
     const timestamp = Date.now();
 
+    // Store all chunks with their embeddings in Redis
     await Promise.all(
-      embeddings.data.map(async (entry, index) => {
+      chunks.map(async (chunk, index) => {
         const chunkId = `${timestamp}-${index}`;
         const key = `${EPISODIC_PREFIX}${threadId}:${chunkId}`;
-        const vector = encodeEmbedding(entry.embedding);
+        const vector = encodeEmbedding(allEmbeddings[index]);
 
         await this.redis.call(
           "HSET",
@@ -101,7 +152,7 @@ export class RedisEpisodicMemory {
           "chunkId",
           chunkId,
           "content",
-          chunks[index],
+          chunk,
           "embedding",
           vector
         );
@@ -115,18 +166,36 @@ export class RedisEpisodicMemory {
       return [];
     }
 
-    const openai = getOpenAIClient();
-    const embedding = await openai.embeddings.create({
-      model: EMBEDDING_MODEL,
-      input: [query],
-    });
+    // Check cache for query embedding
+    const cachedEmbedding = await getCachedEmbedding(query, EMBEDDING_MODEL);
 
-    const [vector] = embedding.data;
-    if (!vector) {
-      return [];
+    let queryEmbedding: number[];
+
+    if (cachedEmbedding !== null) {
+      // Cache hit - use cached embedding
+      queryEmbedding = cachedEmbedding;
+      await recordCacheHit("embedding");
+    } else {
+      // Cache miss - generate embedding
+      const openai = getOpenAIClient();
+      const result = await openai.embeddings.create({
+        model: EMBEDDING_MODEL,
+        input: [query],
+      });
+
+      const [vector] = result.data;
+      if (!vector) {
+        return [];
+      }
+
+      queryEmbedding = vector.embedding;
+
+      // Store in cache for future searches
+      await setCachedEmbedding(query, queryEmbedding, EMBEDDING_MODEL);
+      await recordCacheMiss("embedding");
     }
 
-    const matches = await knnSearch(EPISODIC_INDEX, vector.embedding, limit, [
+    const matches = await knnSearch(EPISODIC_INDEX, queryEmbedding, limit, [
       "threadId",
       "chunkId",
       "content",
