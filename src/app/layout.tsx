@@ -2,18 +2,21 @@
 
 import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
+import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { GlobalChatButton } from "@/components/global-chat-button";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { SkipToContent } from "@/components/skip-to-content";
 import { BrightnessProvider } from "@/lib/brightness-context";
-import { ChatSidebarProvider, useChatSidebar } from "@/lib/chat-sidebar-context";
-import { ChatSidebar } from "@/components/chat/chat-sidebar";
-import { GlobalChatButton } from "@/components/global-chat-button";
+import {
+  ChatSidebarProvider,
+  useChatSidebar,
+} from "@/lib/chat-sidebar-context";
 import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
+import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { useEffect, useState } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,10 +53,13 @@ function LayoutContainer({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      style={{
-        marginRight: `${marginRight}px`,
-        transition: 'margin-right 0.3s ease-out',
-      }}
+      className="transition-[margin-right] duration-300 ease-out"
+      style={
+        {
+          "--sidebar-margin": `${marginRight}px`,
+          marginRight: "var(--sidebar-margin)",
+        } as React.CSSProperties
+      }
     >
       {children}
     </div>
@@ -74,7 +80,9 @@ export default function RootLayout({
             <ChatSidebarProvider>
               <LayoutContainer>
                 <AppHeader />
-                <main id="main-content" className="min-h-screen">{children}</main>
+                <main id="main-content" className="min-h-screen">
+                  {children}
+                </main>
                 <AppFooter />
               </LayoutContainer>
               <ScrollToTop />
