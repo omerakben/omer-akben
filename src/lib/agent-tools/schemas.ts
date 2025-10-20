@@ -55,6 +55,22 @@ export const listProjectsOutputSchema = z.object({
   total: z.number(),
 });
 
+// search_projects_semantic tool schema
+export const searchProjectsSemanticSchema = z.object({
+  query: z.string().describe("Natural language query for semantic project search"),
+  limit: z.number().min(1).max(10).optional().default(5),
+});
+
+export const searchProjectsSemanticOutputSchema = z.object({
+  results: z.array(z.object({
+    slug: z.string(),
+    score: z.number(),
+    project: projectSchema.partial(),
+  })),
+  query: z.string(),
+  count: z.number(),
+});
+
 // open_project tool schema
 export const openProjectInputSchema = z.object({
   slug: z.string(),
@@ -247,3 +263,5 @@ export type TriggerWorkflowInput = z.infer<typeof triggerWorkflowInputSchema>;
 export type TriggerWorkflowOutput = z.infer<typeof triggerWorkflowOutputSchema>;
 export type ProfilePerformanceInput = z.infer<typeof profilePerformanceInputSchema>;
 export type ProfilePerformanceOutput = z.infer<typeof profilePerformanceOutputSchema>;
+export type SearchProjectsSemanticInput = z.infer<typeof searchProjectsSemanticSchema>;
+export type SearchProjectsSemanticOutput = z.infer<typeof searchProjectsSemanticOutputSchema>;

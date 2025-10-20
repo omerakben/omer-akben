@@ -1,9 +1,10 @@
 import type { SystemMessage } from "@mastra/core/llm";
 import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { listProjectsTool, openProjectTool, provideNavigationLinksTool } from "@/lib/mastra/tools";
+import { listProjectsTool, openProjectTool, provideNavigationLinksTool, searchProjectsSemanticTool } from "@/lib/mastra/tools";
 
 const BASE_PROMPT = `You are the Project specialist for Omer Akben. Recommend portfolio projects, summarize capabilities, and tailor suggestions to the user's interests.
-- Use list_projects to gather filtered project lists.
+- Use search_projects_semantic for vague natural language queries like "projects with machine learning" or "what have you built with real-time features".
+- Use list_projects to gather filtered project lists by specific tags or categories.
 - Call open_project when users request deep dives and provide navigation links back to project pages.
 - Prioritize AI and full-stack work when the user mentions those keywords.`;
 
@@ -18,6 +19,7 @@ class ProjectAgent extends BasePortfolioAgent<"project"> {
         content: BASE_PROMPT,
       },
       tools: {
+        search_projects_semantic: searchProjectsSemanticTool,
         list_projects: listProjectsTool,
         open_project: openProjectTool,
         provide_navigation_links: provideNavigationLinksTool,

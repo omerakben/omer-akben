@@ -5,6 +5,7 @@ import {
   navigatePageInputSchema,
   profilePerformanceInputSchema,
   scrollToSectionInputSchema,
+  searchProjectsSemanticSchema,
   triggerWorkflowInputSchema,
 } from "@/lib/agent-tools/schemas";
 
@@ -115,6 +116,15 @@ export const listProjectsTool = createTool({
     const query = context.tag ? `?tag=${encodeURIComponent(context.tag)}` : "";
     const response = await fetch(`${BASE_URL}/api/tools/list-projects${query}`);
     return response.json();
+  },
+});
+
+export const searchProjectsSemanticTool = createTool({
+  id: "search_projects_semantic",
+  description: "Search portfolio projects using natural language semantic search. Use this when the user asks vague questions like 'projects with machine learning' or 'what have you built with real-time features'.",
+  inputSchema: searchProjectsSemanticSchema,
+  execute: async ({ context }) => {
+    return fetchJson("/api/tools/search-projects-semantic", context);
   },
 });
 
