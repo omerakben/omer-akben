@@ -1,131 +1,133 @@
-import { openai } from "@ai-sdk/openai";
-import { streamText, convertToModelMessages, UIMessage, tool } from "ai";
+import type { UIMessage } from "ai";
 import { z } from "zod";
-import { enhancedSystemPrompt } from "@/lib/agent-knowledge-base";
-import {
-  navigatePageInputSchema,
-  scrollToSectionInputSchema,
-  extractPageSummaryInputSchema,
-  triggerWorkflowInputSchema,
-  profilePerformanceInputSchema,
-} from "@/lib/agent-tools/schemas";
+import { loadThreadMessages } from "@/lib/mastra/memory/checkpointer";
+import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
+import { RedisMemoryManager } from "@/lib/memory/redis-memory";
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
+const messageSchema = z
+  .object({
+    id: z.string(),
+    role: z.enum(["user", "assistant", "system", "tool"]),
+    parts: z.array(z.any()).optional(),
+    content: z.any().optional(),
+    metadata: z.any().optional(),
+  })
+  .passthrough();
 
-  const result = streamText({
-    model: openai("gpt-4o-mini"),
-    messages: convertToModelMessages(messages),
-    system: enhancedSystemPrompt,
-    temperature: 0.7,
-    tools: {
-      provide_navigation_links: tool({
-        description:
-          "Provide clickable navigation buttons for visitors to easily navigate to pages, projects, or external resources. Use this when mentioning projects, portfolio pages, GitHub repos, live demos, or any links that users should be able to click.",
-        inputSchema: z.object({
-          links: z.array(
-            z.object({
-              label: z.string(),
-              href: z.string(),
-              type: z.enum(["internal", "external"]),
-            })
-          ),
-        }),
-        execute: async ({ links }) => {
-          return {
-            success: true,
-            data: {
-              links,
-            },
-          };
-        },
-      }),
-      navigate_page: tool({
-        description:
-          "Navigate to a specific page on omerakben.com. Use this when user explicitly requests to navigate or when context requires page transition.",
-        inputSchema: navigatePageInputSchema,
-        execute: async ({ url, waitUntil }) => {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/tools/navigate-page`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ url, waitUntil }),
-            }
-          );
-          return response.json();
-        },
-      }),
-      scroll_to_section: tool({
-        description:
-          "Scroll to a specific section on the current page using CSS selector or ARIA label. Useful for navigating within long pages.",
-        inputSchema: scrollToSectionInputSchema,
-        execute: async ({ selector, behavior }) => {
-          return {
-            success: true,
-            data: {
-              selector,
-              behavior,
-              message: `Scrolling to ${selector}`,
-            },
-          };
-        },
-      }),
-      extract_page_summary: tool({
-        description:
-          "Extract and summarize the current page content. Use this when user asks 'what is this page about' or needs page overview.",
-        inputSchema: extractPageSummaryInputSchema,
-        execute: async ({ maxLength }) => {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/tools/extract-summary`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ maxLength }),
-            }
-          );
-          return response.json();
-        },
-      }),
-      trigger_workflow: tool({
-        description:
-          "Trigger a backend workflow for CRM updates, email notifications, or analytics events. Use when user submits contact form or requests automated actions.",
-        inputSchema: triggerWorkflowInputSchema,
-        execute: async ({ workflowId, payload, waitForResult }) => {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/tools/trigger-workflow`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ workflowId, payload, waitForResult }),
-            }
-          );
-          return response.json();
-        },
-      }),
-      ...(process.env.NODE_ENV === "development" && {
-        profile_performance: tool({
-          description:
-            "Profile page performance with Chrome DevTools metrics (LCP, FID, CLS, TTFB). Only available in development mode for debugging.",
-          inputSchema: profilePerformanceInputSchema,
-          execute: async ({ duration, includeScreenshots }) => {
-            const response = await fetch(
-              `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/tools/profile-performance`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ duration, includeScreenshots }),
-              }
-            );
-            return response.json();
-          },
-        }),
-      }),
-    },
+const requestSchema = z.object({
+  chatId: z.string(),
+  message: messageSchema,
+  userId: z.string().optional(),
+});
+
+const memoryManager = new RedisMemoryManager();
+
+function ensureJsonResponse(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
   });
+}
 
-  return result.toUIMessageStreamResponse();
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const chatId = url.searchParams.get("chatId");
+
+  if (!chatId) {
+    return ensureJsonResponse({ error: "chatId is required" }, 400);
+  }
+
+  try {
+    const messages = await loadThreadMessages(chatId);
+    return ensureJsonResponse({ messages });
+  } catch (error) {
+    console.error("[ChatRoute] Failed to load history", error);
+    return ensureJsonResponse({ error: "Failed to load history" }, 500);
+  }
+}
+
+export async function POST(req: Request) {
+  let payload: unknown;
+  try {
+    payload = await req.json();
+  } catch {
+    return ensureJsonResponse({ error: "Invalid JSON payload" }, 400);
+  }
+
+  const parsed = requestSchema.safeParse(payload);
+  if (!parsed.success) {
+    return ensureJsonResponse({ error: "chatId and message are required" }, 400);
+  }
+
+  const { chatId, message, userId } = parsed.data;
+
+  try {
+    const history = await loadThreadMessages(chatId);
+    const userMessage = normalizeToUIMessage(message);
+    const messages: UIMessage[] = [...history, userMessage];
+    const query = extractMessageText(userMessage);
+
+    const stream = await coordinatorAgent.route({
+      query,
+      threadId: chatId,
+      userId: userId ?? "anonymous",
+      history: messages,
+    });
+
+    if (!stream) {
+      return ensureJsonResponse({ error: "Coordinator unavailable" }, 500);
+    }
+
+    return stream.toUIMessageStreamResponse({
+      onFinish: async ({ messages: final }) => {
+        const finalMessages = final ?? messages;
+        try {
+          await Promise.all([
+            memoryManager.saveSTM(chatId, finalMessages),
+            memoryManager.saveLTM(chatId, finalMessages),
+          ]);
+        } catch (error) {
+          console.error("[ChatRoute] Failed to persist memory", error);
+        }
+      },
+    });
+  } catch (error) {
+    console.error("[ChatRoute] Failed to process chat request", error);
+    return ensureJsonResponse({ error: "Failed to process chat request" }, 500);
+  }
+}
+
+function normalizeToUIMessage(raw: z.infer<typeof messageSchema>): UIMessage {
+  if (Array.isArray(raw.parts) && raw.parts.length > 0) {
+    return raw as unknown as UIMessage;
+  }
+
+  const text = typeof raw.content === "string" ? raw.content : "";
+  const role = raw.role === "tool" ? "assistant" : raw.role;
+
+  return {
+    id: raw.id,
+    role,
+    parts: text ? [{ type: "text", text }] : [],
+    metadata: raw.metadata,
+  } as UIMessage;
+}
+
+function extractMessageText(message: UIMessage): string {
+  const textParts = message.parts
+    .filter((part): part is { type: "text"; text: string } => part.type === "text" && "text" in part)
+    .map((part) => part.text.trim())
+    .filter(Boolean);
+
+  if (textParts.length > 0) {
+    return textParts.join("\n");
+  }
+
+  if (typeof (message as unknown as { content?: unknown }).content === "string") {
+    return ((message as unknown as { content?: string }).content ?? "").trim();
+  }
+
+  return "";
 }
