@@ -325,7 +325,8 @@ export function ChatSidebar() {
     if (!isLoading) {
       generateFollowupsAsync();
     }
-  }, [messages, isLoading, recentlyShownFollowups]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, isLoading]);
 
   return (
     <AnimatePresence>

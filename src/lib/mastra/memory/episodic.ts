@@ -1,6 +1,6 @@
 import type { UIMessage } from "ai";
 import OpenAI from "openai";
-import { getRedisClient } from "@/lib/redis/client";
+import { getVectorClient } from "@/lib/redis/vector-client";
 import { knnSearch } from "@/lib/redis/vector-search";
 import {
   getCachedEmbedding,
@@ -11,8 +11,6 @@ import {
 
 const EMBEDDING_MODEL = "text-embedding-3-small";
 const EPISODIC_PREFIX = "memory:episodic:";
-const EPISODIC_INDEX = "episodic_idx";
-const NINETY_DAYS_IN_SECONDS = 60 * 60 * 24 * 90;
 
 let openaiClient: OpenAI | null = null;
 
@@ -23,11 +21,6 @@ function getOpenAIClient(): OpenAI {
 
   openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   return openaiClient;
-}
-
-function encodeEmbedding(embedding: number[]): Uint8Array {
-  const typed = new Float32Array(embedding);
-  return new Uint8Array(typed.buffer);
 }
 
 function extractMessageText(message: UIMessage): string {
@@ -77,8 +70,6 @@ export interface EpisodicMemoryResult {
 }
 
 export class RedisEpisodicMemory {
-  private readonly redis = getRedisClient();
-
   async saveConversation(threadId: string, messages: UIMessage[]): Promise<void> {
     const chunks = createChunks(messages);
     if (chunks.length === 0) {
@@ -136,27 +127,23 @@ export class RedisEpisodicMemory {
     }
 
     const timestamp = Date.now();
+    const vectorClient = getVectorClient();
 
-    // Store all chunks with their embeddings in Redis
+    // Store all chunks with their embeddings in Upstash Vector
     await Promise.all(
       chunks.map(async (chunk, index) => {
         const chunkId = `${timestamp}-${index}`;
-        const key = `${EPISODIC_PREFIX}${threadId}:${chunkId}`;
-        const vector = encodeEmbedding(allEmbeddings[index]);
+        const vectorId = `${EPISODIC_PREFIX}${threadId}:${chunkId}`;
 
-        await this.redis.call(
-          "HSET",
-          key,
-          "threadId",
-          threadId,
-          "chunkId",
-          chunkId,
-          "content",
-          chunk,
-          "embedding",
-          vector
-        );
-        await this.redis.call("EXPIRE", key, NINETY_DAYS_IN_SECONDS);
+        await vectorClient.upsert({
+          id: vectorId,
+          vector: allEmbeddings[index],
+          metadata: {
+            threadId,
+            chunkId,
+            content: chunk,
+          },
+        });
       })
     );
   }
@@ -195,7 +182,7 @@ export class RedisEpisodicMemory {
       await recordCacheMiss("embedding");
     }
 
-    const matches = await knnSearch(EPISODIC_INDEX, queryEmbedding, limit, [
+    const matches = await knnSearch("", queryEmbedding, limit, [
       "threadId",
       "chunkId",
       "content",

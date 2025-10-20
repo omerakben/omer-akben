@@ -52,6 +52,7 @@
     "@types/dompurify": "^3.0.5",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.6",
+    "@upstash/vector": "^1.2.2",
     "@vercel/analytics": "^1.5.0",
     "ai": "^5.0.76",
     "class-variance-authority": "^0.7.1",

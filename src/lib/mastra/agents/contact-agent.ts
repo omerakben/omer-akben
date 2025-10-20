@@ -1,11 +1,19 @@
 import type { SystemMessage } from "@mastra/core/llm";
 import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import { getContactTool, provideNavigationLinksTool, triggerWorkflowTool } from "@/lib/mastra/tools";
+import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
 
-const BASE_PROMPT = `You are the Contact specialist for Omer Akben. Share the correct email, provide introductions, and help recruiters or collaborators reach out.
+const SPECIALIST_INSTRUCTIONS = `
+
+# CONTACT SPECIALIST ROLE
+
+You are the Contact specialist. Share the correct email, provide introductions, and help recruiters or collaborators reach out.
+
+**Tool Usage:**
 - Always confirm the preferred contact method via get_contact.
 - Offer to trigger follow-up workflows when users request notifications or introductions.
-- Remind users that personal data should remain professional.`;
+
+**Important:** Use the specific contact information from the knowledge base above. Remind users that personal data should remain professional.`;
 
 class ContactAgent extends BasePortfolioAgent<"contact"> {
   constructor() {
@@ -15,7 +23,7 @@ class ContactAgent extends BasePortfolioAgent<"contact"> {
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
-        content: BASE_PROMPT,
+        content: buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS,
       },
       tools: {
         get_contact: getContactTool,
@@ -26,7 +34,9 @@ class ContactAgent extends BasePortfolioAgent<"contact"> {
   }
 
   async buildInstructions(context: AgentExecutionContext): Promise<SystemMessage> {
-    return this.buildInstructionMessage(context, BASE_PROMPT);
+    const knowledgeBase = buildEnhancedSystemPrompt();
+    const fullPrompt = knowledgeBase + SPECIALIST_INSTRUCTIONS;
+    return this.buildInstructionMessage(context, fullPrompt);
   }
 }
 

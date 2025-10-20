@@ -1,13 +1,13 @@
 import { describe, expect, it, beforeEach, vi } from "vitest";
 import type { UIMessage } from "ai";
 
-const callMock = vi.fn();
+const vectorUpsertMock = vi.fn();
 const embeddingsCreateMock = vi.fn();
 const knnSearchMock = vi.fn();
 
-vi.mock("@/lib/redis/client", () => ({
-  getRedisClient: () => ({
-    call: callMock,
+vi.mock("@/lib/redis/vector-client", () => ({
+  getVectorClient: () => ({
+    upsert: vectorUpsertMock,
   }),
 }));
 
@@ -26,7 +26,7 @@ vi.mock("openai", () => ({
 
 describe("RedisEpisodicMemory", () => {
   beforeEach(() => {
-    callMock.mockReset();
+    vectorUpsertMock.mockReset();
     embeddingsCreateMock.mockReset();
     knnSearchMock.mockReset();
   });
@@ -41,24 +41,38 @@ describe("RedisEpisodicMemory", () => {
     ];
 
     await memory.saveConversation("thread", messages);
-    expect(callMock).not.toHaveBeenCalled();
+    expect(vectorUpsertMock).not.toHaveBeenCalled();
   });
 
-  it("stores chunks with embeddings and expiry", async () => {
+  it("stores chunks with embeddings in Vector database", async () => {
     const { RedisEpisodicMemory } = await import("./episodic");
     const memory = new RedisEpisodicMemory();
     embeddingsCreateMock.mockResolvedValueOnce({
       data: [{ embedding: Array(5).fill(0.1) }],
     });
+    vectorUpsertMock.mockResolvedValueOnce(undefined);
 
     const messages: UIMessage[] = [
       { id: "1", role: "user", parts: [{ type: "text", text: "Hello" }] },
     ];
 
     await memory.saveConversation("thread", messages);
-    expect(callMock).toHaveBeenCalled();
-    const [command] = callMock.mock.calls[0];
-    expect(command).toBe("HSET");
+
+    // Verify Vector upsert was called
+    expect(vectorUpsertMock).toHaveBeenCalled();
+    const upsertCall = vectorUpsertMock.mock.calls[0][0];
+
+    // Verify upsert parameters
+    expect(upsertCall).toHaveProperty("id");
+    expect(upsertCall.id).toContain("memory:episodic:thread:");
+    expect(upsertCall).toHaveProperty("vector");
+    expect(upsertCall.vector).toEqual(Array(5).fill(0.1));
+    expect(upsertCall).toHaveProperty("metadata");
+    expect(upsertCall.metadata).toEqual({
+      threadId: "thread",
+      chunkId: expect.any(String),
+      content: "user: Hello",
+    });
   });
 
   it("formats search results", async () => {

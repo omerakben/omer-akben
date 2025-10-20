@@ -1,4 +1,4 @@
-import { getRedisClient } from "@/lib/redis/client";
+import { getVectorClient } from "@/lib/redis/vector-client";
 
 export interface VectorSearchResult {
   key: string;
@@ -6,77 +6,54 @@ export interface VectorSearchResult {
   fields: Record<string, string>;
 }
 
-function encodeVectorToBuffer(vector: number[]): Uint8Array {
-  const typed = new Float32Array(vector);
-  return new Uint8Array(typed.buffer);
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
+/**
+ * Perform KNN (k-nearest neighbors) vector search using Upstash Vector
+ *
+ * @param index - Index name (not used with Upstash Vector, kept for API compatibility)
+ * @param vector - Query embedding vector
+ * @param limit - Maximum number of results to return
+ * @param returnFields - Fields to include in results (metadata keys)
+ * @returns Array of search results with scores and metadata
+ */
 export async function knnSearch(
   index: string,
   vector: number[],
   limit: number,
   returnFields: string[] = []
 ): Promise<VectorSearchResult[]> {
-  const redis = getRedisClient();
-  const blob = encodeVectorToBuffer(vector);
-  const scoreAlias = "vector_score";
-  const uniqueReturnFields = Array.from(
-    new Set([...returnFields, scoreAlias])
-  );
+  const vectorClient = getVectorClient();
 
-  const response = await redis.call(
-    "FT.SEARCH",
-    index,
-    `*=>[KNN ${limit} @embedding $BLOB AS ${scoreAlias}]`,
-    "PARAMS",
-    "2",
-    "BLOB",
-    blob,
-    "RETURN",
-    String(uniqueReturnFields.length),
-    ...uniqueReturnFields,
-    "DIALECT",
-    "2"
-  );
+  // Query Upstash Vector with the embedding
+  const response = await vectorClient.query({
+    vector,
+    topK: limit,
+    includeMetadata: true,
+    includeVectors: false,
+  });
 
-  if (!Array.isArray(response)) {
-    return [];
-  }
+  // Map Upstash Vector response to existing VectorSearchResult format
+  const results: VectorSearchResult[] = response.map((item) => {
+    // Extract metadata fields
+    const fields: Record<string, string> = {};
 
-  const [, ...matches] = response as unknown[];
-  const results: VectorSearchResult[] = [];
-
-  for (let i = 0; i < matches.length; i += 2) {
-    const key = matches[i];
-    const fields = matches[i + 1];
-    if (typeof key !== "string" || !Array.isArray(fields)) {
-      continue;
-    }
-
-    const parsed: Record<string, string> = {};
-    for (let j = 0; j < fields.length; j += 2) {
-      const fieldKey = fields[j];
-      const fieldValue = fields[j + 1];
-      if (typeof fieldKey === "string") {
-        if (typeof fieldValue === "string") {
-          parsed[fieldKey] = fieldValue;
-        } else if (isRecord(fieldValue)) {
-          parsed[fieldKey] = JSON.stringify(fieldValue);
+    if (item.metadata) {
+      for (const [key, value] of Object.entries(item.metadata)) {
+        // Only include requested fields (or all if none specified)
+        if (returnFields.length === 0 || returnFields.includes(key)) {
+          fields[key] = typeof value === "string" ? value : String(value);
         }
       }
     }
 
-    const scoreValue = parsed["vector_score"] ? Number(parsed["vector_score"]) : NaN;
-    results.push({
-      key,
-      score: Number.isNaN(scoreValue) ? 0 : scoreValue,
-      fields: parsed,
-    });
-  }
+    // Add vector_score to fields for backwards compatibility
+    fields["vector_score"] = String(item.score);
+
+    return {
+      key: String(item.id),
+      score: item.score,
+      fields,
+    };
+  });
 
   return results;
 }

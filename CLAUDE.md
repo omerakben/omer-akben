@@ -68,6 +68,7 @@ npx tsc --noEmit                                 # TypeScript check
 **Chat System Features** (Ozzy AI Agent - Portfolio Centerpiece):
 - **Sidebar Assistant**: Pinned/unpinned mode with localStorage persistence, resizable width (320-800px)
 - **Thread Memory**: `thread-memory.ts` - conversation state persistence with pinned/width state
+- **Episodic Memory**: `lib/mastra/memory/episodic.ts` - semantic search across conversations using Upstash Vector (1536-dim embeddings, KNN search)
 - **Global Chat Button**: `global-chat-button.tsx` - floating access from any page (tested: 32 tests)
 - **Follow-up Suggestions**: `FollowupChips.tsx` - contextual question suggestions after each response
 - **Action Buttons**: Email (`EmailActionButton.tsx`) and Resume download (`ResumeDownloadButton.tsx`) integrated in sidebar
@@ -309,6 +310,10 @@ OPENAI_API_KEY=sk-...
 UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-token
 
+# Upstash Vector for Episodic Memory (Required for Production)
+UPSTASH_VECTOR_REST_URL=https://your-vector-index.upstash.io
+UPSTASH_VECTOR_REST_TOKEN=your-token
+
 # Optional
 NODE_ENV=development|production
 ANALYZE=true  # Enable bundle analyzer
@@ -397,6 +402,9 @@ ANALYZE=true  # Enable bundle analyzer
 - `src/lib/chat-sidebar-context.tsx` - State management (isOpen, isPinned, width, threadId)
 - `src/components/chat/chat-sidebar.tsx` - Main sidebar UI with resizing, pinning
 - `src/lib/thread-memory.ts` - Conversation persistence with pinned/width state
+- `src/lib/mastra/memory/episodic.ts` - Episodic memory with Vector embeddings
+- `src/lib/redis/vector-client.ts` - Upstash Vector client (singleton)
+- `src/lib/redis/vector-search.ts` - KNN search abstraction layer
 - `src/lib/followups.ts` - Intent detection and follow-up generation
 - `src/components/chat/FollowupChips.tsx` - Contextual question suggestions
 - `src/components/global-chat-button.tsx` - Floating chat access
