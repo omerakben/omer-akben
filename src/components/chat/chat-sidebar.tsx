@@ -4,12 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { getFollowups } from "@/lib/followups";
-import {
-  cleanExpiredThreads,
-  loadThread,
-  saveThread,
-  type Message,
-} from "@/lib/thread-memory";
+import { DefaultChatTransport, UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -64,6 +59,7 @@ export function ChatSidebar() {
     isOpen,
     isPinned,
     width,
+    threadId,
     closeSidebar,
     setPinned,
     setWidth,
@@ -82,7 +78,24 @@ export function ChatSidebar() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, setMessages } = useChat({
+    id: threadId,
+    transport: new DefaultChatTransport({
+      prepareSendMessagesRequest: ({ id, messages: outgoingMessages }) => {
+        const lastMessage = outgoingMessages[outgoingMessages.length - 1];
+
+        if (!lastMessage) {
+          throw new Error("No message to send");
+        }
+
+        return {
+          body: {
+            chatId: id,
+            message: lastMessage,
+          },
+        };
+      },
+    }),
     onError: (error) => {
       console.error("Chat error:", error);
       setError(
@@ -208,39 +221,53 @@ export function ChatSidebar() {
     };
   }, [isResizing, setWidth]);
 
-  // Load thread from localStorage on mount
-  // TODO: Implement proper message persistence
-  // KNOWN LIMITATION: @ai-sdk/react v2's useChat does NOT support initialMessages or body params
-  // To fix this CRITICAL issue flagged by Gemini Code Assist:
-  // 1. Migrate to server-side session management
-  // 2. Store messages in database with threadId
-  // 3. API endpoint should load history and stream responses
-  // Current workaround: Messages save to localStorage but don't reload on mount
   useEffect(() => {
-    const threadId = "main"; // Single thread for MVP, could be page-specific later
-    const savedMessages = loadThread(threadId);
+    let isMounted = true;
+    const controller = new AbortController();
 
-    if (savedMessages && savedMessages.length > 0) {
-      console.log(
-        "[ThreadMemory] Loaded",
-        savedMessages.length,
-        "messages from localStorage"
-      );
-      console.warn(
-        "[ThreadMemory] LIMITATION: Cannot restore messages to useChat hook - requires server-side persistence"
-      );
-    }
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch(`/api/chat?chatId=${threadId}`, {
+          signal: controller.signal,
+        });
 
-    // Clean expired threads on mount
-    cleanExpiredThreads();
-  }, []);
+        if (!response.ok) {
+          throw new Error(`Failed to load chat history (${response.status})`);
+        }
 
-  // Save thread to localStorage whenever messages change
+        const data: { messages?: UIMessage[] } = await response.json();
+        if (!isMounted) {
+          return;
+        }
+
+        const history = data.messages ?? [];
+        setMessages(history);
+        setShowMessages(history.length > 0);
+        setCurrentFollowups([]);
+        setRecentlyShownFollowups([]);
+      } catch (error) {
+        if ((error as Error).name === "AbortError") {
+          return;
+        }
+        console.error("[ChatSidebar] Failed to load chat history:", error);
+      }
+    };
+
+    setMessages([]);
+    setShowMessages(false);
+    setCurrentFollowups([]);
+    setRecentlyShownFollowups([]);
+    fetchHistory();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [threadId, setMessages]);
+
   useEffect(() => {
     if (messages.length > 0) {
-      const threadId = "main";
-      // Cast AI SDK messages to our Message type
-      saveThread(threadId, messages as unknown as Message[]);
+      setShowMessages(true);
     }
   }, [messages]);
 
@@ -356,7 +383,13 @@ export function ChatSidebar() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={newChat}
+                  onClick={() => {
+                    newChat();
+                    setMessages([]);
+                    setShowMessages(false);
+                    setCurrentFollowups([]);
+                    setRecentlyShownFollowups([]);
+                  }}
                   className="h-8 w-8 p-0"
                   title="New Chat"
                   aria-label="Start new chat"
@@ -369,7 +402,10 @@ export function ChatSidebar() {
                     size="sm"
                     onClick={() => {
                       clearConversation();
+                      setMessages([]);
                       setShowMessages(false);
+                      setCurrentFollowups([]);
+                      setRecentlyShownFollowups([]);
                     }}
                     className="h-8 w-8 p-0"
                     title="Clear Conversation"
