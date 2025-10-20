@@ -6,6 +6,7 @@ import { navigationAgent, buildNavigationInstructions } from "@/lib/mastra/agent
 import { performanceAgent, buildPerformanceInstructions } from "@/lib/mastra/agents/performance-agent";
 import { projectAgent, buildProjectInstructions } from "@/lib/mastra/agents/project-agent";
 import { resumeAgent, buildResumeInstructions } from "@/lib/mastra/agents/resume-agent";
+import { workflowRegistry, executeWorkflow } from "@/lib/mastra/workflows";
 import type { UIMessage } from "ai";
 
 const BASE_PROMPT = `You are the coordinator for Omer Akben's multi-agent assistant. Your job is to classify intent and select the best specialist agent.
@@ -79,6 +80,14 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
 
   async route(context: AgentExecutionContext): Promise<AISDKV5OutputStream | null> {
     const query = extractLatestUserText(context.history);
+
+    // Check for workflow match first (before single-agent routing)
+    const workflow = workflowRegistry.detect(query);
+    if (workflow) {
+      return this.executeWorkflowStream(workflow, context);
+    }
+
+    // Fall back to single-agent routing
     const intent = classifyIntent(query);
     const route = ROUTES[intent];
 
@@ -89,6 +98,52 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     const instructions = await route.instructions(context);
     const stream = await route.agent.stream(context.history, {
       instructions,
+      memory: {
+        thread: { id: context.threadId },
+        resource: "portfolio-chat",
+      },
+      format: "aisdk" as const,
+    });
+
+    return stream as AISDKV5OutputStream;
+  }
+
+  /**
+   * Execute a workflow and convert to AI SDK stream
+   *
+   * Note: This currently collects all workflow output before streaming.
+   * Future optimization: Stream workflow events in real-time.
+   */
+  private async executeWorkflowStream(
+    workflow: import("@/lib/mastra/workflows").WorkflowDefinition,
+    context: AgentExecutionContext
+  ): Promise<AISDKV5OutputStream> {
+    // Collect workflow output
+    let workflowOutput = "";
+    for await (const chunk of executeWorkflow(workflow, context)) {
+      workflowOutput += chunk;
+    }
+
+    // Create a modified history with the workflow output as the system message
+    const workflowMessages: UIMessage[] = [
+      {
+        id: `workflow-${Date.now()}`,
+        role: "system" as const,
+        parts: [{ type: "text" as const, text: workflowOutput }],
+      },
+      {
+        id: `workflow-user-${Date.now()}`,
+        role: "user" as const,
+        parts: [{ type: "text" as const, text: "Present the above information." }],
+      },
+    ];
+
+    // Use the coordinator agent to stream the workflow output
+    const stream = await this.stream(workflowMessages, {
+      instructions: {
+        role: "system",
+        content: "Present the pre-formatted workflow results exactly as provided in the context, without modification or additional commentary."
+      },
       memory: {
         thread: { id: context.threadId },
         resource: "portfolio-chat",
