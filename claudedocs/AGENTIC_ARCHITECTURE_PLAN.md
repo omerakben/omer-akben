@@ -587,6 +587,13 @@ npm run dev
 
 **Evolution Path**: This checkpointer becomes the **STM (Short-Term Memory) layer** in Phase 1, extended with LTM episodic and semantic layers.
 
+#### Phase 0 Implementation Notes (2025-02-14)
+
+- ✅ Wired `src/app/api/chat/route.ts` to instantiate a shared `RedisSaver`, added a `GET` history endpoint, and persist streamed transcripts on finish to satisfy reload persistence requirements.
+- ✅ Updated `src/components/chat/chat-sidebar.tsx` to rely on `DefaultChatTransport`, hydrate threads from the new history endpoint, and drop the brittle localStorage workaround.
+- ✅ Persisted chat `threadId` in `src/lib/chat-sidebar-context.tsx` so threads survive reloads and reset cleanly on new chats.
+- ✅ Added `src/app/api/chat/route.test.ts` to cover GET/POST flows, ensuring Redis interactions are invoked even under mocked streams.
+
 ---
 
 ### Phase 1: Foundation (Week 1)
@@ -643,6 +650,15 @@ export class RedisMemoryManager {
 ```
 
 **Tests**: Memory save/retrieve, vector search accuracy
+
+#### Phase 1 Implementation Notes (2025-02-15)
+
+- ✅ Added Mastra agent scaffolding with coordinator and six specialists under `src/lib/mastra/agents/*`, wiring them through `src/lib/mastra/config.ts`.
+- ✅ Introduced Redis-backed memory abstractions (`redis-memory.ts`, episodic + semantic layers, vector search utilities) and migration script `scripts/setup-redis-indexes.ts`.
+- ✅ Refactored the chat API to delegate streaming to the coordinator agent, hydrate Mastra memory contexts, and persist STM/LTM layers on stream completion.
+- ✅ Expanded Vitest coverage for the chat route to validate coordinator routing, persistence hooks, and GET history hydration.
+- ✅ Wrapped the Upstash REST client with LangGraph-compatible stack commands, enabling `RedisSaver`, vector search, and index scripts to run without manual casts.
+- ✅ Hardened memory modules with Vitest suites covering episodic chunking, semantic merge flows, and raw Redis command serialization.
 
 ### Phase 2: Agent Migration (Week 2)
 
