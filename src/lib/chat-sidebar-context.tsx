@@ -10,6 +10,8 @@ const STORAGE_KEYS = {
 const DEFAULT_WIDTH = 480; // px
 const MIN_WIDTH = 320; // px
 const MAX_WIDTH = 800; // px
+const THREAD_STORAGE_KEY = "chat_thread_id";
+const DEFAULT_THREAD_ID = "thread-main";
 
 interface ChatSidebarContextType {
   isOpen: boolean;
@@ -38,7 +40,7 @@ export function ChatSidebarProvider({
   const [isOpen, setIsOpen] = useState(false);
   const [isPinned, setIsPinnedState] = useState(false);
   const [width, setWidthState] = useState(DEFAULT_WIDTH);
-  const [threadId, setThreadIdState] = useState(() => `thread-${Date.now()}`);
+  const [threadId, setThreadIdState] = useState(DEFAULT_THREAD_ID);
 
   // Load persisted state from localStorage on mount
   useEffect(() => {
@@ -120,21 +122,53 @@ export function ChatSidebarProvider({
     }
   }, []);
 
-  const newChat = useCallback(() => {
-    // Generate new thread ID
-    const newThreadId = `thread-${Date.now()}`;
-    setThreadIdState(newThreadId);
+  const persistThreadId = useCallback((id: string) => {
+    setThreadIdState(id);
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      localStorage.setItem(THREAD_STORAGE_KEY, id);
+    } catch (error) {
+      console.error("[ChatSidebar] Failed to persist thread id:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      const savedThreadId = localStorage.getItem(THREAD_STORAGE_KEY);
+      if (savedThreadId) {
+        setThreadIdState(savedThreadId);
+      } else {
+        localStorage.setItem(THREAD_STORAGE_KEY, DEFAULT_THREAD_ID);
+      }
+    } catch (error) {
+      console.error("[ChatSidebar] Failed to load persisted thread id:", error);
+    }
+  }, []);
+
+  const newChat = useCallback(() => {
+    const newThreadId = `thread-${Date.now()}`;
+    persistThreadId(newThreadId);
+  }, [persistThreadId]);
 
   const clearConversation = useCallback(() => {
-    // Keep same thread ID but signal for message clearing
-    // The chat component will handle actual message clearing
-    setThreadIdState(prev => `${prev}-cleared-${Date.now()}`);
-  }, []);
+    const newThreadId = `thread-${Date.now()}`;
+    persistThreadId(newThreadId);
+  }, [persistThreadId]);
 
-  const setThreadId = useCallback((id: string) => {
-    setThreadIdState(id);
-  }, []);
+  const setThreadId = useCallback(
+    (id: string) => {
+      persistThreadId(id);
+    },
+    [persistThreadId]
+  );
 
   return (
     <ChatSidebarContext.Provider

@@ -587,6 +587,13 @@ npm run dev
 
 **Evolution Path**: This checkpointer becomes the **STM (Short-Term Memory) layer** in Phase 1, extended with LTM episodic and semantic layers.
 
+#### Phase 0 Implementation Notes (2025-02-14)
+
+- ✅ Wired `src/app/api/chat/route.ts` to instantiate a shared `RedisSaver`, added a `GET` history endpoint, and persist streamed transcripts on finish to satisfy reload persistence requirements.
+- ✅ Updated `src/components/chat/chat-sidebar.tsx` to rely on `DefaultChatTransport`, hydrate threads from the new history endpoint, and drop the brittle localStorage workaround.
+- ✅ Persisted chat `threadId` in `src/lib/chat-sidebar-context.tsx` so threads survive reloads and reset cleanly on new chats.
+- ✅ Added `src/app/api/chat/route.test.ts` to cover GET/POST flows, ensuring Redis interactions are invoked even under mocked streams.
+
 ---
 
 ### Phase 1: Foundation (Week 1)
