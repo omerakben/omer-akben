@@ -129,12 +129,6 @@ export async function getCachedEmbedding(
     }
 
     const parsed: CachedEmbedding = JSON.parse(cached);
-
-    // Log cache performance
-    console.log(
-      `[Cache:embedding] HIT - lookup: ${lookupTime.toFixed(2)}ms, model: ${model}`
-    );
-
     return parsed.embedding;
   } catch (error) {
     console.error("[Cache:embedding] Failed to retrieve cached embedding", { error });
@@ -200,12 +194,6 @@ export async function getCachedCompletion(
     }
 
     const parsed: CachedCompletion = JSON.parse(cached);
-
-    // Log cache performance
-    console.log(
-      `[Cache:completion] HIT - lookup: ${lookupTime.toFixed(2)}ms, model: ${model}, temp: ${temperature}`
-    );
-
     return parsed.text;
   } catch (error) {
     console.error("[Cache:completion] Failed to retrieve cached completion", { error });
@@ -346,15 +334,5 @@ export async function getCacheMetrics(
  */
 export async function logCacheMetrics(type: CacheType, days: number = 7): Promise<void> {
   const metrics = await getCacheMetrics(type, days);
-
-  console.log(`
-╔════════════════════════════════════════╗
-║   Cache Metrics (${type.toUpperCase()}) - Last ${days} days   ║
-╠════════════════════════════════════════╣
-║ Total Calls:     ${metrics.totalCalls.toString().padStart(20)} ║
-║ Hits:            ${metrics.hits.toString().padStart(20)} ║
-║ Misses:          ${metrics.misses.toString().padStart(20)} ║
-║ Hit Rate:        ${metrics.hitRate.toFixed(1).padStart(18)}% ║
-╚════════════════════════════════════════╝
-  `);
+  // Metrics available via getCacheMetrics() - console output removed for production
 }
