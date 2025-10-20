@@ -23,18 +23,22 @@ export async function knnSearch(
 ): Promise<VectorSearchResult[]> {
   const redis = getRedisClient();
   const blob = encodeVectorToBuffer(vector);
+  const scoreAlias = "vector_score";
+  const uniqueReturnFields = Array.from(
+    new Set([...returnFields, scoreAlias])
+  );
 
   const response = await redis.call(
     "FT.SEARCH",
     index,
-    `*=>[KNN ${limit} @embedding $BLOB]`,
+    `*=>[KNN ${limit} @embedding $BLOB AS ${scoreAlias}]`,
     "PARAMS",
     "2",
     "BLOB",
     blob,
     "RETURN",
-    String(returnFields.length),
-    ...returnFields,
+    String(uniqueReturnFields.length),
+    ...uniqueReturnFields,
     "DIALECT",
     "2"
   );
