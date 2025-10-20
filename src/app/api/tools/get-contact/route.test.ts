@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -19,7 +20,8 @@ describe("POST /api/tools/get-contact", () => {
 
       if (isSuccessResponse(json)) {
         expect(json.data).toHaveProperty("contact");
-        expect(json.data.contact).toBeDefined();
+        const data = json.data as { contact: unknown };
+        expect(data.contact).toBeDefined();
       }
     });
 
@@ -29,7 +31,8 @@ describe("POST /api/tools/get-contact", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const contact = json.data.contact;
+        const data = json.data as { contact: unknown };
+        const contact = data.contact;
         expect(contact).toHaveProperty("email");
         expect(contact).toHaveProperty("location");
         expect(contact).toHaveProperty("linkedin");
@@ -43,7 +46,8 @@ describe("POST /api/tools/get-contact", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const email = json.data.contact.email;
+        const data = json.data as { contact: { email: unknown } };
+        const email = data.contact.email;
         expect(email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
       }
     });
@@ -54,7 +58,8 @@ describe("POST /api/tools/get-contact", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const linkedin = json.data.contact.linkedin;
+        const data = json.data as { contact: { linkedin: unknown } };
+        const linkedin = data.contact.linkedin;
         expect(linkedin).toMatch(/^https?:\/\//);
       }
     });
@@ -65,7 +70,8 @@ describe("POST /api/tools/get-contact", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const github = json.data.contact.github;
+        const data = json.data as { contact: { github: unknown } };
+        const github = data.contact.github;
         expect(github).toMatch(/^https?:\/\//);
       }
     });
@@ -110,7 +116,7 @@ describe("POST /api/tools/get-contact", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       // Route doesn't accept request parameter, so it never parses JSON
@@ -119,7 +125,7 @@ describe("POST /api/tools/get-contact", () => {
     });
 
     it("should succeed with array instead of object (route doesn't parse request)", async () => {
-      const req = createMockRequest([{ test: "value" }] as any);
+      const req = createMockRequest([{ test: "value" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -140,7 +146,9 @@ describe("POST /api/tools/get-contact", () => {
       const json2 = await getResponseJson(response2);
 
       if (isSuccessResponse(json1) && isSuccessResponse(json2)) {
-        expect(json1.data.contact).toEqual(json2.data.contact);
+        const data1 = json1.data as { contact: unknown };
+        const data2 = json2.data as { contact: unknown };
+        expect(data1.contact).toEqual(data2.contact);
       }
     });
 
@@ -150,7 +158,8 @@ describe("POST /api/tools/get-contact", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const contact = json.data.contact;
+        const data = json.data as { contact: unknown };
+        const contact = data.contact as Record<string, unknown>;
         const keys = Object.keys(contact);
 
         // Should only include expected contact fields

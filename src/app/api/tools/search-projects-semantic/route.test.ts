@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -24,9 +25,10 @@ describe("POST /api/tools/search-projects-semantic", () => {
         expect(json.data).toHaveProperty("results");
         expect(json.data).toHaveProperty("query");
         expect(json.data).toHaveProperty("count");
-        expect(json.data.query).toBe("machine learning projects");
-        expect(Array.isArray(json.data.results)).toBe(true);
-        expect(json.data.count).toBe(json.data.results.length);
+        const data = json.data as { query: unknown; results: unknown[]; count: unknown };
+        expect(data.query).toBe("machine learning projects");
+        expect(Array.isArray(data.results)).toBe(true);
+        expect(data.count).toBe(data.results.length);
       }
     });
 
@@ -42,8 +44,9 @@ describe("POST /api/tools/search-projects-semantic", () => {
       expect([200, 500]).toContain(response.status);
 
       if (response.status === 200 && isSuccessResponse(json)) {
-        expect(json.data.results.length).toBeLessThanOrEqual(limit);
-        expect(json.data.count).toBeLessThanOrEqual(limit);
+        const data = json.data as { results: unknown[]; count: unknown };
+        expect(data.results.length).toBeLessThanOrEqual(limit);
+        expect(data.count).toBeLessThanOrEqual(limit);
       }
     });
 
@@ -58,7 +61,8 @@ describe("POST /api/tools/search-projects-semantic", () => {
       expect([200, 500]).toContain(response.status);
 
       if (response.status === 200 && isSuccessResponse(json)) {
-        expect(json.data.results.length).toBeLessThanOrEqual(1);
+        const data = json.data as { results: unknown[] };
+        expect(data.results.length).toBeLessThanOrEqual(1);
       }
     });
 
@@ -73,7 +77,8 @@ describe("POST /api/tools/search-projects-semantic", () => {
       expect([200, 500]).toContain(response.status);
 
       if (response.status === 200 && isSuccessResponse(json)) {
-        expect(json.data.results.length).toBeLessThanOrEqual(10);
+        const data = json.data as { results: unknown[] };
+        expect(data.results.length).toBeLessThanOrEqual(10);
       }
     });
 
@@ -104,17 +109,19 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        json.data.results.forEach((result: any) => {
+        const data = json.data as { results: unknown[] };
+        data.results.forEach((result: unknown) => {
           expect(result).toHaveProperty("slug");
           expect(result).toHaveProperty("score");
           expect(result).toHaveProperty("project");
-          expect(typeof result.slug).toBe("string");
-          expect(typeof result.score).toBe("number");
-          expect(typeof result.project).toBe("object");
+          expect(typeof (result as { slug: unknown }).slug).toBe("string");
+          const resultWithScore = result as { score: unknown };
+          expect(typeof resultWithScore.score).toBe("number");
+          expect(typeof (result as { project: unknown }).project).toBe("object");
 
           // Score should be between 0 and 1 (similarity score)
-          expect(result.score).toBeGreaterThanOrEqual(0);
-          expect(result.score).toBeLessThanOrEqual(1);
+          expect(resultWithScore.score).toBeGreaterThanOrEqual(0);
+          expect(resultWithScore.score).toBeLessThanOrEqual(1);
         });
       }
     });
@@ -217,7 +224,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       // May return 400 (JSON parse error) or 500 (server error)
@@ -226,7 +233,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ query: "projects" }] as any);
+      const req = createMockRequest([{ query: "projects" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -306,10 +313,11 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data).toHaveProperty("results");
-        expect(json.data).toHaveProperty("query");
-        expect(json.data).toHaveProperty("count");
-        expect(Object.keys(json.data).sort()).toEqual(["count", "query", "results"]);
+        const data = json.data as { results: unknown; query: unknown; count: unknown };
+        expect(data).toHaveProperty("results");
+        expect(data).toHaveProperty("query");
+        expect(data).toHaveProperty("count");
+        expect(Object.keys(data).sort()).toEqual(["count", "query", "results"]);
       }
     });
 
@@ -322,8 +330,9 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(Array.isArray(json.data.results)).toBe(true);
-        expect(json.data.count).toBe(0);
+        const data = json.data as { results: unknown; count: unknown };
+        expect(Array.isArray(data.results)).toBe(true);
+        expect(data.count).toBe(0);
       }
     });
   });

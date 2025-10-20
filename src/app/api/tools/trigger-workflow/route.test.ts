@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -190,7 +191,7 @@ describe("POST /api/tools/trigger-workflow", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -200,7 +201,7 @@ describe("POST /api/tools/trigger-workflow", () => {
     it("should handle array instead of object", async () => {
       const req = createMockRequest([
         { workflowId: "test", payload: {} }
-      ] as any);
+      ] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -273,7 +274,8 @@ describe("POST /api/tools/trigger-workflow", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.status).toBe("completed");
+        const data = json.data as { status: unknown };
+        expect(data.status).toBe("completed");
       }
     });
 
@@ -286,7 +288,8 @@ describe("POST /api/tools/trigger-workflow", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+        const data = json.data as { result: { timestamp: unknown } };
+        expect(data.result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
       }
     });
 
@@ -300,8 +303,9 @@ describe("POST /api/tools/trigger-workflow", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.workflowId).toBe(workflowId);
-        expect(json.data.message).toContain(workflowId);
+        const data = json.data as { workflowId: unknown; message: unknown };
+        expect(data.workflowId).toBe(workflowId);
+        expect(data.message).toContain(workflowId);
       }
     });
   });

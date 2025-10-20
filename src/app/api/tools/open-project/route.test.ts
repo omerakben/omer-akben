@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -20,8 +21,9 @@ describe("POST /api/tools/open-project", () => {
 
       if (isSuccessResponse(json)) {
         expect(json.data).toHaveProperty("project");
-        expect(json.data.project).toHaveProperty("slug");
-        expect(json.data.project.slug).toBe("north-glass");
+        const data = json.data as { project: { slug: unknown } };
+        expect(data.project).toHaveProperty("slug");
+        expect(data.project.slug).toBe("north-glass");
       }
     });
 
@@ -32,7 +34,8 @@ describe("POST /api/tools/open-project", () => {
 
       expect(isSuccessResponse(json)).toBe(true);
       if (isSuccessResponse(json)) {
-        const project = json.data.project;
+        const data = json.data as { project: unknown };
+        const project = data.project as Record<string, unknown>;
         expect(project).toHaveProperty("id");
         expect(project).toHaveProperty("slug");
         expect(project).toHaveProperty("title");
@@ -137,7 +140,7 @@ describe("POST /api/tools/open-project", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -145,7 +148,7 @@ describe("POST /api/tools/open-project", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ slug: "test" }] as any);
+      const req = createMockRequest([{ slug: "test" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 

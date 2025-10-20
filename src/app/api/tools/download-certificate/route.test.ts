@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -50,7 +51,8 @@ describe("POST /api/tools/download-certificate", () => {
           year: "2025",
         });
         // NSS certificate doesn't have Google Drive URL
-        expect(json.data.googleDriveUrl).toBeUndefined();
+        const data = json.data as { googleDriveUrl?: unknown };
+        expect(data.googleDriveUrl).toBeUndefined();
       }
     });
 
@@ -124,7 +126,7 @@ describe("POST /api/tools/download-certificate", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -141,7 +143,7 @@ describe("POST /api/tools/download-certificate", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ type: "aws" }] as any);
+      const req = createMockRequest([{ type: "aws" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 

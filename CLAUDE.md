@@ -27,6 +27,7 @@ npx tsc --noEmit                                 # TypeScript check
 - All API calls server-side (never expose keys in browser)
 - Never use emojis in UI (use Lucide icons)
 - Redis rate limiting active (requires UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN env vars)
+- **Zero technical debt policy** - all quality gates must pass before committing
 
 ---
 
@@ -115,33 +116,162 @@ npx tsc --noEmit                                 # TypeScript check
 
 ## Development
 
-### Quality Gates (All Must Pass)
+### 🎯 Code Quality Standards (ZERO TECHNICAL DEBT)
+
+**Status:** Production-ready codebase with comprehensive quality enforcement (achieved 2025-10-20)
+
+All code changes MUST pass these quality gates before committing:
+
 ```bash
-npm test          # All unit tests (currently 175)
-npm run lint      # Zero errors (scripts/ excluded)
-npx tsc --noEmit  # Strict TypeScript compilation
-npm run build     # Production build successful
+# 1. TypeScript Compilation (STRICT - 0 errors policy)
+npx tsc --noEmit                    # Must return: 0 errors
+
+# 2. ESLint (0 errors enforced, warnings reviewed)
+npm run lint                        # Must return: 0 errors
+
+# 3. Unit Tests (100% pass rate required)
+npm test                            # Must return: 531/531 passing
+
+# 4. Production Build (Must succeed)
+npm run build                       # Must complete successfully
+
+# 5. Bundle Size (Enforced via size-limit)
+npm run size                        # Must not exceed configured limits
 ```
 
-**Recent Quality Achievements**:
-- ✅ ESLint clean (0 errors, 0 warnings) - achieved 2025-10-18
+**CI/CD Integration:**
+- GitHub Actions workflow: `.github/workflows/quality-gates.yml`
+- Runs on every push/PR: lint → typecheck → test → build → size-limit
+- Deployment blocked if any gate fails
+
+### TypeScript Standards
+
+**Strict Mode Enabled** - `tsconfig.json` with zero-tolerance error policy:
+- ✅ `strict: true` - All strict checks enabled
+- ✅ `noImplicitAny: true` - No implicit any types
+- ✅ `strictNullChecks: true` - Null/undefined handled explicitly
+- ✅ `noUnusedLocals: true` - Unused variables flagged
+- ✅ `noUnusedParameters: true` - Unused params flagged
+- ✅ `noFallthroughCasesInSwitch: true` - Switch completeness
+
+**Type Assertion Pattern for Tests:**
+When working with `json.data` after type guards, always use explicit assertions:
+```typescript
+// ✅ CORRECT - Explicit type assertion
+if (isSuccessResponse(json)) {
+  const data = json.data as { property: unknown };
+  expect(data.property).toBe(value);
+}
+
+// ❌ WRONG - Direct access causes TS18046 error
+if (isSuccessResponse(json)) {
+  expect(json.data.property).toBe(value);  // Error: json.data is unknown
+}
+```
+
+**Why:** Type guards narrow to `ApiResponse<T>` but T remains generic/unknown. Each test must document expected response shape via type assertions.
+
+### ESLint Rules
+
+**Zero Errors Policy** - ESLint configured with:
+- ✅ TypeScript ESLint rules enabled
+- ✅ React/React Hooks rules enforced
+- ✅ Next.js specific rules active
+- ✅ 0 errors, minimal warnings (<25)
+- ✅ `scripts/` directory excluded (build scripts exempt)
+
+**Current Status:**
+- Errors: **0** (enforced in CI)
+- Warnings: **20** (unused variables in tests - acceptable, not blocking)
+
+**Acceptable Warnings:**
+- Unused test utilities (e.g., `vi` import for type checking)
+- Unused destructured variables in tests (e.g., `_` placeholder)
+- Performance monitoring variables in tests
+
+### Test Coverage
+
+**531 Tests Across 27 Test Files** (100% pass rate required):
+
+**API Route Tests** (12 files, 268 tests):
+- Tool endpoint validation and error handling
+- Zod schema compliance testing
+- Response structure verification
+- Edge case coverage
+
+**Component Tests** (8 files, 155 tests):
+- Global chat button (32 tests)
+- Brightness control (23 tests)
+- Navigation and UI components
+
+**Integration Tests** (7 files, 108 tests):
+- Thread memory persistence (27 tests)
+- Follow-up suggestions (23 tests)
+- Workflows (48 tests)
+- AI agent orchestration
+
+**Test Requirements:**
+- All new features must include tests
+- Minimum 80% code coverage for new code
+- No skipped or disabled tests allowed
+- TDD encouraged for complex logic
+
+### Bundle Size Budget
+
+**Enforced via `size-limit` package:**
+```json
+{
+  "path": ".next/static/chunks/app/page.js",
+  "limit": "260 KB",
+  "current": "236 KB" ✅
+}
+```
+
+**Achievements:**
+- 90% bundle reduction (2.33MB → 236KB)
+- Icon manifest generation (42 curated icons)
+- Tree-shaking optimization (Lucide, simple-icons)
+- Production build: 102KB shared chunks
+
+### Quality Gates (All Must Pass)
+
+**Pre-Commit Requirements:**
+```bash
+npm test          # 531/531 tests passing ✅
+npm run lint      # 0 errors ✅
+npx tsc --noEmit  # 0 TypeScript errors ✅
+npm run build     # Build successful ✅
+npm run size      # Within budget limits ✅
+```
+
+**Recent Quality Achievements:**
+- ✅ TypeScript: 0 errors (fixed 90+ test errors) - achieved 2025-10-20
+- ✅ ESLint clean (0 errors, 20 warnings) - achieved 2025-10-18
 - ✅ Bundle optimization (236KB homepage, 193KB /skills) - achieved 2025-10-19
 - ✅ Redis rate limiting implemented - achieved 2025-10-18
 - ✅ No inline styles (all converted to Tailwind/CSS) - achieved 2025-10-19
 - ✅ Debug logs removed (console.error retained for production) - achieved 2025-10-19
 - ✅ Sidebar assistant with pinning, resizing, persistence - achieved 2025-10-19
 - ✅ Hydration-safe Next.js patterns (isMounted) - achieved 2025-10-19
-- ✅ 175 unit tests passing (from 72) - achieved 2025-10-19
+- ✅ 531 unit tests passing (from 72 → 175 → 531) - achieved 2025-10-20
+- ✅ CI/CD quality gates workflow created - achieved 2025-10-20
+
+**Zero Technical Debt Status:**
+- No TODO comments for core functionality
+- No skipped/disabled tests
+- No TypeScript `any` types (except third-party types)
+- No ESLint disable comments (except justified cases)
+- No inline styles or hardcoded colors
+- No console.log statements (only console.error/warn for monitoring)
 
 ### Test Configuration
-- **Unit Tests**: Vitest + React Testing Library (`src/**/*.test.{ts,tsx}`) - **175 tests**
-  - `global-chat-button.test.tsx` (32 tests) - Global chat button behavior
-  - `thread-memory.test.ts` (27 tests) - Conversation persistence, pinned state
-  - `schemas.test.ts` (68 tests) - Agent tool Zod validation
-  - `brightness-control.test.tsx` (23 tests) - Brightness mode switching
-  - `projects.test.ts` (25 tests) - Project data helpers
+- **Unit Tests**: Vitest + React Testing Library (`src/**/*.test.{ts,tsx}`) - **531 tests across 27 files**
+  - API Routes (12 files, 268 tests) - Tool validation and error handling
+  - Components (8 files, 155 tests) - UI behavior and interactions
+  - Integration (7 files, 108 tests) - Workflows, memory, follow-ups
   - Watch mode: `npm test -- --watch`
   - Coverage: `npm test -- --coverage`
+  - Single file: `npm test -- filename.test.tsx`
 
 - **E2E Tests**: Playwright (`e2e/*.spec.ts`)
   - `agentic-sidebar.spec.ts` - Sidebar pinning, resizing, persistence
@@ -228,6 +358,8 @@ ANALYZE=true  # Enable bundle analyzer
 7. **Inline styles**: Use Tailwind classes or CSS custom properties, never `style={{...}}`
 8. **Hydration mismatches**: Always use `isMounted` pattern when using localStorage/client-only state (see `app/layout.tsx`, `components/app-header.tsx`)
 9. **Layout constraints**: Single source of truth is `LayoutContainer` in root layout - never duplicate width calculations
+10. **TypeScript errors in tests**: Always use type assertions for `json.data` access after type guards (see TypeScript Standards section)
+11. **Quality gates**: Never commit code that fails any quality gate (TypeScript, ESLint, tests, build, bundle size)
 
 ## Troubleshooting
 

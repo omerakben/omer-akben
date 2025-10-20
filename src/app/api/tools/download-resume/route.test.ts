@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -72,7 +73,8 @@ describe("POST /api/tools/download-resume", () => {
       expect(response.status).toBe(200);
       expect(isSuccessResponse(json)).toBe(true);
       if (isSuccessResponse(json)) {
-        expect(json.data.filename).toBe("Omer_Akben_Resume.pdf");
+        const data = json.data as { filename: unknown };
+        expect(data.filename).toBe("Omer_Akben_Resume.pdf");
       }
     });
 
@@ -116,7 +118,7 @@ describe("POST /api/tools/download-resume", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -133,7 +135,7 @@ describe("POST /api/tools/download-resume", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ format: "resume" }] as any);
+      const req = createMockRequest([{ format: "resume" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 

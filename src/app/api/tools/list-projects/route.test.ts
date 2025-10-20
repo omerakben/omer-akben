@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -20,9 +21,10 @@ describe("POST /api/tools/list-projects", () => {
       if (isSuccessResponse(json)) {
         expect(json.data).toHaveProperty("projects");
         expect(json.data).toHaveProperty("total");
-        expect(Array.isArray(json.data.projects)).toBe(true);
-        expect(json.data.projects.length).toBeGreaterThan(0);
-        expect(json.data.total).toBe(json.data.projects.length);
+        const data = json.data as { projects: unknown[]; total: unknown };
+        expect(Array.isArray(data.projects)).toBe(true);
+        expect(data.projects.length).toBeGreaterThan(0);
+        expect(data.total).toBe(data.projects.length);
       }
     });
 
@@ -32,7 +34,8 @@ describe("POST /api/tools/list-projects", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const firstProject = json.data.projects[0];
+        const data = json.data as { projects: unknown[] };
+        const firstProject = data.projects[0];
         expect(firstProject).toHaveProperty("id");
         expect(firstProject).toHaveProperty("slug");
         expect(firstProject).toHaveProperty("title");
@@ -55,8 +58,9 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        json.data.projects.forEach((project: any) => {
-          expect(project.category).toBe("ai-ml");
+        const data = json.data as { projects: unknown[] };
+        data.projects.forEach((project: unknown) => {
+          expect((project as { category: string }).category).toBe("ai-ml");
         });
       }
     });
@@ -70,8 +74,9 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        json.data.projects.forEach((project: any) => {
-          expect(project.category).toBe("web");
+        const data = json.data as { projects: unknown[] };
+        data.projects.forEach((project: unknown) => {
+          expect((project as { category: string }).category).toBe("web");
         });
       }
     });
@@ -86,7 +91,8 @@ describe("POST /api/tools/list-projects", () => {
 
       if (isSuccessResponse(json)) {
         // Should include projects from multiple categories
-        const categories = new Set(json.data.projects.map((p: any) => p.category));
+        const data = json.data as { projects: unknown[] };
+        const categories = new Set(data.projects.map((p: unknown) => (p as { category: string }).category));
         expect(categories.size).toBeGreaterThan(0);
       }
     });
@@ -111,8 +117,9 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        json.data.projects.forEach((project: any) => {
-          expect(project.featured).toBe(true);
+        const data = json.data as { projects: unknown[] };
+        data.projects.forEach((project: unknown) => {
+          expect((project as { featured: boolean }).featured).toBe(true);
         });
       }
     });
@@ -126,8 +133,9 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        json.data.projects.forEach((project: any) => {
-          expect(project.featured).toBe(false);
+        const data = json.data as { projects: unknown[] };
+        data.projects.forEach((project: unknown) => {
+          expect((project as { featured: boolean }).featured).toBe(false);
         });
       }
     });
@@ -153,9 +161,10 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.projects.length).toBeLessThanOrEqual(limit);
+        const data = json.data as { projects: unknown[]; total: unknown };
+        expect(data.projects.length).toBeLessThanOrEqual(limit);
         // Total should reflect unfiltered count
-        expect(json.data.total).toBeGreaterThanOrEqual(json.data.projects.length);
+        expect(data.total).toBeGreaterThanOrEqual(data.projects.length);
       }
     });
 
@@ -168,7 +177,8 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.projects.length).toBe(1);
+        const data = json.data as { projects: unknown[] };
+        expect(data.projects.length).toBe(1);
       }
     });
 
@@ -222,9 +232,10 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        json.data.projects.forEach((project: any) => {
-          expect(project.category).toBe("ai-ml");
-          expect(project.featured).toBe(true);
+        const data = json.data as { projects: unknown[] };
+        data.projects.forEach((project: unknown) => {
+          expect((project as { category: string; featured: boolean }).category).toBe("ai-ml");
+          expect((project as { category: string; featured: boolean }).featured).toBe(true);
         });
       }
     });
@@ -242,10 +253,11 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.projects.length).toBeLessThanOrEqual(2);
-        json.data.projects.forEach((project: any) => {
-          expect(project.category).toBe("web");
-          expect(project.featured).toBe(true);
+        const data = json.data as { projects: unknown[] };
+        expect(data.projects.length).toBeLessThanOrEqual(2);
+        data.projects.forEach((project: unknown) => {
+          expect((project as { category: string }).category).toBe("web");
+          expect((project as { featured: boolean }).featured).toBe(true);
         });
       }
     });
@@ -264,8 +276,9 @@ describe("POST /api/tools/list-projects", () => {
 
       if (isSuccessResponse(json)) {
         // May return empty array if no mobile featured projects exist
-        expect(Array.isArray(json.data.projects)).toBe(true);
-        expect(json.data.total).toBe(0);
+        const data = json.data as { projects: unknown; total: unknown };
+        expect(Array.isArray(data.projects)).toBe(true);
+        expect(data.total).toBe(0);
       }
     });
   });
@@ -278,7 +291,7 @@ describe("POST /api/tools/list-projects", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -286,7 +299,7 @@ describe("POST /api/tools/list-projects", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ category: "ai-ml" }] as any);
+      const req = createMockRequest([{ category: "ai-ml" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -316,7 +329,8 @@ describe("POST /api/tools/list-projects", () => {
 
       if (isSuccessResponse(json)) {
         // Total should reflect count before limit is applied
-        expect(json.data.total).toBeGreaterThanOrEqual(json.data.projects.length);
+        const data = json.data as { total: unknown; projects: unknown[] };
+        expect(data.total).toBeGreaterThanOrEqual(data.projects.length);
       }
     });
 
@@ -330,7 +344,8 @@ describe("POST /api/tools/list-projects", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(Array.isArray(json.data.projects)).toBe(true);
+        const data = json.data as { projects: unknown };
+        expect(Array.isArray(data.projects)).toBe(true);
       }
     });
   });

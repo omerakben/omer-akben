@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -26,8 +27,9 @@ describe("POST /api/tools/provide-navigation-links", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.links).toHaveLength(1);
-        expect(json.data.links[0]).toMatchObject({
+        const data = json.data as { links: unknown[] };
+        expect(data.links).toHaveLength(1);
+        expect(data.links[0]).toMatchObject({
           label: "Projects",
           href: "/projects",
           type: "internal",
@@ -58,7 +60,8 @@ describe("POST /api/tools/provide-navigation-links", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.links).toHaveLength(2);
+        const data = json.data as { links: unknown[] };
+        expect(data.links).toHaveLength(2);
       }
     });
 
@@ -174,7 +177,8 @@ describe("POST /api/tools/provide-navigation-links", () => {
       expect(response.status).toBe(200);
       expect(isSuccessResponse(json)).toBe(true);
       if (isSuccessResponse(json)) {
-        expect(json.data.links).toEqual([]);
+        const data = json.data as { links: unknown[] };
+        expect(data.links).toEqual([]);
       }
     });
   });
@@ -289,7 +293,7 @@ describe("POST /api/tools/provide-navigation-links", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -299,7 +303,7 @@ describe("POST /api/tools/provide-navigation-links", () => {
     it("should handle array instead of object at top level", async () => {
       const req = createMockRequest([
         { label: "Test", href: "/test", type: "internal" }
-      ] as any);
+      ] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -379,7 +383,8 @@ describe("POST /api/tools/provide-navigation-links", () => {
       expect(response.status).toBe(200);
       expect(isSuccessResponse(json)).toBe(true);
       if (isSuccessResponse(json)) {
-        expect(json.data.links).toHaveLength(20);
+        const data = json.data as { links: unknown[] };
+        expect(data.links).toHaveLength(20);
       }
     });
   });

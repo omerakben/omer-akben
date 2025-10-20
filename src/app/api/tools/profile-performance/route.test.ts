@@ -3,21 +3,20 @@
  * Tests performance profiling (development-only feature)
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/profile-performance", () => {
-  const originalEnv = process.env.NODE_ENV;
-
   beforeEach(() => {
     // Set to development by default for most tests
-    process.env.NODE_ENV = "development";
+    vi.stubEnv("NODE_ENV", "development");
   });
 
   afterEach(() => {
     // Restore original environment
-    process.env.NODE_ENV = originalEnv;
+    vi.unstubAllEnvs();
   });
 
   describe("Valid requests (development mode)", () => {
@@ -32,11 +31,12 @@ describe("POST /api/tools/profile-performance", () => {
       if (isSuccessResponse(json)) {
         expect(json.data).toHaveProperty("metrics");
         expect(json.data).toHaveProperty("suggestions");
-        expect(json.data.metrics).toHaveProperty("lcp");
-        expect(json.data.metrics).toHaveProperty("fid");
-        expect(json.data.metrics).toHaveProperty("cls");
-        expect(json.data.metrics).toHaveProperty("ttfb");
-        expect(Array.isArray(json.data.suggestions)).toBe(true);
+        const data = json.data as { metrics: unknown; suggestions: unknown };
+        expect(data.metrics).toHaveProperty("lcp");
+        expect(data.metrics).toHaveProperty("fid");
+        expect(data.metrics).toHaveProperty("cls");
+        expect(data.metrics).toHaveProperty("ttfb");
+        expect(Array.isArray(data.suggestions)).toBe(true);
       }
     });
 
@@ -49,7 +49,8 @@ describe("POST /api/tools/profile-performance", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.traceUrl).toBeUndefined();
+        const data = json.data as { traceUrl?: unknown };
+        expect(data.traceUrl).toBeUndefined();
       }
     });
 
@@ -62,8 +63,9 @@ describe("POST /api/tools/profile-performance", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.traceUrl).toBeDefined();
-        expect(typeof json.data.traceUrl).toBe("string");
+        const data = json.data as { traceUrl: unknown };
+        expect(data.traceUrl).toBeDefined();
+        expect(typeof data.traceUrl).toBe("string");
       }
     });
 
@@ -100,7 +102,8 @@ describe("POST /api/tools/profile-performance", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const { metrics } = json.data;
+        const data = json.data as { metrics: { lcp: unknown; fid: unknown; cls: unknown; ttfb: unknown } };
+        const { metrics } = data;
         // Verify metrics are numbers
         expect(typeof metrics.lcp).toBe("number");
         expect(typeof metrics.fid).toBe("number");
@@ -121,9 +124,10 @@ describe("POST /api/tools/profile-performance", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(Array.isArray(json.data.suggestions)).toBe(true);
-        expect(json.data.suggestions.length).toBeGreaterThan(0);
-        json.data.suggestions.forEach((suggestion: any) => {
+        const data = json.data as { suggestions: unknown[] };
+        expect(Array.isArray(data.suggestions)).toBe(true);
+        expect(data.suggestions.length).toBeGreaterThan(0);
+        data.suggestions.forEach((suggestion: unknown) => {
           expect(typeof suggestion).toBe("string");
         });
       }
@@ -132,7 +136,7 @@ describe("POST /api/tools/profile-performance", () => {
 
   describe("Production environment restriction", () => {
     it("should return 403 in production mode", async () => {
-      process.env.NODE_ENV = "production";
+      vi.stubEnv("NODE_ENV", "production");
 
       const req = createMockRequest({});
       const response = await POST(req);
@@ -147,7 +151,7 @@ describe("POST /api/tools/profile-performance", () => {
     });
 
     it("should return 403 regardless of valid parameters in production", async () => {
-      process.env.NODE_ENV = "production";
+      vi.stubEnv("NODE_ENV", "production");
 
       const req = createMockRequest({
         duration: 5000,
@@ -216,7 +220,7 @@ describe("POST /api/tools/profile-performance", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -224,7 +228,7 @@ describe("POST /api/tools/profile-performance", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ duration: 5000 }] as any);
+      const req = createMockRequest([{ duration: 5000 }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -259,7 +263,8 @@ describe("POST /api/tools/profile-performance", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.traceUrl).toBeDefined();
+        const data = json.data as { traceUrl: unknown };
+        expect(data.traceUrl).toBeDefined();
       }
     });
 

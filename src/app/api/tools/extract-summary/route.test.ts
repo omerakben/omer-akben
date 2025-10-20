@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -20,10 +21,11 @@ describe("POST /api/tools/extract-summary", () => {
       if (isSuccessResponse(json)) {
         expect(json.data).toHaveProperty("summary");
         expect(json.data).toHaveProperty("wordCount");
-        expect(typeof json.data.summary).toBe("string");
-        expect(typeof json.data.wordCount).toBe("number");
+        const data = json.data as { summary: unknown; wordCount: unknown };
+        expect(typeof data.summary).toBe("string");
+        expect(typeof data.wordCount).toBe("number");
         // Default maxLength is 200
-        expect(json.data.wordCount).toBeLessThanOrEqual(200);
+        expect(data.wordCount).toBeLessThanOrEqual(200);
       }
     });
 
@@ -37,7 +39,8 @@ describe("POST /api/tools/extract-summary", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.wordCount).toBeLessThanOrEqual(maxLength);
+        const data = json.data as { wordCount: unknown };
+        expect(data.wordCount).toBeLessThanOrEqual(maxLength);
       }
     });
 
@@ -50,7 +53,8 @@ describe("POST /api/tools/extract-summary", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.wordCount).toBeLessThanOrEqual(50);
+        const data = json.data as { wordCount: unknown };
+        expect(data.wordCount).toBeLessThanOrEqual(50);
       }
     });
 
@@ -63,7 +67,8 @@ describe("POST /api/tools/extract-summary", () => {
       expect(isSuccessResponse(json)).toBe(true);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.wordCount).toBeLessThanOrEqual(500);
+        const data = json.data as { wordCount: unknown };
+        expect(data.wordCount).toBeLessThanOrEqual(500);
       }
     });
 
@@ -73,8 +78,9 @@ describe("POST /api/tools/extract-summary", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.summary.length).toBeGreaterThan(0);
-        expect(json.data.wordCount).toBeGreaterThan(0);
+        const data = json.data as { summary: string; wordCount: unknown };
+        expect(data.summary.length).toBeGreaterThan(0);
+        expect(data.wordCount).toBeGreaterThan(0);
       }
     });
   });
@@ -134,7 +140,7 @@ describe("POST /api/tools/extract-summary", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -142,7 +148,7 @@ describe("POST /api/tools/extract-summary", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ maxLength: 100 }] as any);
+      const req = createMockRequest([{ maxLength: 100 }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -195,9 +201,10 @@ describe("POST /api/tools/extract-summary", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data).toHaveProperty("summary");
-        expect(json.data).toHaveProperty("wordCount");
-        expect(Object.keys(json.data)).toEqual(["summary", "wordCount"]);
+        const data = json.data as { summary: unknown; wordCount: unknown };
+        expect(data).toHaveProperty("summary");
+        expect(data).toHaveProperty("wordCount");
+        expect(Object.keys(data)).toEqual(["summary", "wordCount"]);
       }
     });
 
@@ -208,9 +215,10 @@ describe("POST /api/tools/extract-summary", () => {
 
       if (isSuccessResponse(json)) {
         // Summary should be a string with words
-        const words = json.data.summary.split(' ');
+        const data = json.data as { summary: string; wordCount: unknown };
+        const words = data.summary.split(' ');
         expect(words.length).toBeGreaterThan(0);
-        expect(json.data.wordCount).toBe(Math.min(words.length, 100));
+        expect(data.wordCount).toBe(Math.min(words.length, 100));
       }
     });
   });

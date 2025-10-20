@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
@@ -49,7 +50,8 @@ describe("POST /api/tools/navigate-page", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        expect(json.data.waitUntil).toBe("load");
+        const data = json.data as { waitUntil: unknown };
+        expect(data.waitUntil).toBe("load");
       }
     });
 
@@ -64,7 +66,8 @@ describe("POST /api/tools/navigate-page", () => {
       expect(response.status).toBe(200);
       expect(isSuccessResponse(json)).toBe(true);
       if (isSuccessResponse(json)) {
-        expect(json.data.waitUntil).toBe("domcontentloaded");
+        const data = json.data as { waitUntil: unknown };
+        expect(data.waitUntil).toBe("domcontentloaded");
       }
     });
 
@@ -163,7 +166,7 @@ describe("POST /api/tools/navigate-page", () => {
         body: "invalid json{",
       });
 
-      const response = await POST(req as any);
+      const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
 
       expect(response.status).toBe(400);
@@ -171,7 +174,7 @@ describe("POST /api/tools/navigate-page", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ url: "https://omerakben.com" }] as any);
+      const req = createMockRequest([{ url: "https://omerakben.com" }] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 
