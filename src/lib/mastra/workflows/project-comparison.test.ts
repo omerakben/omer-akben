@@ -169,8 +169,8 @@ describe("project-comparison workflow", () => {
     it("should call generateText 3 times (one per step)", async () => {
       const generator = projectComparisonWorkflow.execute(mockContext);
 
-      for await (const _ of generator) {
-        // Consume all events
+      for await (const event of generator) {
+        void event;
       }
 
       expect(generateText).toHaveBeenCalledTimes(3);
@@ -267,8 +267,8 @@ describe("project-comparison workflow", () => {
       const generator = projectComparisonWorkflow.execute(mockContext);
 
       await expect(async () => {
-        for await (const _ of generator) {
-          // Consume events
+        for await (const event of generator) {
+          void event;
         }
       }).rejects.toThrow("API error");
     });

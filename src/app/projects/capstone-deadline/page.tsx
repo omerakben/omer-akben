@@ -15,12 +15,14 @@ import {
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "DEADLINE - Developer Command Center | Omer Akben",
+export const metadata: Metadata = createMetadata({
+  title: "DEADLINE - Developer Command Center",
   description:
     "A comprehensive case study of DEADLINE, a production-deployed developer operations platform with zero-signup demo mode and polymorphic artifact management.",
-};
+  path: "/projects/capstone-deadline",
+});
 
 export default function DeadlineCaseStudyPage() {
   const project = getProjectBySlug("capstone-deadline");

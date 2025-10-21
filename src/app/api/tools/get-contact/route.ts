@@ -1,10 +1,8 @@
 import { getContactInfo } from "@/data/facts";
-import { NextRequest, NextResponse } from "next/server";
-
-export const runtime = "edge";
+import { NextResponse } from "next/server";
 
 // Support both GET and POST for agent tool compatibility
-export async function GET(_req: NextRequest) {
+export async function GET() {
   try {
     const contact = getContactInfo();
     return NextResponse.json({
@@ -24,7 +22,7 @@ export async function GET(_req: NextRequest) {
   }
 }
 
-export async function POST(_req: NextRequest) {
+export async function POST() {
   try {
     const contact = getContactInfo();
     return NextResponse.json({

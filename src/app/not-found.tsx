@@ -5,11 +5,14 @@ import { NotFoundIllustration } from "@/components/not-found-illustration";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Metadata } from "next";
+import { createMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Page Not Found | Omer Akben",
-  description: "The page you're looking for doesn't exist. Explore other pages or return to the homepage.",
-};
+export const metadata: Metadata = createMetadata({
+  title: "Page Not Found",
+  description:
+    "The page you're looking for doesn't exist. Explore other pages or return to the homepage.",
+  path: "/not-found",
+});
 
 const QUICK_LINKS = [
   { href: "/projects", label: "Projects" },

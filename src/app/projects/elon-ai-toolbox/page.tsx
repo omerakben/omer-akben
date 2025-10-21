@@ -5,12 +5,14 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Elon AI Toolbox | Omer Akben",
+export const metadata: Metadata = createMetadata({
+  title: "Elon AI Toolbox",
   description:
     "A case study of the Elon AI Toolbox project, a curated catalog of AI tools for Elon University.",
-};
+  path: "/projects/elon-ai-toolbox",
+});
 
 export default function ElonAiToolboxPage() {
   const project = getProjectBySlug("elon-ai-toolbox");

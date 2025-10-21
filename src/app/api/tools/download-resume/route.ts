@@ -2,8 +2,6 @@ import { downloadResumeInputSchema } from "@/lib/agent-tools/schemas";
 import { NextRequest, NextResponse } from "next/server";
 import { logError } from "@/lib/log";
 
-export const runtime = "edge";
-
 // File mapping for all resume formats
 const FILE_MAP = {
   resume: {

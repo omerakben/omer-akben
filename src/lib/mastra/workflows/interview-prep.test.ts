@@ -165,8 +165,8 @@ describe("interview-prep workflow", () => {
     it("should call generateText 3 times (one per step)", async () => {
       const generator = interviewPrepWorkflow.execute(mockContext);
 
-      for await (const _ of generator) {
-        // Consume all events
+      for await (const event of generator) {
+        void event;
       }
 
       expect(generateText).toHaveBeenCalledTimes(3);
@@ -212,8 +212,8 @@ describe("interview-prep workflow", () => {
       const generator = interviewPrepWorkflow.execute(mockContext);
 
       await expect(async () => {
-        for await (const _ of generator) {
-          // Consume events
+        for await (const event of generator) {
+          void event;
         }
       }).rejects.toThrow("API error");
     });

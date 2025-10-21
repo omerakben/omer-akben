@@ -90,6 +90,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
 
     it("should handle short queries", async () => {
@@ -98,6 +99,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
 
     it("should return results with expected structure", async () => {
@@ -163,6 +165,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
       // Schema has no .min(1) validation, so empty string is valid
       // May return empty results or error from search function
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
   });
 
@@ -254,6 +257,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
 
       // Should succeed - extra fields are ignored by Zod
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
 
     it("should handle boundary limit values", async () => {
@@ -283,6 +287,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
 
       // Should succeed with any query string
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
 
     it("should handle very long queries", async () => {
@@ -293,6 +298,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
 
       // Should succeed with long queries
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
 
     it("should handle unicode characters in query", async () => {
@@ -303,6 +309,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       expect([200, 500]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
   });
 

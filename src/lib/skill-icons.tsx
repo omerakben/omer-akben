@@ -86,7 +86,7 @@ export function getSkillIcon(skillName: string): string | null {
   try {
     // Get icon from manifest (selective simple-icons imports)
     const icon = getIconBySlug(iconSlug);
-    if (!icon) return null;
+    if (!icon || !icon.path) return null;
 
     return `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
       <title>${skillName}</title>
@@ -126,7 +126,7 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
 
   try {
     const icon = getIconBySlug(iconSlug);
-    if (!icon) {
+    if (!icon || !icon.path) {
       // Fallback if icon not found in manifest
       return (
         <svg
@@ -148,7 +148,7 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
     }
 
     // Render as proper React component - no dangerouslySetInnerHTML needed
-    return (
+    return icon.path ? (
       <svg
         role="img"
         viewBox="0 0 24 24"
@@ -158,6 +158,22 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
       >
         <title>{skillName}</title>
         <path d={icon.path} />
+      </svg>
+    ) : (
+      <svg
+        className={className}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        role="img"
+      >
+        <title>{skillName}</title>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2.5}
+          d="M5 13l4 4L19 7"
+        />
       </svg>
     );
   } catch {

@@ -1,6 +1,7 @@
 "use client";
 
 import { BrightnessControl } from "@/components/brightness-control";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LOGO_SIZE } from "@/lib/constants";
@@ -16,7 +17,6 @@ import {
   MessageSquare,
   Zap,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -49,14 +49,7 @@ export function AppHeader() {
               LOGO_SIZE.className
             )}
           >
-            <Image
-              src="/OA-logo.svg"
-              alt="OA Logo"
-              width={LOGO_SIZE.width}
-              height={LOGO_SIZE.height}
-              className={LOGO_SIZE.className}
-              priority
-            />
+            <BrandLogo priority />
           </Link>
 
           {/* Desktop Navigation */}

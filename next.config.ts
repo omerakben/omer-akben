@@ -1,5 +1,10 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import type { NextConfig } from "next";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -8,6 +13,9 @@ const bundleAnalyzer = withBundleAnalyzer({
 const nextConfig: NextConfig = {
   // Enable React strict mode for better error detection
   reactStrictMode: true,
+
+  // Ensure Next.js uses the correct workspace root for monorepo setups
+  outputFileTracingRoot: path.resolve(__dirname),
 
   // Enable compiler optimizations
   compiler: {
@@ -62,7 +70,7 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // TODO: migrate away from 'unsafe-inline' allowances using nonces or hashes.
-              "script-src 'self' 'unsafe-inline'",
+              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",

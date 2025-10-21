@@ -165,6 +165,7 @@ describe("POST /api/tools/open-project", () => {
 
       // Will return 404 if project doesn't exist, but request is valid
       expect([200, 404]).toContain(response.status);
+      expect(isSuccessResponse(json) || isErrorResponse(json)).toBe(true);
     });
 
     it("should handle extra fields in request", async () => {

@@ -48,9 +48,10 @@ describe("OpenAI Cache", () => {
       const content = `${model}::${input}`;
       const hash = createHash("sha256").update(content, "utf8").digest("hex");
       const expectedKey = `cache:embed:v1:${hash}`;
+      const secondKey = `cache:embed:v1:${createHash("sha256").update(content, "utf8").digest("hex")}`;
 
       // Verify key is deterministic by calling twice
-      expect(hash).toBe(createHash("sha256").update(content, "utf8").digest("hex"));
+      expect(expectedKey).toBe(secondKey);
     });
 
     it("should generate different keys for different inputs", () => {

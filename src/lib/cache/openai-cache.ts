@@ -118,14 +118,10 @@ export async function getCachedEmbedding(
   input: string,
   model: string = "text-embedding-3-small"
 ): Promise<number[] | null> {
-  const startTime = performance.now();
-
   try {
     const redis = getRedisClient();
     const key = buildEmbeddingKey(input, model);
     const cached = await redis.get(key);
-
-    const lookupTime = performance.now() - startTime;
 
     if (!cached) {
       return null;
@@ -199,14 +195,10 @@ export async function getCachedCompletion(
   prompt: string,
   temperature: number
 ): Promise<string | null> {
-  const startTime = performance.now();
-
   try {
     const redis = getRedisClient();
     const key = buildCompletionKey(model, system, prompt, temperature);
     const cached = await redis.get(key);
-
-    const lookupTime = performance.now() - startTime;
 
     if (!cached) {
       return null;
@@ -374,5 +366,6 @@ export async function logCacheMetrics(
   days: number = 7
 ): Promise<void> {
   const metrics = await getCacheMetrics(type, days);
+  void metrics;
   // Metrics available via getCacheMetrics() - console output removed for production
 }

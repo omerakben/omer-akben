@@ -1,5 +1,5 @@
 import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import type { WorkflowDefinition, WorkflowEvent, WorkflowResult } from "./types";
+import type { WorkflowDefinition, WorkflowEvent } from "./types";
 
 /**
  * Executes a workflow and yields formatted text chunks

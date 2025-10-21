@@ -395,7 +395,7 @@ export function ChatSidebar() {
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border-line bg-surf-0">
+            <div className="flex h-16 items-center justify-between px-4 border-b border-border-line bg-surf-0">
               <div className="flex items-center gap-2">
                 <Bot aria-hidden="true" className="w-5 h-5 text-brand-primary" />
                 <span className="font-semibold text-text-1">AI Ozzy</span>

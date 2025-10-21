@@ -3,7 +3,7 @@
  * Tests intent classification, topic detection, and personalized follow-up generation
  */
 
-import { describe, expect, it, beforeEach, vi } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 import type { SemanticMemory } from "@/lib/memory/types";
 
 describe("followups", () => {

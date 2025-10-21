@@ -1,8 +1,6 @@
 import { downloadCertificateInputSchema } from "@/lib/agent-tools/schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 // Certificate mapping for all certificate types
 const CERTIFICATE_MAP = {
   aws: {

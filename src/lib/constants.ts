@@ -36,6 +36,44 @@ export const LOGO_SIZE = {
 } as const;
 
 /**
+ * Logo source files by theme
+ */
+export const LOGO_SOURCES = {
+  light: "/OA-logo-light.png",
+  dark: "/OA-logo-dark.png",
+} as const;
+
+/**
+ * Brightness presets grouped by light/dark tone
+ */
+export const LIGHT_BRIGHTNESS_MODES = ["+1", "+2", "+3"] as const;
+export const DARK_BRIGHTNESS_MODES = ["-3", "-2", "-1", "0"] as const;
+
+/**
+ * Favicon assets by tone and size
+ */
+export const FAVICON_SOURCES = {
+  light: {
+    icon16: "/favicon_light/favicon-16x16.png",
+    icon32: "/favicon_light/favicon-32x32.png",
+    iconIco: "/favicon_light/favicon.ico",
+    appleTouch: "/favicon_light/apple-touch-icon.png",
+    android192: "/favicon_light/android-chrome-192x192.png",
+    android512: "/favicon_light/android-chrome-512x512.png",
+    manifest: "/favicon_light/site.webmanifest",
+  },
+  dark: {
+    icon16: "/favicon_dark/favicon-16x16.png",
+    icon32: "/favicon_dark/favicon-32x32.png",
+    iconIco: "/favicon_dark/favicon.ico",
+    appleTouch: "/favicon_dark/apple-touch-icon.png",
+    android192: "/favicon_dark/android-chrome-192x192.png",
+    android512: "/favicon_dark/android-chrome-512x512.png",
+    manifest: "/favicon_dark/site.webmanifest",
+  },
+} as const;
+
+/**
  * Resume configuration
  * Makes it easy to update resume details without changing code
  */
