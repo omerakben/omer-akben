@@ -25,6 +25,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify environment variables
+        run: |
+          echo "Checking environment variables..."
+          if [ -z "$UPSTASH_REDIS_REST_URL" ]; then
+            echo "❌ UPSTASH_REDIS_REST_URL is not set"
+            exit 1
+          else
+            echo "✅ UPSTASH_REDIS_REST_URL is set"
+            # Check if it starts with https://
+            if [[ "$UPSTASH_REDIS_REST_URL" == https://* ]]; then
+              echo "✅ UPSTASH_REDIS_REST_URL starts with https://"
+            else
+              echo "❌ UPSTASH_REDIS_REST_URL does not start with https://"
+              echo "First 10 chars: ${UPSTASH_REDIS_REST_URL:0:10}"
+              exit 1
+            fi
+          fi
+        env:
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+
       - name: Run ESLint
         run: npm run lint
 
