@@ -19,8 +19,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -32,10 +32,10 @@ jobs:
             echo "❌ UPSTASH_REDIS_REST_URL is not set"
             exit 1
           else
-            echo "✅ UPSTASH_REDIS_REST_URL is set"
+            echo "UPSTASH_REDIS_REST_URL is set"
             # Check if it starts with https://
             if [[ "$UPSTASH_REDIS_REST_URL" == https://* ]]; then
-              echo "✅ UPSTASH_REDIS_REST_URL starts with https://"
+              echo "UPSTASH_REDIS_REST_URL starts with https://"
             else
               echo "❌ UPSTASH_REDIS_REST_URL does not start with https://"
               echo "First 10 chars: ${UPSTASH_REDIS_REST_URL:0:10}"
@@ -73,7 +73,7 @@ jobs:
 
       - name: Check bundle size
         run: npm run size
-        continue-on-error: false  # Fail CI if bundle size exceeds limits
+        continue-on-error: false # Fail CI if bundle size exceeds limits
 
       - name: Upload build artifacts (on failure)
         if: failure()
@@ -89,7 +89,7 @@ jobs:
     name: E2E Tests (Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: quality-checks  # Run after quality checks pass
+    needs: quality-checks # Run after quality checks pass
 
     steps:
       - name: Checkout code
@@ -98,8 +98,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
