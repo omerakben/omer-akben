@@ -731,21 +731,33 @@ export function ChatSidebar() {
               <form
                 id="chat-sidebar-form"
                 onSubmit={handleSubmit}
-                className="flex gap-2"
+                className="flex gap-2 items-end"
               >
-                <input
+                <textarea
                   id="chat-sidebar-input"
-                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    // Submit on Enter, new line on Shift+Enter
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+                    }
+                  }}
                   placeholder="Ask anything about me..."
-                  className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm"
+                  className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px]"
                   disabled={isLoading}
+                  rows={1}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = "auto";
+                    target.style.height = `${Math.min(target.scrollHeight, 200)}px`;
+                  }}
                 />
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="bg-brand-primary hover:bg-brand-primary/90 h-auto px-4"
+                  className="bg-brand-primary hover:bg-brand-primary/90 h-auto px-4 py-3"
                 >
                   <Send aria-hidden="true" className="w-4 h-4" />
                 </Button>
