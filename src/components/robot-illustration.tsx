@@ -1,12 +1,14 @@
 "use client";
 
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { motion, useReducedMotion } from "framer-motion";
-import { Code2, Brain, TestTube, Rocket } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Brain, Code2, Rocket, TestTube } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function RobotIllustration() {
   const prefersReducedMotion = useReducedMotion();
   const [animationCycle, setAnimationCycle] = useState(0);
+  const { openSidebar } = useChatSidebar();
 
   // Trigger animation cycle every 12 seconds
   useEffect(() => {
@@ -18,6 +20,10 @@ export function RobotIllustration() {
 
     return () => clearInterval(timer);
   }, [prefersReducedMotion]);
+
+  const handleRobotClick = () => {
+    openSidebar();
+  };
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
@@ -66,7 +72,17 @@ export function RobotIllustration() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="relative z-10"
+        className="relative z-10 cursor-pointer hover:scale-105 transition-transform duration-200"
+        onClick={handleRobotClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleRobotClick();
+          }
+        }}
+        aria-label="Open chat with Ozzy"
       >
         {/* Robot Head */}
         <motion.rect
@@ -244,8 +260,22 @@ export function RobotIllustration() {
         />
 
         {/* Legs */}
-        <rect x="110" y="275" width="30" height="15" rx="7" fill="url(#gradient2)" />
-        <rect x="160" y="275" width="30" height="15" rx="7" fill="url(#gradient2)" />
+        <rect
+          x="110"
+          y="275"
+          width="30"
+          height="15"
+          rx="7"
+          fill="url(#gradient2)"
+        />
+        <rect
+          x="160"
+          y="275"
+          width="30"
+          height="15"
+          rx="7"
+          fill="url(#gradient2)"
+        />
 
         {/* Gradients - refined to match brand exactly */}
         <defs>
@@ -379,9 +409,7 @@ function WorkflowPipeline({
             <motion.div
               key={`${animationCycle}-msg-${message.id}`}
               className={`absolute ${
-                message.position === "left"
-                  ? "left-4 top-12"
-                  : "right-4 top-12"
+                message.position === "left" ? "left-4 top-12" : "right-4 top-12"
               } max-w-[200px] hidden lg:block`}
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={
@@ -406,38 +434,14 @@ function WorkflowPipeline({
                 <div className="relative px-3 py-2 rounded-xl bg-surf-1 border border-brand-primary/50 shadow-md backdrop-blur-sm">
                   {/* Content with Icon */}
                   <div className="flex items-center gap-2">
-                    <Icon className="w-4 h-4 text-brand-primary flex-shrink-0" strokeWidth={2} />
+                    <Icon
+                      className="w-4 h-4 text-brand-primary flex-shrink-0"
+                      strokeWidth={2}
+                    />
                     <p className="text-xs font-medium text-text-1">
                       {message.text}
                     </p>
                   </div>
-                </div>
-
-                {/* Balloon Tail */}
-                <div
-                  className={`absolute -bottom-2 ${
-                    message.position === "left" ? "left-2" : "right-2"
-                  } w-3 h-3`}
-                >
-                  <svg
-                    viewBox="0 0 12 12"
-                    className={`w-full h-full ${
-                      message.position === "left" ? "" : "scale-x-[-1]"
-                    }`}
-                  >
-                    <path
-                      d="M0 0 L12 0 L6 12 Z"
-                      fill="currentColor"
-                      className="text-surf-1"
-                    />
-                    <path
-                      d="M0 0 L12 0 L6 12 Z"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1"
-                      className="text-brand-primary/50"
-                    />
-                  </svg>
                 </div>
               </div>
             </motion.div>
