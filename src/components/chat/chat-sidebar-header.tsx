@@ -1,9 +1,9 @@
 "use client";
 
-import { Bot, X, Maximize2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { Button } from "@/components/ui/button";
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { Bot, Maximize2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function ChatSidebarHeader() {
   const router = useRouter();
@@ -15,13 +15,13 @@ export function ChatSidebarHeader() {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border-b border-border-line">
+    <div className="flex items-center justify-between h-16 px-4 border-b border-border-line">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-primary to-accent-primary flex items-center justify-center">
-          <Bot className="w-6 h-6 text-white" />
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-primary to-accent-primary flex items-center justify-center">
+          <Bot className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-text-1">AI Ozzy</h2>
+          <h2 className="text-base font-semibold text-text-1">AI Ozzy</h2>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500" />
             <span className="text-sm text-text-3">Online</span>

@@ -1,7 +1,14 @@
-import type { SystemMessage } from "@mastra/core/llm";
-import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { getContactTool, provideNavigationLinksTool, triggerWorkflowTool } from "@/lib/mastra/tools";
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import {
+  BasePortfolioAgent,
+  type AgentExecutionContext,
+} from "@/lib/mastra/agents/base-agent";
+import {
+  getContactTool,
+  provideNavigationLinksTool,
+  triggerWorkflowTool,
+} from "@/lib/mastra/tools";
+import type { SystemMessage } from "@mastra/core/llm";
 
 const SPECIALIST_INSTRUCTIONS = `
 
@@ -15,15 +22,20 @@ You are the Contact specialist. Share the correct email, provide introductions, 
 
 **Important:** Use the specific contact information from the knowledge base above. Remind users that personal data should remain professional.`;
 
+// Build full prompt once (knowledge base + specialist instructions)
+const FULL_SYSTEM_PROMPT =
+  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+
 class ContactAgent extends BasePortfolioAgent<"contact"> {
   constructor() {
     super({
       name: "contact",
-      description: "Guides visitors to the best contact channels and follow-up actions.",
+      description:
+        "Guides visitors to the best contact channels and follow-up actions.",
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
-        content: buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS,
+        content: FULL_SYSTEM_PROMPT,
       },
       tools: {
         get_contact: getContactTool,
@@ -33,12 +45,13 @@ class ContactAgent extends BasePortfolioAgent<"contact"> {
     });
   }
 
-  async buildInstructions(context: AgentExecutionContext): Promise<SystemMessage> {
-    const knowledgeBase = buildEnhancedSystemPrompt();
-    const fullPrompt = knowledgeBase + SPECIALIST_INSTRUCTIONS;
-    return this.buildInstructionMessage(context, fullPrompt);
+  async buildInstructions(
+    context: AgentExecutionContext
+  ): Promise<SystemMessage> {
+    return this.buildInstructionMessage(context, FULL_SYSTEM_PROMPT);
   }
 }
 
 export const contactAgent = new ContactAgent();
-export const buildContactInstructions = (context: AgentExecutionContext) => contactAgent.buildInstructions(context);
+export const buildContactInstructions = (context: AgentExecutionContext) =>
+  contactAgent.buildInstructions(context);

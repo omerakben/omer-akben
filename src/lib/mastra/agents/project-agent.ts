@@ -1,7 +1,15 @@
-import type { SystemMessage } from "@mastra/core/llm";
-import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { listProjectsTool, openProjectTool, provideNavigationLinksTool, searchProjectsSemanticTool } from "@/lib/mastra/tools";
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import {
+  BasePortfolioAgent,
+  type AgentExecutionContext,
+} from "@/lib/mastra/agents/base-agent";
+import {
+  listProjectsTool,
+  openProjectTool,
+  provideNavigationLinksTool,
+  searchProjectsSemanticTool,
+} from "@/lib/mastra/tools";
+import type { SystemMessage } from "@mastra/core/llm";
 
 const SPECIALIST_INSTRUCTIONS = `
 
@@ -17,15 +25,19 @@ You are the Project specialist. Recommend portfolio projects, summarize capabili
 
 **Important:** ALWAYS use the specific project details, technologies, and achievements from the knowledge base above. Never make up generic responses.`;
 
+const FULL_SYSTEM_PROMPT =
+  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+
 class ProjectAgent extends BasePortfolioAgent<"project"> {
   constructor() {
     super({
       name: "project",
-      description: "Helps users explore Omer's portfolio projects and recommend relevant work.",
+      description:
+        "Helps users explore Omer's portfolio projects and recommend relevant work.",
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
-        content: buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS,
+        content: FULL_SYSTEM_PROMPT,
       },
       tools: {
         search_projects_semantic: searchProjectsSemanticTool,
@@ -36,12 +48,13 @@ class ProjectAgent extends BasePortfolioAgent<"project"> {
     });
   }
 
-  async buildInstructions(context: AgentExecutionContext): Promise<SystemMessage> {
-    const knowledgeBase = buildEnhancedSystemPrompt();
-    const fullPrompt = knowledgeBase + SPECIALIST_INSTRUCTIONS;
-    return this.buildInstructionMessage(context, fullPrompt);
+  async buildInstructions(
+    context: AgentExecutionContext
+  ): Promise<SystemMessage> {
+    return this.buildInstructionMessage(context, FULL_SYSTEM_PROMPT);
   }
 }
 
 export const projectAgent = new ProjectAgent();
-export const buildProjectInstructions = (context: AgentExecutionContext) => projectAgent.buildInstructions(context);
+export const buildProjectInstructions = (context: AgentExecutionContext) =>
+  projectAgent.buildInstructions(context);

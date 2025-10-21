@@ -1,7 +1,45 @@
-import { NextRequest, NextResponse } from "next/server";
 import { provideNavigationLinksInputSchema } from "@/lib/agent-tools/schemas";
+import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const linksParam = searchParams.get("links");
+
+    if (!linksParam) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Missing required parameter: links",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Parse the links array from JSON string
+    const links = JSON.parse(linksParam);
+    const { links: validatedLinks } = provideNavigationLinksInputSchema.parse({
+      links,
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        links: validatedLinks,
+      },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Invalid request",
+      },
+      { status: 400 }
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {

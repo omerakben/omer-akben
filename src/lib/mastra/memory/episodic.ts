@@ -1,13 +1,13 @@
-import type { UIMessage } from "ai";
-import OpenAI from "openai";
-import { getVectorClient } from "@/lib/redis/vector-client";
-import { knnSearch } from "@/lib/redis/vector-search";
 import {
   getCachedEmbedding,
-  setCachedEmbedding,
   recordCacheHit,
   recordCacheMiss,
+  setCachedEmbedding,
 } from "@/lib/cache/openai-cache";
+import { getVectorClient } from "@/lib/redis/vector-client";
+import { knnSearch } from "@/lib/redis/vector-search";
+import type { UIMessage } from "ai";
+import OpenAI from "openai";
 
 const EMBEDDING_MODEL = "text-embedding-3-small";
 const EPISODIC_PREFIX = "memory:episodic:";
@@ -25,7 +25,10 @@ function getOpenAIClient(): OpenAI {
 
 function extractMessageText(message: UIMessage): string {
   const textParts = message.parts
-    .filter((part): part is { type: "text"; text: string } => part.type === "text" && "text" in part)
+    .filter(
+      (part): part is { type: "text"; text: string } =>
+        part.type === "text" && "text" in part
+    )
     .map((part) => part.text.trim())
     .filter(Boolean);
 
@@ -33,7 +36,9 @@ function extractMessageText(message: UIMessage): string {
     return textParts.join("\n");
   }
 
-  if (typeof (message as unknown as { content?: unknown }).content === "string") {
+  if (
+    typeof (message as unknown as { content?: unknown }).content === "string"
+  ) {
     return ((message as unknown as { content?: string }).content ?? "").trim();
   }
 
@@ -70,7 +75,10 @@ export interface EpisodicMemoryResult {
 }
 
 export class RedisEpisodicMemory {
-  async saveConversation(threadId: string, messages: UIMessage[]): Promise<void> {
+  async saveConversation(
+    threadId: string,
+    messages: UIMessage[]
+  ): Promise<void> {
     const chunks = createChunks(messages);
     if (chunks.length === 0) {
       return;
@@ -182,7 +190,8 @@ export class RedisEpisodicMemory {
       await recordCacheMiss("embedding");
     }
 
-    const matches = await knnSearch("", queryEmbedding, limit, [
+    // Query Upstash Vector for episodic memory (index=undefined routes to Vector)
+    const matches = await knnSearch(undefined, queryEmbedding, limit, [
       "threadId",
       "chunkId",
       "content",

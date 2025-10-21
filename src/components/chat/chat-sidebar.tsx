@@ -4,8 +4,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { getFollowups } from "@/lib/followups";
-import { DefaultChatTransport, UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport, UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
@@ -325,6 +325,11 @@ export function ChatSidebar() {
     if (!isLoading) {
       generateFollowupsAsync();
     }
+
+    // Note: recentlyShownFollowups intentionally omitted from deps
+    // It's updated within this effect via setRecentlyShownFollowups((prev) => ...)
+    // and its current value is only needed for deduplication logic in getFollowups.
+    // Including it would cause infinite re-renders since we modify it on every run.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, isLoading]);
 

@@ -21,6 +21,47 @@ const FILE_MAP = {
   },
 } as const;
 
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const format = searchParams.get("format") || "resume";
+
+    const input = downloadResumeInputSchema.parse({ format });
+    const fileInfo = FILE_MAP[input.format as keyof typeof FILE_MAP];
+
+    if (!fileInfo) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Invalid format: ${input.format}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    const url = `/assets/${fileInfo.filename}`;
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        url,
+        filename: fileInfo.filename,
+        size: fileInfo.size,
+        format: fileInfo.format,
+        googleDriveUrl: fileInfo.googleDriveUrl,
+      },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Invalid request",
+      },
+      { status: 400 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

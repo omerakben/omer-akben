@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { searchProjectsBySimilarity } from "@/lib/redis/embeddings";
 import { searchProjectsSemanticSchema } from "@/lib/agent-tools/schemas";
+import { searchProjectsBySimilarity } from "@/lib/redis/embeddings";
+import { NextResponse } from "next/server";
 
 /**
  * POST /api/tools/search-projects-semantic
@@ -30,6 +30,60 @@ import { searchProjectsSemanticSchema } from "@/lib/agent-tools/schemas";
  *   }
  * }
  */
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const query = searchParams.get("query");
+    const limit = Number(searchParams.get("limit")) || 5;
+
+    if (!query) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Missing required parameter: query",
+        },
+        { status: 400 }
+      );
+    }
+
+    const validation = searchProjectsSemanticSchema.safeParse({ query, limit });
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid request parameters",
+          details: validation.error.format(),
+        },
+        { status: 400 }
+      );
+    }
+
+    const results = await searchProjectsBySimilarity(
+      validation.data.query,
+      validation.data.limit
+    );
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        results,
+        query: validation.data.query,
+        count: results.length,
+      },
+    });
+  } catch (error) {
+    console.error("[search-projects-semantic] Error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to search projects",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import { downloadCertificateInputSchema } from "@/lib/agent-tools/schemas";
+import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
 
@@ -9,7 +9,8 @@ const CERTIFICATE_MAP = {
     filename: "Omer-Akben-AWS-Certificate.pdf",
     size: 250000, // ~250KB
     format: "pdf",
-    googleDriveUrl: "https://drive.google.com/file/d/1toTPdvyQzySkm1hEmwssMfxHGAXkOUMh/view?usp=sharing",
+    googleDriveUrl:
+      "https://drive.google.com/file/d/1toTPdvyQzySkm1hEmwssMfxHGAXkOUMh/view?usp=sharing",
     certificateName: "AWS Certified Solutions Architect",
     issuer: "Amazon Web Services",
     year: "2024",
@@ -24,6 +25,61 @@ const CERTIFICATE_MAP = {
     year: "2025",
   },
 } as const;
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type");
+
+    if (!type) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Missing required parameter: type",
+        },
+        { status: 400 }
+      );
+    }
+
+    const input = downloadCertificateInputSchema.parse({ type });
+    const certInfo =
+      CERTIFICATE_MAP[input.type as keyof typeof CERTIFICATE_MAP];
+
+    if (!certInfo) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Invalid certificate type: ${input.type}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    const url = `/assets/${certInfo.filename}`;
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        url,
+        filename: certInfo.filename,
+        size: certInfo.size,
+        format: certInfo.format,
+        googleDriveUrl: certInfo.googleDriveUrl,
+        certificateName: certInfo.certificateName,
+        issuer: certInfo.issuer,
+        year: certInfo.year,
+      },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Invalid request",
+      },
+      { status: 400 }
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {

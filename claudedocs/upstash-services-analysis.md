@@ -13,11 +13,11 @@
 
 ### Quick Decision Guide
 
-| Priority | Recommendation | Services | Cost | Effort |
-|----------|---------------|----------|------|--------|
-| **Job-seeking portfolio** | Keep current | Redis only | $0 | 0 hours |
-| **Technical showcase** | Add Vector | Redis + Vector | $0 | 3-4 hours |
-| **Over-engineering** | ❌ Avoid | +QStash/Workflow | $0 | 10+ hours |
+| Priority                  | Recommendation | Services         | Cost | Effort    |
+| ------------------------- | -------------- | ---------------- | ---- | --------- |
+| **Job-seeking portfolio** | Keep current   | Redis only       | $0   | 0 hours   |
+| **Technical showcase**    | Add Vector     | Redis + Vector   | $0   | 3-4 hours |
+| **Over-engineering**      | ❌ Avoid        | +QStash/Workflow | $0   | 10+ hours |
 
 ---
 
@@ -53,14 +53,14 @@ Current usage: 25,500 / 500,000 = 5.1%
 
 ### What's Working
 
-| Feature | Status | Redis Operations |
-|---------|--------|------------------|
-| Rate limiting | ✅ Active | EVALSHA, INCRBY, PEXPIRE |
-| Embedding cache | ✅ Caching | GET, SET (30-day TTL) |
-| Semantic memory | ✅ Storing facts | JSON.GET, JSON.SET |
-| Checkpoints | ✅ Thread state | KEYS, HSET |
-| Cache metrics | ✅ Tracking | HINCRBY |
-| Vector search | ❌ Unavailable | FT.SEARCH (not supported) |
+| Feature         | Status          | Redis Operations          |
+| --------------- | --------------- | ------------------------- |
+| Rate limiting   | ✅ Active        | EVALSHA, INCRBY, PEXPIRE  |
+| Embedding cache | ✅ Caching       | GET, SET (30-day TTL)     |
+| Semantic memory | ✅ Storing facts | JSON.GET, JSON.SET        |
+| Checkpoints     | ✅ Thread state  | KEYS, HSET                |
+| Cache metrics   | ✅ Tracking      | HINCRBY                   |
+| Vector search   | ❌ Unavailable   | FT.SEARCH (not supported) |
 
 ### What's Disabled (Graceful Degradation)
 
@@ -113,31 +113,35 @@ Current usage: 25,500 / 500,000 = 5.1%
 
 **Use Case**: Restore episodic memory (conversation history search)
 
-**Current Situation**:
-- Episodic memory disabled due to lack of vector search in standard Redis
-- Code already generates and caches embeddings (visible in redis-monitor.csv)
-- Graceful degradation in place (src/lib/mastra/memory/episodic.ts:214-219)
+**Status**: ✅ IMPLEMENTED (2025-10-20 / Updated 2025-10-21)
 
-**What it would enable**:
+**Implementation**:
+- Episodic memory fully functional via Upstash Vector SDK
+- Direct storage with `vectorClient.upsert()`
+- KNN search via `vectorClient.query()`
+- Graceful degradation removed (episodic memory now production-ready)
+- Dual-path routing ensures project embeddings remain in Redis
+
+**What it enables**:
 - ✅ Search past conversations for relevant context
 - ✅ Better AI responses with conversation history
 - ✅ Cross-session memory ("Remember when we talked about...")
 - ✅ Technical showcase (demonstrates vector DB integration)
 
-**Projected Usage**:
+**Actual Usage** (projected):
 - ~100 episodic searches/day (1% of 10K free tier limit)
 - Embedding storage: <100MB for portfolio scale
-- Cost: $0/month
+- Cost: $0/month (free tier)
 
-**Implementation Effort**: 3-4 hours
-1. Create Vector index in Upstash console (5 min)
-2. Add environment variables (2 min)
-3. Update vector-search.ts to use Upstash Vector SDK (~1 hour)
-4. Update episodic.ts to remove try-catch, add Vector client (~30 min)
-5. Testing (~1 hour)
-6. Documentation updates (~30 min)
+**Implementation Completed**:
+1. ✅ Created Vector index in Upstash console
+2. ✅ Added environment variables (UPSTASH_VECTOR_REST_URL/TOKEN)
+3. ✅ Updated vector-search.ts with dual-path routing (Redis + Vector)
+4. ✅ Updated episodic.ts for direct Vector storage
+5. ✅ All tests passing (531/531)
+6. ✅ Documentation updated
 
-**Files to modify**:
+**Files modified**:
 - `src/lib/redis/vector-search.ts` - Switch from FT.SEARCH to Vector SDK
 - `src/lib/mastra/memory/episodic.ts` - Remove try-catch, add Vector client
 - Environment variables
@@ -212,12 +216,12 @@ Current usage: 25,500 / 500,000 = 5.1%
 
 ### All Services Free Tier Summary
 
-| Service | Free Tier Limit | Projected Usage | % Used | Cost |
-|---------|----------------|-----------------|--------|------|
-| **Redis** | 500K commands/month | 25K commands/month | 5% | $0 |
-| **Vector** | 10K queries/day | 100 queries/day | 1% | $0 |
-| **QStash** | 1K messages/day | 0 messages/day | 0% | $0 |
-| **Workflow** | 1K messages/day | 0 messages/day | 0% | $0 |
+| Service      | Free Tier Limit     | Projected Usage    | % Used | Cost |
+| ------------ | ------------------- | ------------------ | ------ | ---- |
+| **Redis**    | 500K commands/month | 25K commands/month | 5%     | $0   |
+| **Vector**   | 10K queries/day     | 100 queries/day    | 1%     | $0   |
+| **QStash**   | 1K messages/day     | 0 messages/day     | 0%     | $0   |
+| **Workflow** | 1K messages/day     | 0 messages/day     | 0%     | $0   |
 
 **Total Cost**: $0/month for all services
 
@@ -367,14 +371,14 @@ npm run dev  # Test chat with episodic memory
 
 ### Feature vs Priority vs Effort
 
-| Feature | Priority | Effort | Impact | Recommendation |
-|---------|----------|--------|--------|----------------|
-| Rate limiting | Critical | ✅ Done | High | Keep (working) |
-| Embedding cache | High | ✅ Done | High | Keep (working) |
-| Semantic memory | High | ✅ Done | Medium | Keep (working) |
-| Episodic memory | Medium | 3-4 hours | Medium | Optional (add if showcasing) |
-| Async messaging | Low | 10+ hours | None | Skip (no use case) |
-| Durable execution | Low | 10+ hours | None | Skip (no use case) |
+| Feature           | Priority | Effort    | Impact | Recommendation               |
+| ----------------- | -------- | --------- | ------ | ---------------------------- |
+| Rate limiting     | Critical | ✅ Done    | High   | Keep (working)               |
+| Embedding cache   | High     | ✅ Done    | High   | Keep (working)               |
+| Semantic memory   | High     | ✅ Done    | Medium | Keep (working)               |
+| Episodic memory   | Medium   | 3-4 hours | Medium | Optional (add if showcasing) |
+| Async messaging   | Low      | 10+ hours | None   | Skip (no use case)           |
+| Durable execution | Low      | 10+ hours | None   | Skip (no use case)           |
 
 ### ROI Analysis
 

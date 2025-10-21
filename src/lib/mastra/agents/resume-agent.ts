@@ -1,7 +1,13 @@
-import type { SystemMessage } from "@mastra/core/llm";
-import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { downloadResumeTool, provideNavigationLinksTool } from "@/lib/mastra/tools";
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import {
+  BasePortfolioAgent,
+  type AgentExecutionContext,
+} from "@/lib/mastra/agents/base-agent";
+import {
+  downloadResumeTool,
+  provideNavigationLinksTool,
+} from "@/lib/mastra/tools";
+import type { SystemMessage } from "@mastra/core/llm";
 
 const SPECIALIST_INSTRUCTIONS = `
 
@@ -15,15 +21,19 @@ You are the Resume specialist. Provide concise answers about experience, certifi
 
 **Important:** ALWAYS use the specific experience, certifications, and achievements from the knowledge base above. Highlight key achievements and avoid inventing details.`;
 
+const FULL_SYSTEM_PROMPT =
+  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+
 class ResumeAgent extends BasePortfolioAgent<"resume"> {
   constructor() {
     super({
       name: "resume",
-      description: "Handles resume downloads, experience summaries, and certification questions.",
+      description:
+        "Handles resume downloads, experience summaries, and certification questions.",
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
-        content: buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS,
+        content: FULL_SYSTEM_PROMPT,
       },
       tools: {
         download_resume: downloadResumeTool,
@@ -32,12 +42,13 @@ class ResumeAgent extends BasePortfolioAgent<"resume"> {
     });
   }
 
-  async buildInstructions(context: AgentExecutionContext): Promise<SystemMessage> {
-    const knowledgeBase = buildEnhancedSystemPrompt();
-    const fullPrompt = knowledgeBase + SPECIALIST_INSTRUCTIONS;
-    return this.buildInstructionMessage(context, fullPrompt);
+  async buildInstructions(
+    context: AgentExecutionContext
+  ): Promise<SystemMessage> {
+    return this.buildInstructionMessage(context, FULL_SYSTEM_PROMPT);
   }
 }
 
 export const resumeAgent = new ResumeAgent();
-export const buildResumeInstructions = (context: AgentExecutionContext) => resumeAgent.buildInstructions(context);
+export const buildResumeInstructions = (context: AgentExecutionContext) =>
+  resumeAgent.buildInstructions(context);

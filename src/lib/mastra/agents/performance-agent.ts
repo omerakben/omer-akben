@@ -1,7 +1,13 @@
-import type { SystemMessage } from "@mastra/core/llm";
-import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { profilePerformanceTool, provideNavigationLinksTool } from "@/lib/mastra/tools";
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import {
+  BasePortfolioAgent,
+  type AgentExecutionContext,
+} from "@/lib/mastra/agents/base-agent";
+import {
+  profilePerformanceTool,
+  provideNavigationLinksTool,
+} from "@/lib/mastra/tools";
+import type { SystemMessage } from "@mastra/core/llm";
 
 const SPECIALIST_INSTRUCTIONS = `
 
@@ -16,15 +22,19 @@ You are the Performance specialist. Help developers profile Core Web Vitals, exp
 
 **Important:** Reference the specific technical stack and architecture from the knowledge base above when providing optimization recommendations.`;
 
+const FULL_SYSTEM_PROMPT =
+  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+
 class PerformanceAgent extends BasePortfolioAgent<"performance"> {
   constructor() {
     super({
       name: "performance",
-      description: "Offers Core Web Vital profiling and optimization suggestions for the portfolio site.",
+      description:
+        "Offers Core Web Vital profiling and optimization suggestions for the portfolio site.",
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
-        content: buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS,
+        content: FULL_SYSTEM_PROMPT,
       },
       tools: {
         profile_performance: profilePerformanceTool,
@@ -33,12 +43,13 @@ class PerformanceAgent extends BasePortfolioAgent<"performance"> {
     });
   }
 
-  async buildInstructions(context: AgentExecutionContext): Promise<SystemMessage> {
-    const knowledgeBase = buildEnhancedSystemPrompt();
-    const fullPrompt = knowledgeBase + SPECIALIST_INSTRUCTIONS;
-    return this.buildInstructionMessage(context, fullPrompt);
+  async buildInstructions(
+    context: AgentExecutionContext
+  ): Promise<SystemMessage> {
+    return this.buildInstructionMessage(context, FULL_SYSTEM_PROMPT);
   }
 }
 
 export const performanceAgent = new PerformanceAgent();
-export const buildPerformanceInstructions = (context: AgentExecutionContext) => performanceAgent.buildInstructions(context);
+export const buildPerformanceInstructions = (context: AgentExecutionContext) =>
+  performanceAgent.buildInstructions(context);
