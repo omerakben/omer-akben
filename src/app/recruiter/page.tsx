@@ -360,10 +360,10 @@ export default function RecruiterPage() {
             <div className="space-y-8">
               {/* Resume Section */}
               <div>
-                <h3 className="text-sm font-semibold text-text-1 mb-3 flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-text-1 mb-3 flex items-center gap-2">
                   <FileText className="h-4 w-4 text-brand-primary" />
                   Resume
-                </h3>
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* Resume PDF */}
                   <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
@@ -421,10 +421,10 @@ export default function RecruiterPage() {
 
               {/* Certifications Section */}
               <div>
-                <h3 className="text-sm font-semibold text-text-1 mb-3 flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-text-1 mb-3 flex items-center gap-2">
                   <Award className="h-4 w-4 text-brand-primary" />
                   Certifications
-                </h3>
+                </h2>
                 <div className="space-y-2">
                   <div className="p-3 border border-border-line rounded-lg bg-surf-1">
                     <p className="text-sm font-medium text-text-1 mb-2">

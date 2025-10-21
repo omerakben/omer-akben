@@ -20,23 +20,23 @@
   "size-limit": [
     {
       "name": "Homepage",
-      "path": ".next/static/chunks/*.js",
-      "limit": "260 kB"
+      "path": ".next/static/chunks/app/page*.js",
+      "limit": "40 kB"
     },
     {
       "name": "Skills Page",
       "path": ".next/static/chunks/app/skills/page*.js",
-      "limit": "215 kB"
+      "limit": "10 kB"
     },
     {
       "name": "Projects Page",
       "path": ".next/static/chunks/app/projects/page*.js",
-      "limit": "185 kB"
+      "limit": "15 kB"
     },
     {
       "name": "Contact Page",
       "path": ".next/static/chunks/app/contact/page*.js",
-      "limit": "190 kB"
+      "limit": "10 kB"
     }
   ],
   "dependencies": {
