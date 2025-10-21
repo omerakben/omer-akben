@@ -4,10 +4,10 @@ import { Redis } from "@upstash/redis";
 // Initialize Redis client for production rate limiting
 // Falls back to null if environment variables are not set (development mode)
 const redis =
-  process.env.UPSTASH_REDIS_URL && process.env.UPSTASH_REDIS_TOKEN
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
     ? new Redis({
-        url: process.env.UPSTASH_REDIS_URL,
-        token: process.env.UPSTASH_REDIS_TOKEN,
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
       })
     : null;
 

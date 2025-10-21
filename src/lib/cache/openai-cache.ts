@@ -11,8 +11,8 @@
  * - Performance monitoring
  */
 
-import { createHash } from "crypto";
 import { getRedisClient } from "@/lib/redis/client";
+import { createHash } from "crypto";
 
 // Cache configuration
 const CACHE_VERSION = "v1";
@@ -93,7 +93,10 @@ function buildCompletionKey(
 /**
  * Builds metrics key for date
  */
-function buildMetricsKey(type: CacheType, date: string = getTodayDate()): string {
+function buildMetricsKey(
+  type: CacheType,
+  date: string = getTodayDate()
+): string {
   return `${METRICS_PREFIX}${type}:${date}`;
 }
 
@@ -120,7 +123,7 @@ export async function getCachedEmbedding(
   try {
     const redis = getRedisClient();
     const key = buildEmbeddingKey(input, model);
-    const cached = await redis.get<string>(key);
+    const cached = await redis.get(key);
 
     const lookupTime = performance.now() - startTime;
 
@@ -128,10 +131,24 @@ export async function getCachedEmbedding(
       return null;
     }
 
-    const parsed: CachedEmbedding = JSON.parse(cached);
+    // Handle both string (manual JSON.stringify) and object (Upstash auto-deserialization)
+    let parsed: CachedEmbedding;
+    if (typeof cached === "string") {
+      parsed = JSON.parse(cached);
+    } else if (typeof cached === "object" && cached !== null) {
+      parsed = cached as CachedEmbedding;
+    } else {
+      console.error("[Cache:embedding] Unexpected cached value type", {
+        type: typeof cached,
+      });
+      return null;
+    }
+
     return parsed.embedding;
   } catch (error) {
-    console.error("[Cache:embedding] Failed to retrieve cached embedding", { error });
+    console.error("[Cache:embedding] Failed to retrieve cached embedding", {
+      error,
+    });
     return null;
   }
 }
@@ -160,7 +177,9 @@ export async function setCachedEmbedding(
 
     await redis.set(key, JSON.stringify(payload), { ex: EMBEDDING_TTL });
   } catch (error) {
-    console.error("[Cache:embedding] Failed to store embedding in cache", { error });
+    console.error("[Cache:embedding] Failed to store embedding in cache", {
+      error,
+    });
     // Graceful degradation: don't throw, caching is optional
   }
 }
@@ -185,7 +204,7 @@ export async function getCachedCompletion(
   try {
     const redis = getRedisClient();
     const key = buildCompletionKey(model, system, prompt, temperature);
-    const cached = await redis.get<string>(key);
+    const cached = await redis.get(key);
 
     const lookupTime = performance.now() - startTime;
 
@@ -193,10 +212,24 @@ export async function getCachedCompletion(
       return null;
     }
 
-    const parsed: CachedCompletion = JSON.parse(cached);
+    // Handle both string (manual JSON.stringify) and object (Upstash auto-deserialization)
+    let parsed: CachedCompletion;
+    if (typeof cached === "string") {
+      parsed = JSON.parse(cached);
+    } else if (typeof cached === "object" && cached !== null) {
+      parsed = cached as CachedCompletion;
+    } else {
+      console.error("[Cache:completion] Unexpected cached value type", {
+        type: typeof cached,
+      });
+      return null;
+    }
+
     return parsed.text;
   } catch (error) {
-    console.error("[Cache:completion] Failed to retrieve cached completion", { error });
+    console.error("[Cache:completion] Failed to retrieve cached completion", {
+      error,
+    });
     return null;
   }
 }
@@ -230,7 +263,9 @@ export async function setCachedCompletion(
 
     await redis.set(key, JSON.stringify(payload), { ex: COMPLETION_TTL });
   } catch (error) {
-    console.error("[Cache:completion] Failed to store completion in cache", { error });
+    console.error("[Cache:completion] Failed to store completion in cache", {
+      error,
+    });
     // Graceful degradation: don't throw, caching is optional
   }
 }
@@ -315,7 +350,9 @@ export async function getCacheMetrics(
       avgLookupTime: 0, // TODO: Implement lookup time tracking
     };
   } catch (error) {
-    console.error(`[Cache:${type}] Failed to retrieve cache metrics`, { error });
+    console.error(`[Cache:${type}] Failed to retrieve cache metrics`, {
+      error,
+    });
     return {
       hits: 0,
       misses: 0,
@@ -332,7 +369,10 @@ export async function getCacheMetrics(
  * @param type - Cache type (embedding or completion)
  * @param days - Number of days to aggregate
  */
-export async function logCacheMetrics(type: CacheType, days: number = 7): Promise<void> {
+export async function logCacheMetrics(
+  type: CacheType,
+  days: number = 7
+): Promise<void> {
   const metrics = await getCacheMetrics(type, days);
   // Metrics available via getCacheMetrics() - console output removed for production
 }

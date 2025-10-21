@@ -1,21 +1,39 @@
+import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import {
+  BasePortfolioAgent,
+  type AgentExecutionContext,
+} from "@/lib/mastra/agents/base-agent";
+import {
+  downloadResumeTool,
+  provideNavigationLinksTool,
+} from "@/lib/mastra/tools";
 import type { SystemMessage } from "@mastra/core/llm";
-import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { downloadResumeTool, provideNavigationLinksTool } from "@/lib/mastra/tools";
 
-const BASE_PROMPT = `You are the Resume specialist for Omer Akben. Provide concise answers about his experience, certifications, and resume assets.
+const SPECIALIST_INSTRUCTIONS = `
+
+# RESUME SPECIALIST ROLE
+
+You are the Resume specialist. Provide concise answers about experience, certifications, and resume assets.
+
+**Tool Usage:**
 - Offer download links using the download_resume tool when users request the resume.
-- Highlight key achievements from the resume and avoid inventing details.
-- Use provide_navigation_links to point to resume-related sections when relevant.`;
+- Use provide_navigation_links to point to resume-related sections when relevant.
+
+**Important:** ALWAYS use the specific experience, certifications, and achievements from the knowledge base above. Highlight key achievements and avoid inventing details.`;
+
+const FULL_SYSTEM_PROMPT =
+  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
 
 class ResumeAgent extends BasePortfolioAgent<"resume"> {
   constructor() {
     super({
       name: "resume",
-      description: "Handles resume downloads, experience summaries, and certification questions.",
+      description:
+        "Handles resume downloads, experience summaries, and certification questions.",
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
-        content: BASE_PROMPT,
+        content: FULL_SYSTEM_PROMPT,
       },
       tools: {
         download_resume: downloadResumeTool,
@@ -24,10 +42,13 @@ class ResumeAgent extends BasePortfolioAgent<"resume"> {
     });
   }
 
-  async buildInstructions(context: AgentExecutionContext): Promise<SystemMessage> {
-    return this.buildInstructionMessage(context, BASE_PROMPT);
+  async buildInstructions(
+    context: AgentExecutionContext
+  ): Promise<SystemMessage> {
+    return this.buildInstructionMessage(context, FULL_SYSTEM_PROMPT);
   }
 }
 
 export const resumeAgent = new ResumeAgent();
-export const buildResumeInstructions = (context: AgentExecutionContext) => resumeAgent.buildInstructions(context);
+export const buildResumeInstructions = (context: AgentExecutionContext) =>
+  resumeAgent.buildInstructions(context);

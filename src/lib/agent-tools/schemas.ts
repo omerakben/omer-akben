@@ -9,10 +9,7 @@ export const toolResponseSchema = z.object({
 
 // download_resume tool schema
 export const downloadResumeInputSchema = z.object({
-  format: z
-    .enum(["resume", "extended"])
-    .optional()
-    .default("resume"),
+  format: z.enum(["resume", "extended"]).optional().default("resume"),
 });
 
 export const downloadResumeOutputSchema = z.object({
@@ -31,7 +28,8 @@ export const downloadResumeOutputSchema = z.object({
 export const listProjectsInputSchema = z.object({
   category: z
     .enum(["all", "ai-ml", "web", "mobile", "tools", "other"])
-    .optional(),
+    .optional()
+    .describe("Filter by project category (ai-ml, web, mobile, tools, other)"),
   featured: z.boolean().optional(),
   limit: z.number().min(1).max(50).optional(),
 });
@@ -57,16 +55,20 @@ export const listProjectsOutputSchema = z.object({
 
 // search_projects_semantic tool schema
 export const searchProjectsSemanticSchema = z.object({
-  query: z.string().describe("Natural language query for semantic project search"),
+  query: z
+    .string()
+    .describe("Natural language query for semantic project search"),
   limit: z.number().min(1).max(10).optional().default(5),
 });
 
 export const searchProjectsSemanticOutputSchema = z.object({
-  results: z.array(z.object({
-    slug: z.string(),
-    score: z.number(),
-    project: projectSchema.partial(),
-  })),
+  results: z.array(
+    z.object({
+      slug: z.string(),
+      score: z.number(),
+      project: projectSchema.partial(),
+    })
+  ),
   query: z.string(),
   count: z.number(),
 });
@@ -165,8 +167,14 @@ export const provideNavigationLinksOutputSchema = z.object({
 
 // navigate_page tool schema
 export const navigatePageInputSchema = z.object({
-  url: z.string().url().describe("URL to navigate to (must be omerakben.com domain)"),
-  waitUntil: z.enum(['load', 'domcontentloaded', 'networkidle']).optional().default('load')
+  url: z
+    .string()
+    .url()
+    .describe("URL to navigate to (must be omerakben.com domain)"),
+  waitUntil: z
+    .enum(["load", "domcontentloaded", "networkidle"])
+    .optional()
+    .default("load")
     .describe("Navigation wait condition"),
 });
 
@@ -178,7 +186,10 @@ export const navigatePageOutputSchema = z.object({
 // scroll_to_section tool schema
 export const scrollToSectionInputSchema = z.object({
   selector: z.string().describe("CSS selector or ARIA label to scroll to"),
-  behavior: z.enum(['smooth', 'instant']).optional().default('smooth')
+  behavior: z
+    .enum(["smooth", "instant"])
+    .optional()
+    .default("smooth")
     .describe("Scroll behavior"),
 });
 
@@ -189,7 +200,12 @@ export const scrollToSectionOutputSchema = z.object({
 
 // extract_page_summary tool schema
 export const extractPageSummaryInputSchema = z.object({
-  maxLength: z.number().min(50).max(500).optional().default(200)
+  maxLength: z
+    .number()
+    .min(50)
+    .max(500)
+    .optional()
+    .default(200)
     .describe("Maximum summary length in words"),
 });
 
@@ -202,22 +218,33 @@ export const extractPageSummaryOutputSchema = z.object({
 export const triggerWorkflowInputSchema = z.object({
   workflowId: z.string().describe("n8n workflow identifier"),
   payload: z.record(z.string(), z.unknown()).describe("Workflow input data"),
-  waitForResult: z.boolean().optional().default(true)
+  waitForResult: z
+    .boolean()
+    .optional()
+    .default(true)
     .describe("Wait for workflow completion"),
 });
 
 export const triggerWorkflowOutputSchema = z.object({
   workflowId: z.string(),
-  status: z.enum(['completed', 'running', 'failed']),
+  status: z.enum(["completed", "running", "failed"]),
   result: z.unknown().optional(),
   message: z.string(),
 });
 
 // profile_performance tool schema (dev only)
 export const profilePerformanceInputSchema = z.object({
-  duration: z.number().min(1000).max(30000).optional().default(5000)
+  duration: z
+    .number()
+    .min(1000)
+    .max(30000)
+    .optional()
+    .default(5000)
     .describe("Profiling duration in milliseconds"),
-  includeScreenshots: z.boolean().optional().default(false)
+  includeScreenshots: z
+    .boolean()
+    .optional()
+    .default(false)
     .describe("Capture performance screenshots"),
 });
 
@@ -228,7 +255,9 @@ export const profilePerformanceOutputSchema = z.object({
     cls: z.number().optional().describe("Cumulative Layout Shift score"),
     ttfb: z.number().optional().describe("Time to First Byte (ms)"),
   }),
-  suggestions: z.array(z.string()).describe("Performance improvement suggestions"),
+  suggestions: z
+    .array(z.string())
+    .describe("Performance improvement suggestions"),
   traceUrl: z.string().optional().describe("Chrome DevTools trace file URL"),
 });
 
@@ -257,11 +286,23 @@ export type NavigatePageInput = z.infer<typeof navigatePageInputSchema>;
 export type NavigatePageOutput = z.infer<typeof navigatePageOutputSchema>;
 export type ScrollToSectionInput = z.infer<typeof scrollToSectionInputSchema>;
 export type ScrollToSectionOutput = z.infer<typeof scrollToSectionOutputSchema>;
-export type ExtractPageSummaryInput = z.infer<typeof extractPageSummaryInputSchema>;
-export type ExtractPageSummaryOutput = z.infer<typeof extractPageSummaryOutputSchema>;
+export type ExtractPageSummaryInput = z.infer<
+  typeof extractPageSummaryInputSchema
+>;
+export type ExtractPageSummaryOutput = z.infer<
+  typeof extractPageSummaryOutputSchema
+>;
 export type TriggerWorkflowInput = z.infer<typeof triggerWorkflowInputSchema>;
 export type TriggerWorkflowOutput = z.infer<typeof triggerWorkflowOutputSchema>;
-export type ProfilePerformanceInput = z.infer<typeof profilePerformanceInputSchema>;
-export type ProfilePerformanceOutput = z.infer<typeof profilePerformanceOutputSchema>;
-export type SearchProjectsSemanticInput = z.infer<typeof searchProjectsSemanticSchema>;
-export type SearchProjectsSemanticOutput = z.infer<typeof searchProjectsSemanticOutputSchema>;
+export type ProfilePerformanceInput = z.infer<
+  typeof profilePerformanceInputSchema
+>;
+export type ProfilePerformanceOutput = z.infer<
+  typeof profilePerformanceOutputSchema
+>;
+export type SearchProjectsSemanticInput = z.infer<
+  typeof searchProjectsSemanticSchema
+>;
+export type SearchProjectsSemanticOutput = z.infer<
+  typeof searchProjectsSemanticOutputSchema
+>;
