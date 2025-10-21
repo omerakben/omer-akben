@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot } from "lucide-react";
+import { Bot, Sparkles } from "lucide-react";
 
 export function ChatSidebarWelcome() {
   return (
@@ -14,9 +14,10 @@ export function ChatSidebarWelcome() {
         <div className="flex-1">
           <div className="bg-surf-1 rounded-lg px-4 py-3 border border-border-line">
             <p className="text-text-1 leading-relaxed">
-              👋 Hi! I&apos;m AI Ozzy (Omer&apos;s clone), personal guide to my portfolio.
-              I know everything about my experience, projects, and skills. What
-              would you like to explore?
+              <Sparkles className="inline w-4 h-4 text-brand-primary mr-1" />
+              Hello! I&apos;m AI Ozzy (Omer&apos;s AI Twin). Ask me for project
+              walkthroughs, stack details, contact details, or a resume
+              download.
             </p>
           </div>
           <span className="text-xs text-text-3 mt-2 block">Just now</span>
