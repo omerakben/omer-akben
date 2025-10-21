@@ -22,6 +22,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getCacheMetrics, type CacheType } from "@/lib/cache/openai-cache";
+import { logError } from "@/lib/log";
 
 export async function GET(req: NextRequest) {
   try {
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest) {
       metrics,
     });
   } catch (error) {
-    console.error("[CacheMetricsAPI] Failed to retrieve metrics", { error });
+    logError("cache-metrics:GET", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

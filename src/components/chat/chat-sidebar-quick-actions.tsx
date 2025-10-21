@@ -33,7 +33,7 @@ export function ChatSidebarQuickActions() {
       {/* Navigation Actions */}
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-brand-primary">
-          <Zap className="w-4 h-4" />
+          <Zap aria-hidden="true" className="w-4 h-4" />
           <h3 className="text-sm font-semibold">Quick Actions</h3>
         </div>
         <div className="space-y-2">
@@ -47,7 +47,7 @@ export function ChatSidebarQuickActions() {
                 onClick={() => handleAction(action.href)}
               >
                 <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center">
-                  <Icon className="w-4 h-4 text-brand-primary" />
+                  <Icon aria-hidden="true" className="w-4 h-4 text-brand-primary" />
                 </div>
                 <span className="text-text-1 font-medium">{action.label}</span>
               </Button>
@@ -59,7 +59,7 @@ export function ChatSidebarQuickActions() {
       {/* Direct Contact Actions */}
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-brand-primary">
-          <Mail className="w-4 h-4" />
+          <Mail aria-hidden="true" className="w-4 h-4" />
           <h3 className="text-sm font-semibold">Get in Touch</h3>
         </div>
         <div className="flex gap-2">

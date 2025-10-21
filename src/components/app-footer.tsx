@@ -13,6 +13,8 @@ const footerLinks = {
     { href: "/credentials", label: "Credentials" },
     { href: "/contact", label: "Contact" },
     { href: "/recruiter", label: "Recruiters" },
+    { href: "/privacy", label: "Privacy" },
+    { href: "/terms", label: "Terms" },
   ],
 } as const;
 
@@ -48,7 +50,7 @@ export function AppFooter() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-xl font-bold text-text-1 mb-4">Omer Akben</h3>
+            <h2 className="text-xl font-bold text-text-1 mb-4">Omer Akben</h2>
             <p className="text-text-2 mb-6">
               Building intelligent systems and elegant solutions. Specializing
               in AI/ML engineering, full-stack development, and agentic
@@ -66,7 +68,7 @@ export function AppFooter() {
                     className="text-text-2 hover:text-brand-primary transition-colors"
                     aria-label={social.label}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon aria-hidden="true" className="h-5 w-5" />
                   </Link>
                 );
               })}
@@ -75,9 +77,9 @@ export function AppFooter() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-semibold text-text-1 mb-4">
+            <h3 className="text-sm font-semibold text-text-1 mb-4">
               Navigation
-            </h4>
+            </h3>
             <ul className="space-y-2">
               {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
@@ -94,9 +96,9 @@ export function AppFooter() {
 
           {/* Connect Section */}
           <div>
-            <h4 className="text-sm font-semibold text-text-1 mb-4">
+            <h3 className="text-sm font-semibold text-text-1 mb-4">
               Resources
-            </h4>
+            </h3>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>

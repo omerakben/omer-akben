@@ -2,7 +2,7 @@
 
 import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LOGO_SIZE } from "@/lib/constants";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { cn } from "@/lib/utils";
@@ -109,6 +109,7 @@ export function AppHeader() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <nav className="flex flex-col gap-4 mt-8">
                   {routes.map((route) => {
                     const Icon = route.icon;

@@ -6,7 +6,6 @@
  */
 
 import { getIconBySlug } from "@/lib/icon-manifest";
-import DOMPurify from "dompurify";
 
 // Map skill names to simple-icons slugs
 const SKILL_ICON_MAP: Record<string, string> = {
@@ -90,6 +89,7 @@ export function getSkillIcon(skillName: string): string | null {
     if (!icon) return null;
 
     return `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+      <title>${skillName}</title>
       <path d="${icon.path}"/>
     </svg>`;
   } catch {
@@ -101,9 +101,9 @@ export function getSkillIcon(skillName: string): string | null {
  * Render skill icon as React component
  */
 export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: string; className?: string }) {
-  const svgString = getSkillIcon(skillName);
+  const iconSlug = SKILL_ICON_MAP[skillName];
 
-  if (!svgString) {
+  if (!iconSlug) {
     // Fallback to checkmark if no icon found
     return (
       <svg
@@ -111,7 +111,9 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
+        role="img"
       >
+        <title>{skillName}</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -122,17 +124,60 @@ export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: str
     );
   }
 
-  // Only sanitize on client side (DOMPurify requires DOM)
-  const sanitizedSvg = typeof window !== "undefined"
-    ? DOMPurify.sanitize(svgString, { USE_PROFILES: { svg: true } })
-    : svgString;
+  try {
+    const icon = getIconBySlug(iconSlug);
+    if (!icon) {
+      // Fallback if icon not found in manifest
+      return (
+        <svg
+          className={className}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          role="img"
+        >
+          <title>{skillName}</title>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2.5}
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      );
+    }
 
-  return (
-    <div
-      className={className}
-      dangerouslySetInnerHTML={{
-        __html: sanitizedSvg
-      }}
-    />
-  );
+    // Render as proper React component - no dangerouslySetInnerHTML needed
+    return (
+      <svg
+        role="img"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        className={className}
+      >
+        <title>{skillName}</title>
+        <path d={icon.path} />
+      </svg>
+    );
+  } catch {
+    // Fallback on error
+    return (
+      <svg
+        className={className}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        role="img"
+      >
+        <title>{skillName}</title>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2.5}
+          d="M5 13l4 4L19 7"
+        />
+      </svg>
+    );
+  }
 }

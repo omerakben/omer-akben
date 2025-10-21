@@ -14,28 +14,29 @@
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "seed:assets": "node scripts/seed-assets.mjs"
   },
   "size-limit": [
     {
       "name": "Homepage",
-      "path": ".next/static/chunks/*.js",
-      "limit": "260 kB"
+      "path": ".next/static/chunks/app/page*.js",
+      "limit": "40 kB"
     },
     {
       "name": "Skills Page",
       "path": ".next/static/chunks/app/skills/page*.js",
-      "limit": "215 kB"
+      "limit": "10 kB"
     },
     {
       "name": "Projects Page",
       "path": ".next/static/chunks/app/projects/page*.js",
-      "limit": "185 kB"
+      "limit": "15 kB"
     },
     {
       "name": "Contact Page",
       "path": ".next/static/chunks/app/contact/page*.js",
-      "limit": "190 kB"
+      "limit": "10 kB"
     }
   ],
   "dependencies": {
@@ -76,6 +77,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@next/bundle-analyzer": "^15.5.4",
+    "@axe-core/playwright": "^4.10.0",
     "@playwright/test": "^1.56.1",
     "@size-limit/preset-app": "^11.2.0",
     "@tailwindcss/postcss": "^4",

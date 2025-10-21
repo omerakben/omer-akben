@@ -51,7 +51,7 @@ export function FollowupChips({ followups, onSend, className = '' }: FollowupChi
     >
       {/* Header */}
       <div className="flex items-center gap-1.5 text-text-2 text-xs">
-        <Sparkles className="w-3.5 h-3.5" />
+        <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />
         <span>Continue the conversation:</span>
       </div>
 

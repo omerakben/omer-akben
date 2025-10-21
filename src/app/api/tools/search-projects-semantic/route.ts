@@ -1,6 +1,7 @@
 import { searchProjectsSemanticSchema } from "@/lib/agent-tools/schemas";
 import { searchProjectsBySimilarity } from "@/lib/redis/embeddings";
 import { NextResponse } from "next/server";
+import { logError } from "@/lib/log";
 
 /**
  * POST /api/tools/search-projects-semantic
@@ -72,7 +73,7 @@ export async function GET(req: Request) {
       },
     });
   } catch (error) {
-    console.error("[search-projects-semantic] Error:", error);
+    logError("search-projects-semantic:GET", error);
     return NextResponse.json(
       {
         success: false,
@@ -115,7 +116,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error("[search-projects-semantic] Error:", error);
+    logError("search-projects-semantic:POST", error);
     return NextResponse.json(
       {
         success: false,

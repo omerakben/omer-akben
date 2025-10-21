@@ -4,6 +4,7 @@ import { loadThreadMessages } from "@/lib/mastra/memory/checkpointer";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
 import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
+import { logError } from "@/lib/log";
 
 export const maxDuration = 30;
 
@@ -44,7 +45,7 @@ export async function GET(req: Request) {
     const messages = await loadThreadMessages(chatId);
     return ensureJsonResponse({ messages });
   } catch (error) {
-    console.error("[ChatRoute] Failed to load history", error);
+    logError("chat:GET", error);
     return ensureJsonResponse({ error: "Failed to load history" }, 500);
   }
 }
@@ -94,12 +95,12 @@ export async function POST(req: Request) {
             extractAndSaveFacts(effectiveUserId, finalMessages),
           ]);
         } catch (error) {
-          console.error("[ChatRoute] Failed to persist memory", error);
+          logError("chat:onFinish", error);
         }
       },
     });
   } catch (error) {
-    console.error("[ChatRoute] Failed to process chat request", error);
+    logError("chat:POST", error);
     return ensureJsonResponse({ error: "Failed to process chat request" }, 500);
   }
 }

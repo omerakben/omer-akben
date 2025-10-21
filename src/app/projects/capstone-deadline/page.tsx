@@ -37,7 +37,7 @@ export default function DeadlineCaseStudyPage() {
           href="/projects"
           className="inline-flex items-center gap-2 text-text-2 hover:text-text-1 mb-8 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft aria-hidden="true" className="w-4 h-4" />
           Back to Projects
         </Link>
 
@@ -69,7 +69,7 @@ export default function DeadlineCaseStudyPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink aria-hidden="true" className="w-4 h-4" />
                   View Live Demo
                 </a>
               </Button>
@@ -81,7 +81,7 @@ export default function DeadlineCaseStudyPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Github className="w-4 h-4" />
+                  <Github aria-hidden="true" className="w-4 h-4" />
                   View Source
                 </a>
               </Button>
@@ -146,7 +146,7 @@ export default function DeadlineCaseStudyPage() {
               </div>
               <div className="p-8 flex items-center justify-center min-h-[400px] text-text-3">
                 <div className="text-center">
-                  <Database className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <Database aria-hidden="true" className="w-16 h-16 mx-auto mb-4 opacity-50" />
                   <p>Architecture diagram coming soon</p>
                   <p className="text-sm mt-2">
                     Django 5 + Railway ↔ Next.js 15 + Vercel
@@ -164,7 +164,7 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-brand-primary" />
+                  <Zap aria-hidden="true" className="w-5 h-5 text-brand-primary" />
                 </div>
               </div>
               <div>
@@ -184,7 +184,7 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Layers className="w-5 h-5 text-purple-400" />
+                  <Layers aria-hidden="true" className="w-5 h-5 text-purple-400" />
                 </div>
               </div>
               <div>
@@ -204,7 +204,7 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-green-400" />
+                  <Shield aria-hidden="true" className="w-5 h-5 text-green-400" />
                 </div>
               </div>
               <div>
@@ -224,7 +224,7 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-cyan-400" />
+                  <Users aria-hidden="true" className="w-5 h-5 text-cyan-400" />
                 </div>
               </div>
               <div>
@@ -244,7 +244,7 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                  <Eye className="w-5 h-5 text-orange-400" />
+                  <Eye aria-hidden="true" className="w-5 h-5 text-orange-400" />
                 </div>
               </div>
               <div>
@@ -366,7 +366,10 @@ export default function DeadlineCaseStudyPage() {
           </h2>
           <div className="space-y-4">
             <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+              />
               <div>
                 <strong className="text-text-1">
                   Phase 1: Architecture & Design
@@ -380,7 +383,10 @@ export default function DeadlineCaseStudyPage() {
             </div>
 
             <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+              />
               <div>
                 <strong className="text-text-1">
                   Phase 2: Backend Implementation
@@ -395,7 +401,10 @@ export default function DeadlineCaseStudyPage() {
             </div>
 
             <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+              />
               <div>
                 <strong className="text-text-1">
                   Phase 3: Frontend Development
@@ -410,7 +419,10 @@ export default function DeadlineCaseStudyPage() {
             </div>
 
             <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+              />
               <div>
                 <strong className="text-text-1">
                   Phase 4: Demo Mode & UI Polish
@@ -426,7 +438,10 @@ export default function DeadlineCaseStudyPage() {
             </div>
 
             <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+              />
               <div>
                 <strong className="text-text-1">
                   Phase 5: Visual Testing & Optimization
@@ -441,7 +456,10 @@ export default function DeadlineCaseStudyPage() {
             </div>
 
             <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+              />
               <div>
                 <strong className="text-text-1">
                   Phase 6: Production Deployment

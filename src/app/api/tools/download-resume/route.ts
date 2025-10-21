@@ -1,5 +1,6 @@
 import { downloadResumeInputSchema } from "@/lib/agent-tools/schemas";
 import { NextRequest, NextResponse } from "next/server";
+import { logError } from "@/lib/log";
 
 export const runtime = "edge";
 
@@ -52,6 +53,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
+    logError("tools/download-resume:GET", error);
     return NextResponse.json(
       {
         success: false,
@@ -91,6 +93,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    logError("tools/download-resume:POST", error);
     return NextResponse.json(
       {
         success: false,

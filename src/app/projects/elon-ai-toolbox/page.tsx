@@ -26,7 +26,7 @@ export default function ElonAiToolboxPage() {
           href="/projects"
           className="inline-flex items-center gap-2 text-text-2 hover:text-text-1 mb-8 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft aria-hidden="true" className="w-4 h-4" />
           Back to Projects
         </Link>
 
@@ -43,7 +43,7 @@ export default function ElonAiToolboxPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink aria-hidden="true" className="w-4 h-4" />
                   View Live Demo
                 </a>
               </Button>
@@ -55,7 +55,7 @@ export default function ElonAiToolboxPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Github className="w-4 h-4" />
+                  <Github aria-hidden="true" className="w-4 h-4" />
                   View Source
                 </a>
               </Button>

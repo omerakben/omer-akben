@@ -35,8 +35,8 @@ import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
 import { FollowupChips } from "./FollowupChips";
 
 const suggestedQuestions = [
-  "What problems do you solve with AI?",
-  "Show me your best projects",
+  "Tell me about yourself.",
+  "Are you primarily a Software Engineer or an SDET?",
 ];
 
 // Icon mapping for navigation links
@@ -77,6 +77,9 @@ export function ChatSidebar() {
   >([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const MAX_INPUT_LENGTH = 2000; // Character limit for chat input
 
   const { messages, sendMessage, status, setMessages } = useChat({
     id: threadId,
@@ -187,6 +190,18 @@ export function ChatSidebar() {
       }
     }
   }, [isOpen]);
+
+  // Auto-resize textarea based on content (safe implementation)
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Reset height to auto to get accurate scrollHeight
+    textarea.style.height = "auto";
+    // Set height to content or max 200px
+    const newHeight = Math.min(textarea.scrollHeight, 200);
+    textarea.style.height = `${newHeight}px`;
+  }, [input]);
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -375,14 +390,14 @@ export function ChatSidebar() {
                   isPinned ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
-                <GripVertical className="w-4 h-4 text-brand-primary" />
+                <GripVertical aria-hidden="true" className="w-4 h-4 text-brand-primary" />
               </div>
             </div>
 
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border-line bg-surf-0">
               <div className="flex items-center gap-2">
-                <Bot className="w-5 h-5 text-brand-primary" />
+                <Bot aria-hidden="true" className="w-5 h-5 text-brand-primary" />
                 <span className="font-semibold text-text-1">AI Ozzy</span>
               </div>
               <div className="flex items-center gap-1">
@@ -400,7 +415,7 @@ export function ChatSidebar() {
                   title="New Chat"
                   aria-label="Start new chat"
                 >
-                  <MessageSquarePlus className="w-4 h-4" />
+                  <MessageSquarePlus aria-hidden="true" className="w-4 h-4" />
                 </Button>
                 {showMessages && messages.length > 0 && (
                   <Button
@@ -417,7 +432,7 @@ export function ChatSidebar() {
                     title="Clear Conversation"
                     aria-label="Clear conversation"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 aria-hidden="true" className="w-4 h-4" />
                   </Button>
                 )}
                 <Button
@@ -430,9 +445,9 @@ export function ChatSidebar() {
                   aria-pressed={isPinned}
                 >
                   {isPinned ? (
-                    <PinOff className="w-4 h-4" />
+                    <PinOff aria-hidden="true" className="w-4 h-4" />
                   ) : (
-                    <Pin className="w-4 h-4" />
+                    <Pin aria-hidden="true" className="w-4 h-4" />
                   )}
                 </Button>
                 {!isPinned && (
@@ -443,7 +458,7 @@ export function ChatSidebar() {
                     className="h-8 w-8 p-0"
                     aria-label="Close sidebar"
                   >
-                    <X className="w-4 h-4" />
+                    <X aria-hidden="true" className="w-4 h-4" />
                   </Button>
                 )}
               </div>
@@ -453,7 +468,7 @@ export function ChatSidebar() {
             {error && (
               <div className="px-4 pt-4">
                 <Alert variant="destructive" className="mb-2">
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle aria-hidden="true" className="h-4 w-4" />
                   <AlertDescription className="flex items-center justify-between gap-2">
                     <span className="flex-1">{error}</span>
                     <div className="flex items-center gap-1">
@@ -473,7 +488,7 @@ export function ChatSidebar() {
                         onClick={() => setError(null)}
                         className="h-7 w-7 p-0"
                       >
-                        <X className="h-4 w-4" />
+                        <X aria-hidden="true" className="h-4 w-4" />
                       </Button>
                     </div>
                   </AlertDescription>
@@ -532,7 +547,7 @@ export function ChatSidebar() {
                           {message.role === "assistant" && (
                             <div className="flex-shrink-0">
                               <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                                <Bot className="w-4 h-4 text-brand-primary" />
+                                <Bot aria-hidden="true" className="w-4 h-4 text-brand-primary" />
                               </div>
                             </div>
                           )}
@@ -666,11 +681,11 @@ export function ChatSidebar() {
                                                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
                                               >
                                                 <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                                                  <Icon className="w-2.5 h-2.5 text-brand-primary" />
+                                                  <Icon aria-hidden="true" className="w-2.5 h-2.5 text-brand-primary" />
                                                 </div>
                                                 <span>{link.label}</span>
                                                 {isExternal && (
-                                                  <ExternalLink className="w-2.5 h-2.5" />
+                                                  <ExternalLink aria-hidden="true" className="w-2.5 h-2.5" />
                                                 )}
                                               </button>
                                             );
@@ -685,7 +700,7 @@ export function ChatSidebar() {
                           {message.role === "user" && (
                             <div className="flex-shrink-0">
                               <div className="w-8 h-8 rounded-full bg-surf-2 flex items-center justify-center">
-                                <User className="w-4 h-4 text-text-2" />
+                                <User aria-hidden="true" className="w-4 h-4 text-text-2" />
                               </div>
                             </div>
                           )}
@@ -709,7 +724,7 @@ export function ChatSidebar() {
                     <div className="flex gap-3 justify-start">
                       <div className="flex-shrink-0">
                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                          <Bot className="w-4 h-4 text-brand-primary" />
+                          <Bot aria-hidden="true" className="w-4 h-4 text-brand-primary" />
                         </div>
                       </div>
                       <div className="bg-surf-1 border border-border-line rounded-lg px-3 py-2">
@@ -731,24 +746,49 @@ export function ChatSidebar() {
               <form
                 id="chat-sidebar-form"
                 onSubmit={handleSubmit}
-                className="flex gap-2"
+                className="space-y-2"
               >
-                <input
-                  id="chat-sidebar-input"
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask anything about me..."
-                  className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm"
-                  disabled={isLoading}
-                />
-                <Button
-                  type="submit"
-                  disabled={isLoading || !input.trim()}
-                  className="bg-brand-primary hover:bg-brand-primary/90 h-auto px-4"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-2 items-end">
+                  <textarea
+                    ref={textareaRef}
+                    id="chat-sidebar-input"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Submit on Enter, new line on Shift+Enter
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+                      }
+                    }}
+                    placeholder="Ask anything about me..."
+                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px] chat-input-scrollbar"
+                    disabled={isLoading}
+                    rows={1}
+                    maxLength={MAX_INPUT_LENGTH}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="bg-brand-primary hover:bg-brand-primary/90 h-auto px-4 py-3"
+                  >
+                    <Send aria-hidden="true" className="w-4 h-4" />
+                  </Button>
+                </div>
+                {/* Character counter */}
+                {input.length > MAX_INPUT_LENGTH * 0.8 && (
+                  <div className="flex justify-end">
+                    <span
+                      className={`text-xs ${
+                        input.length >= MAX_INPUT_LENGTH
+                          ? "text-destructive"
+                          : "text-text-3"
+                      }`}
+                    >
+                      {input.length} / {MAX_INPUT_LENGTH}
+                    </span>
+                  </div>
+                )}
               </form>
             </div>
           </motion.div>

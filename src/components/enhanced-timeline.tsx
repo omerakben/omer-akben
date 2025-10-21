@@ -69,9 +69,9 @@ const TimelineCard = memo(function TimelineCard({ item, index }: { item: Timelin
                 <div className={`text-sm font-semibold mb-1 ${typeColors[item.type]}`}>
                   {item.year}
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-text-1 mb-1">
+                <h2 className="text-xl md:text-2xl font-bold text-text-1 mb-1">
                   {item.title}
-                </h3>
+                </h2>
                 <div className="flex items-center gap-2 text-text-2 font-medium">
                   <Building2 className="w-4 h-4 flex-shrink-0" />
                   <span>{item.organization}</span>

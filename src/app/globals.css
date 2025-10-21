@@ -659,4 +659,30 @@ html {
   .animate-delay-400 {
     animation-delay: 0.4s;
   }
+
+  /* Custom scrollbar for chat input */
+  .chat-input-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-input-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .chat-input-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-line);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+  }
+
+  .chat-input-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-3);
+  }
+
+  /* Firefox scrollbar */
+  .chat-input-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-line) transparent;
+  }
 }
