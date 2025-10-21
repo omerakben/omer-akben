@@ -12,8 +12,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const suggestedQuestions = [
-  "What problems do you solve with AI?",
-  "Show me your best projects",
+  "Tell me about yourself.",
+  "Are you primarily a Software Engineer or an SDET?",
 ];
 
 const followUpQuestions = [

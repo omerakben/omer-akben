@@ -35,8 +35,8 @@ import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
 import { FollowupChips } from "./FollowupChips";
 
 const suggestedQuestions = [
-  "What problems do you solve with AI?",
-  "Show me your best projects",
+  "Tell me about yourself.",
+  "Are you primarily a Software Engineer or an SDET?",
 ];
 
 // Icon mapping for navigation links
@@ -77,6 +77,9 @@ export function ChatSidebar() {
   >([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const MAX_INPUT_LENGTH = 2000; // Character limit for chat input
 
   const { messages, sendMessage, status, setMessages } = useChat({
     id: threadId,
@@ -187,6 +190,18 @@ export function ChatSidebar() {
       }
     }
   }, [isOpen]);
+
+  // Auto-resize textarea based on content (safe implementation)
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Reset height to auto to get accurate scrollHeight
+    textarea.style.height = "auto";
+    // Set height to content or max 200px
+    const newHeight = Math.min(textarea.scrollHeight, 200);
+    textarea.style.height = `${newHeight}px`;
+  }, [input]);
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -731,36 +746,49 @@ export function ChatSidebar() {
               <form
                 id="chat-sidebar-form"
                 onSubmit={handleSubmit}
-                className="flex gap-2 items-end"
+                className="space-y-2"
               >
-                <textarea
-                  id="chat-sidebar-input"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    // Submit on Enter, new line on Shift+Enter
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
-                    }
-                  }}
-                  placeholder="Ask anything about me..."
-                  className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px]"
-                  disabled={isLoading}
-                  rows={1}
-                  onInput={(e) => {
-                    const target = e.target as HTMLTextAreaElement;
-                    target.style.height = "auto";
-                    target.style.height = `${Math.min(target.scrollHeight, 200)}px`;
-                  }}
-                />
-                <Button
-                  type="submit"
-                  disabled={isLoading || !input.trim()}
-                  className="bg-brand-primary hover:bg-brand-primary/90 h-auto px-4 py-3"
-                >
-                  <Send aria-hidden="true" className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-2 items-end">
+                  <textarea
+                    ref={textareaRef}
+                    id="chat-sidebar-input"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Submit on Enter, new line on Shift+Enter
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+                      }
+                    }}
+                    placeholder="Ask anything about me..."
+                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px] chat-input-scrollbar"
+                    disabled={isLoading}
+                    rows={1}
+                    maxLength={MAX_INPUT_LENGTH}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="bg-brand-primary hover:bg-brand-primary/90 h-auto px-4 py-3"
+                  >
+                    <Send aria-hidden="true" className="w-4 h-4" />
+                  </Button>
+                </div>
+                {/* Character counter */}
+                {input.length > MAX_INPUT_LENGTH * 0.8 && (
+                  <div className="flex justify-end">
+                    <span
+                      className={`text-xs ${
+                        input.length >= MAX_INPUT_LENGTH
+                          ? "text-destructive"
+                          : "text-text-3"
+                      }`}
+                    >
+                      {input.length} / {MAX_INPUT_LENGTH}
+                    </span>
+                  </div>
+                )}
               </form>
             </div>
           </motion.div>

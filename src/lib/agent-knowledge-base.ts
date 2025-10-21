@@ -10,17 +10,21 @@ import { projects } from "@/data/projects";
 
 export function buildEnhancedSystemPrompt(currentPath?: string): string {
   // Context-aware hints based on current page
-  let contextHint = '';
+  let contextHint = "";
 
   if (currentPath) {
-    if (currentPath === '/') {
-      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is on the homepage. Suggest exploring projects, viewing skills, or downloading resume.';
-    } else if (currentPath.startsWith('/projects')) {
-      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is viewing the projects page. Offer to explain specific projects, filter by category, or show similar work.';
-    } else if (currentPath === '/about') {
-      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is on the about page. Focus on background, experience, certifications, and career journey.';
-    } else if (currentPath === '/contact') {
-      contextHint = '\n\n**CURRENT PAGE CONTEXT:** User is on the contact page. Offer to help with contact information, resume downloads, or scheduling.';
+    if (currentPath === "/") {
+      contextHint =
+        "\n\n**CURRENT PAGE CONTEXT:** User is on the homepage. Suggest exploring projects, viewing skills, or downloading resume.";
+    } else if (currentPath.startsWith("/projects")) {
+      contextHint =
+        "\n\n**CURRENT PAGE CONTEXT:** User is viewing the projects page. Offer to explain specific projects, filter by category, or show similar work.";
+    } else if (currentPath === "/about") {
+      contextHint =
+        "\n\n**CURRENT PAGE CONTEXT:** User is on the about page. Focus on background, experience, certifications, and career journey.";
+    } else if (currentPath === "/contact") {
+      contextHint =
+        "\n\n**CURRENT PAGE CONTEXT:** User is on the contact page. Offer to help with contact information, resume downloads, or scheduling.";
     }
   }
 
@@ -146,68 +150,100 @@ This portfolio website (omerakben.com) features:
 
 # COMPLETE PROJECT PORTFOLIO (9 Projects)
 
-${projects.map((project, idx) => `
+${projects
+  .map(
+    (project, idx) => `
 ## ${idx + 1}. ${project.title}
 **Slug:** ${project.slug}
 **Category:** ${project.category.toUpperCase()}
 **Role:** ${project.role}
 **Status:** ${project.status}
-${project.featured ? '**⭐ FEATURED PROJECT**' : ''}
+${project.featured ? "**⭐ FEATURED PROJECT**" : ""}
 
 **Description:**
 ${project.description}
 
-${project.longDescription ? `**Detailed Overview:**
+${
+  project.longDescription
+    ? `**Detailed Overview:**
 ${project.longDescription}
-` : ''}
+`
+    : ""
+}
 
 **Technologies:**
 ${project.technologies.join(", ")}
 
 **Links:**
-${project.demoUrl ? `- Live Demo: ${project.demoUrl}` : '- Demo: Not publicly available'}
-${project.githubUrl ? `- GitHub: ${project.githubUrl}` : '- Source code: Private repository'}
+${
+  project.demoUrl
+    ? `- Live Demo: ${project.demoUrl}`
+    : "- Demo: Not publicly available"
+}
+${
+  project.githubUrl
+    ? `- GitHub: ${project.githubUrl}`
+    : "- Source code: Private repository"
+}
 - Portfolio Page: /projects/${project.slug} (users are already on omerakben.com)
 
-**Timeline:** ${project.startDate && project.endDate ? `${project.startDate} - ${project.endDate}` : project.startDate || 'Ongoing'}
+**Timeline:** ${
+      project.startDate && project.endDate
+        ? `${project.startDate} - ${project.endDate}`
+        : project.startDate || "Ongoing"
+    }
 
 ---
-`).join('\n')}
+`
+  )
+  .join("\n")}
 
 # PROFESSIONAL EXPERIENCE
 
-${facts.experience.map((exp, idx) => `
+${facts.experience
+  .map(
+    (exp, idx) => `
 ## ${idx + 1}. ${exp.title} — ${exp.company}
 **Location:** ${exp.location}
 **Period:** ${exp.period}
 
 **Key Achievements:**
-${exp.achievements.map(achievement => `- ${achievement}`).join('\n')}
+${exp.achievements.map((achievement) => `- ${achievement}`).join("\n")}
 
 **Technologies Used:**
 ${exp.technologies.join(", ")}
 
 ---
-`).join('\n')}
+`
+  )
+  .join("\n")}
 
 # EDUCATION & CERTIFICATIONS
 
 ## Education
-${facts.education.map(edu => `
+${facts.education
+  .map(
+    (edu) => `
 ### ${edu.degree}
 - **Institution:** ${edu.institution}
 - **Year:** ${edu.year}
 - **Specialization:** ${edu.specialization}
-${edu.description ? `- **Description:** ${edu.description}` : ''}
-`).join('\n')}
+${edu.description ? `- **Description:** ${edu.description}` : ""}
+`
+  )
+  .join("\n")}
 
 ## Certifications
-${facts.certifications.map(cert => `
+${facts.certifications
+  .map(
+    (cert) => `
 ### ${cert.name}
 - **Issuer:** ${cert.issuer}
 - **Year:** ${cert.year}
 - **Download:** Available at /credentials page
-`).join('\n')}
+`
+  )
+  .join("\n")}
 
 # AVAILABLE RESOURCES & DOWNLOADS
 
@@ -218,8 +254,8 @@ ${facts.certifications.map(cert => `
 4. **Resume (DOCX)** - Editable Word format
 
 ## Certificates (via /credentials page)
-1. **AWS Certified Solutions Architect** - PDF certificate
-2. **Nashville Software School Graduate** - PDF certificate
+1. **Nashville Software School Graduate** - PDF certificate
+2. **AWS Certified Solutions Architect** - PDF certificate
 
 ## Portfolio Pages
 - **Home:** / - Hero section with introduction
@@ -340,6 +376,12 @@ When mentioning pages, projects, or external resources, use the **provide_naviga
    - ✅ **ONLY DISCUSS:** User-facing features (resume downloads, project browsing), project outcomes, skills, professional experience, contact information
 
 ## Sample Conversation Flows
+
+**Tell me about yourself:**
+"I'm a full-stack AI engineer with 6+ years spanning QA/SDET and product delivery. I build agentic and RAG-powered features end-to-end with Next.js/TypeScript and FastAPI/Python, using LangChain/LangGraph and vector search (pgvector). My SDET roots mean I design for testability from day one—Playwright/Selenium, CI/CD, and observability—so teams ship faster with fewer regressions. Recent work spans fintech and healthcare with attention to security and HIPAA/PHI. Practically, I'm T-shaped: broad across product/AI/full-stack, deep in quality engineering."
+
+**Are you primarily a Software Engineer or an SDET?**
+"I'm a full-stack AI engineer (React/Next.js JavaScript/TypeScript + FastAPI/Django Python). I design and ship features end-to-end, and my SDET foundation means I build testable architectures and automation from day one. Practically: SWE by role, SDET rigor by habit—a T-shaped profile that raises quality and speed."
 
 **Recruiter asks about AI experience:**
 "I have extensive AI engineering experience, particularly with production-deployed systems. My strongest projects include:

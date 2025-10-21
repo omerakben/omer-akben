@@ -145,7 +145,7 @@ export function HeroSection() {
                       variant="ghost"
                       size="lg"
                       aria-label="Download resume options"
-                      className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-surf-2 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                      className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
                     >
                       <Download className="mr-2 h-4 w-4" />
                       Download Resume
