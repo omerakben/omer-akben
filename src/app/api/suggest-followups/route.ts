@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
+import { logError } from "@/lib/log";
 
 // Allow up to 10 seconds for generation
 export const maxDuration = 10;
@@ -76,7 +77,10 @@ Generate 2 follow-up questions as a JSON array:`;
       }
       suggestions = parsed.slice(0, 2); // Ensure exactly 2 questions
     } catch {
-      console.error('[SuggestFollowups] Failed to parse AI response:', result.text);
+      logError(
+        "suggest-followups:parse",
+        new Error(`Failed to parse AI response: ${result.text}`)
+      );
       return NextResponse.json(
         { error: 'Failed to parse AI response' },
         { status: 500 }
@@ -85,7 +89,10 @@ Generate 2 follow-up questions as a JSON array:`;
 
     // Validate suggestions
     if (suggestions.length !== 2) {
-      console.error('[SuggestFollowups] AI returned wrong number of suggestions:', suggestions.length);
+      logError(
+        "suggest-followups:validation",
+        new Error(`Invalid suggestions length: ${suggestions.length}`)
+      );
       return NextResponse.json(
         { error: 'AI returned invalid number of suggestions' },
         { status: 500 }
@@ -94,7 +101,10 @@ Generate 2 follow-up questions as a JSON array:`;
 
     // Ensure all suggestions are strings
     if (!suggestions.every(s => typeof s === 'string' && s.length > 0)) {
-      console.error('[SuggestFollowups] AI returned invalid suggestion format');
+      logError(
+        "suggest-followups:validation",
+        new Error('AI returned invalid suggestion format')
+      );
       return NextResponse.json(
         { error: 'AI returned invalid suggestion format' },
         { status: 500 }
@@ -105,7 +115,7 @@ Generate 2 follow-up questions as a JSON array:`;
       suggestions,
     });
   } catch (error) {
-    console.error('[SuggestFollowups] Unexpected error:', error);
+    logError("suggest-followups:POST", error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

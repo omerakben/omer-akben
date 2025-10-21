@@ -122,7 +122,7 @@ export function ChatInterface({
             className="flex-shrink-0 px-6 pt-6"
           >
             <Alert variant="destructive" className="glass-message border border-destructive/30">
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle aria-hidden="true" className="h-4 w-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span>{error}</span>
                 {onClearError && (
@@ -132,7 +132,7 @@ export function ChatInterface({
                     onClick={onClearError}
                     className="h-6 w-6 p-0"
                   >
-                    <X className="h-4 w-4" />
+                    <X aria-hidden="true" className="h-4 w-4" />
                   </Button>
                 )}
               </AlertDescription>
@@ -161,7 +161,7 @@ export function ChatInterface({
                 transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
                 className="w-20 h-20 rounded-full bg-brand-primary/20 flex items-center justify-center mb-6"
               >
-                <Bot className="w-10 h-10 text-brand-primary" />
+                <Bot aria-hidden="true" className="w-10 h-10 text-brand-primary" />
               </motion.div>
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -189,7 +189,7 @@ export function ChatInterface({
                 className="space-y-4 mb-8 w-full max-w-md"
               >
                 <div className="flex items-center gap-2 text-brand-primary justify-center">
-                  <Zap className="w-4 h-4" />
+                  <Zap aria-hidden="true" className="w-4 h-4" />
                   <h3 className="text-sm font-semibold">Quick Actions</h3>
                 </div>
                 <div className="flex flex-col gap-3">
@@ -201,7 +201,7 @@ export function ChatInterface({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Briefcase className="w-4 h-4 text-brand-primary" />
+                      <Briefcase aria-hidden="true" className="w-4 h-4 text-brand-primary" />
                     </div>
                     <span className="text-text-1 font-medium">View Projects</span>
                   </motion.button>
@@ -213,7 +213,7 @@ export function ChatInterface({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Zap className="w-4 h-4 text-brand-primary" />
+                      <Zap aria-hidden="true" className="w-4 h-4 text-brand-primary" />
                     </div>
                     <span className="text-text-1 font-medium">See Skills</span>
                   </motion.button>
@@ -225,7 +225,7 @@ export function ChatInterface({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-4 h-4 text-brand-primary" />
+                      <FileText aria-hidden="true" className="w-4 h-4 text-brand-primary" />
                     </div>
                     <span className="text-text-1 font-medium">Get Resume</span>
                   </motion.button>
@@ -300,7 +300,7 @@ export function ChatInterface({
                         className="flex-shrink-0 mt-1"
                       >
                         <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                          <Bot className="w-6 h-6 text-brand-primary" />
+                          <Bot aria-hidden="true" className="w-6 h-6 text-brand-primary" />
                         </div>
                       </motion.div>
                     )}
@@ -397,10 +397,10 @@ export function ChatInterface({
                                       whileTap={{ scale: 0.95 }}
                                     >
                                       <div className="w-4 h-4 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <Icon className="w-3 h-3 text-brand-primary" />
+                                        <Icon aria-hidden="true" className="w-3 h-3 text-brand-primary" />
                                       </div>
                                       <span>{link.label}</span>
-                                      {isExternal && <ExternalLink className="w-3 h-3" />}
+                                      {isExternal && <ExternalLink aria-hidden="true" className="w-3 h-3" />}
                                     </motion.button>
                                   );
                                 });
@@ -428,7 +428,7 @@ export function ChatInterface({
                               className="h-7 px-2 bg-surf-2/90 glass-message border border-border-line/50 hover:bg-surf-1/90 text-text-2"
                               title="Copy message"
                             >
-                              <Copy className="w-3.5 h-3.5" />
+                              <Copy aria-hidden="true" className="w-3.5 h-3.5" />
                             </Button>
                             <Button
                               variant="ghost"
@@ -437,7 +437,7 @@ export function ChatInterface({
                               className="h-7 px-2 bg-surf-2/90 glass-message border border-border-line/50 hover:bg-surf-1/90 text-text-2"
                               title="Regenerate response"
                             >
-                              <RefreshCw className="w-3.5 h-3.5" />
+                              <RefreshCw aria-hidden="true" className="w-3.5 h-3.5" />
                             </Button>
                           </motion.div>
                         )}
@@ -452,7 +452,7 @@ export function ChatInterface({
                         className="flex-shrink-0 mt-1"
                       >
                         <div className="w-10 h-10 rounded-full bg-surf-2 flex items-center justify-center">
-                          <User className="w-6 h-6 text-text-2" />
+                          <User aria-hidden="true" className="w-6 h-6 text-text-2" />
                         </div>
                       </motion.div>
                     )}
@@ -496,7 +496,7 @@ export function ChatInterface({
             >
               <div className="flex-shrink-0 mt-1">
                 <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-brand-primary" />
+                  <Bot aria-hidden="true" className="w-6 h-6 text-brand-primary" />
                 </div>
               </div>
               <div className="max-w-[75%] rounded-2xl px-5 py-4 bg-surf-1/80 text-text-1 glass-message border border-border-line/30 shadow-md">
@@ -547,7 +547,7 @@ export function ChatInterface({
               className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-brand-primary hover:bg-brand-primary/90 shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               aria-label="Send message"
             >
-              <Send className="w-4 h-4" />
+              <Send aria-hidden="true" className="w-4 h-4" />
             </Button>
           </motion.div>
         </form>
