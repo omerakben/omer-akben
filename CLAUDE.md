@@ -46,17 +46,18 @@ npx tsc --noEmit                                 # TypeScript check
 
 ### AI Agent (Vercel AI SDK v5)
 
-**10 Server-Side Tools** (all in `src/app/api/tools/`):
+**11 Server-Side Tools** (all in `src/app/api/tools/`):
 1. `download_resume` - 4 formats (full, short, two-page, docx)
 2. `download_certificate` - AWS, NSS certs
 3. `list_projects` - Filter by category, featured, limit
 4. `open_project` - Get project details by slug
 5. `get_contact` - Contact information
-6. `navigate_page` - Page navigation links
-7. `provide_navigation_links` - Navigation menu structure
-8. `extract_summary` - Extract summaries from content
-9. `profile_performance` - Performance profiling
-10. `trigger_workflow` - Workflow execution
+6. `collect_contact` - Collect visitor info, send Zoom link via email (with rate limiting)
+7. `navigate_page` - Page navigation links
+8. `provide_navigation_links` - Navigation menu structure
+9. `extract_summary` - Extract summaries from content
+10. `profile_performance` - Performance profiling
+11. `trigger_workflow` - Workflow execution
 
 **Data Flow**: Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JSON response
 
@@ -72,6 +73,7 @@ npx tsc --noEmit                                 # TypeScript check
 - **Sidebar Assistant**: Pinned/unpinned mode with localStorage persistence, resizable width (320-800px)
 - **Thread Memory**: `thread-memory.ts` - conversation state persistence with pinned/width state
 - **Episodic Memory**: `lib/mastra/memory/episodic.ts` - semantic search across conversations using Upstash Vector (1536-dim embeddings, KNN search)
+- **Proactive Contact Collection**: `collect_contact` tool - Ozzy proactively offers to send Zoom link after 3+ engaged messages, sends via Resend email service with rate limiting (1 per IP per 24h)
 - **Global Chat Button**: `global-chat-button.tsx` - floating access from any page (tested: 32 tests)
 - **Follow-up Suggestions**: `FollowupChips.tsx` - contextual question suggestions after each response
 - **Action Buttons**: Email (`EmailActionButton.tsx`) and Resume download (`ResumeDownloadButton.tsx`) integrated in sidebar
@@ -378,6 +380,11 @@ UPSTASH_REDIS_REST_TOKEN=your-token
 UPSTASH_VECTOR_REST_URL=https://your-vector-index.upstash.io
 UPSTASH_VECTOR_REST_TOKEN=your-token
 
+# Email Service - Resend (Required for Contact Collection)
+RESEND_API_KEY=re_...
+OMER_EMAIL=me@omerakben.com
+OMER_ZOOM_LINK=https://us06web.zoom.us/j/2675124566?pwd=...
+
 # Optional
 NODE_ENV=development|production
 ANALYZE=true  # Enable bundle analyzer
@@ -387,6 +394,7 @@ ANALYZE=true  # Enable bundle analyzer
 1. Copy `.env.example` to `.env.local`
 2. Add your API keys
 3. Never commit `.env*` files (already in `.gitignore`)
+4. For Resend: Set up domain verification at https://resend.com/domains
 
 ### Adding Agent Tools
 1. Schema in `lib/agent-tools/schemas.ts` (Zod)

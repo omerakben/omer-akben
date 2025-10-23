@@ -261,6 +261,41 @@ export const profilePerformanceOutputSchema = z.object({
   traceUrl: z.string().optional().describe("Chrome DevTools trace file URL"),
 });
 
+// collect_contact tool schema
+export const collectContactInputSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters")
+    .describe("Visitor's full name"),
+  email: z.string().email("Invalid email format").describe("Visitor's email address"),
+  company: z
+    .string()
+    .max(100)
+    .optional()
+    .describe("Company name (optional)"),
+  purpose: z
+    .enum(["hire", "collaborate", "interview", "consult", "other"])
+    .describe("Reason for contact"),
+  notes: z
+    .string()
+    .max(500)
+    .optional()
+    .describe("Additional context from conversation"),
+  preferredTime: z
+    .string()
+    .optional()
+    .describe("Preferred meeting time (if mentioned)"),
+});
+
+export const collectContactOutputSchema = z.object({
+  success: z.boolean(),
+  emailSent: z.boolean(),
+  zoomLink: z.string().url().optional(),
+  message: z.string(),
+  messageId: z.string().optional(),
+});
+
 // Type exports
 export type DownloadResumeInput = z.infer<typeof downloadResumeInputSchema>;
 export type DownloadResumeOutput = z.infer<typeof downloadResumeOutputSchema>;
@@ -306,3 +341,5 @@ export type SearchProjectsSemanticInput = z.infer<
 export type SearchProjectsSemanticOutput = z.infer<
   typeof searchProjectsSemanticOutputSchema
 >;
+export type CollectContactInput = z.infer<typeof collectContactInputSchema>;
+export type CollectContactOutput = z.infer<typeof collectContactOutputSchema>;
