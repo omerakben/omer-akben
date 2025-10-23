@@ -15,14 +15,15 @@ interface ZoomLinkEmailProps {
   name: string;
   company?: string;
   conversationNotes?: string;
+  zoomLink: string;
 }
 
 export const ZoomLinkEmail = ({
   name,
   company,
   conversationNotes,
+  zoomLink,
 }: ZoomLinkEmailProps) => {
-  const zoomLink = process.env.OMER_ZOOM_LINK || 'https://us06web.zoom.us/j/2675124566?pwd=IStlQ63XGKpsVbn1biPDycfrUrxPPN.1';
   const myEmail = process.env.OMER_EMAIL || 'me@omerakben.com';
 
   return (
