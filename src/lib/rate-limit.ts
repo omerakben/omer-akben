@@ -43,3 +43,26 @@ export const apiRateLimit = redis
       prefix: "ratelimit:api",
     })
   : null;
+
+// Contact collection rate limit: 1 request per 24 hours per IP
+// Stricter limit to prevent spam and maintain contact quality
+export const contactCollectionRateLimit = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(1, "24 h"),
+      analytics: true,
+      prefix: "ratelimit:contact-collection",
+    })
+  : null;
+
+/**
+ * Check if an IP address has exceeded the contact collection rate limit
+ */
+export async function checkContactRateLimit(ip: string): Promise<boolean> {
+  if (!contactCollectionRateLimit) {
+    return true; // No rate limiting in dev mode
+  }
+
+  const result = await contactCollectionRateLimit.limit(ip);
+  return result.success;
+}

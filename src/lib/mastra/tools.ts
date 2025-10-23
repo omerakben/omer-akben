@@ -1,6 +1,7 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 import {
+  collectContactInputSchema,
   extractPageSummaryInputSchema,
   navigatePageInputSchema,
   profilePerformanceInputSchema,
@@ -147,5 +148,25 @@ export const getContactTool = createTool({
   execute: async () => {
     const response = await fetch(`${BASE_URL}/api/tools/get-contact`);
     return response.json();
+  },
+});
+
+export const collectContactTool = createTool({
+  id: "collect_contact",
+  description: `Collect visitor contact information and send Omer's Zoom meeting link via email.
+
+  Use this tool when:
+  - User shows strong engagement (3+ messages, multiple topics discussed)
+  - User is a recruiter, hiring manager, or founder
+  - User explicitly asks for contact info, meeting link, or to schedule a call
+  - User wants to continue the conversation directly with Omer
+
+  IMPORTANT: Always ask for permission first with a friendly message like:
+  "I'd love to connect you with Omer for a deeper conversation. Would you like me to send you his Zoom link? I'll just need your name and email address."
+
+  Do NOT call this tool without explicit user consent.`,
+  inputSchema: collectContactInputSchema,
+  execute: async ({ context }) => {
+    return fetchJson("/api/tools/collect-contact", context);
   },
 });

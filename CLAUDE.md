@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Personal portfolio with AI assistant powered by Vercel AI SDK. Next.js 15 + React 19 + TypeScript + Tailwind 4.
 
 **Commands**:
+
 ```bash
 npm run dev                                      # Dev server (Turbopack)
 npm test                                         # Unit tests (run all)
@@ -21,6 +22,7 @@ npx tsc --noEmit                                 # TypeScript check
 ```
 
 **Critical Rules** (Zero Technical Debt Enforcement):
+
 - Use `@/` imports only (never relative or `/archive/` imports - **archive is reference only**)
 - Test all 8 brightness modes (-3 to +3, auto)
 - Use CSS custom properties only (never hardcoded colors)
@@ -37,6 +39,7 @@ npx tsc --noEmit                                 # TypeScript check
 ## Architecture
 
 ### Key Directories
+
 - `src/app/` - Next.js App Router pages and API routes
 - `src/components/` - React components (40+ shadcn/ui in `ui/`)
 - `src/data/` - Source of truth for personal info, projects, skills
@@ -46,32 +49,37 @@ npx tsc --noEmit                                 # TypeScript check
 
 ### AI Agent (Vercel AI SDK v5)
 
-**10 Server-Side Tools** (all in `src/app/api/tools/`):
+**11 Server-Side Tools** (all in `src/app/api/tools/`):
+
 1. `download_resume` - 4 formats (full, short, two-page, docx)
 2. `download_certificate` - AWS, NSS certs
 3. `list_projects` - Filter by category, featured, limit
 4. `open_project` - Get project details by slug
 5. `get_contact` - Contact information
-6. `navigate_page` - Page navigation links
-7. `provide_navigation_links` - Navigation menu structure
-8. `extract_summary` - Extract summaries from content
-9. `profile_performance` - Performance profiling
-10. `trigger_workflow` - Workflow execution
+6. `collect_contact` - Collect visitor info, send Zoom link via email (with rate limiting)
+7. `navigate_page` - Page navigation links
+8. `provide_navigation_links` - Navigation menu structure
+9. `extract_summary` - Extract summaries from content
+10. `profile_performance` - Performance profiling
+11. `trigger_workflow` - Workflow execution
 
 **Data Flow**: Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JSON response
 
 **Knowledge Base**: `lib/agent-knowledge-base.ts` - curated context for AI (single source of truth)
 
 **AI SDK v5 Tool Rendering** (Critical):
+
 - Tool invocations in `message.parts` array, NOT `toolInvocations` property
 - Filter by `part.type === "tool-{toolName}"` and check `part.result` exists
 - Use IIFE `(() => { ... })()` for complex conditional JSX rendering
 - Structure: `{ type: "tool-{name}", toolCallId: "...", result: {...} }`
 
 **Chat System Features** (Ozzy AI Agent - Portfolio Centerpiece):
+
 - **Sidebar Assistant**: Pinned/unpinned mode with localStorage persistence, resizable width (320-800px)
 - **Thread Memory**: `thread-memory.ts` - conversation state persistence with pinned/width state
 - **Episodic Memory**: `lib/mastra/memory/episodic.ts` - semantic search across conversations using Upstash Vector (1536-dim embeddings, KNN search)
+- **Proactive Contact Collection**: `collect_contact` tool - Ozzy proactively offers to send Zoom link after 3+ engaged messages, sends via Resend email service with rate limiting (1 per IP per 24h)
 - **Global Chat Button**: `global-chat-button.tsx` - floating access from any page (tested: 32 tests)
 - **Follow-up Suggestions**: `FollowupChips.tsx` - contextual question suggestions after each response
 - **Action Buttons**: Email (`EmailActionButton.tsx`) and Resume download (`ResumeDownloadButton.tsx`) integrated in sidebar
@@ -82,6 +90,7 @@ npx tsc --noEmit                                 # TypeScript check
 ### Unique Design Patterns
 
 **1. 8-Mode Brightness System** ⚠️ **Critical**
+
 - Modes: -3 (darkest) → 0 (baseline) → +3 (brightest) + auto
 - Implementation: `data-brightness` attribute on `<html>`, CSS custom properties in `globals.css`
 - State: `lib/brightness-context.tsx`
@@ -89,16 +98,19 @@ npx tsc --noEmit                                 # TypeScript check
 - **Never hardcode colors**: No `#00FFC6` or `bg-[#00FFC6]`
 
 **2. Data Architecture**
+
 - `data/facts.ts` - Single source of truth for personal info
 - `data/projects.ts` - Project catalog with helper functions
 - All data files export typed objects + helper functions
 
 **3. Archive Directory** ⚠️ **Important**
+
 - Contains 9 portfolio demos (reference only)
 - `omer-akben-design/` - Figma implementation patterns
 - **Never import from `/archive/`** - adapt patterns to `src/` with `@/` imports
 
 **4. Sidebar Assistant Architecture** ⚠️ **Critical**
+
 - **Context**: `lib/chat-sidebar-context.tsx` - manages state (isOpen, isPinned, width, threadId)
 - **Component**: `components/chat/chat-sidebar.tsx` - main sidebar UI with resizing, pinning
 - **Thread Memory**: `lib/thread-memory.ts` - localStorage persistence with pinned/width state
@@ -110,6 +122,7 @@ npx tsc --noEmit                                 # TypeScript check
 - **Actions**: `components/actions/` - EmailActionButton, ResumeDownloadButton
 
 **5. Icon Optimization** ⚠️ **Critical**
+
 - **Never wildcard import simple-icons** - use generated manifest
 - Icon manifest: `src/lib/icon-manifest.ts` (42 curated icons)
 - Generation script: `scripts/generate-icons.js` (run during build)
@@ -144,6 +157,7 @@ npm run size                        # Must not exceed configured limits
 ```
 
 **CI/CD Integration:**
+
 - GitHub Actions workflow: `.github/workflows/quality-gates.yml`
 - Runs on every push/PR: lint → typecheck → test → build → size-limit
 - Deployment blocked if any gate fails
@@ -151,6 +165,7 @@ npm run size                        # Must not exceed configured limits
 ### TypeScript Standards
 
 **Strict Mode Enabled** - `tsconfig.json` with zero-tolerance error policy:
+
 - ✅ `strict: true` - All strict checks enabled
 - ✅ `noImplicitAny: true` - No implicit any types
 - ✅ `strictNullChecks: true` - Null/undefined handled explicitly
@@ -160,6 +175,7 @@ npm run size                        # Must not exceed configured limits
 
 **Type Assertion Pattern for Tests:**
 When working with `json.data` after type guards, always use explicit assertions:
+
 ```typescript
 // ✅ CORRECT - Explicit type assertion
 if (isSuccessResponse(json)) {
@@ -178,6 +194,7 @@ if (isSuccessResponse(json)) {
 ### ESLint Rules
 
 **Zero Errors Policy** - ESLint configured with:
+
 - ✅ TypeScript ESLint rules enabled
 - ✅ React/React Hooks rules enforced
 - ✅ Next.js specific rules active
@@ -185,10 +202,12 @@ if (isSuccessResponse(json)) {
 - ✅ `scripts/` directory excluded (build scripts exempt)
 
 **Current Status:**
+
 - Errors: **0** (enforced in CI)
 - Warnings: **20** (unused variables in tests - acceptable, not blocking)
 
 **Acceptable Warnings:**
+
 - Unused test utilities (e.g., `vi` import for type checking)
 - Unused destructured variables in tests (e.g., `_` placeholder)
 - Performance monitoring variables in tests
@@ -198,23 +217,27 @@ if (isSuccessResponse(json)) {
 **531 Tests Across 27 Test Files** (100% pass rate required):
 
 **API Route Tests** (12 files, 268 tests):
+
 - Tool endpoint validation and error handling
 - Zod schema compliance testing
 - Response structure verification
 - Edge case coverage
 
 **Component Tests** (8 files, 155 tests):
+
 - Global chat button (32 tests)
 - Brightness control (23 tests)
 - Navigation and UI components
 
 **Integration Tests** (7 files, 108 tests):
+
 - Thread memory persistence (27 tests)
 - Follow-up suggestions (23 tests)
 - Workflows (48 tests)
 - AI agent orchestration
 
 **Test Requirements:**
+
 - All new features must include tests
 - Minimum 80% code coverage for new code
 - No skipped or disabled tests allowed
@@ -223,6 +246,7 @@ if (isSuccessResponse(json)) {
 ### Bundle Size Budget
 
 **Enforced via `size-limit` package:**
+
 ```json
 {
   "path": ".next/static/chunks/app/page.js",
@@ -232,6 +256,7 @@ if (isSuccessResponse(json)) {
 ```
 
 **Achievements:**
+
 - 90% bundle reduction (2.33MB → 236KB)
 - Icon manifest generation (42 curated icons)
 - Tree-shaking optimization (Lucide, simple-icons)
@@ -240,6 +265,7 @@ if (isSuccessResponse(json)) {
 ### Quality Gates (All Must Pass)
 
 **Pre-Commit Requirements:**
+
 ```bash
 npm test          # 531/531 tests passing ✅
 npm run lint      # 0 errors ✅
@@ -249,6 +275,7 @@ npm run size      # Within budget limits ✅
 ```
 
 **Recent Quality Achievements:**
+
 - ✅ TypeScript: 0 errors (fixed 90+ test errors) - achieved 2025-10-20
 - ✅ ESLint clean (0 errors, 20 warnings) - achieved 2025-10-18
 - ✅ Bundle optimization (236KB homepage, 193KB /skills) - achieved 2025-10-19
@@ -263,6 +290,7 @@ npm run size      # Within budget limits ✅
 - ✅ CI/CD environment variables configured for production deployment - achieved 2025-10-21
 
 **Zero Technical Debt Status:**
+
 - No TODO comments for core functionality
 - No skipped/disabled tests
 - No TypeScript `any` types (except third-party types)
@@ -277,6 +305,7 @@ npm run size      # Within budget limits ✅
 All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configured.
 
 **Recent Pre-Launch Hardening (2025-10-21):**
+
 1. **Accessibility Compliance** - Fixed race conditions in E2E tests:
    - Root Cause: Playwright was running axe scans before React hydration completed
    - Solution: Added wait strategies (`waitUntil: "networkidle"`, loading spinner detection, 500ms stabilization)
@@ -290,6 +319,7 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
    - Environment Variables Added: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `UPSTASH_VECTOR_REST_URL`, `UPSTASH_VECTOR_REST_TOKEN`
 
 **Quality Gates Status:**
+
 ```bash
 ✅ TypeScript:     0 errors (npx tsc --noEmit)
 ✅ ESLint:         0 errors, 21 warnings (npm run lint)
@@ -301,6 +331,7 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
 ```
 
 **Deployment Checklist:**
+
 - ✅ All environment variables in GitHub Actions secrets
 - ✅ Production build succeeds with all environment variables
 - ✅ Rate limiting configured (Redis-backed via Upstash)
@@ -313,6 +344,7 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
 - ✅ PII redaction logger in place
 
 **Critical Pre-Launch Rules:**
+
 1. **Never Commit Without Passing Gates**: All 6 quality gates must pass (lint, tsc, test, build, size, e2e)
 2. **Never Skip Tests**: No disabled, skipped, or commented-out tests allowed
 3. **Never Bypass Validation**: No workarounds to make tests pass - fix root causes
@@ -321,6 +353,7 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
 6. **Environment Variables Required**: All 5 env vars must be set in deployment environment
 
 ### Test Configuration
+
 - **Unit Tests**: Vitest + React Testing Library (`src/**/*.test.{ts,tsx}`) - **531 tests across 27 files**
   - API Routes (12 files, 268 tests) - Tool validation and error handling
   - Components (8 files, 155 tests) - UI behavior and interactions
@@ -338,24 +371,29 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
   - Headed: `npm run test:e2e:headed`
 
   **Critical: Wait for Hydration** - E2E tests must account for SSR → client-side hydration:
+
   ```typescript
   await page.goto(url, { waitUntil: "networkidle" });
   await page.waitForSelector(".animate-spin", { state: "detached", timeout: 10000 });
   await page.waitForTimeout(500); // DOM stabilization
   ```
+
   Without these waits, axe scans run on intermediate DOM state before React hydration completes.
 
 ### Rate Limiting (Production-Ready)
+
 - **Implementation**: Redis-backed via Upstash (`@upstash/ratelimit`)
 - **Configuration**: `src/lib/rate-limit.ts` with route-specific limits
 - **Middleware**: `src/middleware.ts` applies limits before request processing
 
 **Rate Limit Tiers**:
+
 - Chat API (`/api/chat`): 30 requests/min (OpenAI cost control)
 - Tools API (`/api/tools/*`): 60 requests/min (lightweight operations)
 - Generic API (`/api/*`): 100 requests/min (other endpoints)
 
 **Environment Variables Required**:
+
 ```bash
 UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-token
@@ -364,6 +402,7 @@ UPSTASH_REDIS_REST_TOKEN=your-token
 **Graceful Degradation**: Falls back to in-memory rate limiting if Redis unavailable (dev mode)
 
 ### Environment Variables
+
 Required environment variables for development and production:
 
 ```bash
@@ -378,17 +417,25 @@ UPSTASH_REDIS_REST_TOKEN=your-token
 UPSTASH_VECTOR_REST_URL=https://your-vector-index.upstash.io
 UPSTASH_VECTOR_REST_TOKEN=your-token
 
+# Email Service - Resend (Required for Contact Collection)
+RESEND_API_KEY=re_...
+OMER_EMAIL=me@omerakben.com
+OMER_ZOOM_LINK=https://us06web.zoom.us/j/2675124566?pwd=...
+
 # Optional
 NODE_ENV=development|production
 ANALYZE=true  # Enable bundle analyzer
 ```
 
 **Setup**:
+
 1. Copy `.env.example` to `.env.local`
 2. Add your API keys
 3. Never commit `.env*` files (already in `.gitignore`)
+4. For Resend: Set up domain verification at <https://resend.com/domains>
 
 ### Adding Agent Tools
+
 1. Schema in `lib/agent-tools/schemas.ts` (Zod)
 2. Handler in `src/app/api/tools/[name]/route.ts` (POST, validate, return `{success, data?, error?}`)
 3. Update `lib/agent-knowledge-base.ts`
@@ -403,6 +450,7 @@ ANALYZE=true  # Enable bundle analyzer
 **Figma**: [Design file](https://www.figma.com/design/GGCkxSgirBbmjQlioQKWEa/omerakben.com?node-id=0-1) + `/archive/omer-akben-design/` patterns
 
 ### Next.js Config Highlights
+
 - **Security**: CSP headers, X-Frame-Options, X-Content-Type-Options, Permissions-Policy
 - **Performance**: Lucide tree-shaking via `modularizeImports` (prevents full library import)
 - **Images**: AVIF/WebP optimization, lazy loading, responsive sizing
@@ -411,6 +459,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **Bundle Analysis**: Enable with `ANALYZE=true npm run build`
 
 ### Middleware (`src/middleware.ts`)
+
 - **Rate Limiting**: Redis-backed request throttling per route pattern
 - **Monitoring**: Request tracking and limit violation logging
 - **Headers**: Rate limit info in response (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `Retry-After`)
@@ -433,16 +482,19 @@ ANALYZE=true  # Enable bundle analyzer
 ## Troubleshooting
 
 **Build Errors**:
+
 - "Module not found" → use `@/` imports, not relative or `/archive/`
 - TypeScript errors → run `npx tsc --noEmit` to see all errors
 - ESLint errors → `npm run lint` (scripts/ excluded from linting)
 
 **Development**:
+
 - Port occupied → `lsof -ti:3000 | xargs kill`
 - Brightness modes → Toggle `data-brightness` on `<html>` in DevTools (-3 to +3, auto)
 - Bundle size → `npm run analyze` to see bundle composition
 
 **AI Chat Debugging**:
+
 - Tool rendering → Check `message.parts` array (NOT `toolInvocations`)
 - Filter by `part.type === "tool-{name}"` and verify `part.result` exists
 - Rate limits → Check middleware logs, verify Redis env vars in production
@@ -450,6 +502,7 @@ ANALYZE=true  # Enable bundle analyzer
 - Sidebar state → Check localStorage keys: `sidebar_pinned`, `sidebar_width`
 
 **Tests**:
+
 - Single test → `npm test -- filename.test.tsx`
 - E2E failures → `npm run test:e2e:headed` to see browser
 - Coverage → `npm test -- --coverage`
@@ -457,12 +510,14 @@ ANALYZE=true  # Enable bundle analyzer
 ## Key Files
 
 **Data** (source of truth):
+
 - `src/data/facts.ts` - Personal info, skills
 - `src/data/projects.ts` - Project catalog
 - `src/lib/agent-knowledge-base.ts` - AI agent context
 - `src/config/assistantFaq.ts` - Fact Bank and intent libraries for follow-ups
 
 **Sidebar Assistant** (Ozzy AI):
+
 - `src/lib/chat-sidebar-context.tsx` - State management (isOpen, isPinned, width, threadId)
 - `src/components/chat/chat-sidebar.tsx` - Main sidebar UI with resizing, pinning
 - `src/lib/thread-memory.ts` - Conversation persistence with pinned/width state
@@ -476,6 +531,7 @@ ANALYZE=true  # Enable bundle analyzer
 - `src/components/actions/ResumeDownloadButton.tsx` - Multi-format download
 
 **Config**:
+
 - `src/lib/agent-tools/schemas.ts` - Zod validation schemas
 - `src/lib/rate-limit.ts` - Redis rate limiting configuration
 - `src/middleware.ts` - Rate limiting and request processing
@@ -485,10 +541,12 @@ ANALYZE=true  # Enable bundle analyzer
 - `.gitignore` - Test artifacts excluded (playwright-report/, test-results/, .playwright-mcp/)
 
 **Scripts**:
+
 - `scripts/generate-icons.js` - Build-time icon manifest generation (42 icons, 90% bundle reduction)
 - `scripts/health-100-day1.sh` - Health score improvement automation
 
 **Docs**:
+
 - `README.md` - PRD and architecture docs
 - `TODO.md` - Implementation roadmap with health score tracking
 - `AI_AGENT.md` - Agent documentation and capabilities
