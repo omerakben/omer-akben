@@ -71,9 +71,7 @@ export async function POST(req: NextRequest) {
       // Continue even if email fails - contact is saved
     }
 
-    const zoomLink =
-      process.env.OMER_ZOOM_LINK ||
-      'https://us06web.zoom.us/j/2675124566?pwd=IStlQ63XGKpsVbn1biPDycfrUrxPPN.1';
+    const zoomLink = process.env.OMER_ZOOM_LINK;
 
     return NextResponse.json({
       success: true,
