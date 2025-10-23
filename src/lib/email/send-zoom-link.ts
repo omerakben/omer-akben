@@ -26,12 +26,23 @@ export async function sendZoomLinkEmail({
   conversationNotes,
 }: SendZoomLinkEmailInput): Promise<SendZoomLinkEmailResult> {
   try {
+    // Get Zoom link from environment variable
+    const zoomLink = process.env.OMER_ZOOM_LINK;
+
+    if (!zoomLink) {
+      return {
+        success: false,
+        error: 'Zoom link not configured. Please contact support.',
+      };
+    }
+
     // Render email template
     const emailHtml = await render(
       ZoomLinkEmail({
         name,
         company,
         conversationNotes,
+        zoomLink,
       })
     );
 

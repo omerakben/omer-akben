@@ -5,6 +5,7 @@
 This document outlines the implementation plan for enabling Ozzy AI to proactively collect visitor contact information and send Zoom meeting links when conversations show mutual interest. The solution is designed with zero security and performance impact, leveraging existing codebase patterns.
 
 **Key Features:**
+
 - ✅ Proactive contact collection after 3+ positive messages
 - ✅ Automated Zoom link delivery via email
 - ✅ Intent-based triggering ("can you send me the link?")
@@ -33,6 +34,7 @@ This document outlines the implementation plan for enabling Ozzy AI to proactive
 ### Current System Analysis
 
 **Existing Components:**
+
 - ✅ Vercel AI SDK v5 with coordinator agent pattern
 - ✅ 11 tools with Zod validation (contact, resume, projects, etc.)
 - ✅ Redis-backed rate limiting (30 req/min for chat API)
@@ -43,6 +45,7 @@ This document outlines the implementation plan for enabling Ozzy AI to proactive
 - ✅ `EmailActionButton` component (mailto: only)
 
 **Architecture Patterns Observed:**
+
 ```
 User Message → Chat API → Coordinator Agent → Intent Classification
                                 ↓
@@ -56,6 +59,7 @@ User Message → Chat API → Coordinator Agent → Intent Classification
 ```
 
 **Key Insight:** All infrastructure exists—we just need to add:
+
 1. New tool: `collect_contact`
 2. Email service integration (Resend or SendGrid)
 3. Conversation engagement tracking
@@ -67,17 +71,18 @@ User Message → Chat API → Coordinator Agent → Intent Classification
 
 ### 1. Email Service Comparison (2025)
 
-| Feature | **Resend** (Recommended) | **SendGrid** |
-|---------|-------------------------|--------------|
-| **Free Tier** | 3,000 emails/month forever | 100 emails/day for 60 days |
+| Feature                  | **Resend** (Recommended)            | **SendGrid**                 |
+| ------------------------ | ----------------------------------- | ---------------------------- |
+| **Free Tier**            | 3,000 emails/month forever          | 100 emails/day for 60 days   |
 | **Developer Experience** | Exceptional (praised by developers) | Enterprise-grade but complex |
-| **Next.js Integration** | Native support, documented | Well-supported via REST API |
-| **API Simplicity** | Minimal config, React Email support | More configuration required |
-| **Pricing** | $20/month for 50k emails | $19.95/month after trial |
-| **Templates** | React Email components (JSX) | HTML/Handlebars templates |
-| **Vercel Deployment** | Optimized for Vercel serverless | Compatible but not optimized |
+| **Next.js Integration**  | Native support, documented          | Well-supported via REST API  |
+| **API Simplicity**       | Minimal config, React Email support | More configuration required  |
+| **Pricing**              | $20/month for 50k emails            | $19.95/month after trial     |
+| **Templates**            | React Email components (JSX)        | HTML/Handlebars templates    |
+| **Vercel Deployment**    | Optimized for Vercel serverless     | Compatible but not optimized |
 
 **Recommendation:** **Resend** for this use case because:
+
 - ✅ 3,000 free emails/month (sufficient for portfolio traffic)
 - ✅ Modern React Email template system (matches your Next.js stack)
 - ✅ Simpler API (less code to maintain)
@@ -90,12 +95,14 @@ User Message → Chat API → Coordinator Agent → Intent Classification
 ### 2. Conversation State Tracking
 
 **Vercel AI SDK Patterns:**
+
 - **UIMessage** is source of truth (messages, metadata, tool results)
 - **onFinish callback** provides all messages for persistence
 - **Metadata** can be attached to messages for custom state
 - **Semantic memory** already extracts user context (role, interests, visited projects)
 
 **Existing Semantic Memory Extraction:**
+
 ```typescript
 {
   role: "recruiter" | "developer" | "hiring_manager" | "student" | "founder",
@@ -110,6 +117,7 @@ User Message → Chat API → Coordinator Agent → Intent Classification
 ```
 
 **New Fields Needed:**
+
 ```typescript
 {
   contactCollected: boolean,           // Flag to prevent duplicate collection
@@ -125,7 +133,9 @@ User Message → Chat API → Coordinator Agent → Intent Classification
 ### 3. Security Patterns in Codebase
 
 **Existing Security Measures:**
+
 1. **PII Redaction** (`lib/log.ts`):
+
    ```typescript
    const EMAIL_RE = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
    const PHONE_RE = /\+?[0-9][0-9()\s.-]{7,}[0-9]/g;
@@ -149,6 +159,7 @@ User Message → Chat API → Coordinator Agent → Intent Classification
 4. **Zod Validation**: All tool inputs validated with strict schemas
 
 **Gaps to Address:**
+
 - ❌ No contact collection rate limiting (need: 1 per IP per day)
 - ❌ No email validation beyond format (disposable email check?)
 - ❌ No encryption for stored contact info (Redis plaintext)
@@ -476,12 +487,14 @@ export const contactAgent = new Agent({
 **Implementation Steps:**
 
 1. **Install Dependencies:**
+
 ```bash
 npm install resend react-email
 npm install -D @types/react
 ```
 
 2. **Environment Variables:**
+
 ```bash
 # .env.local
 RESEND_API_KEY=re_xxxxxxxxxxxx
@@ -708,9 +721,11 @@ export async function sendZoomLinkEmail({
 
 5. **Domain Verification (Resend):**
    - Add DNS records for `omerakben.com`:
+
      ```
      TXT  @  resend._domainkey  <key-from-resend>
      ```
+
    - Verify in Resend dashboard
    - Update `from` address to `noreply@omerakben.com`
 
@@ -848,6 +863,7 @@ export async function hasCollectedContact(email: string): Promise<boolean> {
 ```
 
 **Security Notes:**
+
 - ✅ 7-day TTL (GDPR-friendly, auto-cleanup)
 - ✅ Email as key (prevents duplicates)
 - ✅ IP tracking (abuse detection)
@@ -998,6 +1014,7 @@ onFinish: async ({ messages }) => {
 ### Phase 1: Foundation (Week 1)
 
 **Tasks:**
+
 1. ✅ Install Resend + React Email dependencies
 2. ✅ Set up environment variables (RESEND_API_KEY, OMER_ZOOM_LINK)
 3. ✅ Verify domain in Resend dashboard
@@ -1006,6 +1023,7 @@ onFinish: async ({ messages }) => {
 6. ✅ Test email sending manually with cURL
 
 **Testing:**
+
 ```bash
 curl -X POST http://localhost:3000/api/test-email \
   -H "Content-Type: application/json" \
@@ -1017,6 +1035,7 @@ curl -X POST http://localhost:3000/api/test-email \
 ### Phase 2: Tool Implementation (Week 2)
 
 **Tasks:**
+
 1. ✅ Add Zod schemas to `lib/agent-tools/schemas.ts`
 2. ✅ Create API route `api/tools/collect-contact/route.ts`
 3. ✅ Implement contact rate limiting (1 per IP per 24h)
@@ -1027,6 +1046,7 @@ curl -X POST http://localhost:3000/api/test-email \
 8. ✅ Write unit tests for route
 
 **Test Coverage:**
+
 - ✅ Valid input → email sent, contact saved
 - ✅ Disposable email → rejected
 - ✅ Rate limit → 429 error
@@ -1038,6 +1058,7 @@ curl -X POST http://localhost:3000/api/test-email \
 ### Phase 3: Conversation Intelligence (Week 3)
 
 **Tasks:**
+
 1. ✅ Create engagement metrics calculator
 2. ✅ Extend semantic memory schema
 3. ✅ Add engagement tracking to fact extractor
@@ -1130,6 +1151,7 @@ export function buildEnhancedSystemPrompt(currentPath?: string): string {
 ### Phase 5: Testing & Refinement (Week 5)
 
 **Unit Tests:**
+
 ```bash
 npm test -- collect-contact.test.ts
 npm test -- engagement-tracker.test.ts
@@ -1137,6 +1159,7 @@ npm test -- send-zoom-link.test.ts
 ```
 
 **E2E Tests:**
+
 ```typescript
 // e2e/contact-collection.spec.ts
 test('should collect contact after 3 positive messages', async ({ page }) => {
@@ -1166,6 +1189,7 @@ test('should collect contact after 3 positive messages', async ({ page }) => {
 ```
 
 **Manual Testing Checklist:**
+
 - [ ] Send test email to personal inbox
 - [ ] Verify email renders correctly (mobile + desktop)
 - [ ] Test rate limiting (2nd collection attempt fails)
@@ -1442,24 +1466,27 @@ MX    @                      feedback-smtp.resend.com       3600
 
 ### Resend Pricing
 
-| Tier | Emails/Month | Cost | Suitable For |
-|------|--------------|------|--------------|
-| Free | 3,000 | $0 | Portfolio (low traffic) |
-| Pro | 50,000 | $20 | Growing portfolio |
-| Enterprise | Custom | Custom | High traffic |
+| Tier       | Emails/Month | Cost   | Suitable For            |
+| ---------- | ------------ | ------ | ----------------------- |
+| Free       | 3,000        | $0     | Portfolio (low traffic) |
+| Pro        | 50,000       | $20    | Growing portfolio       |
+| Enterprise | Custom       | Custom | High traffic            |
 
 **Estimated Usage:**
+
 - 100 visitors/month × 5% contact collection rate = 5 contacts
 - Well within free tier (3,000 emails/month)
 
 ### Upstash Redis (Already Paid)
 
 **Current Usage:**
+
 - Rate limiting
 - Thread memory
 - Semantic memory
 
 **New Usage:**
+
 - Contact storage (7-day TTL)
 - Contact collection rate limiting
 
@@ -1606,13 +1633,13 @@ export async function logContactCollection(contact: ContactData, ip: string) {
 
 ### 📋 Implementation Timeline
 
-| Phase | Duration | Deliverables |
-|-------|----------|--------------|
-| Phase 1: Email Setup | 1 week | Resend integration, email templates |
-| Phase 2: Tool Build | 1 week | API route, Zod schemas, rate limiting |
-| Phase 3: Intelligence | 1 week | Engagement tracking, trigger logic |
-| Phase 4: Prompts | 1 week | System prompt updates, agent behavior |
-| Phase 5: Testing | 1 week | Unit tests, E2E tests, refinement |
+| Phase                 | Duration | Deliverables                          |
+| --------------------- | -------- | ------------------------------------- |
+| Phase 1: Email Setup  | 1 week   | Resend integration, email templates   |
+| Phase 2: Tool Build   | 1 week   | API route, Zod schemas, rate limiting |
+| Phase 3: Intelligence | 1 week   | Engagement tracking, trigger logic    |
+| Phase 4: Prompts      | 1 week   | System prompt updates, agent behavior |
+| Phase 5: Testing      | 1 week   | Unit tests, E2E tests, refinement     |
 
 **Total:** 5 weeks to production-ready feature
 
@@ -1631,6 +1658,7 @@ export async function logContactCollection(contact: ContactData, ip: string) {
 **Questions? Concerns? Feedback?**
 
 Let me know if you'd like me to:
+
 - Adjust the engagement triggers (more/less aggressive)
 - Add additional security measures (CAPTCHA, encryption)
 - Implement calendar integration instead of static Zoom link

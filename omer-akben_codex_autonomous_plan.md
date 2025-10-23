@@ -140,7 +140,7 @@ export default async function ProjectOG({ params }: { params: { slug: string }})
 
 ## 4) Task C — Fill Missing Project Pages (HIGH)
 
-Create minimal, high‑quality pages for any listed projects that lack a dedicated route. Suggested slugs (adjust to match `src/data/projects.ts`):  
+Create minimal, high‑quality pages for any listed projects that lack a dedicated route. Suggested slugs (adjust to match `src/data/projects.ts`):
 `elon-ai-agent`, `genesis-test-copilot`, `tuel-chatbot-builder`, `north-glass`, `oteemo-ai-roadmap`, `developer-cheat-sheets`, `portfolio`.
 
 Template (copy and adapt per project):
@@ -208,6 +208,7 @@ test.describe("A11y", () => {
 ```
 
 ### D.2 Minor polish
+
 - Decorative Lucide icons → `aria-hidden="true"` OR add labels where informative.
 - Confirm Skip‑Link is visible on Tab and targets `main`.
 
@@ -238,6 +239,7 @@ console.log("Seeded placeholder assets.");
 ```
 
 Add NPM script to `package.json`:
+
 ```json
 { "scripts": { "seed:assets": "node scripts/seed-assets.mjs" } }
 ```

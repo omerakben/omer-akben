@@ -33,6 +33,9 @@ vi.mock('@/lib/rate-limit', () => ({
 describe('POST /api/tools/collect-contact', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Set environment variables for tests
+    process.env.OMER_ZOOM_LINK = 'https://us06web.zoom.us/j/2675124566?pwd=test';
+    process.env.OMER_EMAIL = 'me@omerakben.com';
   });
 
   describe('Valid requests', () => {
