@@ -119,9 +119,9 @@ export const projects: Project[] = [
     slug: "capstone-deadline",
     title: "DEADLINE - Developer Command Center",
     description:
-      "Production-deployed developer operations platform with zero-signup demo mode, achieving A- (92/100) UI/UX grade in Playwright visual testing. Manages polymorphic artifacts (ENV_VAR, PROMPT, DOC_LINK) across dev/staging/prod environments with masked sensitive values and workspace isolation.",
+      "Production full-stack developer operations platform achieving A- (92/100) UI/UX grade. Centralizes ENV variables, AI prompts, and documentation across dev/staging/prod environments with Firebase authentication, workspace isolation, and immutable audit logs for compliance.",
     longDescription:
-      "Full-stack developer command center built with Django 5 + PostgreSQL on Railway and Next.js 15 on Vercel. Features include zero-signup demo authentication for instant recruiter access, polymorphic artifact system supporting environment variables, AI prompts, and documentation links, environment-aware management (DEV/STAGING/PROD), masked sensitive values for security, comprehensive tagging and search, workspace multi-tenancy, and mobile-responsive design validated across all device sizes. UI/UX tested with Playwright MCP achieving professional-grade quality with enhanced micro-interactions (hover states, loading feedback, accessible focus rings). Pre-populated with sample workspaces demonstrating real-world DevOps workflows.",
+      "DEADLINE solves the scattered artifact problem developers face daily—hunting ENV variables in Slack threads, losing reusable prompts, and navigating fragmented documentation. Built with Django 5 + PostgreSQL (Railway) and Next.js 15 (Vercel), it provides a secure command center with polymorphic artifact management (ENV_VAR, PROMPT, DOC_LINK), environment-aware scoping (DEV/STAGING/PROD), masked sensitive values with explicit reveal tracking, comprehensive tagging/search, and immutable audit logs (user, IP, timestamp). Rate limiting (10 reveals/min, 60 searches/hour) prevents credential harvesting. Achieved A- grade in Playwright visual testing with professional micro-interactions (hover states, loading feedback, accessible focus rings). 64/64 backend tests passing, zero linting errors, mobile-responsive across all viewports (375px-1512px). Firebase Authentication (Email/Password + Google OAuth) required for full access—no demo credentials to ensure security.",
     image: "/assets/deadline-hero.png",
     technologies: [
       "Django 5",
@@ -134,12 +134,14 @@ export const projects: Project[] = [
       "TypeScript",
       "Tailwind CSS",
       "Firebase Auth",
+      "Playwright",
+      "pytest",
     ],
     role: "Full-Stack",
     category: "tools",
     featured: true,
-    demoUrl: "https://capstone-client-5ly2uma0g-omera.vercel.app",
-    githubUrl: "https://github.com/omerakben/capstone",
+    demoUrl: "https://deadline-demo.vercel.app",
+    githubUrl: "https://github.com/omerakben/deadline",
     startDate: "September 2024",
     endDate: "October 2024",
     status: "completed",

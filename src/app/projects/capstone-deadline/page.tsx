@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
+import { createMetadata } from "@/lib/metadata";
 import {
   ArrowLeft,
   CheckCircle2,
   Database,
   ExternalLink,
   Eye,
+  FileText,
   Github,
   Layers,
+  Search,
   Shield,
   Users,
   Zap,
@@ -15,12 +18,11 @@ import {
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
-  title: "DEADLINE - Developer Command Center",
+  title: "DEADLINE - Developer Command Center | Omer Akben",
   description:
-    "A comprehensive case study of DEADLINE, a production-deployed developer operations platform with zero-signup demo mode and polymorphic artifact management.",
+    "Production full-stack capstone project: Secure workspace management for environment variables, prompts, and documentation. Django + Next.js + Firebase + PostgreSQL. Live on Railway & Vercel. A- (92/100) UI/UX grade.",
   path: "/projects/capstone-deadline",
 });
 
@@ -30,6 +32,85 @@ export default function DeadlineCaseStudyPage() {
   if (!project) {
     notFound();
   }
+
+  const useCases = [
+    {
+      icon: Users,
+      title: "Development Teams",
+      description:
+        "Centralize microservices ENV variables. Junior devs find staging credentials instantly instead of pinging seniors. Onboard new team members with pre-configured workspace templates.",
+    },
+    {
+      icon: Zap,
+      title: "AI/ML Engineers",
+      description:
+        "Store prompt templates (system prompts, few-shot examples) with version history. Tag by model (GPT-4, Claude) or use case (summarization, classification).",
+    },
+    {
+      icon: CheckCircle2,
+      title: "Engineering Onboarding",
+      description:
+        "New hires clone workspace template with all docs, ENV vars, and code snippets pre-loaded. First-day productivity—no more 'where do I find the API key?' questions.",
+    },
+    {
+      icon: FileText,
+      title: "Documentation Hub",
+      description:
+        "Replace scattered Confluence/Notion pages with tagged DOC_LINKs. API docs, runbooks, architectural diagrams—all searchable in one place.",
+    },
+    {
+      icon: Shield,
+      title: "Audit Compliance",
+      description:
+        "Track every ENV_VAR reveal for HIPAA, SOC 2, GDPR compliance. Immutable logs show who accessed what secret, when, and from where.",
+    },
+    {
+      icon: Search,
+      title: "Remote Teams",
+      description:
+        "Async-first knowledge sharing—no more 'can someone DM me the API key?' in Slack. Workspace permissions for multi-tenant access control.",
+    },
+  ];
+
+  const technicalHighlights = [
+    "Django 5 REST API + Next.js 15 App Router (monorepo structure)",
+    "Firebase Admin SDK token verification with workspace isolation (owner_uid scoping)",
+    "Polymorphic artifact model: ENV_VAR (encrypted), PROMPT (plaintext), DOC_LINK (URL + metadata)",
+    "Immutable ArtifactAccessLog + rate limiting (10 reveals/min, 60 searches/hour)",
+    "64 backend tests (models, views, serializers, permissions) - 100% passing",
+    "Playwright visual testing achieving A- (92/100) UI/UX grade",
+    "PostgreSQL + Railway deployment + Vercel Edge hosting",
+    "OpenAPI/Swagger documentation at /api/docs/ and OpenAPI schema at /api/schema/",
+    "Firebase Authentication (Email/Password + Google OAuth) required for security",
+  ];
+
+  const whyValuable = [
+    {
+      title: "Security First",
+      description:
+        "Masked ENV variables with explicit reveal tracking. Immutable audit logs capture user, IP, and timestamp. Rate limiting prevents credential harvesting attacks. Workspace isolation ensures zero data leakage between teams.",
+    },
+    {
+      title: "Multi-Environment Management",
+      description:
+        "Separate DEV/STAGING/PROD configurations per workspace. No more 'which .env did I update?' confusion. Environment-scoped artifact visibility.",
+    },
+    {
+      title: "Knowledge Centralization",
+      description:
+        "Store reusable prompts (AI prompts, SQL templates) and documentation links alongside environment config. Everything searchable with comprehensive tagging.",
+    },
+    {
+      title: "Developer Experience",
+      description:
+        "Responsive Next.js 15 UI validated across mobile/tablet/desktop. OpenAPI documentation with Swagger UI. Import/export for backups. Professional micro-interactions (A- grade).",
+    },
+    {
+      title: "Production-Grade Quality",
+      description:
+        "64/64 backend tests passing (pytest). Zero linting errors, zero TypeScript errors. Live deployments on Railway (backend) + Vercel (frontend). Achieved A- (92/100) in Playwright visual testing.",
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-surf-0 py-20">
@@ -107,9 +188,12 @@ export default function DeadlineCaseStudyPage() {
             for development workflows, and cloud secret managers are often
             overkill for individual developers or small teams. The challenge was
             to create a{" "}
-            <strong className="text-text-1">centralized command center</strong>{" "}
-            that could organize these polymorphic artifacts while providing
-            instant demo access for recruiters and technical evaluators.
+            <strong className="text-text-1">
+              secure, centralized command center
+            </strong>{" "}
+            that could organize these polymorphic artifacts with proper
+            authentication, workspace isolation, and audit logging for
+            compliance requirements.
           </p>
         </div>
 
@@ -118,22 +202,26 @@ export default function DeadlineCaseStudyPage() {
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             I developed <strong className="text-text-1">DEADLINE</strong>, a
-            full-stack developer operations platform that serves as a unified
-            command center for development artifacts. The platform features a{" "}
-            <strong className="text-text-1">zero-signup demo mode</strong> that
-            allows recruiters and evaluators to experience the full application
-            instantly using pre-populated sample workspaces.
+            production-ready full-stack developer operations platform that
+            serves as a unified command center for development artifacts. Built
+            with{" "}
+            <strong className="text-text-1">Firebase Authentication</strong>{" "}
+            (Email/Password + Google OAuth), the platform ensures secure access
+            while providing robust workspace isolation.
           </p>
           <p className="text-text-2 leading-relaxed">
             Built with Django 5 + PostgreSQL (Railway) and Next.js 15 (Vercel),
             DEADLINE implements a{" "}
             <strong className="text-text-1">polymorphic artifact system</strong>{" "}
-            that handles environment variables, AI prompts, and documentation
-            links with environment-aware management (DEV/STAGING/PROD),
-            comprehensive tagging, and masked sensitive values for security. The
-            UI underwent rigorous Playwright visual testing, achieving an{" "}
+            that handles environment variables (encrypted storage), AI prompts,
+            and documentation links with environment-aware management
+            (DEV/STAGING/PROD), comprehensive tagging, masked sensitive values
+            with explicit reveal tracking, and immutable audit logs for
+            compliance. The UI underwent rigorous Playwright visual testing,
+            achieving an{" "}
             <strong className="text-text-1">A- grade (92/100)</strong> with
-            professional micro-interactions.
+            professional micro-interactions (hover states, loading feedback,
+            accessible focus rings).
           </p>
         </div>
 
@@ -148,7 +236,10 @@ export default function DeadlineCaseStudyPage() {
               </div>
               <div className="p-8 flex items-center justify-center min-h-[400px] text-text-3">
                 <div className="text-center">
-                  <Database aria-hidden="true" className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <Database
+                    aria-hidden="true"
+                    className="w-16 h-16 mx-auto mb-4 opacity-50"
+                  />
                   <p>Architecture diagram coming soon</p>
                   <p className="text-sm mt-2">
                     Django 5 + Railway ↔ Next.js 15 + Vercel
@@ -166,19 +257,24 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
-                  <Zap aria-hidden="true" className="w-5 h-5 text-brand-primary" />
+                  <Shield
+                    aria-hidden="true"
+                    className="w-5 h-5 text-brand-primary"
+                  />
                 </div>
               </div>
               <div>
                 <h3 className="text-lg font-bold text-text-1 mb-2">
-                  Zero-Signup Demo Mode
+                  Firebase Authentication & Security
                 </h3>
                 <p className="text-text-2">
-                  Instant access for recruiters via prominent &ldquo;Launch
-                  Demo&rdquo; button. Session-based authentication with
-                  pre-populated sample workspaces demonstrating real-world
-                  DevOps workflows. Demo data resets daily for consistent
-                  evaluation experience.
+                  Secure sign-up and login via{" "}
+                  <strong>Firebase Authentication</strong> (Email/Password +
+                  Google OAuth). Workspace isolation ensures multi-tenant
+                  security with owner_uid scoping. Rate limiting (10
+                  reveals/min, 60 searches/hour) prevents credential harvesting.
+                  Immutable audit logs track every ENV_VAR reveal with user, IP,
+                  and timestamp for HIPAA/SOC 2/GDPR compliance.
                 </p>
               </div>
             </div>
@@ -186,7 +282,10 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Layers aria-hidden="true" className="w-5 h-5 text-purple-400" />
+                  <Layers
+                    aria-hidden="true"
+                    className="w-5 h-5 text-purple-400"
+                  />
                 </div>
               </div>
               <div>
@@ -206,19 +305,20 @@ export default function DeadlineCaseStudyPage() {
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                  <Shield aria-hidden="true" className="w-5 h-5 text-green-400" />
+                  <Eye aria-hidden="true" className="w-5 h-5 text-green-400" />
                 </div>
               </div>
               <div>
                 <h3 className="text-lg font-bold text-text-1 mb-2">
-                  Security & Privacy
+                  Masked Secrets & Audit Trails
                 </h3>
                 <p className="text-text-2">
-                  Masked sensitive values (API keys, secrets) with
-                  reveal-on-hover functionality. Workspace isolation ensures
-                  multi-tenancy with Firebase Authentication. Session-based demo
-                  tokens with automatic expiration. Environment-aware artifact
-                  visibility prevents production secret exposure.
+                  ENV_VAR values are masked by default (e.g.,{" "}
+                  <code>••••••••</code>) with explicit reveal-on-click. Every
+                  reveal is logged immutably with user identity, IP address, and
+                  timestamp. Environment-aware visibility (DEV/STAGING/PROD)
+                  prevents accidental production secret exposure. Django{" "}
+                  <code>django-ratelimit</code> prevents abuse.
                 </p>
               </div>
             </div>
@@ -477,6 +577,190 @@ export default function DeadlineCaseStudyPage() {
           </div>
         </div>
 
+        {/* Mission & Vision */}
+        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Mission & Vision
+          </h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-text-1 mb-2 flex items-center gap-2">
+                <Zap
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary"
+                />
+                Mission
+              </h3>
+              <p className="text-text-2 leading-relaxed">
+                Eliminate developer context-switching chaos by centralizing
+                scattered artifacts (ENV variables, AI prompts, documentation
+                links) into a secure, workspace-isolated command center. Stop
+                Slack archeology, .env confusion, and lost prompt templates.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-text-1 mb-2 flex items-center gap-2">
+                <Eye
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary"
+                />
+                Vision
+              </h3>
+              <p className="text-text-2 leading-relaxed">
+                Become the trusted single source of truth for developer
+                knowledge artifacts, enabling teams to ship faster with less
+                cognitive overhead. Scale from solo developers to enterprise
+                teams with security-first principles (Firebase auth, audit logs,
+                workspace isolation).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Why DEADLINE Matters */}
+        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+          <h2 className="text-2xl font-bold text-text-1 mb-6">
+            Why DEADLINE Matters
+          </h2>
+          <div className="space-y-6">
+            {whyValuable.map((item, idx) => (
+              <div key={idx} className="flex gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
+                    <CheckCircle2
+                      aria-hidden="true"
+                      className="w-4 h-4 text-brand-primary"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-text-1 mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-text-2">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Real-World Use Cases */}
+        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+          <h2 className="text-2xl font-bold text-text-1 mb-6">
+            Real-World Use Cases
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {useCases.map((useCase, idx) => {
+              const Icon = useCase.icon;
+              return (
+                <div key={idx} className="flex gap-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
+                      <Icon
+                        aria-hidden="true"
+                        className="w-5 h-5 text-brand-primary"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-text-1 mb-2">
+                      {useCase.title}
+                    </h3>
+                    <p className="text-text-2 text-sm">{useCase.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Technical Highlights */}
+        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Technical Highlights
+          </h2>
+          <ul className="space-y-3">
+            {technicalHighlights.map((highlight, idx) => (
+              <li key={idx} className="flex gap-3">
+                <CheckCircle2
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5"
+                />
+                <span className="text-text-2">{highlight}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Live Deployments */}
+        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Live Deployments
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-surf-2 border border-border-line rounded-lg">
+              <div>
+                <h3 className="text-lg font-bold text-text-1">
+                  Frontend (Vercel)
+                </h3>
+                <p className="text-text-3 text-sm">
+                  Next.js 15 + Firebase Auth (Email/Password + Google OAuth)
+                </p>
+              </div>
+              <Button asChild variant="outline">
+                <a
+                  href="https://deadline-demo.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink aria-hidden="true" className="w-4 h-4" />
+                  Visit
+                </a>
+              </Button>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-surf-2 border border-border-line rounded-lg">
+              <div>
+                <h3 className="text-lg font-bold text-text-1">
+                  Backend API (Railway)
+                </h3>
+                <p className="text-text-3 text-sm">
+                  Django 5 REST Framework + PostgreSQL
+                </p>
+              </div>
+              <Button asChild variant="outline">
+                <a
+                  href="https://deadline-production.up.railway.app/api/v1/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink aria-hidden="true" className="w-4 h-4" />
+                  API
+                </a>
+              </Button>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-surf-2 border border-border-line rounded-lg">
+              <div>
+                <h3 className="text-lg font-bold text-text-1">
+                  API Documentation
+                </h3>
+                <p className="text-text-3 text-sm">
+                  OpenAPI/Swagger UI + ReDoc
+                </p>
+              </div>
+              <Button asChild variant="outline">
+                <a
+                  href="https://deadline-production.up.railway.app/api/docs/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FileText aria-hidden="true" className="w-4 h-4" />
+                  Docs
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {/* Results & Impact */}
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
@@ -495,11 +779,13 @@ export default function DeadlineCaseStudyPage() {
 
             <div className="bg-surf-2 border border-border-line rounded-lg p-6">
               <div className="text-3xl font-bold text-brand-primary mb-2">
-                0
+                64/64
               </div>
-              <div className="text-text-1 font-medium">Code Quality Issues</div>
+              <div className="text-text-1 font-medium">
+                Backend Tests Passing
+              </div>
               <div className="text-text-3 text-sm mt-1">
-                Zero ESLint warnings or TypeScript errors
+                Models, views, serializers, permissions
               </div>
             </div>
 
@@ -528,10 +814,14 @@ export default function DeadlineCaseStudyPage() {
             DEADLINE demonstrates production-ready full-stack development with a
             focus on{" "}
             <strong className="text-text-1">developer experience</strong>,{" "}
-            <strong className="text-text-1">recruiter accessibility</strong>,
-            and <strong className="text-text-1">security-first design</strong>.
-            The zero-signup demo mode removes friction for technical evaluators
-            while showcasing real-world DevOps workflows.
+            <strong className="text-text-1">security-first design</strong>, and{" "}
+            <strong className="text-text-1">
+              compliance-ready audit logging
+            </strong>
+            . Firebase Authentication ensures secure access while workspace
+            isolation prevents data leakage between teams. Rate limiting and
+            immutable audit logs make it enterprise-ready for HIPAA/SOC 2/GDPR
+            compliance.
           </p>
         </div>
 

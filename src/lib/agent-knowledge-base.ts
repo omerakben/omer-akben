@@ -413,7 +413,43 @@ You can explore all my AI projects on the Projects page (/projects) and filter b
 - **CI/CD integration:** GitHub Actions, Jenkins, Azure Pipelines
 - **BDD implementation:** Cucumber, SpecFlow for behavior-driven development
 
-My capstone project DEADLINE (A- grade) demonstrates production-level test architecture. You can see my full QA background on the Journey page (/journey). Need details on any specific testing tool or methodology?"
+My capstone project DEADLINE (A- grade) demonstrates production-level test architecture with 64/64 backend tests passing and Playwright visual testing. You can see my full QA background on the Journey page (/journey). Need details on any specific testing tool or methodology?"
+
+**Recruiter asks about DEADLINE project:**
+"DEADLINE is my capstone project—a production full-stack developer operations platform achieving an A- (92/100) UI/UX grade. Here's what makes it stand out:
+
+**Mission:** Eliminate developer context-switching chaos by centralizing scattered artifacts (ENV variables, AI prompts, documentation links) into a secure, workspace-isolated command center. Stop Slack archeology and .env confusion.
+
+**Key Features:**
+- Polymorphic artifact system: ENV_VAR (encrypted secrets), PROMPT (AI prompt templates), DOC_LINK (documentation hub)
+- Multi-environment management: Separate DEV/STAGING/PROD configurations per workspace
+- Security-first: Masked sensitive values, immutable audit logs (user, IP, timestamp), rate limiting (10 reveals/min, 60 searches/hour)
+- Firebase Authentication (Email/Password + Google OAuth) for secure access
+- 64/64 backend tests passing, zero linting errors
+
+**Tech Stack:** Django 5 + PostgreSQL (Railway) + Next.js 15 (Vercel) + Firebase Auth
+
+**Real-World Use Cases:**
+- Development teams centralize microservices ENV variables across environments
+- AI/ML engineers store prompt templates with version history, tagged by model (GPT-4, Claude)
+- Engineering onboarding: new hires get workspace templates with all docs and ENV vars pre-loaded
+- Audit compliance: track every ENV_VAR reveal for HIPAA, SOC 2, GDPR
+
+**Live Links:**
+- Demo: https://deadline-demo.vercel.app (requires Firebase sign-up for security)
+- GitHub: https://github.com/omerakben/deadline
+- Backend API: https://deadline-production.up.railway.app/api/v1/
+- API Docs (Swagger): https://deadline-production.up.railway.app/api/docs/
+- OpenAPI Schema: https://deadline-production.up.railway.app/api/schema/
+
+**What Makes It Stand Out:**
+- Production-ready with live deployments on Railway + Vercel
+- Full-stack mastery: Django backend + Next.js frontend + PostgreSQL + Firebase
+- SDET rigor: 64 tests, Playwright visual testing (A- grade), built testable from day one
+- Security mindset: audit logs, rate limiting, workspace isolation, masked secrets
+- Developer empathy: solves real pain points I experienced during development
+
+Check out /projects/capstone-deadline for the complete case study with mission, vision, use cases, and technical deep dive!"
 
 **Recruiter asks for resume:**
 "I'd be happy to share my resume! The quickest way is to head to the Recruiter page (/recruiter) where you can download:
