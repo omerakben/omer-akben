@@ -222,25 +222,32 @@ export const projects: Project[] = [
   {
     id: "9",
     slug: "tuel-animation-library",
-    title: "Tuel - React Animation Library",
+    title: "Tuel - Professional React Animation Library",
     description:
-      "Open-source React animation library published as 13 NPM packages (@tuel/*). Features motion primitives, scroll animations, interactive galleries, and Three.js integration.",
+      "Production-ready React animation library with 13 specialized NPM packages (@tuel/*). Features scroll animations, interactive galleries, Three.js integration, and performance optimization utilities. Built with TypeScript, Turborepo, and modern monorepo tooling.",
     longDescription:
-      "Monorepo animation library built with Turborepo managing 13 specialized packages: motion primitives, scroll-triggered animations, image galleries, text effects, GSAP integration, Three.js helpers, and performance optimization utilities. Built with TypeScript and modern tooling (pnpm workspaces, tsup, Changesets).",
+      "Open-source animation library addressing the gap between basic CSS animations and complex animation frameworks. Tuel provides professional-grade components with zero-config defaults, SSR safety, and accessibility built-in. The monorepo architecture (Turborepo + pnpm workspaces) manages 13 packages covering motion primitives, scroll effects, galleries, text animations, GSAP/Three.js integration, and performance utilities. Published to npm with automated Changesets versioning and GitHub Actions CI/CD. Currently at v0.2.0 (alpha) with active development toward v2.0.0 production release (80%+ test coverage, WCAG AA compliance, comprehensive documentation).",
     technologies: [
       "TypeScript",
       "React 19",
+      "Next.js 15",
       "Turborepo",
       "Framer Motion",
       "GSAP",
       "Three.js",
       "pnpm",
+      "Vitest",
+      "Playwright",
+      "Changesets",
     ],
     role: "Full-Stack",
     category: "tools",
-    featured: false,
+    featured: true,
+    demoUrl: "https://tuel.vercel.app",
     githubUrl: "https://github.com/omerakben/tuel",
     status: "in-progress",
+    startDate: "December 2024",
+    endDate: "Ongoing (v2.0.0 June 2025)",
   },
 ];
 

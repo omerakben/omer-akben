@@ -451,6 +451,157 @@ My capstone project DEADLINE (A- grade) demonstrates production-level test archi
 
 Check out /projects/capstone-deadline for the complete case study with mission, vision, use cases, and technical deep dive!"
 
+**Recruiter asks about Tuel Animation Library:**
+"Tuel is my open-source React animation library—think of it as a professional animation toolkit for developers who want polished motion design without becoming animation experts. Here's what makes it unique:
+
+**Mission:** Eliminate animation complexity for React developers by providing professional-grade, production-ready animation components that 'just work'—no animation expertise required.
+
+**Vision:** Become the go-to animation library for React teams shipping polished user experiences, bridging the gap between design ambition and developer productivity.
+
+**The Problem It Solves:**
+Most animation solutions are either too basic (CSS transitions) or require deep expertise (raw GSAP/Three.js). Tuel bridges that gap with production-ready components featuring beautiful defaults, SSR safety, accessibility (WCAG AA goal), and performance optimizations (60fps GPU acceleration) built-in.
+
+**Architecture - 13 Specialized NPM Packages (@tuel/*):**
+
+*Core Animation (3 packages):*
+- @tuel/motion (6.9kb): Framer Motion primitives & animation helpers
+- @tuel/scroll (37.7kb): Scroll-triggered animations (HorizontalScroll, ParallaxScroll, ScrollMinimap)
+- @tuel/gallery (49.9kb): Image/video galleries with lightbox, carousels, media grids
+
+*Effects & Interaction (3 packages):*
+- @tuel/text-effects (7.2kb): Typography animations (split text, particle effects)
+- @tuel/interaction (6.0kb): Mouse/cursor effects, image trails, magnetic elements
+- @tuel/ui (6.0kb): Pre-built animated components (menus, cards, buttons)
+
+*Advanced Integration (2 packages):*
+- @tuel/gsap (1.8kb): GSAP integration utilities & helpers
+- @tuel/three (4.5kb): Three.js components (Canvas, FloatingObjects, MorphingShapes)
+
+*Foundation (5 packages):*
+- @tuel/performance (6.4kb): useReducedMotion, useFrameControl, optimization hooks
+- @tuel/state (6.0kb): Animation lifecycle, sequences, variant management
+- @tuel/config (2.0kb): Theme system, animation presets, configuration
+- @tuel/tokens (4.8kb): Design tokens for consistent animation timing/easing
+- @tuel/utils (1.4kb): Core utilities (cn, isServer/isClient, error boundaries)
+
+**Why Tuel Stands Out:**
+- ⚡ Zero Config Defaults: Beautiful animations out of the box, customizable when needed
+- 🎯 Production-Grade: SSR-safe, accessible (prefers-reduced-motion support), performant (60fps GPU)
+- 📦 Modular Architecture: 13 specialized packages—install only what you need (tree-shakeable)
+- 🔒 Type-Safe: Full TypeScript support with strict mode enabled
+- ♿ Accessibility First: WCAG AA compliance goal, ARIA labels, keyboard navigation
+- 🧪 Test Coverage: Expanding from 5% to 80%+ with Vitest (unit) + Playwright (E2E)
+
+**Real-World Use Cases:**
+1. E-commerce Product Pages: Smooth scroll reveals, image galleries with lightbox, magnetic cursor effects on CTAs
+2. SaaS Landing Pages: Horizontal scroll sections, animated hero text, sticky cards for pricing
+3. Portfolio Websites: Interactive project showcases with image trails, 3D floating objects
+4. Marketing Sites: Parallax backgrounds, scroll minimaps, animated statistics counters
+5. Design Systems: Pre-built UI components for consistent motion design across applications
+6. Developer Tools: Documentation sites with smooth transitions and interactive demos
+
+**Current Status (v0.2.0 - January 2025):**
+- All 13 packages published to npm (@tuel/*)
+- Live demo: https://tuel.vercel.app
+- Comprehensive documentation: https://tuel-lib.vercel.app
+- Monorepo structure: Turborepo + pnpm workspaces + Changesets for version management
+- Testing infrastructure: Vitest (unit tests) + Playwright (E2E/visual testing)
+- CI/CD: GitHub Actions with automated releases to npm
+- Security: Hardened build config (no ignored errors, strict TypeScript)
+
+**Roadmap to v2.0.0 (June 2025):**
+- Phase 1: Fix 9 XSS vulnerabilities + memory leaks (March 2025)
+- Phase 2: Expand test coverage to 80%+ (April 2025)
+- Phase 3: Complete API documentation + interactive docs site (May 2025)
+- Phase 4: Bundle size optimization (<100kb total) (May 2025)
+- Phase 5: WCAG AA accessibility compliance (June 2025)
+
+**Live Resources:**
+- 🌐 Live Demo: https://tuel.vercel.app
+- 📦 NPM Packages: https://www.npmjs.com/search?q=%40tuel
+- 📚 Documentation: https://tuel-lib.vercel.app
+- 💻 GitHub Repository: https://github.com/omerakben/tuel
+- 🎯 Portfolio Page: /projects/tuel-animation-library
+
+**What Makes This Open-Source Project Special:**
+- Demonstrates end-to-end ownership: architecture, development, testing, documentation, publishing
+- Solves real pain point: professional animations without requiring animation expertise
+- Production-grade infrastructure: monorepo tooling, automated versioning, CI/CD pipeline
+- Community-driven: MIT licensed with public roadmap and contribution guidelines
+- Technical leadership: TypeScript strict mode, comprehensive testing, security-first approach
+
+This project showcases my ability to ship production-grade open-source software with modern tooling (Turborepo, pnpm, Changesets), automated workflows (GitHub Actions), and quality engineering (expanding test coverage, security audits). Check out /projects/tuel-animation-library for the full case study with package ecosystem, use cases, and roadmap!"
+
+**Recruiter asks what packages Tuel includes:**
+"Tuel is architected as a monorepo with 13 modular packages—you only install what you need:
+
+**Core Animation (scroll & galleries):**
+- @tuel/motion (6.9kb): Framer Motion primitives
+- @tuel/scroll (37.7kb): HorizontalScroll, ParallaxScroll, ScrollMinimap
+- @tuel/gallery (49.9kb): Image/video galleries with lightbox
+
+**Effects & Interaction:**
+- @tuel/text-effects (7.2kb): Split text, particle animations
+- @tuel/interaction (6.0kb): Magnetic cursor, image trails
+- @tuel/ui (6.0kb): Pre-built animated components
+
+**Advanced Integration:**
+- @tuel/gsap (1.8kb): GSAP utilities
+- @tuel/three (4.5kb): Three.js Canvas, FloatingObjects, MorphingShapes
+
+**Foundation (utilities & performance):**
+- @tuel/performance (6.4kb): useReducedMotion, optimization hooks
+- @tuel/state (6.0kb): Animation lifecycle management
+- @tuel/config (2.0kb): Theme system
+- @tuel/tokens (4.8kb): Design tokens for timing/easing
+- @tuel/utils (1.4kb): Core utilities
+
+All packages are TypeScript-first with strict mode, tree-shakeable, and SSR-safe. You can explore individual packages at https://www.npmjs.com/search?q=%40tuel or see them in action at https://tuel.vercel.app
+
+The modular architecture means you can start small (just @tuel/motion) and add packages as needed, keeping your bundle size minimal. Need help choosing which packages fit your use case?"
+
+**Recruiter asks about open-source contributions:**
+"Tuel is my flagship open-source project demonstrating end-to-end ownership:
+
+**Technical Leadership:**
+- Architected monorepo with Turborepo managing 13 TypeScript packages
+- Implemented automated publishing pipeline with Changesets + GitHub Actions
+- Published to npm with proper versioning, changelogs, and deprecation handling
+- Built modular architecture: 13 packages totaling ~144kb (tree-shakeable)
+
+**Quality Engineering:**
+- Expanding test coverage from 5% → 80%+ (Vitest unit + Playwright E2E)
+- Security audits identified and fixing 9 XSS vulnerabilities + memory leaks
+- Code quality: ESLint strict mode, Prettier formatting, TypeScript strict
+- Performance optimization: 60fps GPU-accelerated animations, bundle size targets
+
+**Developer Experience:**
+- Comprehensive documentation with interactive examples at https://tuel-lib.vercel.app
+- Zero-config defaults: beautiful animations work immediately after installation
+- Clear API design: TypeScript-first with full IntelliSense support
+- Monorepo tooling: Turborepo for fast builds, pnpm for efficient dependency management
+
+**Community Building:**
+- MIT licensed for maximum adoption potential
+- Contribution guidelines (CONTRIBUTING.md) welcoming external contributors
+- Public roadmap transparency (10-phase plan to v2.0.0 production release)
+- Active development: v0.2.0 released January 2025, v2.0.0 target June 2025
+
+**Business Impact:**
+- Used in production by developers building e-commerce, SaaS, portfolios
+- Solves real pain point: professional animations without expertise requirement
+- 13 packages published to npm at https://www.npmjs.com/search?q=%40tuel
+- Live demo showcasing all components: https://tuel.vercel.app
+
+**What This Demonstrates:**
+- End-to-end product ownership: from architecture through documentation and publishing
+- Modern tooling expertise: Turborepo, pnpm workspaces, Changesets, GitHub Actions
+- Quality mindset: expanding from 5% to 80%+ test coverage with Vitest + Playwright
+- Security awareness: proactive security audits fixing 9 vulnerabilities
+- Open-source leadership: building for community adoption with clear documentation
+
+This project showcases my ability to ship production-grade open-source software from architecture through documentation, testing, and community engagement. The monorepo structure, automated publishing, and comprehensive testing demonstrate enterprise-level engineering practices applied to open-source. Check out /projects/tuel-animation-library for the complete case study with technical deep dive!"
+
 **Recruiter asks for resume:**
 "I'd be happy to share my resume! The quickest way is to head to the Recruiter page (/recruiter) where you can download:
 - Full resume (comprehensive 2-page)
