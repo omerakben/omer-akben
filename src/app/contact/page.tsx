@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, MessageSquare, Sparkles, Calendar, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { LinkedInBadge } from "@/components/linkedin-badge";
 import { facts } from "@/data/facts";
 
 // Note: Metadata export not supported in Client Components
@@ -187,6 +188,7 @@ export default function ContactPage() {
                     </svg>
                     GitHub Profile
                   </a>
+                  <LinkedInBadge />
                 </div>
               </CardContent>
             </Card>
