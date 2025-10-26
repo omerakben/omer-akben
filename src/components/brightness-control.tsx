@@ -3,7 +3,10 @@
 import { useBrightness } from "@/lib/brightness-context";
 import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+// Constants
+const DOUBLE_CLICK_THRESHOLD_MS = 300;
 
 export function BrightnessControl() {
   const { brightness, setBrightness } = useBrightness();
@@ -31,9 +34,12 @@ export function BrightnessControl() {
         ? "dark"
         : "light";
 
-  const isMinBrightness = brightness === "-3";
-  const isMaxBrightness = brightness === "+3";
-  const knobIcon = isMinBrightness ? "moon" : isMaxBrightness ? "sun" : null;
+  // Determine knob icon based on brightness level
+  const knobIcon = useMemo(() => {
+    if (brightness === "-3") return "moon";
+    if (brightness === "+3") return "sun";
+    return null;
+  }, [brightness]);
 
   const ariaValueText = useMemo(() => {
     if (brightness === "auto") return "Automatic brightness";
@@ -87,6 +93,8 @@ export function BrightnessControl() {
   // Handle track click to jump to position
   const handleTrackClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      // Only handle clicks directly on the track, not on its child elements.
+      // This prevents accidental jumps when interacting with child controls or decorations.
       if (!trackRef.current || e.target !== e.currentTarget) return;
 
       const rect = trackRef.current.getBoundingClientRect();
@@ -101,7 +109,7 @@ export function BrightnessControl() {
       // Double-click on center (0) toggles auto
       if (targetMode === "0") {
         const now = Date.now();
-        if (now - lastClickTimeRef.current < 300) {
+        if (now - lastClickTimeRef.current < DOUBLE_CLICK_THRESHOLD_MS) {
           setBrightness("auto");
           lastClickTimeRef.current = 0;
           return;
@@ -131,49 +139,83 @@ export function BrightnessControl() {
     [modes, setBrightness]
   );
 
-  const handleKnobMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      setIsDragging(true);
+  // Cleanup event listeners when dragging ends or component unmounts
+  useEffect(() => {
+    if (!isDragging) return;
 
-      const handleMouseMove = (e: MouseEvent) => {
-        handleDragMove(e.clientX);
-      };
+    const handleMouseMove = (e: MouseEvent) => handleDragMove(e.clientX);
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleDragMove(e.touches[0].clientX);
+      }
+    };
+    const handleEnd = () => setIsDragging(false);
 
-      const handleMouseUp = () => {
-        setIsDragging(false);
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-      };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("mouseup", handleEnd);
+    document.addEventListener("touchend", handleEnd);
 
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    },
-    [handleDragMove]
-  );
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("touchend", handleEnd);
+    };
+  }, [isDragging, handleDragMove]);
 
-  // Touch support
-  const handleKnobTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      e.preventDefault();
-      setIsDragging(true);
+  const handleKnobMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
 
-      const handleTouchMove = (e: TouchEvent) => {
-        if (e.touches.length > 0) {
-          handleDragMove(e.touches[0].clientX);
+  const handleKnobTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (brightness === "auto") {
+        // In auto mode, allow arrow keys to switch to manual mode
+        if (
+          e.key === "ArrowRight" ||
+          e.key === "ArrowUp" ||
+          e.key === "ArrowLeft" ||
+          e.key === "ArrowDown"
+        ) {
+          e.preventDefault();
+          setBrightness("0");
         }
-      };
+        return;
+      }
 
-      const handleTouchEnd = () => {
-        setIsDragging(false);
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-      };
+      const currentValue = brightnessValue ?? 0;
+      let newValue = currentValue;
 
-      document.addEventListener("touchmove", handleTouchMove);
-      document.addEventListener("touchend", handleTouchEnd);
+      if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+        newValue = Math.min(3, currentValue + 1);
+        e.preventDefault();
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+        newValue = Math.max(-3, currentValue - 1);
+        e.preventDefault();
+      } else if (e.key === "Home") {
+        newValue = -3;
+        e.preventDefault();
+      } else if (e.key === "End") {
+        newValue = 3;
+        e.preventDefault();
+      } else {
+        return; // Not a key we handle
+      }
+
+      const newMode = modes[newValue + 3]; // Convert value (-3 to 3) to index (0 to 6)
+      if (newMode) {
+        setBrightness(newMode);
+      }
     },
-    [handleDragMove]
+    [brightness, brightnessValue, modes, setBrightness]
   );
 
   return (
@@ -183,6 +225,7 @@ export function BrightnessControl() {
         ref={trackRef}
         data-testid="brightness-track"
         onClick={handleTrackClick}
+        onKeyDown={handleKeyDown}
         className={cn(
           "brightness-track relative h-11 w-full rounded-full cursor-pointer overflow-visible",
           "transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/40"

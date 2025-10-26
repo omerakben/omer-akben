@@ -338,15 +338,15 @@ html {
 }
 
 .brightness-knob--theme-auto {
-  --knob-accent: #6366f1;
+  --knob-accent: #6366f1; /* indigo-500 - consider adding to design system */
 }
 
 .brightness-knob--theme-dark {
-  --knob-accent: #34d399;
+  --knob-accent: var(--emerald-400);
 }
 
 .brightness-knob--theme-light {
-  --knob-accent: #3b82f6;
+  --knob-accent: var(--brand-500);
 }
 
 .brightness-knob--state-neg-3 {
@@ -419,11 +419,11 @@ html {
 }
 
 .brightness-knob-icon--moon {
-  color: #60a5fa;
+  color: var(--brand-400);
 }
 
 .brightness-knob-icon--sun {
-  color: #facc15;
+  color: #facc15; /* Consider adding --amber-400 or similar to design system */
 }
 
 .brightness-knob-glow {
@@ -463,7 +463,7 @@ html {
       rgba(0, 0, 0, 0.55),
       rgba(0, 0, 0, 0.9) 75%
     );
-  background-color: #2f3545;
+  background-color: var(--surf-1);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.2),
     inset 0 10px 18px rgba(255, 255, 255, 0.12),
@@ -526,11 +526,15 @@ html {
   --knob-step-size: calc((100% - (var(--knob-edge-spacing) * 2)) / 6);
   --track-overlay-opacity: 0.8;
   /* Fallback for older browsers */
+  /* The fallback RGB values (18, 18, 27) match the --surf-1-rgb design token.
+     If --surf-1-rgb changes, update these values to keep them in sync. */
   background: rgba(var(--surf-1-rgb, 18, 18, 27), 0.82);
   /* Modern browsers with color-mix support */
   background: color-mix(in oklab, var(--surf-1) 82%, transparent);
   /* Fallback border */
-  border: 1px solid rgba(var(--border-line-rgb, 255, 255, 255), 0.7);
+  /* The fallback RGB values (18, 18, 27) match the --border-line-rgb design token
+     for dark mode. Adjust if design tokens change. */
+  border: 1px solid rgba(var(--border-line-rgb, 18, 18, 27), 0.7);
   /* Modern border with color-mix */
   border: 1px solid color-mix(in oklab, var(--border-line) 70%, transparent);
   /* Safari support */
@@ -570,8 +574,8 @@ html {
   background: rgba(255, 255, 255, 0.7);
   /* Modern background */
   background: color-mix(in oklab, #ffffff 70%, var(--surf-0) 30%);
-  /* Fallback border */
-  border-color: rgba(var(--border-line-rgb, 255, 255, 255), 0.9);
+  /* Fallback border - use lighter value for light mode */
+  border-color: rgba(var(--border-line-rgb, 226, 232, 240), 0.9);
   /* Modern border */
   border-color: color-mix(in oklab, var(--border-line) 90%, transparent);
   box-shadow:
