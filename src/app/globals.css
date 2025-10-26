@@ -525,12 +525,20 @@ html {
   --knob-edge-spacing: calc(var(--knob-hit-area) / 2);
   --knob-step-size: calc((100% - (var(--knob-edge-spacing) * 2)) / 6);
   --track-overlay-opacity: 0.8;
+  /* Fallback for older browsers */
+  background: rgba(var(--surf-1-rgb, 18, 18, 27), 0.82);
+  /* Modern browsers with color-mix support */
   background: color-mix(in oklab, var(--surf-1) 82%, transparent);
+  /* Fallback border */
+  border: 1px solid rgba(var(--border-line-rgb, 255, 255, 255), 0.7);
+  /* Modern border with color-mix */
   border: 1px solid color-mix(in oklab, var(--border-line) 70%, transparent);
+  /* Safari support */
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   box-shadow:
-    0 12px 30px color-mix(in oklab, #000 25%, transparent),
-    inset 0 1px 0 color-mix(in oklab, #fff 22%, transparent);
+    0 12px 30px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
   position: relative;
 }
 
@@ -541,8 +549,16 @@ html {
   border-radius: inherit;
   pointer-events: none;
   background:
-    radial-gradient(60% 120% at 0% 50%, rgba(16, 185, 129, 0.18), transparent 55%),
-    radial-gradient(50% 120% at 100% 50%, rgba(250, 204, 21, 0.18), transparent 50%),
+    radial-gradient(
+      60% 120% at 0% 50%,
+      rgba(16, 185, 129, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      50% 120% at 100% 50%,
+      rgba(250, 204, 21, 0.18),
+      transparent 50%
+    ),
     linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(16, 185, 129, 0.08));
   opacity: var(--track-overlay-opacity);
 }
@@ -550,11 +566,17 @@ html {
 [data-brightness="+1"] .brightness-track,
 [data-brightness="+2"] .brightness-track,
 [data-brightness="+3"] .brightness-track {
+  /* Fallback background for older browsers */
+  background: rgba(255, 255, 255, 0.7);
+  /* Modern background */
   background: color-mix(in oklab, #ffffff 70%, var(--surf-0) 30%);
+  /* Fallback border */
+  border-color: rgba(var(--border-line-rgb, 255, 255, 255), 0.9);
+  /* Modern border */
   border-color: color-mix(in oklab, var(--border-line) 90%, transparent);
   box-shadow:
-    0 18px 35px color-mix(in oklab, #94a3b8 25%, transparent),
-    inset 0 1px 0 color-mix(in oklab, #ffffff 65%, transparent);
+    0 18px 35px rgba(148, 163, 184, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
   --track-overlay-opacity: 0.35;
 }
 
@@ -769,6 +791,50 @@ html {
     border-color: var(--brand-primary);
   }
 
+  /* Hero background gradients - extracted from inline styles */
+  .hero-bg-gradient {
+    background:
+      radial-gradient(
+        40% 40% at 60% 45%,
+        rgba(16, 185, 129, 0.08),
+        transparent 60%
+      ),
+      radial-gradient(
+        28% 28% at 48% 62%,
+        rgba(37, 99, 235, 0.07),
+        transparent 60%
+      );
+    filter: blur(40px);
+  }
+
+  .hero-bg-gradient-static {
+    background:
+      radial-gradient(
+        35% 35% at 58% 50%,
+        rgba(16, 185, 129, 0.06),
+        transparent 60%
+      ),
+      radial-gradient(
+        25% 25% at 45% 58%,
+        rgba(37, 99, 235, 0.05),
+        transparent 60%
+      );
+    filter: blur(35px);
+  }
+
+  .robot-glow-effect {
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(56, 189, 248, 0.18),
+      transparent 60%
+    );
+  }
+
+  /* App shell container with dynamic sidebar margin */
+  .app-shell-container {
+    margin-right: var(--sidebar-margin, 0);
+  }
+
   /* Skip to content link - ensure it's visible when focused */
   .skip-to-content:focus {
     clip: auto;
@@ -788,13 +854,13 @@ html {
 
   /* Glass-morphism utilities for chat interface */
   .glass-message {
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
   }
 
   .glass-input {
-    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
   }
 
   /* Custom scrollbar for chat messages */
