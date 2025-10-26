@@ -521,6 +521,9 @@ html {
 }
 
 .brightness-track {
+  --knob-hit-area: 2.75rem;
+  --knob-edge-spacing: calc(var(--knob-hit-area) / 2);
+  --knob-step-size: calc((100% - (var(--knob-edge-spacing) * 2)) / 6);
   --track-overlay-opacity: 0.8;
   background: color-mix(in oklab, var(--surf-1) 82%, transparent);
   border: 1px solid color-mix(in oklab, var(--border-line) 70%, transparent);
