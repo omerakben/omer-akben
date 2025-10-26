@@ -1068,4 +1068,145 @@ html {
     scrollbar-width: thin;
     scrollbar-color: var(--border-line) transparent;
   }
+
+  /* Contact Card Brand Colors */
+  .contact-card-0077B5:hover {
+    border-color: rgba(0, 119, 181, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(0, 119, 181, 0.1);
+  }
+  .contact-card-0077B5 .contact-card-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 119, 181, 0.03),
+      rgba(0, 119, 181, 0.08)
+    );
+  }
+  .contact-card-0077B5:hover .contact-card-icon {
+    background-color: rgba(0, 119, 181, 0.1);
+    border-color: rgba(0, 119, 181, 0.3);
+  }
+  .contact-card-0077B5:hover .contact-card-icon svg {
+    color: #0077b5;
+  }
+  .contact-card-0077B5 .contact-card-accent {
+    background-color: rgba(0, 119, 181, 0.2);
+  }
+  .contact-card-0077B5:hover .contact-card-accent {
+    background-color: rgba(0, 119, 181, 0.4);
+  }
+  .contact-card-0077B5:hover .lucide-external-link {
+    color: #0077b5;
+  }
+
+  .contact-card-24292e:hover {
+    border-color: rgba(36, 41, 46, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(36, 41, 46, 0.1);
+  }
+  .contact-card-24292e .contact-card-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(36, 41, 46, 0.03),
+      rgba(36, 41, 46, 0.08)
+    );
+  }
+  .contact-card-24292e:hover .contact-card-icon {
+    background-color: rgba(36, 41, 46, 0.1);
+    border-color: rgba(36, 41, 46, 0.3);
+  }
+  .contact-card-24292e:hover .contact-card-icon svg {
+    color: #24292e;
+  }
+  .contact-card-24292e .contact-card-accent {
+    background-color: rgba(36, 41, 46, 0.2);
+  }
+  .contact-card-24292e:hover .contact-card-accent {
+    background-color: rgba(36, 41, 46, 0.4);
+  }
+  .contact-card-24292e:hover .lucide-external-link {
+    color: #24292e;
+  }
+
+  .contact-card-brand:hover {
+    border-color: rgba(var(--brand-primary-rgb), 0.5);
+    box-shadow: 0 10px 15px -3px var(--brand-primary) / 10;
+  }
+  .contact-card-brand .contact-card-overlay {
+    background: linear-gradient(
+      135deg,
+      var(--brand-primary) / 3%,
+      var(--brand-primary) / 8%
+    );
+  }
+  .contact-card-brand:hover .contact-card-icon {
+    background-color: var(--brand-primary) / 10%;
+    border-color: var(--brand-primary) / 30%;
+  }
+  .contact-card-brand:hover .contact-card-icon svg {
+    color: var(--brand-primary);
+  }
+  .contact-card-brand .contact-card-accent {
+    background-color: var(--brand-primary) / 20%;
+  }
+  .contact-card-brand:hover .contact-card-accent {
+    background-color: var(--brand-primary) / 40%;
+  }
+  .contact-card-brand:hover .lucide-external-link {
+    color: var(--brand-primary);
+  }
+
+  .contact-card-accent:hover {
+    border-color: rgba(var(--accent-primary-rgb), 0.5);
+    box-shadow: 0 10px 15px -3px var(--accent-primary) / 10;
+  }
+  .contact-card-accent .contact-card-overlay {
+    background: linear-gradient(
+      135deg,
+      var(--accent-primary) / 3%,
+      var(--accent-primary) / 8%
+    );
+  }
+  .contact-card-accent:hover .contact-card-icon {
+    background-color: var(--accent-primary) / 10%;
+    border-color: var(--accent-primary) / 30%;
+  }
+  .contact-card-accent:hover .contact-card-icon svg {
+    color: var(--accent-primary);
+  }
+  .contact-card-accent .contact-card-accent {
+    background-color: var(--accent-primary) / 20%;
+  }
+  .contact-card-accent:hover .contact-card-accent {
+    background-color: var(--accent-primary) / 40%;
+  }
+  .contact-card-accent:hover .lucide-external-link {
+    color: var(--accent-primary);
+  }
+
+  .contact-card-4285F4:hover {
+    border-color: rgba(66, 133, 244, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(66, 133, 244, 0.1);
+  }
+  .contact-card-4285F4 .contact-card-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(66, 133, 244, 0.03),
+      rgba(66, 133, 244, 0.08)
+    );
+  }
+  .contact-card-4285F4:hover .contact-card-icon {
+    background-color: rgba(66, 133, 244, 0.1);
+    border-color: rgba(66, 133, 244, 0.3);
+  }
+  .contact-card-4285F4:hover .contact-card-icon svg {
+    color: #4285f4;
+  }
+  .contact-card-4285F4 .contact-card-accent {
+    background-color: rgba(66, 133, 244, 0.2);
+  }
+  .contact-card-4285F4:hover .contact-card-accent {
+    background-color: rgba(66, 133, 244, 0.4);
+  }
+  .contact-card-4285F4:hover .lucide-external-link {
+    color: #4285f4;
+  }
 }
