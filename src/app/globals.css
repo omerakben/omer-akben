@@ -128,6 +128,24 @@
   --brand-vscode: #007acc;
 }
 
+.linkedin-badge-wrapper {
+  display: none;
+}
+
+html:not([data-brightness]) .linkedin-badge-dark,
+[data-brightness="-3"] .linkedin-badge-dark,
+[data-brightness="-2"] .linkedin-badge-dark,
+[data-brightness="-1"] .linkedin-badge-dark,
+[data-brightness="0"] .linkedin-badge-dark {
+  display: block;
+}
+
+[data-brightness="+1"] .linkedin-badge-light,
+[data-brightness="+2"] .linkedin-badge-light,
+[data-brightness="+3"] .linkedin-badge-light {
+  display: block;
+}
+
 /* Brightness Mode -3 (Darkest) */
 [data-brightness="-3"] {
   --surf-0: #0a1224;
