@@ -148,7 +148,7 @@ This portfolio website (omerakben.com) features:
 - **Collaboration:** Code Reviews, Technical Documentation, Agile/Scrum, Mentoring
 - **Architecture:** System Design, Microservices, Monorepo management (Turborepo, pnpm workspaces)
 
-# COMPLETE PROJECT PORTFOLIO (9 Projects)
+# COMPLETE PROJECT PORTFOLIO (${projects.length} Projects)
 
 ${projects
   .map(

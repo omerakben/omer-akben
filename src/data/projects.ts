@@ -249,6 +249,33 @@ export const projects: Project[] = [
     startDate: "December 2024",
     endDate: "Ongoing (v2.0.0 June 2025)",
   },
+  {
+    id: "10",
+    slug: "tuel-selenium-webdriver-restsharp",
+    title: "TUEL Selenium WebDriver + RestSharp Test Framework",
+    description:
+      "Production-ready .NET 8 automation framework combining Selenium WebDriver UI suites with RestSharp API coverage, centralized configuration, Azure AD auth flows, and Docker-first execution for CI pipelines.",
+    longDescription:
+      "Transit to Fully Open-Source TUEL is a modern SDET reference implementation that evolved a legacy financial services harness into a vendor-neutral test framework. It ships with Page Object Model patterns, retry-aware WebDriver helpers, multi-flow Azure Entra ID authentication, environment-scoped configuration, and SecretManager support for env/Key Vault/encrypted references. Thread.Sleep was eliminated in favor of smart waits, structured logging captures every action with masking, and Docker Compose spins up Selenium Grid-ready runs that finish full suites in under five minutes with 95%+ reliability. Each delivery phase wrapped: the smart-wait initiative, centralized configuration rollout, structured logging, and security hardening are merged and documented for other teams to adopt without rework.",
+    technologies: [
+      ".NET 8",
+      "C#",
+      "Selenium WebDriver",
+      "RestSharp",
+      "Azure AD",
+      "Secret Manager",
+      "Azure Key Vault",
+      "Docker",
+      "xUnit",
+      "WebDriverWait",
+    ],
+    role: "QA",
+    category: "tools",
+    featured: true,
+    githubUrl:
+      "https://github.com/omerakben/tuel-Selenium-WebDriver-RestSharp",
+    status: "completed",
+  },
 ];
 
 export const getProjectBySlug = (slug: string): Project | undefined => {
