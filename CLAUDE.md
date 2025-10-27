@@ -20,8 +20,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 1. **Always branch from `pre-deployment`** for new features
 2. **All 6 quality gates MUST pass** before merging to `pre-deployment`
-3. **Pre-deployment → main** merges require manual approval after testing
-4. **Never commit directly to main** - production deployments are intentional
+3. **Pre-deployment → main** auto-merges after all quality gates pass (no manual intervention)
+4. **Never commit directly to main** - all production deployments go through `pre-deployment`
 
 **Workflow Example:**
 
@@ -35,8 +35,37 @@ git commit -m "feat: add contact collection tool"
 git push origin feature/contact-collection
 # Create PR to pre-deployment, wait for CI/CD
 # After approval, merge to pre-deployment
-# Test on staging, then merge pre-deployment → main for production
+# CI/CD auto-merges pre-deployment → main after all gates pass
 ```
+
+**CI/CD Auto-Merge Workflow:**
+
+When you push to `pre-deployment`, GitHub Actions automatically:
+
+1. **Runs 6 Quality Gates** (`.github/workflows/pre-deployment-to-main.yml`):
+   - Gate 1: ESLint (0 errors)
+   - Gate 2: TypeScript (0 errors)
+   - Gate 3: Unit Tests (541/541 passing)
+   - Gate 4: Production Build (success)
+   - Gate 5: Bundle Size (within limits)
+   - Gate 6: E2E Tests (8/8 routes WCAG 2A)
+
+2. **Auto-Merges to Main** (if all gates pass):
+   - Fast-forward merge `pre-deployment` → `main`
+   - Creates deployment tag (`deploy-YYYYMMDD-HHMMSS`)
+   - Triggers Vercel production deployment
+
+3. **Deployment** (Vercel):
+   - `main` branch auto-deploys to <https://omerakben.com/>
+   - Environment variables from Vercel project settings
+   - Zero-downtime deployment
+
+**Safety Mechanisms:**
+
+- **No manual main commits**: All changes go through `pre-deployment` first
+- **Atomic quality gates**: One failure blocks entire workflow
+- **Fast-forward only**: Prevents merge conflicts, ensures linear history
+- **Deployment tags**: Track every production deployment
 
 ## TL;DR
 

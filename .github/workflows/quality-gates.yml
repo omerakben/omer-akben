@@ -2,9 +2,9 @@ name: Quality Gates
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, pre-deployment, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [main, pre-deployment, develop]
 
 jobs:
   quality-checks:
