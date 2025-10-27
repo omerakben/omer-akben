@@ -3,10 +3,15 @@
  * Tests summary extraction with maxLength parameter validation
  */
 
-import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
+import { describe, expect, it } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/extract-summary", () => {
   describe("Valid requests", () => {
@@ -134,11 +139,14 @@ describe("POST /api/tools/extract-summary", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/extract-summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "invalid json{",
-      });
+      const req = new Request(
+        "http://localhost:3000/api/tools/extract-summary",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "invalid json{",
+        }
+      );
 
       const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
@@ -216,7 +224,7 @@ describe("POST /api/tools/extract-summary", () => {
       if (isSuccessResponse(json)) {
         // Summary should be a string with words
         const data = json.data as { summary: string; wordCount: unknown };
-        const words = data.summary.split(' ');
+        const words = data.summary.split(" ");
         expect(words.length).toBeGreaterThan(0);
         expect(data.wordCount).toBe(Math.min(words.length, 100));
       }

@@ -17,6 +17,7 @@
 ### 🔴 Critical Issues
 
 **1. Large First Load JS on Key Pages**
+
 - **Home page (/)**: 2.33 MB First Load JS
 - **Skills page (/skills)**: 2.32 MB First Load JS
 - **Issue**: These pages significantly exceed performance budgets
@@ -27,6 +28,7 @@
   - Large component trees with many dependencies
 
 **2. Turbopack + Bundle Analyzer Compatibility**
+
 - @next/bundle-analyzer doesn't generate interactive visualization with Turbopack
 - Unable to get detailed tree-map view of exact dependency sizes
 - Recommendation: Consider temporary Webpack build for deeper analysis
@@ -34,17 +36,20 @@
 ### 🟡 Optimization Opportunities
 
 **1. Simple Icons Import Pattern**
+
 - Current: Modular imports configured in next.config.ts
 - Status: Already optimized with tree-shaking
 - Evidence: Individual page sizes are reasonable (3-13 kB)
 - The large First Load JS is likely NOT from simple-icons
 
 **2. Motion/Framer Motion**
+
 - Used extensively for animations across the site
 - Contributes significantly to bundle size
 - Consider: Lazy loading motion components or using CSS animations for simpler cases
 
 **3. Shared Chunks Analysis**
+
 - 166 kB shared across all pages (reasonable)
 - Breakdown:
   - `chunks/b5c92068e29232ea.js`: 59.2 kB (largest)
@@ -59,28 +64,28 @@
 
 ### Static Pages (Pre-rendered)
 
-| Route | Page Size | First Load JS | Notes |
-|-------|-----------|---------------|-------|
-| `/` (Home) | 13.2 kB | 2.33 MB | ⚠️ Largest First Load - animation-heavy |
-| `/skills` | 4.32 kB | 2.32 MB | ⚠️ Second largest - likely simple-icons + motion |
-| `/projects` | 11.6 kB | 203 kB | ✅ Reasonable |
-| `/journey` | 6.14 kB | 197 kB | ✅ Reasonable |
-| `/credentials` | 6.49 kB | 198 kB | ✅ Reasonable |
-| `/contact` | 3.65 kB | 195 kB | ✅ Reasonable |
-| `/projects/elon-ai-toolbox` | 5.24 kB | 158 kB | ✅ Good |
-| `/projects/capstone-deadline` | 0 B | 153 kB | ✅ Good |
-| `/projects/[slug]` (9 paths) | 0 B | 153 kB | ✅ Good |
-| `/recruiter` | 0 B | 153 kB | ✅ Good |
-| `/_not-found` | 0 B | 153 kB | ✅ Good |
+| Route                         | Page Size | First Load JS | Notes                                           |
+| ----------------------------- | --------- | ------------- | ----------------------------------------------- |
+| `/` (Home)                    | 13.2 kB   | 2.33 MB       | ⚠️ Largest First Load - animation-heavy          |
+| `/skills`                     | 4.32 kB   | 2.32 MB       | ⚠️ Second largest - likely simple-icons + motion |
+| `/projects`                   | 11.6 kB   | 203 kB        | ✅ Reasonable                                    |
+| `/journey`                    | 6.14 kB   | 197 kB        | ✅ Reasonable                                    |
+| `/credentials`                | 6.49 kB   | 198 kB        | ✅ Reasonable                                    |
+| `/contact`                    | 3.65 kB   | 195 kB        | ✅ Reasonable                                    |
+| `/projects/elon-ai-toolbox`   | 5.24 kB   | 158 kB        | ✅ Good                                          |
+| `/projects/capstone-deadline` | 0 B       | 153 kB        | ✅ Good                                          |
+| `/projects/[slug]` (9 paths)  | 0 B       | 153 kB        | ✅ Good                                          |
+| `/recruiter`                  | 0 B       | 153 kB        | ✅ Good                                          |
+| `/_not-found`                 | 0 B       | 153 kB        | ✅ Good                                          |
 
 ### Edge Functions
 
-| Route | Size | Notes |
-|-------|------|-------|
-| `/api/tools/download-resume` | 0 B | Edge runtime |
-| `/api/tools/get-contact` | 0 B | Edge runtime |
-| `/api/tools/list-projects` | 0 B | Edge runtime |
-| `/api/tools/open-project` | 0 B | Edge runtime |
+| Route                        | Size | Notes        |
+| ---------------------------- | ---- | ------------ |
+| `/api/tools/download-resume` | 0 B  | Edge runtime |
+| `/api/tools/get-contact`     | 0 B  | Edge runtime |
+| `/api/tools/list-projects`   | 0 B  | Edge runtime |
+| `/api/tools/open-project`    | 0 B  | Edge runtime |
 
 ## 🎯 Recommended Actions
 
@@ -92,6 +97,7 @@
    - Identify exact dependencies causing 2.3 MB First Load JS
 
 2. **Lazy Load Motion Components**
+
    ```tsx
    // Example pattern
    const MotionDiv = dynamic(() => import('motion/react').then(mod => mod.motion.div), {
@@ -176,12 +182,14 @@ The home and skills pages have unusually large First Load JS (~2.3 MB) despite s
 ## 📈 Performance Metrics
 
 ### Current State
+
 - **Build Time**: 1.5s (excellent)
 - **Static Pages**: 18/22 (good static-to-dynamic ratio)
 - **Bundle Range**: 153 kB - 2.33 MB First Load JS
 - **Shared Chunks**: 166 kB (reasonable)
 
 ### Target Goals
+
 - **First Load JS**: <500 kB for all pages
 - **Time to Interactive**: <3s on 3G
 - **Lighthouse Score**: 95+ across all metrics
@@ -190,6 +198,7 @@ The home and skills pages have unusually large First Load JS (~2.3 MB) despite s
 ## 🛠️ Tooling Recommendations
 
 1. **For Current Analysis**:
+
    ```bash
    # Temporarily use Webpack for detailed analysis
    npm run build  # without --turbopack flag

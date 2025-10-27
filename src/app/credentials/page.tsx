@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { CredentialsHero } from "@/components/credentials-hero";
 import { CredentialCard } from "@/components/credential-card";
-import { getEducation, getCertifications } from "@/data/credentials";
-import { GraduationCap, Award } from "lucide-react";
+import { CredentialsHero } from "@/components/credentials-hero";
+import { getCertifications, getEducation } from "@/data/credentials";
+import { motion } from "framer-motion";
+import { Award, GraduationCap } from "lucide-react";
 
 export default function CredentialsPage() {
   const education = getEducation();
@@ -31,8 +31,12 @@ export default function CredentialsPage() {
                 <GraduationCap className="w-6 h-6 text-accent-primary" />
               </div>
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-text-1">Education</h2>
-                <p className="text-text-2">Formal training and academic background</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-text-1">
+                  Education
+                </h2>
+                <p className="text-text-2">
+                  Formal training and academic background
+                </p>
               </div>
             </div>
             <div className="space-y-6">
@@ -54,8 +58,12 @@ export default function CredentialsPage() {
                 <Award className="w-6 h-6 text-brand-primary" />
               </div>
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-text-1">Certifications</h2>
-                <p className="text-text-2">Professional certifications and specialized training</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-text-1">
+                  Certifications
+                </h2>
+                <p className="text-text-2">
+                  Professional certifications and specialized training
+                </p>
               </div>
             </div>
             <div className="space-y-6">

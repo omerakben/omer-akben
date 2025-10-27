@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { CustomTechIcons } from "@/components/custom-tech-icons";
+import type { Technology } from "@/data/technologies";
+import { DURATION } from "@/lib/animations";
 import { getIconBySlug } from "@/lib/icon-manifest";
 import DOMPurify from "dompurify";
-import type { Technology } from "@/data/technologies";
-import { CustomTechIcons } from "@/components/custom-tech-icons";
-import { DURATION } from "@/lib/animations";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 interface TechMarqueeProps {
   technologies: Technology[];
@@ -17,7 +17,7 @@ interface TechMarqueeProps {
 export function TechMarquee({
   technologies,
   direction = "left",
-  speed = 40
+  speed = 40,
 }: TechMarqueeProps) {
   // Duplicate items for seamless infinite loop
   const duplicatedTechnologies = [...technologies, ...technologies];
@@ -47,9 +47,10 @@ export function TechMarquee({
           const iconClasses = `${iconWrapperClass} ${tech.colorClass} [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current`;
 
           // Only sanitize on client side (DOMPurify requires DOM)
-          const sanitizedIconSvg = iconSvg && typeof window !== "undefined"
-            ? DOMPurify.sanitize(iconSvg, { USE_PROFILES: { svg: true } })
-            : iconSvg;
+          const sanitizedIconSvg =
+            iconSvg && typeof window !== "undefined"
+              ? DOMPurify.sanitize(iconSvg, { USE_PROFILES: { svg: true } })
+              : iconSvg;
 
           return (
             <div
@@ -63,12 +64,17 @@ export function TechMarquee({
                   role="img"
                   aria-label={`${tech.name} icon`}
                   dangerouslySetInnerHTML={{
-                    __html: sanitizedIconSvg
+                    __html: sanitizedIconSvg,
                   }}
                 />
               ) : (
-                <div className={`${iconWrapperClass} border border-border-line bg-surf-1`}>
-                  <span className={`text-sm font-semibold ${tech.colorClass}`} aria-hidden="true">
+                <div
+                  className={`${iconWrapperClass} border border-border-line bg-surf-1`}
+                >
+                  <span
+                    className={`text-sm font-semibold ${tech.colorClass}`}
+                    aria-hidden="true"
+                  >
                     {tech.name.charAt(0)}
                   </span>
                 </div>
@@ -144,18 +150,32 @@ export function TechMarqueeSection() {
             technologyRows.row1.length > 0 || technologyRows.row2.length > 0 ? (
               <>
                 {technologyRows.row1.length > 0 && (
-                  <TechMarquee technologies={technologyRows.row1} direction="left" speed={40} />
+                  <TechMarquee
+                    technologies={technologyRows.row1}
+                    direction="left"
+                    speed={40}
+                  />
                 )}
 
                 {technologyRows.row2.length > 0 && (
-                  <TechMarquee technologies={technologyRows.row2} direction="right" speed={35} />
+                  <TechMarquee
+                    technologies={technologyRows.row2}
+                    direction="right"
+                    speed={35}
+                  />
                 )}
               </>
             ) : (
-              <p className="text-center text-sm text-text-3">Technologies are currently unavailable.</p>
+              <p className="text-center text-sm text-text-3">
+                Technologies are currently unavailable.
+              </p>
             )
           ) : (
-            <div className="space-y-4" role="status" aria-label="Loading technologies">
+            <div
+              className="space-y-4"
+              role="status"
+              aria-label="Loading technologies"
+            >
               <div className="h-12 rounded-full bg-surf-1/60 animate-pulse" />
               <div className="h-12 rounded-full bg-surf-1/60 animate-pulse" />
             </div>
@@ -170,9 +190,9 @@ function resolveSimpleIconSvg(iconName: string) {
   // Check custom icons first
   // cspell:disable-next-line
   const customIconMap: Record<string, keyof typeof CustomTechIcons> = {
-    'amazonaws': 'aws',
-    'playwright': 'playwright',
-    'visualstudiocode': 'vscode',
+    amazonaws: "aws",
+    playwright: "playwright",
+    visualstudiocode: "vscode",
   };
 
   if (customIconMap[iconName]) {
@@ -183,7 +203,7 @@ function resolveSimpleIconSvg(iconName: string) {
   const icon = getIconBySlug(iconName);
 
   // Type guard: check if icon is a SimpleIcon object (has an svg property)
-  if (icon && typeof icon === 'object' && 'svg' in icon) {
+  if (icon && typeof icon === "object" && "svg" in icon) {
     return icon.svg;
   }
 

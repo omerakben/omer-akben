@@ -1,4 +1,5 @@
 # AI Agent Implementation Plan - Portfolio Chatbot
+
 **Date**: 2025-10-17
 **Project**: omerakben.com Portfolio AI Agent
 **Purpose**: Intelligent chatbot for recruiters and employers with autonomous email capabilities
@@ -8,6 +9,7 @@
 ## Executive Summary
 
 Transform the portfolio from static to **conversational** with an AI agent that:
+
 - Answers interview-style questions naturally ("Tell me about yourself", "What's your experience?")
 - Proactively recommends actions (schedule calls, send emails)
 - **Autonomously sends conversation summaries** to visitors and Omer
@@ -20,12 +22,14 @@ Transform the portfolio from static to **conversational** with an AI agent that:
 ### **Primary Framework: Vercel AI SDK + OpenAI**
 
 **Why This Stack?**
+
 - ✅ **Native Next.js Integration**: Already using Next.js 15
 - ✅ **Developer-Friendly**: Fastest implementation path
 - ✅ **Modern Architecture**: Edge-optimized, React streaming
 - ✅ **Tool Calling Support**: Built-in support for autonomous actions
 
 **Architecture**:
+
 ```
 Visitor → Chat UI (React) → Vercel AI SDK → OpenAI GPT-4o → Tools
                                                               ├─ Email Tool (Resend)
@@ -35,14 +39,14 @@ Visitor → Chat UI (React) → Vercel AI SDK → OpenAI GPT-4o → Tools
 
 ### **Components**
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Chat Interface** | Vercel AI SDK + shadcn/ui Chat components | User-facing chat UI |
-| **AI Model** | OpenAI GPT-4o (via Vercel AI SDK) | Natural conversation, reasoning |
-| **Email Service** | Resend | Send conversation summaries, follow-ups |
-| **Scheduling** | Cal.com API | Schedule calls with Omer |
-| **Data Source** | src/data/facts.ts | Portfolio information, grounding data |
-| **Storage** | Vercel KV (Redis) | Conversation history, session state |
+| Component          | Technology                                | Purpose                                 |
+| ------------------ | ----------------------------------------- | --------------------------------------- |
+| **Chat Interface** | Vercel AI SDK + shadcn/ui Chat components | User-facing chat UI                     |
+| **AI Model**       | OpenAI GPT-4o (via Vercel AI SDK)         | Natural conversation, reasoning         |
+| **Email Service**  | Resend                                    | Send conversation summaries, follow-ups |
+| **Scheduling**     | Cal.com API                               | Schedule calls with Omer                |
+| **Data Source**    | src/data/facts.ts                         | Portfolio information, grounding data   |
+| **Storage**        | Vercel KV (Redis)                         | Conversation history, session state     |
 
 ---
 
@@ -51,6 +55,7 @@ Visitor → Chat UI (React) → Vercel AI SDK → OpenAI GPT-4o → Tools
 ### **Conversation Stages**
 
 **Stage 1: Greeting & Context Gathering (0-2 messages)**
+
 ```
 Agent: "Hi! I'm Ozzy, Omer's AI assistant. I can answer questions about his background,
        projects, and experience. Are you a recruiter, hiring manager, or just exploring?"
@@ -59,6 +64,7 @@ Agent: "Hi! I'm Ozzy, Omer's AI assistant. I can answer questions about his back
 ```
 
 **Stage 2: Q&A Session (3-10 messages)**
+
 ```
 Recruiter: "Tell me about Omer's AI experience"
 Agent: [Retrieves from facts.ts] "Omer has 2+ years of AI/ML engineering experience,
@@ -71,6 +77,7 @@ Agent: [Retrieves from projects.ts] "His standout project is the DEADLINE capsto
 ```
 
 **Stage 3: Proactive Engagement (After 5+ quality exchanges)**
+
 ```
 Agent: "You seem interested! Would you like me to:
        1. 📧 Email you a summary of this conversation
@@ -79,6 +86,7 @@ Agent: "You seem interested! Would you like me to:
 ```
 
 **Stage 4: Action Execution**
+
 ```
 Recruiter: "Yes, send me the summary and let's schedule a call"
 Agent: [Triggers email tool] ✓ Email sent to recruiter@company.com
@@ -86,6 +94,7 @@ Agent: [Triggers email tool] ✓ Email sent to recruiter@company.com
 ```
 
 **Stage 5: Follow-up (Autonomous)**
+
 ```
 [After conversation ends]
 → Email to Recruiter: Conversation summary + Resume + Cal.com link
@@ -99,6 +108,7 @@ Agent: [Triggers email tool] ✓ Email sent to recruiter@company.com
 ### **Email Templates**
 
 **Template 1: Conversation Summary to Visitor**
+
 ```
 Subject: Your conversation with Omer Akben's AI Assistant
 
@@ -131,6 +141,7 @@ Ozzy (Omer's AI Assistant)
 ```
 
 **Template 2: New Conversation Alert to Omer**
+
 ```
 Subject: 🎯 New Recruiter Conversation - [Company Name]
 
@@ -176,6 +187,7 @@ View full conversation: [Dashboard link]
 ### **Email Service: Resend Integration**
 
 **Why Resend?**
+
 - Modern, developer-friendly API
 - React Email template support
 - Native Next.js integration
@@ -183,6 +195,7 @@ View full conversation: [Dashboard link]
 - Affordable pricing ($20/mo for 50k emails)
 
 **Implementation**:
+
 ```typescript
 // src/lib/email/resend-client.ts
 import { Resend } from 'resend';
@@ -229,6 +242,7 @@ export async function notifyOmer(
 ### **Phase 1: Foundation (Week 1)**
 
 **Tasks**:
+
 - [ ] Install Vercel AI SDK (`npm install ai`)
 - [ ] Set up OpenAI API integration
 - [ ] Create chat UI component (shadcn/ui based)
@@ -236,6 +250,7 @@ export async function notifyOmer(
 - [ ] Test conversation flow
 
 **Files to Create**:
+
 ```
 src/app/chat/page.tsx                 # Chat page
 src/components/chat/chat-interface.tsx # Chat UI component
@@ -250,6 +265,7 @@ src/lib/ai/conversation-context.ts    # Conversation state management
 ### **Phase 2: Email Automation (Week 2)**
 
 **Tasks**:
+
 - [ ] Sign up for Resend account
 - [ ] Create email templates (React Email)
 - [ ] Implement email sending tools
@@ -257,6 +273,7 @@ src/lib/ai/conversation-context.ts    # Conversation state management
 - [ ] Test email delivery
 
 **Files to Create**:
+
 ```
 src/lib/email/resend-client.ts        # Resend integration
 src/lib/email/templates/              # Email templates
@@ -266,6 +283,7 @@ src/lib/ai/tools/email-tool.ts        # Email tool for AI agent
 ```
 
 **Environment Variables**:
+
 ```env
 RESEND_API_KEY=re_...
 OMER_EMAIL=akbenof@gmail.com
@@ -278,6 +296,7 @@ OMER_EMAIL=akbenof@gmail.com
 ### **Phase 3: Proactive Engagement (Week 3)**
 
 **Tasks**:
+
 - [ ] Implement conversation stage detection
 - [ ] Add proactive recommendation logic
 - [ ] Create calendar integration (Cal.com)
@@ -285,6 +304,7 @@ OMER_EMAIL=akbenof@gmail.com
 - [ ] Implement sentiment analysis
 
 **Files to Create**:
+
 ```
 src/lib/ai/conversation-analyzer.ts   # Detect conversation stage
 src/lib/ai/tools/calendar-tool.ts     # Cal.com integration
@@ -298,6 +318,7 @@ src/lib/ai/sentiment.ts               # Basic sentiment analysis
 ### **Phase 4: Storage & Analytics (Week 4)**
 
 **Tasks**:
+
 - [ ] Set up Vercel KV for conversation storage
 - [ ] Store all conversations with metadata
 - [ ] Create admin dashboard for reviewing conversations
@@ -305,6 +326,7 @@ src/lib/ai/sentiment.ts               # Basic sentiment analysis
 - [ ] GDPR compliance (consent, data deletion)
 
 **Files to Create**:
+
 ```
 src/lib/storage/kv-client.ts          # Vercel KV integration
 src/app/admin/conversations/page.tsx  # Admin dashboard
@@ -503,6 +525,7 @@ const heading = { fontSize: '24px', fontWeight: 'bold', color: '#0b1328' };
 ### **Requirements**
 
 **Must-Have Features**:
+
 - [ ] Cookie consent banner before chat initialization
 - [ ] Clear privacy policy link in chat interface
 - [ ] Opt-in for email communication
@@ -511,6 +534,7 @@ const heading = { fontSize: '24px', fontWeight: 'bold', color: '#0b1328' };
 - [ ] Anonymized analytics (no PII in tracking)
 
 **Implementation**:
+
 ```typescript
 // Before sending any email, get explicit consent
 const consent = await getVisitorConsent(visitorEmail);
@@ -520,6 +544,7 @@ if (!consent.email) {
 ```
 
 **Privacy Policy Updates**:
+
 - Add section on AI chatbot data collection
 - Explain conversation storage (30 days, then anonymized)
 - Detail email automation and opt-out process
@@ -531,16 +556,17 @@ if (!consent.email) {
 
 **Key Performance Indicators (KPIs)**:
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Engagement Rate** | >40% of visitors engage | Chat opens / Total visitors |
-| **Quality Conversations** | >5 messages | Conversations with 5+ exchanges |
-| **Email Capture Rate** | >25% | Emails collected / Total chats |
-| **Call Scheduling Rate** | >10% | Scheduled calls / Total chats |
-| **Recruiter Conversion** | >5% | Recruiter convos / Total chats |
-| **Sentiment Score** | >4.0/5.0 | AI-analyzed conversation sentiment |
+| Metric                    | Target                  | Measurement                        |
+| ------------------------- | ----------------------- | ---------------------------------- |
+| **Engagement Rate**       | >40% of visitors engage | Chat opens / Total visitors        |
+| **Quality Conversations** | >5 messages             | Conversations with 5+ exchanges    |
+| **Email Capture Rate**    | >25%                    | Emails collected / Total chats     |
+| **Call Scheduling Rate**  | >10%                    | Scheduled calls / Total chats      |
+| **Recruiter Conversion**  | >5%                     | Recruiter convos / Total chats     |
+| **Sentiment Score**       | >4.0/5.0                | AI-analyzed conversation sentiment |
 
 **Analytics Dashboard**:
+
 ```
 📊 PORTFOLIO AI AGENT ANALYTICS
 
@@ -565,15 +591,16 @@ Top Questions:
 
 **Monthly Operational Costs**:
 
-| Service | Tier | Cost |
-|---------|------|------|
-| OpenAI API | GPT-4o @ ~10k conversations/mo | ~$150 |
-| Resend | 50k emails/mo | $20 |
-| Vercel KV | 1GB storage | $0 (Free tier) |
-| Cal.com | Basic | $0 (Free tier) |
-| **Total** | | **~$170/month** |
+| Service    | Tier                           | Cost            |
+| ---------- | ------------------------------ | --------------- |
+| OpenAI API | GPT-4o @ ~10k conversations/mo | ~$150           |
+| Resend     | 50k emails/mo                  | $20             |
+| Vercel KV  | 1GB storage                    | $0 (Free tier)  |
+| Cal.com    | Basic                          | $0 (Free tier)  |
+| **Total**  |                                | **~$170/month** |
 
 **Cost Optimization**:
+
 - Use GPT-4o-mini for simple Q&A ($0.15 vs $5 per 1M tokens)
 - Cache conversation context to reduce API calls
 - Rate limit chat to 20 messages per conversation
@@ -677,6 +704,7 @@ Visitor visits omerakben.com
 This implementation plan provides a **production-ready roadmap** for transforming your portfolio into an intelligent, conversational experience that actively engages recruiters and converts visitors into opportunities.
 
 **Key Strengths**:
+
 - ✅ Modern, scalable architecture
 - ✅ Autonomous email workflows
 - ✅ GDPR-compliant data handling

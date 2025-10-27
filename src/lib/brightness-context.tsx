@@ -1,22 +1,40 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import { FAVICON_SOURCES, LIGHT_BRIGHTNESS_MODES } from '@/lib/constants';
+import { FAVICON_SOURCES, LIGHT_BRIGHTNESS_MODES } from "@/lib/constants";
 
-export type BrightnessMode = '-3' | '-2' | '-1' | '0' | '+1' | '+2' | '+3' | 'auto';
+export type BrightnessMode =
+  | "-3"
+  | "-2"
+  | "-1"
+  | "0"
+  | "+1"
+  | "+2"
+  | "+3"
+  | "auto";
 
 interface BrightnessContextType {
   brightness: BrightnessMode;
   setBrightness: (mode: BrightnessMode) => void;
 }
 
-const BrightnessContext = createContext<BrightnessContextType | undefined>(undefined);
+const BrightnessContext = createContext<BrightnessContextType | undefined>(
+  undefined
+);
 
 type ThemeTone = keyof typeof FAVICON_SOURCES;
 type FaviconSourceKey = keyof typeof FAVICON_SOURCES.light;
 
-const LIGHT_MODE_SET = new Set<(typeof LIGHT_BRIGHTNESS_MODES)[number]>(LIGHT_BRIGHTNESS_MODES);
+const LIGHT_MODE_SET = new Set<(typeof LIGHT_BRIGHTNESS_MODES)[number]>(
+  LIGHT_BRIGHTNESS_MODES
+);
 
 const MANAGED_FAVICONS: Array<{
   id: string;
@@ -25,12 +43,41 @@ const MANAGED_FAVICONS: Array<{
   sizes?: string;
   type?: string;
 }> = [
-  { id: "theme-favicon-16", rel: "icon", sourceKey: "icon16", sizes: "16x16", type: "image/png" },
-  { id: "theme-favicon-32", rel: "icon", sourceKey: "icon32", sizes: "32x32", type: "image/png" },
+  {
+    id: "theme-favicon-16",
+    rel: "icon",
+    sourceKey: "icon16",
+    sizes: "16x16",
+    type: "image/png",
+  },
+  {
+    id: "theme-favicon-32",
+    rel: "icon",
+    sourceKey: "icon32",
+    sizes: "32x32",
+    type: "image/png",
+  },
   { id: "theme-favicon-ico", rel: "shortcut icon", sourceKey: "iconIco" },
-  { id: "theme-favicon-apple", rel: "apple-touch-icon", sourceKey: "appleTouch", sizes: "180x180" },
-  { id: "theme-favicon-192", rel: "icon", sourceKey: "android192", sizes: "192x192", type: "image/png" },
-  { id: "theme-favicon-512", rel: "icon", sourceKey: "android512", sizes: "512x512", type: "image/png" },
+  {
+    id: "theme-favicon-apple",
+    rel: "apple-touch-icon",
+    sourceKey: "appleTouch",
+    sizes: "180x180",
+  },
+  {
+    id: "theme-favicon-192",
+    rel: "icon",
+    sourceKey: "android192",
+    sizes: "192x192",
+    type: "image/png",
+  },
+  {
+    id: "theme-favicon-512",
+    rel: "icon",
+    sourceKey: "android512",
+    sizes: "512x512",
+    type: "image/png",
+  },
   { id: "theme-favicon-manifest", rel: "manifest", sourceKey: "manifest" },
 ];
 
@@ -39,7 +86,9 @@ function toneFromMode(mode: BrightnessMode): ThemeTone {
     return "dark";
   }
 
-  return LIGHT_MODE_SET.has(mode as (typeof LIGHT_BRIGHTNESS_MODES)[number]) ? "light" : "dark";
+  return LIGHT_MODE_SET.has(mode as (typeof LIGHT_BRIGHTNESS_MODES)[number])
+    ? "light"
+    : "dark";
 }
 
 function ensureManagedLink(config: (typeof MANAGED_FAVICONS)[number]) {
@@ -97,12 +146,25 @@ function updateFaviconsForTone(tone: ThemeTone) {
   });
 }
 
-export function BrightnessProvider({ children }: { children: React.ReactNode }) {
-  const [brightness, setBrightnessState] = useState<BrightnessMode>('0');
+export function BrightnessProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [brightness, setBrightnessState] = useState<BrightnessMode>("0");
 
   useEffect(() => {
-    const saved = localStorage.getItem('brightness-mode');
-    const validModes: BrightnessMode[] = ['-3', '-2', '-1', '0', '+1', '+2', '+3', 'auto'];
+    const saved = localStorage.getItem("brightness-mode");
+    const validModes: BrightnessMode[] = [
+      "-3",
+      "-2",
+      "-1",
+      "0",
+      "+1",
+      "+2",
+      "+3",
+      "auto",
+    ];
     if (saved && validModes.includes(saved as BrightnessMode)) {
       setBrightnessState(saved as BrightnessMode);
     }
@@ -111,25 +173,25 @@ export function BrightnessProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const root = document.documentElement;
 
-    if (brightness === 'auto') {
+    if (brightness === "auto") {
       // Auto mode: use system preference + time-based adjustment
-      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
       const applyAutoTheme = () => {
         const hour = new Date().getHours();
         const isDarkOS = darkModeQuery.matches;
-        let targetMode: BrightnessMode = '0';
+        let targetMode: BrightnessMode = "0";
 
         // If OS prefers dark OR it's nighttime (8pm-6am), use dark themes
         if (isDarkOS) {
           // Use darker modes at night (10pm-5am), medium dark otherwise
-          targetMode = hour >= 22 || hour < 5 ? '-1' : '0';
+          targetMode = hour >= 22 || hour < 5 ? "-1" : "0";
         } else {
           // Light mode: use brighter during day, softer in evening
-          targetMode = hour >= 18 || hour < 8 ? '+1' : '+2';
+          targetMode = hour >= 18 || hour < 8 ? "+1" : "+2";
         }
 
-        root.setAttribute('data-brightness', targetMode);
+        root.setAttribute("data-brightness", targetMode);
         updateFaviconsForTone(toneFromMode(targetMode));
       };
 
@@ -139,24 +201,24 @@ export function BrightnessProvider({ children }: { children: React.ReactNode }) 
         applyAutoTheme();
       };
 
-      darkModeQuery.addEventListener('change', handler);
+      darkModeQuery.addEventListener("change", handler);
 
       // Also check every hour for time-based adjustments
       const interval = setInterval(applyAutoTheme, 60 * 60 * 1000);
 
       return () => {
-        darkModeQuery.removeEventListener('change', handler);
+        darkModeQuery.removeEventListener("change", handler);
         clearInterval(interval);
       };
     } else {
-      root.setAttribute('data-brightness', brightness);
+      root.setAttribute("data-brightness", brightness);
       updateFaviconsForTone(toneFromMode(brightness));
     }
   }, [brightness]);
 
   const setBrightness = (mode: BrightnessMode) => {
     setBrightnessState(mode);
-    localStorage.setItem('brightness-mode', mode);
+    localStorage.setItem("brightness-mode", mode);
   };
 
   // Memoize context value to prevent unnecessary re-renders
@@ -175,7 +237,7 @@ export function BrightnessProvider({ children }: { children: React.ReactNode }) 
 export function useBrightness() {
   const context = useContext(BrightnessContext);
   if (!context) {
-    throw new Error('useBrightness must be used within BrightnessProvider');
+    throw new Error("useBrightness must be used within BrightnessProvider");
   }
   return context;
 }

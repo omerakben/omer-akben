@@ -100,7 +100,13 @@ export function getSkillIcon(skillName: string): string | null {
 /**
  * Render skill icon as React component
  */
-export function SkillIcon({ skillName, className = "w-5 h-5" }: { skillName: string; className?: string }) {
+export function SkillIcon({
+  skillName,
+  className = "w-5 h-5",
+}: {
+  skillName: string;
+  className?: string;
+}) {
   const iconSlug = SKILL_ICON_MAP[skillName];
 
   if (!iconSlug) {

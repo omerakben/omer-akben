@@ -3,9 +3,9 @@
  * Tests query parameter validation, metrics retrieval, and error handling
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { GET } from "./route";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockGetRequest, getResponseJson } from "../tools/test-utils";
+import { GET } from "./route";
 
 // Mock the cache module - must be declared inline due to hoisting
 vi.mock("@/lib/cache/openai-cache", () => ({
@@ -271,7 +271,9 @@ describe("GET /api/cache-metrics", () => {
 
   describe("Error handling", () => {
     it("should return 500 when getCacheMetrics throws error", async () => {
-      getCacheMetricsMock.mockRejectedValueOnce(new Error("Redis connection failed"));
+      getCacheMetricsMock.mockRejectedValueOnce(
+        new Error("Redis connection failed")
+      );
 
       const req = createMockGetRequest(
         { type: "embedding", days: "7" },
@@ -310,8 +312,20 @@ describe("GET /api/cache-metrics", () => {
 
   describe("Edge cases", () => {
     it("should handle multiple simultaneous requests", async () => {
-      const mockMetrics1 = { hits: 10, misses: 5, hitRate: 66.67, totalCalls: 15, avgLookupTime: 0 };
-      const mockMetrics2 = { hits: 20, misses: 10, hitRate: 66.67, totalCalls: 30, avgLookupTime: 0 };
+      const mockMetrics1 = {
+        hits: 10,
+        misses: 5,
+        hitRate: 66.67,
+        totalCalls: 15,
+        avgLookupTime: 0,
+      };
+      const mockMetrics2 = {
+        hits: 20,
+        misses: 10,
+        hitRate: 66.67,
+        totalCalls: 30,
+        avgLookupTime: 0,
+      };
 
       getCacheMetricsMock
         .mockResolvedValueOnce(mockMetrics1)
@@ -328,8 +342,8 @@ describe("GET /api/cache-metrics", () => {
 
       const [response1, response2] = await Promise.all([GET(req1), GET(req2)]);
 
-      const json1 = await getResponseJson(response1) as { metrics: unknown };
-      const json2 = await getResponseJson(response2) as { metrics: unknown };
+      const json1 = (await getResponseJson(response1)) as { metrics: unknown };
+      const json2 = (await getResponseJson(response2)) as { metrics: unknown };
 
       expect(response1.status).toBe(200);
       expect(json1.metrics).toEqual(mockMetrics1);

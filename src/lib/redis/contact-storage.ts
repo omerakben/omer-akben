@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { Redis } from "@upstash/redis";
 
 const redis =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -24,7 +24,7 @@ export interface ContactData {
  */
 export async function saveContactToRedis(contact: ContactData): Promise<void> {
   if (!redis) {
-    console.warn('[Redis] Contact storage unavailable in development mode');
+    console.warn("[Redis] Contact storage unavailable in development mode");
     return;
   }
 
@@ -35,12 +35,12 @@ export async function saveContactToRedis(contact: ContactData): Promise<void> {
     await redis.setex(key, ttl, JSON.stringify(contact));
 
     // Also add to a sorted set for tracking (optional, for analytics)
-    await redis.zadd('contacts:timeline', {
+    await redis.zadd("contacts:timeline", {
       score: Date.now(),
       member: contact.email,
     });
   } catch (error) {
-    console.error('[Redis] Failed to save contact:', error);
+    console.error("[Redis] Failed to save contact:", error);
     throw error;
   }
 }
@@ -48,7 +48,9 @@ export async function saveContactToRedis(contact: ContactData): Promise<void> {
 /**
  * Retrieve contact information from Redis
  */
-export async function getContactFromRedis(email: string): Promise<ContactData | null> {
+export async function getContactFromRedis(
+  email: string
+): Promise<ContactData | null> {
   if (!redis) {
     return null;
   }
@@ -63,7 +65,7 @@ export async function getContactFromRedis(email: string): Promise<ContactData | 
 
     return JSON.parse(data) as ContactData;
   } catch (error) {
-    console.error('[Redis] Failed to retrieve contact:', error);
+    console.error("[Redis] Failed to retrieve contact:", error);
     return null;
   }
 }
@@ -81,7 +83,7 @@ export async function hasCollectedContact(email: string): Promise<boolean> {
     const exists = await redis.exists(key);
     return exists === 1;
   } catch (error) {
-    console.error('[Redis] Failed to check contact existence:', error);
+    console.error("[Redis] Failed to check contact existence:", error);
     return false;
   }
 }

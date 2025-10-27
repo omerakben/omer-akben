@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
+import { createMetadata } from "@/lib/metadata";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
   title: "Elon AI Toolbox",

@@ -1,10 +1,14 @@
-import { ImageResponse } from "next/og";
 import { getProjectBySlug } from "@/data/projects";
+import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function ProjectOG({ params }: { params: { slug: string } }) {
+export default async function ProjectOG({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const project = getProjectBySlug(params.slug);
   const title = project?.title ?? "Project";
   const subtitle = (project?.technologies ?? []).slice(0, 4).join(" • ");
@@ -26,7 +30,9 @@ export default async function ProjectOG({ params }: { params: { slug: string } }
       >
         <div style={{ fontSize: 54, color: "#00FFC6" }}>{title}</div>
         <div style={{ fontSize: 32, opacity: 0.8 }}>{subtitle}</div>
-        <div style={{ fontSize: 24, opacity: 0.6 }}>{`omerakben.com/projects/${params.slug}`}</div>
+        <div
+          style={{ fontSize: 24, opacity: 0.6 }}
+        >{`omerakben.com/projects/${params.slug}`}</div>
       </div>
     ),
     { ...size }

@@ -23,7 +23,13 @@ export function NotFoundIllustration() {
           opacity="0.5"
         />
         <defs>
-          <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient
+            id="borderGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="var(--brand-primary)" />
             <stop offset="100%" stopColor="var(--accent-primary)" />
           </linearGradient>
@@ -33,11 +39,17 @@ export function NotFoundIllustration() {
       {/* 404 Numbers */}
       <div className="absolute inset-0 flex items-center justify-center">
         {/* 4 - Top Left */}
-        <span className="absolute top-[15%] left-[15%] text-[48px] font-bold text-brand-primary/60">4</span>
+        <span className="absolute top-[15%] left-[15%] text-[48px] font-bold text-brand-primary/60">
+          4
+        </span>
         {/* 0 - Top Right */}
-        <span className="absolute top-[32%] right-[8%] text-[48px] font-bold text-brand-primary/60">0</span>
+        <span className="absolute top-[32%] right-[8%] text-[48px] font-bold text-brand-primary/60">
+          0
+        </span>
         {/* 4 - Bottom Left */}
-        <span className="absolute bottom-[17%] left-[17.5%] text-[48px] font-bold text-brand-primary/60">4</span>
+        <span className="absolute bottom-[17%] left-[17.5%] text-[48px] font-bold text-brand-primary/60">
+          4
+        </span>
       </div>
 
       {/* Robot Container */}

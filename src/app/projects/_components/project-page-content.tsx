@@ -23,7 +23,9 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
 
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium border ${roleColors[project.role]}`}>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium border ${roleColors[project.role]}`}
+            >
               {project.role}
             </span>
             {project.status && (
@@ -42,14 +44,20 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
             )}
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-text-1 mb-4">{project.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-text-1 mb-4">
+            {project.title}
+          </h1>
 
           <p className="text-xl text-text-2 mb-6">{project.description}</p>
 
           <div className="flex flex-wrap gap-4">
             {project.demoUrl && (
               <Button asChild size="lg">
-                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <ExternalLink aria-hidden="true" className="w-4 h-4" />
                   View Live Demo
                 </a>
@@ -57,7 +65,11 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
             )}
             {project.githubUrl && (
               <Button asChild variant="outline" size="lg">
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Github aria-hidden="true" className="w-4 h-4" />
                   View Source
                 </a>
@@ -68,8 +80,12 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
 
         {project.longDescription && (
           <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text-1 mb-4">About This Project</h2>
-            <p className="text-text-2 leading-relaxed">{project.longDescription}</p>
+            <h2 className="text-2xl font-bold text-text-1 mb-4">
+              About This Project
+            </h2>
+            <p className="text-text-2 leading-relaxed">
+              {project.longDescription}
+            </p>
           </div>
         )}
 
@@ -77,7 +93,10 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
-              <span key={tech} className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line">
+              <span
+                key={tech}
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+              >
                 {tech}
               </span>
             ))}
@@ -90,12 +109,14 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
             <div className="flex gap-4 text-text-2">
               {project.startDate && (
                 <div>
-                  <span className="font-medium">Started:</span> {project.startDate}
+                  <span className="font-medium">Started:</span>{" "}
+                  {project.startDate}
                 </div>
               )}
               {project.endDate && (
                 <div>
-                  <span className="font-medium">Completed:</span> {project.endDate}
+                  <span className="font-medium">Completed:</span>{" "}
+                  {project.endDate}
                 </div>
               )}
             </div>
@@ -117,12 +138,22 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
         {(project.demoUrl || project.githubUrl) && (
           <div className="mt-8 flex gap-3">
             {project.demoUrl && (
-              <a className="underline" href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+              <a
+                className="underline"
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Live Demo
               </a>
             )}
             {project.githubUrl && (
-              <a className="underline" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+              <a
+                className="underline"
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 GitHub
               </a>
             )}

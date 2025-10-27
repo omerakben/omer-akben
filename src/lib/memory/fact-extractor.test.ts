@@ -3,8 +3,8 @@
  * Tests OpenAI-based extraction, validation, confidence thresholds, and integration
  */
 
-import { describe, expect, it, beforeEach, vi } from "vitest";
 import type { UIMessage } from "ai";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ExtractedFacts } from "./types";
 
 const generateTextMock = vi.fn();
@@ -68,12 +68,22 @@ describe("fact-extractor", () => {
         {
           id: "msg-1",
           role: "user",
-          parts: [{ type: "text" as const, text: "I'm a senior developer at Acme Corp working with React and TypeScript" }],
+          parts: [
+            {
+              type: "text" as const,
+              text: "I'm a senior developer at Acme Corp working with React and TypeScript",
+            },
+          ],
         },
         {
           id: "msg-2",
           role: "assistant",
-          parts: [{ type: "text" as const, text: "Great! I can help you with your React projects." }],
+          parts: [
+            {
+              type: "text" as const,
+              text: "Great! I can help you with your React projects.",
+            },
+          ],
         },
       ];
 
@@ -101,8 +111,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi there!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi there!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -117,8 +135,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -131,8 +157,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -152,8 +186,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -174,8 +216,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -196,8 +246,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -217,8 +275,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -239,8 +305,16 @@ describe("fact-extractor", () => {
       const { extractFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "I work with React" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Great!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "I work with React" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Great!" }],
+        },
       ];
 
       const result = await extractFacts(messages);
@@ -284,11 +358,21 @@ describe("fact-extractor", () => {
       const { extractAndSaveFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
-      await expect(extractAndSaveFacts("anonymous", messages)).resolves.not.toThrow();
+      await expect(
+        extractAndSaveFacts("anonymous", messages)
+      ).resolves.not.toThrow();
       expect(generateTextMock).not.toHaveBeenCalled();
       expect(mergeSemanticMemoryMock).not.toHaveBeenCalled();
     });
@@ -301,8 +385,16 @@ describe("fact-extractor", () => {
       const { extractAndSaveFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       await extractAndSaveFacts("user-123", messages);
@@ -327,14 +419,27 @@ describe("fact-extractor", () => {
       const { extractAndSaveFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "I work with React and TypeScript" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Great!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [
+            { type: "text" as const, text: "I work with React and TypeScript" },
+          ],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Great!" }],
+        },
       ];
 
       await extractAndSaveFacts("user-123", messages);
 
       expect(generateTextMock).toHaveBeenCalled();
-      expect(mergeSemanticMemoryMock).toHaveBeenCalledWith("user-123", validFacts);
+      expect(mergeSemanticMemoryMock).toHaveBeenCalledWith(
+        "user-123",
+        validFacts
+      );
     });
 
     it("should handle merge errors gracefully", async () => {
@@ -352,12 +457,22 @@ describe("fact-extractor", () => {
       const { extractAndSaveFacts } = await import("./fact-extractor");
 
       const messages: UIMessage[] = [
-        { id: "msg-1", role: "user", parts: [{ type: "text" as const, text: "Hello" }] },
-        { id: "msg-2", role: "assistant", parts: [{ type: "text" as const, text: "Hi!" }] },
+        {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text" as const, text: "Hello" }],
+        },
+        {
+          id: "msg-2",
+          role: "assistant",
+          parts: [{ type: "text" as const, text: "Hi!" }],
+        },
       ];
 
       // Should not throw even if merge fails
-      await expect(extractAndSaveFacts("user-123", messages)).resolves.not.toThrow();
+      await expect(
+        extractAndSaveFacts("user-123", messages)
+      ).resolves.not.toThrow();
     });
 
     it("should extract from conversations with UIMessage content variations", async () => {
@@ -381,7 +496,12 @@ describe("fact-extractor", () => {
         {
           id: "msg-2",
           role: "assistant",
-          parts: [{ type: "text" as const, text: "That's great! What are you learning?" }],
+          parts: [
+            {
+              type: "text" as const,
+              text: "That's great! What are you learning?",
+            },
+          ],
         },
       ];
 

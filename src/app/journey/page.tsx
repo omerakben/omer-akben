@@ -1,11 +1,12 @@
-import { JourneyHero } from "@/components/journey-hero";
 import { EnhancedTimeline } from "@/components/enhanced-timeline";
+import { JourneyHero } from "@/components/journey-hero";
 import { journeyData } from "@/data/journey";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata = createMetadata({
   title: "My Journey",
-  description: "A timeline of my professional experience, education, and key achievements in software engineering and AI/ML.",
+  description:
+    "A timeline of my professional experience, education, and key achievements in software engineering and AI/ML.",
   path: "/journey",
 });
 

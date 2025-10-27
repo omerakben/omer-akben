@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Sparkles } from 'lucide-react';
+import { Sparkles } from "lucide-react";
 
 interface FollowupChipsProps {
   /**
@@ -27,7 +27,11 @@ interface FollowupChipsProps {
  * - Full keyboard navigation support
  * - ARIA compliant for screen readers
  */
-export function FollowupChips({ followups, onSend, className = '' }: FollowupChipsProps) {
+export function FollowupChips({
+  followups,
+  onSend,
+  className = "",
+}: FollowupChipsProps) {
   if (!followups || followups.length === 0) {
     return null;
   }
@@ -36,8 +40,11 @@ export function FollowupChips({ followups, onSend, className = '' }: FollowupChi
     onSend(question);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, question: string) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLButtonElement>,
+    question: string
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       onSend(question);
     }
@@ -74,17 +81,17 @@ export function FollowupChips({ followups, onSend, className = '' }: FollowupChi
             type="button"
           >
             {/* Chip number indicator */}
-            <span className="flex-shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center
+            <span
+              className="flex-shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center
                            rounded-full bg-brand-primary/10 text-brand-primary text-xs font-medium
                            group-hover:bg-brand-primary group-hover:text-surf-0
-                           transition-colors duration-200">
+                           transition-colors duration-200"
+            >
               {index + 1}
             </span>
 
             {/* Question text */}
-            <span className="flex-1 leading-relaxed">
-              {question}
-            </span>
+            <span className="flex-1 leading-relaxed">{question}</span>
           </button>
         ))}
       </div>

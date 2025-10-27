@@ -1,7 +1,7 @@
+import { logError } from "@/lib/log";
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
-import { logError } from "@/lib/log";
 
 // Allow up to 10 seconds for generation
 export const maxDuration = 10;
@@ -30,23 +30,23 @@ export async function POST(req: Request) {
     const { userMessage, assistantMessage, recentlyShown = [] } = body;
 
     // Validate input
-    if (!userMessage || typeof userMessage !== 'string') {
+    if (!userMessage || typeof userMessage !== "string") {
       return NextResponse.json(
-        { error: 'userMessage is required and must be a string' },
+        { error: "userMessage is required and must be a string" },
         { status: 400 }
       );
     }
 
-    if (!assistantMessage || typeof assistantMessage !== 'string') {
+    if (!assistantMessage || typeof assistantMessage !== "string") {
       return NextResponse.json(
-        { error: 'assistantMessage is required and must be a string' },
+        { error: "assistantMessage is required and must be a string" },
         { status: 400 }
       );
     }
 
     if (!Array.isArray(recentlyShown)) {
       return NextResponse.json(
-        { error: 'recentlyShown must be an array' },
+        { error: "recentlyShown must be an array" },
         { status: 400 }
       );
     }
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
 Assistant replied: "${assistantMessage}"
 
-${recentlyShown.length > 0 ? `Recently shown questions (avoid these):\n${recentlyShown.map(q => `- ${q}`).join('\n')}` : ''}
+${recentlyShown.length > 0 ? `Recently shown questions (avoid these):\n${recentlyShown.map((q) => `- ${q}`).join("\n")}` : ""}
 
 Generate 2 follow-up questions as a JSON array:`;
 
@@ -73,7 +73,7 @@ Generate 2 follow-up questions as a JSON array:`;
     try {
       const parsed = JSON.parse(result.text.trim());
       if (!Array.isArray(parsed)) {
-        throw new Error('Response is not an array');
+        throw new Error("Response is not an array");
       }
       suggestions = parsed.slice(0, 2); // Ensure exactly 2 questions
     } catch {
@@ -82,7 +82,7 @@ Generate 2 follow-up questions as a JSON array:`;
         new Error(`Failed to parse AI response: ${result.text}`)
       );
       return NextResponse.json(
-        { error: 'Failed to parse AI response' },
+        { error: "Failed to parse AI response" },
         { status: 500 }
       );
     }
@@ -94,19 +94,19 @@ Generate 2 follow-up questions as a JSON array:`;
         new Error(`Invalid suggestions length: ${suggestions.length}`)
       );
       return NextResponse.json(
-        { error: 'AI returned invalid number of suggestions' },
+        { error: "AI returned invalid number of suggestions" },
         { status: 500 }
       );
     }
 
     // Ensure all suggestions are strings
-    if (!suggestions.every(s => typeof s === 'string' && s.length > 0)) {
+    if (!suggestions.every((s) => typeof s === "string" && s.length > 0)) {
       logError(
         "suggest-followups:validation",
-        new Error('AI returned invalid suggestion format')
+        new Error("AI returned invalid suggestion format")
       );
       return NextResponse.json(
-        { error: 'AI returned invalid suggestion format' },
+        { error: "AI returned invalid suggestion format" },
         { status: 500 }
       );
     }
@@ -117,7 +117,7 @@ Generate 2 follow-up questions as a JSON array:`;
   } catch (error) {
     logError("suggest-followups:POST", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

@@ -1,11 +1,11 @@
-import { Fragment } from "react";
-import Link from "next/link";
-import { Home, MessageSquare } from "lucide-react";
 import { NotFoundIllustration } from "@/components/not-found-illustration";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { Metadata } from "next";
+import { Button } from "@/components/ui/button";
 import { createMetadata } from "@/lib/metadata";
+import { Home, MessageSquare } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Fragment } from "react";
 
 export const metadata: Metadata = createMetadata({
   title: "Page Not Found",
@@ -47,20 +47,24 @@ export default function NotFound() {
                 Hmm, this page seems to be missing...
               </h1>
               <p className="text-[16px] md:text-[18px] leading-[28px] text-text-2">
-                Looks like you&apos;ve ventured into uncharted territory! The page
-                you&apos;re looking for doesn&apos;t exist or may have been moved.
+                Looks like you&apos;ve ventured into uncharted territory! The
+                page you&apos;re looking for doesn&apos;t exist or may have been
+                moved.
               </p>
             </div>
 
             {/* Feedback Text */}
             <p className="text-[16px] leading-[24px] text-text-2">
-              If you think this is an error or have feedback, I&apos;d love to hear
-              from you! Feel free to reach out through the contact page.
+              If you think this is an error or have feedback, I&apos;d love to
+              hear from you! Feel free to reach out through the contact page.
             </p>
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4">
-              <Button asChild className="bg-brand-primary hover:bg-brand-primary/90">
+              <Button
+                asChild
+                className="bg-brand-primary hover:bg-brand-primary/90"
+              >
                 <Link href="/">
                   <Home className="w-4 h-4 mr-2" />
                   Back to Home
@@ -82,10 +86,15 @@ export default function NotFound() {
               <div className="flex flex-wrap gap-3 text-[14px] leading-[20px]">
                 {QUICK_LINKS.map((link, index) => (
                   <Fragment key={link.href}>
-                    <Link href={link.href} className="text-brand-primary hover:underline">
+                    <Link
+                      href={link.href}
+                      className="text-brand-primary hover:underline"
+                    >
                       {link.label}
                     </Link>
-                    {index < QUICK_LINKS.length - 1 && <span className="text-text-3">•</span>}
+                    {index < QUICK_LINKS.length - 1 && (
+                      <span className="text-text-3">•</span>
+                    )}
                   </Fragment>
                 ))}
               </div>

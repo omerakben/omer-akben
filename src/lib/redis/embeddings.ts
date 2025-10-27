@@ -1,8 +1,8 @@
-import { openai } from "@ai-sdk/openai";
-import { embed } from "ai";
+import type { Project } from "@/data/projects";
 import { getRedisClient } from "@/lib/redis/client";
 import { knnSearch, type VectorSearchResult } from "@/lib/redis/vector-search";
-import type { Project } from "@/data/projects";
+import { openai } from "@ai-sdk/openai";
+import { embed } from "ai";
 
 /**
  * Generate embedding for text using OpenAI text-embedding-3-small
@@ -84,14 +84,30 @@ export async function createProjectEmbeddingsIndex(): Promise<void> {
       "1",
       "project:embedding:",
       "SCHEMA",
-      "slug", "TEXT",
-      "title", "TEXT",
-      "description", "TEXT",
-      "category", "TAG",
-      "role", "TAG",
-      "technologies", "TAG",
-      "featured", "TAG",
-      "embedding", "VECTOR", "FLAT", "6", "TYPE", "FLOAT32", "DIM", "1536", "DISTANCE_METRIC", "COSINE"
+      "slug",
+      "TEXT",
+      "title",
+      "TEXT",
+      "description",
+      "TEXT",
+      "category",
+      "TAG",
+      "role",
+      "TAG",
+      "technologies",
+      "TAG",
+      "featured",
+      "TAG",
+      "embedding",
+      "VECTOR",
+      "FLAT",
+      "6",
+      "TYPE",
+      "FLOAT32",
+      "DIM",
+      "1536",
+      "DISTANCE_METRIC",
+      "COSINE"
     );
   } catch (error) {
     console.error("[Embeddings] Failed to create index:", error);
@@ -115,7 +131,17 @@ export async function searchProjectsBySimilarity(
     "project_embeddings_idx",
     queryEmbedding,
     limit,
-    ["slug", "title", "description", "category", "role", "technologies", "featured", "demoUrl", "githubUrl"]
+    [
+      "slug",
+      "title",
+      "description",
+      "category",
+      "role",
+      "technologies",
+      "featured",
+      "demoUrl",
+      "githubUrl",
+    ]
   );
 
   // Transform results
@@ -128,7 +154,9 @@ export async function searchProjectsBySimilarity(
       description: result.fields.description || "",
       category: result.fields.category as Project["category"],
       role: result.fields.role as Project["role"],
-      technologies: result.fields.technologies ? result.fields.technologies.split(",") : [],
+      technologies: result.fields.technologies
+        ? result.fields.technologies.split(",")
+        : [],
       featured: result.fields.featured === "true",
       demoUrl: result.fields.demoUrl || undefined,
       githubUrl: result.fields.githubUrl || undefined,

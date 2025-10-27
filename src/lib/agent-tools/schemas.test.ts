@@ -1,24 +1,24 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ZodError } from "zod";
 import {
-  downloadResumeInputSchema,
-  downloadResumeOutputSchema,
-  listProjectsInputSchema,
-  openProjectInputSchema,
-  getContactInputSchema,
-  getContactOutputSchema,
   downloadCertificateInputSchema,
   downloadCertificateOutputSchema,
-  provideNavigationLinksInputSchema,
-  navigatePageInputSchema,
-  scrollToSectionInputSchema,
+  downloadResumeInputSchema,
+  downloadResumeOutputSchema,
   extractPageSummaryInputSchema,
   extractPageSummaryOutputSchema,
-  triggerWorkflowInputSchema,
-  triggerWorkflowOutputSchema,
+  getContactInputSchema,
+  getContactOutputSchema,
+  listProjectsInputSchema,
+  navigatePageInputSchema,
+  openProjectInputSchema,
   profilePerformanceInputSchema,
   profilePerformanceOutputSchema,
+  provideNavigationLinksInputSchema,
+  scrollToSectionInputSchema,
   toolResponseSchema,
+  triggerWorkflowInputSchema,
+  triggerWorkflowOutputSchema,
 } from "./schemas";
 
 describe("agent-tools schemas", () => {
@@ -359,9 +359,9 @@ describe("agent-tools schemas", () => {
     });
 
     it("should reject invalid URL", () => {
-      expect(() =>
-        navigatePageInputSchema.parse({ url: "not-a-url" })
-      ).toThrow(ZodError);
+      expect(() => navigatePageInputSchema.parse({ url: "not-a-url" })).toThrow(
+        ZodError
+      );
     });
 
     it("should reject invalid waitUntil value", () => {
@@ -492,9 +492,9 @@ describe("agent-tools schemas", () => {
         triggerWorkflowInputSchema.parse({ workflowId: "test" })
       ).toThrow(ZodError);
 
-      expect(() =>
-        triggerWorkflowInputSchema.parse({ payload: {} })
-      ).toThrow(ZodError);
+      expect(() => triggerWorkflowInputSchema.parse({ payload: {} })).toThrow(
+        ZodError
+      );
     });
   });
 

@@ -1,8 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import type { Mock } from "vitest";
-import { projectComparisonWorkflow, detectProjectComparison } from "./project-comparison";
 import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import type { UIMessage } from "ai";
+import type { Mock } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  detectProjectComparison,
+  projectComparisonWorkflow,
+} from "./project-comparison";
 
 // Mock the AI SDK
 vi.mock("ai", () => ({
@@ -35,11 +38,15 @@ describe("project-comparison workflow", () => {
     });
 
     it("should detect 'show projects comparison' query", () => {
-      expect(detectProjectComparison("show me a projects comparison")).toBe(true);
+      expect(detectProjectComparison("show me a projects comparison")).toBe(
+        true
+      );
     });
 
     it("should detect 'difference between projects' query", () => {
-      expect(detectProjectComparison("what's the difference between your projects")).toBe(true);
+      expect(
+        detectProjectComparison("what's the difference between your projects")
+      ).toBe(true);
     });
 
     it("should detect 'which project is better' query", () => {
@@ -47,7 +54,9 @@ describe("project-comparison workflow", () => {
     });
 
     it("should detect 'what project is best' query", () => {
-      expect(detectProjectComparison("what projects would you recommend")).toBe(true);
+      expect(detectProjectComparison("what projects would you recommend")).toBe(
+        true
+      );
     });
 
     it("should be case-insensitive", () => {
@@ -91,7 +100,7 @@ describe("project-comparison workflow", () => {
         type: "progress" as const,
         step: 1,
         total: 3,
-        message: "Finding projects"
+        message: "Finding projects",
       };
       const formatted = projectComparisonWorkflow.formatEvent(event);
       expect(formatted).toContain("[Step 1/3]");
@@ -102,7 +111,7 @@ describe("project-comparison workflow", () => {
     it("should format content event", () => {
       const event = {
         type: "content" as const,
-        text: "Here is some content"
+        text: "Here is some content",
       };
       const formatted = projectComparisonWorkflow.formatEvent(event);
       expect(formatted).toBe("Here is some content");
@@ -111,7 +120,7 @@ describe("project-comparison workflow", () => {
     it("should format agent-result event", () => {
       const event = {
         type: "agent-result" as const,
-        content: "Comparison complete"
+        content: "Comparison complete",
       };
       const formatted = projectComparisonWorkflow.formatEvent(event);
       expect(formatted).toContain("Comparison complete");
@@ -120,7 +129,7 @@ describe("project-comparison workflow", () => {
     it("should format complete event", () => {
       const event = {
         type: "complete" as const,
-        summary: "Workflow finished successfully"
+        summary: "Workflow finished successfully",
       };
       const formatted = projectComparisonWorkflow.formatEvent(event);
       expect(formatted).toContain("---");
@@ -133,12 +142,12 @@ describe("project-comparison workflow", () => {
       threadId: "test-thread",
       userId: "test-user",
       query: "Compare your AI projects",
-      history: [] as UIMessage[]
+      history: [] as UIMessage[],
     };
 
     beforeEach(() => {
       (generateText as Mock).mockResolvedValue({
-        text: "Mocked AI response"
+        text: "Mocked AI response",
       });
     });
 
@@ -161,9 +170,9 @@ describe("project-comparison workflow", () => {
       }
 
       expect(events).toHaveLength(7);
-      expect(events.filter(e => e.type === "progress")).toHaveLength(3);
-      expect(events.filter(e => e.type === "agent-result")).toHaveLength(3);
-      expect(events.filter(e => e.type === "complete")).toHaveLength(1);
+      expect(events.filter((e) => e.type === "progress")).toHaveLength(3);
+      expect(events.filter((e) => e.type === "agent-result")).toHaveLength(3);
+      expect(events.filter((e) => e.type === "complete")).toHaveLength(1);
     });
 
     it("should call generateText 3 times (one per step)", async () => {
@@ -179,7 +188,7 @@ describe("project-comparison workflow", () => {
     it("should extract AI category from query", async () => {
       const aiContext = {
         ...mockContext,
-        query: "Compare your AI projects"
+        query: "Compare your AI projects",
       };
 
       const generator = projectComparisonWorkflow.execute(aiContext);
@@ -189,14 +198,14 @@ describe("project-comparison workflow", () => {
         events.push(event);
       }
 
-      const completeEvent = events.find(e => e.type === "complete");
+      const completeEvent = events.find((e) => e.type === "complete");
       expect(completeEvent?.summary).toMatch(/AI\/ML|ai-ml/i);
     });
 
     it("should extract web category from query", async () => {
       const webContext = {
         ...mockContext,
-        query: "Compare your web projects"
+        query: "Compare your web projects",
       };
 
       const generator = projectComparisonWorkflow.execute(webContext);
@@ -206,14 +215,14 @@ describe("project-comparison workflow", () => {
         events.push(event);
       }
 
-      const firstProgress = events.find(e => e.type === "progress");
+      const firstProgress = events.find((e) => e.type === "progress");
       expect(firstProgress?.message).toContain("web");
     });
 
     it("should extract Full-Stack role from query", async () => {
       const fullStackContext = {
         ...mockContext,
-        query: "Compare your full-stack projects"
+        query: "Compare your full-stack projects",
       };
 
       const generator = projectComparisonWorkflow.execute(fullStackContext);
@@ -223,14 +232,14 @@ describe("project-comparison workflow", () => {
         events.push(event);
       }
 
-      const firstProgress = events.find(e => e.type === "progress");
+      const firstProgress = events.find((e) => e.type === "progress");
       expect(firstProgress?.message).toContain("Full-Stack");
     });
 
     it("should extract technology from query", async () => {
       const reactContext = {
         ...mockContext,
-        query: "Compare your React projects"
+        query: "Compare your React projects",
       };
 
       const generator = projectComparisonWorkflow.execute(reactContext);
@@ -240,14 +249,14 @@ describe("project-comparison workflow", () => {
         events.push(event);
       }
 
-      const firstProgress = events.find(e => e.type === "progress");
+      const firstProgress = events.find((e) => e.type === "progress");
       expect(firstProgress?.message?.toLowerCase()).toContain("react");
     });
 
     it("should extract featured filter from query", async () => {
       const featuredContext = {
         ...mockContext,
-        query: "Compare your featured projects"
+        query: "Compare your featured projects",
       };
 
       const generator = projectComparisonWorkflow.execute(featuredContext);
@@ -257,7 +266,7 @@ describe("project-comparison workflow", () => {
         events.push(event);
       }
 
-      const firstProgress = events.find(e => e.type === "progress");
+      const firstProgress = events.find((e) => e.type === "progress");
       expect(firstProgress?.message).toContain("featured");
     });
 

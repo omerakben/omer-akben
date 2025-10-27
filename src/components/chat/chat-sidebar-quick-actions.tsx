@@ -1,11 +1,11 @@
 "use client";
 
-import { Briefcase, Zap, FileText, Mail } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import { Button } from "@/components/ui/button";
 import { EmailActionButton } from "@/components/actions/EmailActionButton";
 import { ResumeDownloadButton } from "@/components/actions/ResumeDownloadButton";
+import { Button } from "@/components/ui/button";
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { Briefcase, FileText, Mail, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface QuickAction {
   icon: React.ElementType;
@@ -47,7 +47,10 @@ export function ChatSidebarQuickActions() {
                 onClick={() => handleAction(action.href)}
               >
                 <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center">
-                  <Icon aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                  <Icon
+                    aria-hidden="true"
+                    className="w-4 h-4 text-brand-primary"
+                  />
                 </div>
                 <span className="text-text-1 font-medium">{action.label}</span>
               </Button>

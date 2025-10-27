@@ -14,7 +14,13 @@ export interface Credential {
   dateRange?: { start: string; end: string };
   description: string;
   type: "education" | "certification" | "award";
-  category: "bootcamp" | "university" | "professional" | "cloud" | "ai-ml" | "recognition";
+  category:
+    | "bootcamp"
+    | "university"
+    | "professional"
+    | "cloud"
+    | "ai-ml"
+    | "recognition";
   status: "completed" | "in-progress";
   certificateUrl?: string;
   verificationUrl?: string;
@@ -33,7 +39,8 @@ export const credentials: Credential[] = [
     institutionUrl: "https://nashvillesoftwareschool.com/",
     date: "2024 - 2025",
     dateRange: { start: "2024", end: "2025" },
-    description: "Intensive full-stack web development program covering modern JavaScript frameworks, React, Node.js, databases, and full-stack architecture. Built production-ready applications with focus on clean code, testing, and deployment.",
+    description:
+      "Intensive full-stack web development program covering modern JavaScript frameworks, React, Node.js, databases, and full-stack architecture. Built production-ready applications with focus on clean code, testing, and deployment.",
     type: "education",
     category: "bootcamp",
     status: "completed",
@@ -46,14 +53,14 @@ export const credentials: Credential[] = [
       "PostgreSQL",
       "RESTful APIs",
       "Git",
-      "Agile/Scrum"
+      "Agile/Scrum",
     ],
     highlights: [
       "Built 6+ full-stack applications from scratch",
       "Collaborated on team projects using Git workflows",
       "Implemented CI/CD pipelines and deployment strategies",
-      "Mastered modern React patterns and state management"
-    ]
+      "Mastered modern React patterns and state management",
+    ],
   },
   {
     id: "techcenture-sdet",
@@ -62,7 +69,8 @@ export const credentials: Credential[] = [
     institutionUrl: "https://techcenture.com/",
     date: "2017 - 2018",
     dateRange: { start: "2017", end: "2018" },
-    description: "Comprehensive training in QA automation, test frameworks, and software development engineering in test practices. Specialized in Selenium, automation architecture, and enterprise testing strategies.",
+    description:
+      "Comprehensive training in QA automation, test frameworks, and software development engineering in test practices. Specialized in Selenium, automation architecture, and enterprise testing strategies.",
     type: "education",
     category: "bootcamp",
     status: "completed",
@@ -74,14 +82,14 @@ export const credentials: Credential[] = [
       "Maven",
       "Jenkins",
       "Page Object Model",
-      "API Testing"
+      "API Testing",
     ],
     highlights: [
       "Designed enterprise test automation frameworks",
       "Implemented CI/CD pipeline integration for automated testing",
       "Achieved 80% test coverage on client projects",
-      "Mentored junior QA engineers in automation best practices"
-    ]
+      "Mentored junior QA engineers in automation best practices",
+    ],
   },
 
   // Education - University
@@ -92,7 +100,8 @@ export const credentials: Credential[] = [
     institutionUrl: "https://www.okan.edu.tr/en/",
     date: "2014 - 2016",
     dateRange: { start: "2014", end: "2016" },
-    description: "Advanced degree focused on healthcare management, operations, and strategic planning. Developed analytical and leadership skills applicable to technology project management and systems thinking.",
+    description:
+      "Advanced degree focused on healthcare management, operations, and strategic planning. Developed analytical and leadership skills applicable to technology project management and systems thinking.",
     type: "education",
     category: "university",
     status: "completed",
@@ -101,13 +110,13 @@ export const credentials: Credential[] = [
       "Project Management",
       "Data Analysis",
       "Strategic Planning",
-      "Operations Management"
+      "Operations Management",
     ],
     highlights: [
       "Graduated with honors",
       "Led healthcare systems analysis projects",
-      "Published research on healthcare technology integration"
-    ]
+      "Published research on healthcare technology integration",
+    ],
   },
 
   // Certifications - Cloud & Infrastructure
@@ -117,19 +126,21 @@ export const credentials: Credential[] = [
     institution: "IBM via Coursera",
     institutionUrl: "https://www.coursera.org",
     date: "2024",
-    description: "Comprehensive introduction to cloud computing concepts, service models (IaaS, PaaS, SaaS), deployment models, and major cloud platforms. Covered cloud architecture, security, and emerging trends.",
+    description:
+      "Comprehensive introduction to cloud computing concepts, service models (IaaS, PaaS, SaaS), deployment models, and major cloud platforms. Covered cloud architecture, security, and emerging trends.",
     type: "certification",
     category: "cloud",
     status: "completed",
-    verificationUrl: "https://www.coursera.org/account/accomplishments/verify/T450ZUT1K82P",
+    verificationUrl:
+      "https://www.coursera.org/account/accomplishments/verify/T450ZUT1K82P",
     credentialId: "T450ZUT1K82P",
     skills: [
       "Cloud Computing Fundamentals",
       "IaaS/PaaS/SaaS",
       "Cloud Architecture",
       "Cloud Security",
-      "AWS/Azure/GCP Basics"
-    ]
+      "AWS/Azure/GCP Basics",
+    ],
   },
   {
     id: "aws-cloud-practitioner",
@@ -137,7 +148,8 @@ export const credentials: Credential[] = [
     institution: "Amazon Web Services",
     institutionUrl: "https://aws.amazon.com/certification/",
     date: "2024",
-    description: "Foundational understanding of AWS Cloud concepts, services, security, architecture, pricing, and support. Covers core AWS services including compute, storage, networking, and databases.",
+    description:
+      "Foundational understanding of AWS Cloud concepts, services, security, architecture, pricing, and support. Covers core AWS services including compute, storage, networking, and databases.",
     type: "certification",
     category: "cloud",
     status: "completed",
@@ -148,9 +160,9 @@ export const credentials: Credential[] = [
       "AWS Global Infrastructure",
       "Cloud Security & Compliance",
       "AWS Pricing Models",
-      "Cloud Architecture Basics"
-    ]
-  }
+      "Cloud Architecture Basics",
+    ],
+  },
 ];
 
 // Helper functions
@@ -177,7 +189,6 @@ export const credentialStats = {
   education: getEducation().length,
   certifications: getCertifications().length,
   awards: getAwards().length,
-  skills: Array.from(
-    new Set(credentials.flatMap((cred) => cred.skills || []))
-  ).length,
+  skills: Array.from(new Set(credentials.flatMap((cred) => cred.skills || [])))
+    .length,
 };

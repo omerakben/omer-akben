@@ -3,9 +3,9 @@
  * Tests contact info retrieval (no input parameters required)
  */
 
-import { describe, it, expect } from "vitest";
-import { POST } from "./route";
+import { describe, expect, it } from "vitest";
 import { getResponseJson, isSuccessResponse } from "../test-utils";
+import { POST } from "./route";
 
 describe("POST /api/tools/get-contact", () => {
   describe("Valid requests", () => {
@@ -96,8 +96,15 @@ describe("POST /api/tools/get-contact", () => {
         const keys = Object.keys(contact);
 
         // Should only include expected contact fields
-        const allowedFields = ["email", "phone", "location", "linkedin", "github", "twitter"];
-        keys.forEach(key => {
+        const allowedFields = [
+          "email",
+          "phone",
+          "location",
+          "linkedin",
+          "github",
+          "twitter",
+        ];
+        keys.forEach((key) => {
           expect(allowedFields).toContain(key);
         });
       }

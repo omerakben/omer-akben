@@ -3,10 +3,15 @@
  * Tests semantic search using vector similarity with Redis embeddings
  */
 
-import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
+import { describe, expect, it } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/search-projects-semantic", () => {
   describe("Valid requests", () => {
@@ -25,7 +30,11 @@ describe("POST /api/tools/search-projects-semantic", () => {
         expect(json.data).toHaveProperty("results");
         expect(json.data).toHaveProperty("query");
         expect(json.data).toHaveProperty("count");
-        const data = json.data as { query: unknown; results: unknown[]; count: unknown };
+        const data = json.data as {
+          query: unknown;
+          results: unknown[];
+          count: unknown;
+        };
         expect(data.query).toBe("machine learning projects");
         expect(Array.isArray(data.results)).toBe(true);
         expect(data.count).toBe(data.results.length);
@@ -84,7 +93,8 @@ describe("POST /api/tools/search-projects-semantic", () => {
 
     it("should handle natural language queries", async () => {
       const req = createMockRequest({
-        query: "Show me projects that involve artificial intelligence and machine learning",
+        query:
+          "Show me projects that involve artificial intelligence and machine learning",
       });
       const response = await POST(req);
       const json = await getResponseJson(response);
@@ -119,7 +129,9 @@ describe("POST /api/tools/search-projects-semantic", () => {
           expect(typeof (result as { slug: unknown }).slug).toBe("string");
           const resultWithScore = result as { score: unknown };
           expect(typeof resultWithScore.score).toBe("number");
-          expect(typeof (result as { project: unknown }).project).toBe("object");
+          expect(typeof (result as { project: unknown }).project).toBe(
+            "object"
+          );
 
           // Score should be between 0 and 1 (similarity score)
           expect(resultWithScore.score).toBeGreaterThanOrEqual(0);
@@ -221,11 +233,14 @@ describe("POST /api/tools/search-projects-semantic", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/search-projects-semantic", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "invalid json{",
-      });
+      const req = new Request(
+        "http://localhost:3000/api/tools/search-projects-semantic",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "invalid json{",
+        }
+      );
 
       const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);
@@ -320,7 +335,11 @@ describe("POST /api/tools/search-projects-semantic", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const data = json.data as { results: unknown; query: unknown; count: unknown };
+        const data = json.data as {
+          results: unknown;
+          query: unknown;
+          count: unknown;
+        };
         expect(data).toHaveProperty("results");
         expect(data).toHaveProperty("query");
         expect(data).toHaveProperty("count");

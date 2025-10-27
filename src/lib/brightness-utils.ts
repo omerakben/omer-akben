@@ -1,8 +1,12 @@
 import { BrightnessMode } from "@/lib/brightness-context";
 import { DARK_BRIGHTNESS_MODES, LIGHT_BRIGHTNESS_MODES } from "@/lib/constants";
 
-const LIGHT_MODE_SET = new Set<(typeof LIGHT_BRIGHTNESS_MODES)[number]>(LIGHT_BRIGHTNESS_MODES);
-const DARK_MODE_SET = new Set<(typeof DARK_BRIGHTNESS_MODES)[number]>(DARK_BRIGHTNESS_MODES);
+const LIGHT_MODE_SET = new Set<(typeof LIGHT_BRIGHTNESS_MODES)[number]>(
+  LIGHT_BRIGHTNESS_MODES
+);
+const DARK_MODE_SET = new Set<(typeof DARK_BRIGHTNESS_MODES)[number]>(
+  DARK_BRIGHTNESS_MODES
+);
 
 export type ThemeTone = "light" | "dark";
 
@@ -22,7 +26,9 @@ export function isDarkTone(mode: BrightnessMode | null | undefined): boolean {
   return DARK_MODE_SET.has(mode as (typeof DARK_BRIGHTNESS_MODES)[number]);
 }
 
-export function getToneFromBrightness(mode: BrightnessMode | null | undefined): ThemeTone {
+export function getToneFromBrightness(
+  mode: BrightnessMode | null | undefined
+): ThemeTone {
   if (mode === "auto") {
     return "dark";
   }
@@ -30,7 +36,9 @@ export function getToneFromBrightness(mode: BrightnessMode | null | undefined): 
   return isLightTone(mode) ? "light" : "dark";
 }
 
-export function parseBrightnessMode(value: string | null | undefined): BrightnessMode | null {
+export function parseBrightnessMode(
+  value: string | null | undefined
+): BrightnessMode | null {
   if (!value) {
     return null;
   }
@@ -54,5 +62,7 @@ export function getDocumentBrightness(): BrightnessMode | null {
     return null;
   }
 
-  return parseBrightnessMode(document.documentElement.getAttribute("data-brightness"));
+  return parseBrightnessMode(
+    document.documentElement.getAttribute("data-brightness")
+  );
 }

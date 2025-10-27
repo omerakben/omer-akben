@@ -6,16 +6,20 @@
  * and other semantic context for personalization.
  */
 
-import { openai } from "@ai-sdk/openai";
-import { generateText } from "ai";
-import type { UIMessage } from "ai";
-import type { ExtractedFacts, UserRole, ExperienceLevel } from "@/lib/memory/types";
 import {
   getCachedCompletion,
-  setCachedCompletion,
   recordCacheHit,
   recordCacheMiss,
+  setCachedCompletion,
 } from "@/lib/cache/openai-cache";
+import type {
+  ExperienceLevel,
+  ExtractedFacts,
+  UserRole,
+} from "@/lib/memory/types";
+import { openai } from "@ai-sdk/openai";
+import type { UIMessage } from "ai";
+import { generateText } from "ai";
 
 /**
  * Extracts text content from a UIMessage
@@ -119,7 +123,13 @@ function validateExtractedFacts(facts: unknown): facts is ExtractedFacts {
 
   // Validate experienceLevel if present
   if (obj.experienceLevel !== undefined) {
-    const validLevels: ExperienceLevel[] = ["junior", "mid", "senior", "lead", "unknown"];
+    const validLevels: ExperienceLevel[] = [
+      "junior",
+      "mid",
+      "senior",
+      "lead",
+      "unknown",
+    ];
     if (!validLevels.includes(obj.experienceLevel as ExperienceLevel)) {
       return false;
     }
@@ -129,7 +139,10 @@ function validateExtractedFacts(facts: unknown): facts is ExtractedFacts {
   if (obj.newInterests !== undefined && !Array.isArray(obj.newInterests)) {
     return false;
   }
-  if (obj.newVisitedProjects !== undefined && !Array.isArray(obj.newVisitedProjects)) {
+  if (
+    obj.newVisitedProjects !== undefined &&
+    !Array.isArray(obj.newVisitedProjects)
+  ) {
     return false;
   }
   if (obj.newTechFocus !== undefined && !Array.isArray(obj.newTechFocus)) {
@@ -138,7 +151,11 @@ function validateExtractedFacts(facts: unknown): facts is ExtractedFacts {
 
   // Validate confidence if present
   if (obj.confidence !== undefined) {
-    if (typeof obj.confidence !== "number" || obj.confidence < 0 || obj.confidence > 1) {
+    if (
+      typeof obj.confidence !== "number" ||
+      obj.confidence < 0 ||
+      obj.confidence > 1
+    ) {
       return false;
     }
   }
@@ -161,7 +178,9 @@ function validateExtractedFacts(facts: unknown): facts is ExtractedFacts {
  *   await mergeSemanticMemory(userId, facts);
  * }
  */
-export async function extractFacts(messages: UIMessage[]): Promise<ExtractedFacts | null> {
+export async function extractFacts(
+  messages: UIMessage[]
+): Promise<ExtractedFacts | null> {
   // Need at least 2 messages for meaningful extraction (user + assistant)
   if (messages.length < 2) {
     return null;
@@ -277,13 +296,18 @@ export async function extractAndSaveFacts(
 
   // Merge with existing semantic memory
   try {
-    const { mergeSemanticMemory } = await import("@/lib/memory/semantic-memory");
+    const { mergeSemanticMemory } = await import(
+      "@/lib/memory/semantic-memory"
+    );
     await mergeSemanticMemory(userId, facts);
   } catch (error) {
-    console.error("[FactExtractor] Failed to merge facts into semantic memory", {
-      userId,
-      error,
-    });
+    console.error(
+      "[FactExtractor] Failed to merge facts into semantic memory",
+      {
+        userId,
+        error,
+      }
+    );
     // Graceful degradation - don't throw, extraction succeeded even if merge failed
   }
 }

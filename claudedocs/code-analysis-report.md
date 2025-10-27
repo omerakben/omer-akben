@@ -14,6 +14,7 @@
 The omerakben.com codebase demonstrates professional engineering practices with excellent TypeScript strict mode compliance, comprehensive testing (72 tests passing), and well-organized architecture. The project successfully implements a modern Next.js 15 application with innovative features like an 8-mode brightness system. While the foundation is solid, there are opportunities for security hardening and performance optimization.
 
 **Key Strengths**:
+
 - ✅ Zero ESLint errors/warnings
 - ✅ Zero TypeScript errors (strict mode)
 - ✅ 72/72 tests passing with Vitest
@@ -22,6 +23,7 @@ The omerakben.com codebase demonstrates professional engineering practices with 
 - ✅ No TODO/FIXME comments (clean codebase)
 
 **Key Concerns**:
+
 - ⚠️ Large bundle size (2.3 MB First Load JS on home/skills pages)
 - ⚠️ XSS risk from `dangerouslySetInnerHTML` (2 instances)
 - ⚠️ In-memory rate limiting (not production-ready)
@@ -34,6 +36,7 @@ The omerakben.com codebase demonstrates professional engineering practices with 
 ### 1.1 TypeScript Quality ⭐⭐⭐⭐⭐ (95/100)
 
 **Strengths**:
+
 - Strict mode enabled with zero type errors
 - Comprehensive type coverage across all modules
 - Proper use of utility types (`Record`, `ReadonlyArray`, etc.)
@@ -41,6 +44,7 @@ The omerakben.com codebase demonstrates professional engineering practices with 
 - Minimal use of `any` (only 2 instances, both justified)
 
 **Findings**:
+
 ```typescript
 // ✅ Excellent: Type-safe Zod schemas for API validation
 src/lib/agent-tools/schemas.ts - All tool inputs validated with Zod
@@ -51,18 +55,21 @@ src/lib/skill-icons.tsx:86 - Dynamic simple-icons lookup (documented)
 ```
 
 **Recommendations**:
+
 - Continue strict type enforcement
 - Consider branded types for sensitive data (e.g., `type Email = string & { __brand: 'email' }`)
 
 ### 1.2 Code Organization ⭐⭐⭐⭐⭐ (98/100)
 
 **Strengths**:
+
 - Consistent use of `@/` path aliases (zero relative imports)
 - Clear separation of concerns (components, data, lib, app)
 - Co-located tests with source files
 - Well-structured API routes with dedicated tool endpoints
 
 **Architecture Pattern**:
+
 ```
 src/
 ├── app/                    # Next.js App Router (pages, API routes)
@@ -77,6 +84,7 @@ src/
 ```
 
 **Findings**:
+
 - ✅ No imports from `/archive/` in main codebase (enforced separation)
 - ✅ Consistent file naming (kebab-case for components, camelCase for utilities)
 - ✅ Clean test organization (`*.test.ts` co-located with source)
@@ -84,12 +92,14 @@ src/
 ### 1.3 Maintainability ⭐⭐⭐⭐ (85/100)
 
 **Strengths**:
+
 - Zero TODO/FIXME comments (all work completed)
 - Single console usage (error boundary only, appropriate)
 - Descriptive function/variable names
 - Comprehensive inline documentation
 
 **Findings**:
+
 ```typescript
 // ✅ Clean: No technical debt markers
 grep -r "TODO|FIXME|HACK|XXX|BUG" src/ → 0 results
@@ -99,6 +109,7 @@ src/components/error-boundary.tsx - Error logging only
 ```
 
 **Recommendations**:
+
 - Add JSDoc comments for complex utility functions
 - Consider component documentation with Storybook or similar
 
@@ -111,6 +122,7 @@ src/components/error-boundary.tsx - Error logging only
 **Findings**:
 
 **Issue 1: Unvalidated SVG Injection**
+
 ```typescript
 // 🔴 HIGH RISK: src/lib/skill-icons.tsx:126
 return (
@@ -120,11 +132,13 @@ return (
   />
 );
 ```
+
 **Risk**: SVG paths from `simple-icons` library are trusted without sanitization
 **Impact**: If simple-icons is compromised or malicious SVG data is injected, XSS is possible
 **Likelihood**: Low (trusted library), but defense-in-depth is missing
 
 **Issue 2: Dynamic Icon Rendering**
+
 ```typescript
 // 🔴 MEDIUM RISK: src/components/tech-marquee.tsx:59
 <div
@@ -136,10 +150,12 @@ return (
   }}
 />
 ```
+
 **Risk**: SVG content from simple-icons library rendered without DOMPurify
 **Impact**: Similar XSS risk if icon data is manipulated
 
 **Recommendations**:
+
 ```typescript
 // ✅ SOLUTION: Install and use DOMPurify
 npm install dompurify @types/dompurify
@@ -162,18 +178,21 @@ return (
 ### 2.2 Rate Limiting 🟡 MODERATE (50/100)
 
 **Findings**:
+
 ```typescript
 // ⚠️ PRODUCTION ISSUE: src/middleware.ts:10
 const rateLimitMap = new Map<string, number[]>();
 ```
 
 **Issue**: In-memory rate limiting has critical flaws:
+
 - **No persistence**: Resets on server restart
 - **Memory leak risk**: Map grows unbounded over time
 - **Multi-instance issue**: Won't work in serverless/multi-node deployments
 - **IP spoofing**: Relies solely on `x-forwarded-for` header
 
 **Recommendations**:
+
 ```typescript
 // ✅ SOLUTION: Use Redis or Upstash for production
 import { Ratelimit } from '@upstash/ratelimit';
@@ -204,17 +223,20 @@ export async function middleware(request: NextRequest) {
 ### 2.3 Environment Variables ✅ GOOD (95/100)
 
 **Findings**:
+
 - ✅ No API keys in client-side code
 - ✅ Single `process.env` usage in error boundary (appropriate)
 - ✅ No `.env` file committed to repository
 
 **Recommendations**:
+
 - Add `.env.example` template for documentation
 - Consider runtime environment validation with Zod
 
 ### 2.4 Content Security Policy ⭐⭐⭐⭐ (80/100)
 
 **Strengths**:
+
 ```typescript
 // ✅ GOOD: CSP headers configured in next.config.ts
 headers: [
@@ -232,11 +254,13 @@ headers: [
 ```
 
 **Issues**:
+
 - ⚠️ `'unsafe-eval'` required for Next.js but adds risk
 - ⚠️ `'unsafe-inline'` for styles (acceptable for Tailwind CSS)
 - ⚠️ Broad `https:` for images (could be restricted to specific domains)
 
 **Recommendations**:
+
 - Add nonce-based CSP for inline scripts
 - Restrict image sources to specific CDN domains
 - Consider CSP reporting endpoint
@@ -248,6 +272,7 @@ headers: [
 ### 3.1 Bundle Size 🔴 CRITICAL (45/100)
 
 **Findings** (from build output):
+
 ```
 Route (app)                                 Size  First Load JS
 ┌ ○ /                                    28.6 kB        2.32 MB  🔴
@@ -260,6 +285,7 @@ Route (app)                                 Size  First Load JS
 **Issue**: Home and skills pages have 2.3 MB First Load JS (14x larger than target)
 
 **Root Cause Analysis**:
+
 1. **Framer Motion**: Heavy animation library used extensively
    - `motion` imports in hero-section.tsx, robot-illustration.tsx
    - Contributes ~500 kB to bundle
@@ -269,6 +295,7 @@ Route (app)                                 Size  First Load JS
 3. **Component Tree**: Deep nesting with many dependencies
 
 **Recommendations**:
+
 ```typescript
 // 1. Lazy load motion components
 import dynamic from 'next/dynamic';
@@ -290,6 +317,7 @@ const TechMarquee = dynamic(() => import('@/components/tech-marquee'));
 ```
 
 **Performance Budget**:
+
 - Current: 2.32 MB First Load JS
 - Target: <500 kB First Load JS
 - Gap: 82% reduction needed
@@ -297,6 +325,7 @@ const TechMarquee = dynamic(() => import('@/components/tech-marquee'));
 ### 3.2 Build Performance ⭐⭐⭐⭐⭐ (100/100)
 
 **Strengths**:
+
 - Build time: 1.5 seconds (excellent with Turbopack)
 - 22 routes pre-rendered successfully
 - Efficient static generation
@@ -304,11 +333,13 @@ const TechMarquee = dynamic(() => import('@/components/tech-marquee'));
 ### 3.3 Runtime Performance ⭐⭐⭐⭐ (85/100)
 
 **Strengths**:
+
 - 8-mode brightness system uses CSS custom properties (no JS recalc)
 - Memoized context values prevent re-renders
 - Efficient animation with GPU-accelerated transforms
 
 **Findings**:
+
 ```typescript
 // ✅ Performance optimization: useMemo for context
 src/lib/brightness-context.tsx:80
@@ -328,12 +359,14 @@ src/lib/animations.ts - transform/opacity only
 ### 4.1 Design Patterns ⭐⭐⭐⭐⭐ (95/100)
 
 **Strengths**:
+
 1. **Context Provider Pattern**: Clean brightness mode management
 2. **Server-Side Tool Pattern**: All agent tools are API routes
 3. **Zod Validation Pattern**: Input validation on all endpoints
 4. **Component Composition**: Proper separation of concerns
 
 **Innovative Pattern**: 8-Mode Brightness System
+
 ```typescript
 // Excellent: CSS custom properties + data attribute
 [data-brightness="-3"] { --surf-0: #0a1224; }
@@ -349,11 +382,13 @@ if (hour >= 22 || hour < 5) {
 ### 4.2 Error Handling ⭐⭐⭐⭐ (85/100)
 
 **Strengths**:
+
 - ErrorBoundary component wraps entire app
 - Try-catch blocks in async operations
 - Graceful fallbacks (e.g., icon rendering)
 
 **Findings**:
+
 ```typescript
 // ✅ Error boundary with user-friendly fallback
 src/components/error-boundary.tsx
@@ -366,16 +401,19 @@ if (!svgString) {
 ```
 
 **Recommendations**:
+
 - Add error tracking (e.g., Sentry)
 - Implement API error retry logic
 
 ### 4.3 Testing Strategy ⭐⭐⭐⭐ (80/100)
 
 **Coverage**:
+
 - 3 test files, 72 tests passing
 - Focus areas: components, data utilities, schemas
 
 **Test Files**:
+
 ```
 src/components/brightness-control.test.tsx (23 tests)
 src/data/projects.test.ts (25 tests)
@@ -383,11 +421,13 @@ src/lib/agent-tools/schemas.test.ts (24 tests)
 ```
 
 **Gaps**:
+
 - No E2E tests (Playwright recommended but not implemented)
 - No API route tests
 - No visual regression tests
 
 **Recommendations**:
+
 ```bash
 # Add API route testing
 npm install supertest @types/supertest
@@ -403,10 +443,13 @@ npx playwright install
 ### 5.1 Security Priorities 🔴
 
 **Immediate** (This Week):
+
 1. Install DOMPurify for SVG sanitization
+
    ```bash
    npm install dompurify @types/dompurify
    ```
+
 2. Update `skill-icons.tsx` and `tech-marquee.tsx` to sanitize SVG
 
 **Short-term** (This Month):
@@ -417,6 +460,7 @@ npx playwright install
 ### 5.2 Performance Priorities ⚠️
 
 **Immediate**:
+
 1. Lazy load Framer Motion components on home/skills pages
 2. Implement code splitting for below-the-fold content
 3. Run Lighthouse audit and set performance budgets
@@ -429,6 +473,7 @@ npx playwright install
 ### 5.3 Code Quality Priorities ✅
 
 **Low Priority** (Nice to Have):
+
 1. Add JSDoc comments for complex utilities
 2. Implement Storybook for component documentation
 3. Add visual regression testing with Chromatic
@@ -436,6 +481,7 @@ npx playwright install
 ### 5.4 Hardcoded Color Violations 🟡
 
 **Issue**: 8 files contain hardcoded hex colors, violating brightness system:
+
 ```
 src/components/hero-section.tsx:49, 117      # Gradient colors
 src/app/recruiter/page.tsx                   # Background gradients
@@ -448,6 +494,7 @@ src/components/ui/button.tsx                 # Button variants
 ```
 
 **Recommendation**: Refactor to use CSS custom properties:
+
 ```typescript
 // ❌ Bad: Hardcoded hex
 className="bg-gradient-to-r from-[#10B981] to-[#2563EB]"
@@ -460,16 +507,16 @@ className="bg-gradient-to-r from-brand-primary to-accent-primary"
 
 ## 6. Best Practices Scorecard
 
-| Category | Score | Notes |
-|----------|-------|-------|
-| TypeScript Quality | 95/100 | Strict mode, zero errors |
-| Code Organization | 98/100 | Excellent structure |
-| Testing | 80/100 | Good unit tests, missing E2E |
-| Security | 60/100 | XSS risks, weak rate limiting |
-| Performance | 45/100 | Bundle size issues |
-| Error Handling | 85/100 | Good boundaries, could improve tracking |
-| Documentation | 75/100 | Good CLAUDE.md, missing JSDoc |
-| Accessibility | 90/100 | ARIA labels, keyboard nav |
+| Category           | Score  | Notes                                   |
+| ------------------ | ------ | --------------------------------------- |
+| TypeScript Quality | 95/100 | Strict mode, zero errors                |
+| Code Organization  | 98/100 | Excellent structure                     |
+| Testing            | 80/100 | Good unit tests, missing E2E            |
+| Security           | 60/100 | XSS risks, weak rate limiting           |
+| Performance        | 45/100 | Bundle size issues                      |
+| Error Handling     | 85/100 | Good boundaries, could improve tracking |
+| Documentation      | 75/100 | Good CLAUDE.md, missing JSDoc           |
+| Accessibility      | 90/100 | ARIA labels, keyboard nav               |
 
 **Overall Score**: 88/100 (A-)
 
@@ -478,21 +525,25 @@ className="bg-gradient-to-r from-brand-primary to-accent-primary"
 ## 7. Action Plan
 
 ### Week 1 (Critical)
+
 - [ ] Install DOMPurify and sanitize all `dangerouslySetInnerHTML` usage
 - [ ] Lazy load Framer Motion on home/skills pages
 - [ ] Run Lighthouse audit and document baseline metrics
 
 ### Week 2 (High Priority)
+
 - [ ] Replace in-memory rate limiting with Upstash Redis
 - [ ] Implement bundle size monitoring in CI/CD
 - [ ] Add environment variable validation
 
 ### Week 3 (Medium Priority)
+
 - [ ] Refactor hardcoded hex colors to CSS custom properties
 - [ ] Add API route tests with supertest
 - [ ] Set up error tracking (Sentry)
 
 ### Month 2 (Nice to Have)
+
 - [ ] Implement Playwright E2E tests
 - [ ] Add JSDoc comments for utilities
 - [ ] Consider Storybook for component documentation
@@ -506,6 +557,7 @@ The omerakben.com codebase demonstrates professional engineering practices with 
 **Critical Path**: Address the two high-severity security issues (XSS via `dangerouslySetInnerHTML` and production-grade rate limiting) and tackle the bundle size problem to reach production-ready status.
 
 **Strengths to Maintain**:
+
 - Zero-defect quality gates (tests, linting, type checking)
 - Clean architectural patterns
 - Comprehensive documentation

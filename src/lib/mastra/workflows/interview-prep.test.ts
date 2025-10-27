@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import type { Mock } from "vitest";
-import { interviewPrepWorkflow, detectInterviewPrep } from "./interview-prep";
 import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import type { UIMessage } from "ai";
+import type { Mock } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { detectInterviewPrep, interviewPrepWorkflow } from "./interview-prep";
 
 // Mock the AI SDK
 vi.mock("ai", () => ({
@@ -31,11 +31,15 @@ describe("interview-prep workflow", () => {
     });
 
     it("should detect 'interview preparation' query", () => {
-      expect(detectInterviewPrep("help me with interview preparation")).toBe(true);
+      expect(detectInterviewPrep("help me with interview preparation")).toBe(
+        true
+      );
     });
 
     it("should detect 'prepare for interview' query", () => {
-      expect(detectInterviewPrep("I need to prepare for an interview")).toBe(true);
+      expect(detectInterviewPrep("I need to prepare for an interview")).toBe(
+        true
+      );
     });
 
     it("should detect 'interview question' query", () => {
@@ -43,7 +47,9 @@ describe("interview-prep workflow", () => {
     });
 
     it("should detect 'help prepare interview' query", () => {
-      expect(detectInterviewPrep("help me prepare for my interview")).toBe(true);
+      expect(detectInterviewPrep("help me prepare for my interview")).toBe(
+        true
+      );
     });
 
     it("should be case-insensitive", () => {
@@ -87,7 +93,7 @@ describe("interview-prep workflow", () => {
         type: "progress" as const,
         step: 1,
         total: 3,
-        message: "Reviewing resume"
+        message: "Reviewing resume",
       };
       const formatted = interviewPrepWorkflow.formatEvent(event);
       expect(formatted).toContain("[Step 1/3]");
@@ -98,7 +104,7 @@ describe("interview-prep workflow", () => {
     it("should format content event", () => {
       const event = {
         type: "content" as const,
-        text: "Here is some content"
+        text: "Here is some content",
       };
       const formatted = interviewPrepWorkflow.formatEvent(event);
       expect(formatted).toBe("Here is some content");
@@ -107,7 +113,7 @@ describe("interview-prep workflow", () => {
     it("should format agent-result event", () => {
       const event = {
         type: "agent-result" as const,
-        content: "Analysis complete"
+        content: "Analysis complete",
       };
       const formatted = interviewPrepWorkflow.formatEvent(event);
       expect(formatted).toContain("Analysis complete");
@@ -116,7 +122,7 @@ describe("interview-prep workflow", () => {
     it("should format complete event", () => {
       const event = {
         type: "complete" as const,
-        summary: "Workflow finished successfully"
+        summary: "Workflow finished successfully",
       };
       const formatted = interviewPrepWorkflow.formatEvent(event);
       expect(formatted).toContain("---");
@@ -129,12 +135,12 @@ describe("interview-prep workflow", () => {
       threadId: "test-thread",
       userId: "test-user",
       query: "Help me prepare for a React interview",
-      history: [] as UIMessage[]
+      history: [] as UIMessage[],
     };
 
     beforeEach(() => {
       (generateText as Mock).mockResolvedValue({
-        text: "Mocked AI response"
+        text: "Mocked AI response",
       });
     });
 
@@ -157,9 +163,9 @@ describe("interview-prep workflow", () => {
       }
 
       expect(events).toHaveLength(7);
-      expect(events.filter(e => e.type === "progress")).toHaveLength(3);
-      expect(events.filter(e => e.type === "agent-result")).toHaveLength(3);
-      expect(events.filter(e => e.type === "complete")).toHaveLength(1);
+      expect(events.filter((e) => e.type === "progress")).toHaveLength(3);
+      expect(events.filter((e) => e.type === "agent-result")).toHaveLength(3);
+      expect(events.filter((e) => e.type === "complete")).toHaveLength(1);
     });
 
     it("should call generateText 3 times (one per step)", async () => {
@@ -175,7 +181,7 @@ describe("interview-prep workflow", () => {
     it("should extract interview type from query", async () => {
       const reactContext = {
         ...mockContext,
-        query: "Help me prepare for a React interview"
+        query: "Help me prepare for a React interview",
       };
 
       const generator = interviewPrepWorkflow.execute(reactContext);
@@ -185,14 +191,14 @@ describe("interview-prep workflow", () => {
         events.push(event);
       }
 
-      const completeEvent = events.find(e => e.type === "complete");
+      const completeEvent = events.find((e) => e.type === "complete");
       expect(completeEvent?.summary.toLowerCase()).toContain("react");
     });
 
     it("should extract company from query", async () => {
       const googleContext = {
         ...mockContext,
-        query: "Help me prepare for a React interview at Google"
+        query: "Help me prepare for a React interview at Google",
       };
 
       const generator = interviewPrepWorkflow.execute(googleContext);
@@ -202,7 +208,7 @@ describe("interview-prep workflow", () => {
         events.push(event);
       }
 
-      const completeEvent = events.find(e => e.type === "complete");
+      const completeEvent = events.find((e) => e.type === "complete");
       expect(completeEvent?.summary).toContain("Google");
     });
 

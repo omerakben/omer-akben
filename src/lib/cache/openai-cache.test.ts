@@ -3,8 +3,8 @@
  * Tests cache key generation, hit/miss scenarios, metrics tracking, and TTL enforcement
  */
 
-import { describe, expect, it, beforeEach, vi } from "vitest";
 import { createHash } from "crypto";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock Redis client before importing cache functions
 const mockGet = vi.fn();
@@ -59,8 +59,12 @@ describe("OpenAI Cache", () => {
       const input2 = "second input";
       const model = "text-embedding-3-small";
 
-      const hash1 = createHash("sha256").update(`${model}::${input1}`, "utf8").digest("hex");
-      const hash2 = createHash("sha256").update(`${model}::${input2}`, "utf8").digest("hex");
+      const hash1 = createHash("sha256")
+        .update(`${model}::${input1}`, "utf8")
+        .digest("hex");
+      const hash2 = createHash("sha256")
+        .update(`${model}::${input2}`, "utf8")
+        .digest("hex");
 
       expect(hash1).not.toBe(hash2);
     });
@@ -70,8 +74,12 @@ describe("OpenAI Cache", () => {
       const model1 = "text-embedding-3-small";
       const model2 = "text-embedding-3-large";
 
-      const hash1 = createHash("sha256").update(`${model1}::${input}`, "utf8").digest("hex");
-      const hash2 = createHash("sha256").update(`${model2}::${input}`, "utf8").digest("hex");
+      const hash1 = createHash("sha256")
+        .update(`${model1}::${input}`, "utf8")
+        .digest("hex");
+      const hash2 = createHash("sha256")
+        .update(`${model2}::${input}`, "utf8")
+        .digest("hex");
 
       expect(hash1).not.toBe(hash2);
     });
@@ -79,7 +87,9 @@ describe("OpenAI Cache", () => {
     it("should use version prefix in cache keys", () => {
       const input = "test";
       const model = "text-embedding-3-small";
-      const hash = createHash("sha256").update(`${model}::${input}`, "utf8").digest("hex");
+      const hash = createHash("sha256")
+        .update(`${model}::${input}`, "utf8")
+        .digest("hex");
       const expectedKey = `cache:embed:v1:${hash}`;
 
       expect(expectedKey).toMatch(/^cache:embed:v1:/);
@@ -90,7 +100,10 @@ describe("OpenAI Cache", () => {
     it("should return null on cache miss", async () => {
       mockGet.mockResolvedValue(null);
 
-      const result = await getCachedEmbedding("test input", "text-embedding-3-small");
+      const result = await getCachedEmbedding(
+        "test input",
+        "text-embedding-3-small"
+      );
 
       expect(result).toBeNull();
       expect(mockGet).toHaveBeenCalledOnce();
@@ -105,7 +118,10 @@ describe("OpenAI Cache", () => {
       });
       mockGet.mockResolvedValue(cachedData);
 
-      const result = await getCachedEmbedding("test input", "text-embedding-3-small");
+      const result = await getCachedEmbedding(
+        "test input",
+        "text-embedding-3-small"
+      );
 
       expect(result).toEqual(testEmbedding);
       expect(mockGet).toHaveBeenCalledOnce();
@@ -115,7 +131,11 @@ describe("OpenAI Cache", () => {
       const testEmbedding = [0.1, 0.2, 0.3];
       mockSet.mockResolvedValue("OK");
 
-      await setCachedEmbedding("test input", testEmbedding, "text-embedding-3-small");
+      await setCachedEmbedding(
+        "test input",
+        testEmbedding,
+        "text-embedding-3-small"
+      );
 
       expect(mockSet).toHaveBeenCalledOnce();
       const [key, value, options] = mockSet.mock.calls[0];
@@ -129,7 +149,10 @@ describe("OpenAI Cache", () => {
     it("should handle cache retrieval errors gracefully", async () => {
       mockGet.mockRejectedValue(new Error("Redis connection failed"));
 
-      const result = await getCachedEmbedding("test input", "text-embedding-3-small");
+      const result = await getCachedEmbedding(
+        "test input",
+        "text-embedding-3-small"
+      );
 
       expect(result).toBeNull();
     });
@@ -203,8 +226,20 @@ describe("OpenAI Cache", () => {
     it("should generate different keys for different temperatures", async () => {
       mockSet.mockResolvedValue("OK");
 
-      await setCachedCompletion("gpt-4o-mini", "System", "Prompt", 0.3, "Response1");
-      await setCachedCompletion("gpt-4o-mini", "System", "Prompt", 0.7, "Response2");
+      await setCachedCompletion(
+        "gpt-4o-mini",
+        "System",
+        "Prompt",
+        0.3,
+        "Response1"
+      );
+      await setCachedCompletion(
+        "gpt-4o-mini",
+        "System",
+        "Prompt",
+        0.7,
+        "Response2"
+      );
 
       expect(mockSet).toHaveBeenCalledTimes(2);
       const key1 = mockSet.mock.calls[0][0];
@@ -350,7 +385,13 @@ describe("OpenAI Cache", () => {
     it("should set 7-day TTL for completions", async () => {
       mockSet.mockResolvedValue("OK");
 
-      await setCachedCompletion("gpt-4o-mini", "System", "Prompt", 0.3, "Response");
+      await setCachedCompletion(
+        "gpt-4o-mini",
+        "System",
+        "Prompt",
+        0.3,
+        "Response"
+      );
 
       const [, , options] = mockSet.mock.calls[0];
       expect(options.ex).toBe(60 * 60 * 24 * 7);

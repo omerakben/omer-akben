@@ -19,7 +19,9 @@ export async function generateMetadata({ params }: Props) {
   const title = project ? `${project.title}` : "Project";
   const description = project?.description ?? "Project details and outcomes.";
   const path = `/projects/${slug}`;
-  const image = project ? `/projects/${slug}/opengraph-image` : "/opengraph-image";
+  const image = project
+    ? `/projects/${slug}/opengraph-image`
+    : "/opengraph-image";
 
   return createMetadata({ title, description, path, image });
 }

@@ -21,7 +21,10 @@ test.describe("A11y", () => {
 
       // Wait for client-side hydration to complete
       // Check that loading spinner is gone (present on all pages during SSR)
-      await page.waitForSelector(".animate-spin", { state: "detached", timeout: 10000 });
+      await page.waitForSelector(".animate-spin", {
+        state: "detached",
+        timeout: 10000,
+      });
 
       // Additional wait for DOM to stabilize after hydration
       await page.waitForTimeout(500);

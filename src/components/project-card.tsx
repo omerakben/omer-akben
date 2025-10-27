@@ -1,13 +1,19 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { ExternalLink, Github, Code2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { DURATION, EASING, VIEWPORT } from "@/lib/animations";
+import { motion } from "framer-motion";
+import { Code2, ExternalLink, Github } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export interface ProjectCardProps {
   title: string;
@@ -45,7 +51,7 @@ export function ProjectCard({
       transition={{
         duration: DURATION.normal,
         ease: EASING.default,
-        delay: shouldAnimateImmediately ? index * 0.1 : 0
+        delay: shouldAnimateImmediately ? index * 0.1 : 0,
       }}
     >
       <Card className="group h-full hover:shadow-lg hover:border-brand-primary/40 transition-all duration-300">
@@ -79,11 +85,7 @@ export function ProjectCard({
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="group-hover:text-brand-primary transition-colors">
-              {slug ? (
-                <Link href={`/projects/${slug}`}>{title}</Link>
-              ) : (
-                title
-              )}
+              {slug ? <Link href={`/projects/${slug}`}>{title}</Link> : title}
             </CardTitle>
             <div className="flex gap-2 shrink-0">
               {githubUrl && (

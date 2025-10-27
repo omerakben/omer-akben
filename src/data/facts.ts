@@ -20,7 +20,8 @@ export const facts = {
     yearsOfExperience: 6,
     currentRole: "Full-Stack AI Engineer",
     currentCompany: "Freelance",
-    summary: "Full-Stack AI Engineer with 6+ years spanning QA/SDET and product delivery. Builds LLM-powered web applications end-to-end with React/Next.js (TypeScript) frontends and Python (FastAPI/Django) backends, shipping Retrieval-Augmented Generation (RAG) and agentic features via LangChain/LangGraph and vector search (pgvector/FAISS/Pinecone). Delivers production-grade reliability through Playwright/Selenium automation, REST API testing, and Continuous Integration/Continuous Delivery (CI/CD) pipelines using GitHub Actions, Jenkins, Azure DevOps, and Docker. Cloud experience on AWS (Lambda, API Gateway, S3) and Azure (Entra ID, Azure DevOps). Domain expertise in fintech and healthcare with HIPAA/PHI compliance and HL7 data processing. Combines engineering rigor with SDET-grade quality practices, including Test-Driven Development (TDD), Behavior-Driven Development (BDD), and shift-left testing strategies.",
+    summary:
+      "Full-Stack AI Engineer with 6+ years spanning QA/SDET and product delivery. Builds LLM-powered web applications end-to-end with React/Next.js (TypeScript) frontends and Python (FastAPI/Django) backends, shipping Retrieval-Augmented Generation (RAG) and agentic features via LangChain/LangGraph and vector search (pgvector/FAISS/Pinecone). Delivers production-grade reliability through Playwright/Selenium automation, REST API testing, and Continuous Integration/Continuous Delivery (CI/CD) pipelines using GitHub Actions, Jenkins, Azure DevOps, and Docker. Cloud experience on AWS (Lambda, API Gateway, S3) and Azure (Entra ID, Azure DevOps). Domain expertise in fintech and healthcare with HIPAA/PHI compliance and HL7 data processing. Combines engineering rigor with SDET-grade quality practices, including Test-Driven Development (TDD), Behavior-Driven Development (BDD), and shift-left testing strategies.",
     specializations: [
       "AI Engineering & LLM Applications",
       "Full-Stack Development (React/Next.js + Python)",
@@ -158,21 +159,24 @@ export const facts = {
       institution: "Nashville Software School",
       year: "2024 - 2025",
       specialization: "Full-Stack Development",
-      description: "Intensive full-stack development program covering modern web technologies and software engineering practices. Key coursework included React/Next.js ecosystem, Python/FastAPI and Django frameworks, TypeScript development, Test-Driven Development (TDD), CI/CD pipelines, and foundational labs with PyTorch and TensorFlow for understanding LLM integration workflows.",
+      description:
+        "Intensive full-stack development program covering modern web technologies and software engineering practices. Key coursework included React/Next.js ecosystem, Python/FastAPI and Django frameworks, TypeScript development, Test-Driven Development (TDD), CI/CD pipelines, and foundational labs with PyTorch and TensorFlow for understanding LLM integration workflows.",
     },
     {
       degree: "Software Development Engineer in Test (SDET)",
       institution: "TechCenture Academy",
       year: "2019 - 2020",
       specialization: "QA Automation",
-      description: "Comprehensive SDET training program focusing on test automation frameworks and quality engineering practices. Covered Java and C# programming, Selenium WebDriver, Cucumber, and SpecFlow for Behavior-Driven Development (BDD), Test-Driven Development (TDD) methodologies, and CI/CD integration with Jenkins and Azure DevOps.",
+      description:
+        "Comprehensive SDET training program focusing on test automation frameworks and quality engineering practices. Covered Java and C# programming, Selenium WebDriver, Cucumber, and SpecFlow for Behavior-Driven Development (BDD), Test-Driven Development (TDD) methodologies, and CI/CD integration with Jenkins and Azure DevOps.",
     },
     {
       degree: "Master of Science in Healthcare Management",
       institution: "Istanbul Okan University",
       year: "2014 - 2016",
       specialization: "Healthcare Management",
-      description: "Graduate studies in healthcare administration, policy, and management with emphasis on healthcare information systems, regulatory compliance (HIPAA), and quality improvement methodologies in clinical settings.",
+      description:
+        "Graduate studies in healthcare administration, policy, and management with emphasis on healthcare information systems, regulatory compliance (HIPAA), and quality improvement methodologies in clinical settings.",
     },
   ],
 

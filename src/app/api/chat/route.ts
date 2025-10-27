@@ -1,10 +1,10 @@
+import { logError } from "@/lib/log";
+import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
+import { loadThreadMessages } from "@/lib/mastra/memory/checkpointer";
+import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
+import { RedisMemoryManager } from "@/lib/memory/redis-memory";
 import type { UIMessage } from "ai";
 import { z } from "zod";
-import { loadThreadMessages } from "@/lib/mastra/memory/checkpointer";
-import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
-import { RedisMemoryManager } from "@/lib/memory/redis-memory";
-import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
-import { logError } from "@/lib/log";
 
 export const maxDuration = 30;
 
@@ -60,7 +60,10 @@ export async function POST(req: Request) {
 
   const parsed = requestSchema.safeParse(payload);
   if (!parsed.success) {
-    return ensureJsonResponse({ error: "chatId and message are required" }, 400);
+    return ensureJsonResponse(
+      { error: "chatId and message are required" },
+      400
+    );
   }
 
   const { chatId, message, userId } = parsed.data;
@@ -123,7 +126,10 @@ function normalizeToUIMessage(raw: z.infer<typeof messageSchema>): UIMessage {
 
 function extractMessageText(message: UIMessage): string {
   const textParts = message.parts
-    .filter((part): part is { type: "text"; text: string } => part.type === "text" && "text" in part)
+    .filter(
+      (part): part is { type: "text"; text: string } =>
+        part.type === "text" && "text" in part
+    )
     .map((part) => part.text.trim())
     .filter(Boolean);
 
@@ -131,7 +137,9 @@ function extractMessageText(message: UIMessage): string {
     return textParts.join("\n");
   }
 
-  if (typeof (message as unknown as { content?: unknown }).content === "string") {
+  if (
+    typeof (message as unknown as { content?: unknown }).content === "string"
+  ) {
     return ((message as unknown as { content?: string }).content ?? "").trim();
   }
 

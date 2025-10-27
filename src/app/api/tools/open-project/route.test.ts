@@ -3,10 +3,15 @@
  * Tests project retrieval by slug, not found handling, and validation
  */
 
-import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
+import { describe, expect, it } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/open-project", () => {
   describe("Valid requests", () => {

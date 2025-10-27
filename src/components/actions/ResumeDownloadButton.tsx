@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Download, FileText, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Download, FileText } from "lucide-react";
+import { useState } from "react";
 
-type ResumeFormat = 'resume' | 'extended';
+type ResumeFormat = "resume" | "extended";
 
 interface ResumeDownloadButtonProps {
   /**
@@ -20,11 +20,11 @@ interface ResumeDownloadButtonProps {
   /**
    * Button variant
    */
-  variant?: 'default' | 'outline' | 'ghost';
+  variant?: "default" | "outline" | "ghost";
   /**
    * Button size
    */
-  size?: 'default' | 'sm' | 'lg';
+  size?: "default" | "sm" | "lg";
 }
 
 /**
@@ -39,9 +39,9 @@ interface ResumeDownloadButtonProps {
  * - Error handling with user feedback
  */
 export function ResumeDownloadButton({
-  className = '',
-  variant = 'default',
-  size = 'default',
+  className = "",
+  variant = "default",
+  size = "default",
 }: ResumeDownloadButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,35 +49,35 @@ export function ResumeDownloadButton({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/tools/download-resume', {
-        method: 'POST',
+      const response = await fetch("/api/tools/download-resume", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ format }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get resume download link');
+        throw new Error("Failed to get resume download link");
       }
 
       const data = await response.json();
 
       if (!data.success) {
-        throw new Error(data.error || 'Download failed');
+        throw new Error(data.error || "Download failed");
       }
 
       // Trigger download
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = data.data.url;
       link.download = data.data.filename;
-      link.target = '_blank';
+      link.target = "_blank";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('[ResumeDownload] Error:', error);
-      alert('Failed to download resume. Please try again.');
+      console.error("[ResumeDownload] Error:", error);
+      alert("Failed to download resume. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -89,13 +89,13 @@ export function ResumeDownloadButton({
       <Button
         variant={variant}
         size={size}
-        onClick={() => handleDownload('resume')}
+        onClick={() => handleDownload("resume")}
         disabled={isLoading}
         className="gap-2 rounded-r-none"
         aria-label="Download standard resume"
       >
         <Download className="w-4 h-4" />
-        <span>{isLoading ? 'Loading...' : 'Resume'}</span>
+        <span>{isLoading ? "Loading..." : "Resume"}</span>
       </Button>
 
       {/* Format selector dropdown */}
@@ -113,7 +113,7 @@ export function ResumeDownloadButton({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem
-            onClick={() => handleDownload('resume')}
+            onClick={() => handleDownload("resume")}
             className="gap-2 cursor-pointer"
           >
             <FileText className="w-4 h-4" />
@@ -123,7 +123,7 @@ export function ResumeDownloadButton({
             </div>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => handleDownload('extended')}
+            onClick={() => handleDownload("extended")}
             className="gap-2 cursor-pointer"
           >
             <FileText className="w-4 h-4" />

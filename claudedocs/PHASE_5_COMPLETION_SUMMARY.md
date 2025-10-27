@@ -24,6 +24,7 @@ Successfully implemented a Redis-backed caching layer for OpenAI API calls (embe
 **File Created:** `claudedocs/PHASE_5_CACHING_STRATEGY.md`
 
 **Key Decisions:**
+
 - **Embedding Cache:** 30-day TTL (deterministic, safe for long-term caching)
 - **Completion Cache:** 7-day TTL (semi-deterministic at temperature 0.3)
 - **Cache Keys:** SHA-256 hashing of `model::input` for embeddings, `model::temp::system::prompt` for completions
@@ -31,10 +32,12 @@ Successfully implemented a Redis-backed caching layer for OpenAI API calls (embe
 - **Version Prefix:** `cache:{type}:v1:` allows cache invalidation when algorithm changes
 
 **Identified Caching Opportunities:**
+
 1. `episodic.ts:83-86, 119-122` - Embedding generation (saveConversation + search)
 2. `fact-extractor.ts:161-166` - Fact extraction completions (gpt-4o-mini)
 
 **Cost Analysis:**
+
 - Embedding savings: $35/year (80% hit rate assumed)
 - Completion savings: $182.50/year (50% hit rate assumed)
 - **Total annual savings: $217.50 (67% reduction)**
@@ -44,6 +47,7 @@ Successfully implemented a Redis-backed caching layer for OpenAI API calls (embe
 **File Created:** `src/lib/cache/openai-cache.ts` (361 lines)
 
 **Core Functions Implemented:**
+
 ```typescript
 // Embedding cache
 getCachedEmbedding(input, model): Promise<number[] | null>
@@ -61,6 +65,7 @@ logCacheMetrics(type, days): Promise<void>
 ```
 
 **Technical Features:**
+
 - SHA-256 deterministic hash generation for cache keys
 - Performance timing logging for cache lookups
 - Graceful error handling (cache failures don't break app)
@@ -72,6 +77,7 @@ logCacheMetrics(type, days): Promise<void>
 **File Modified:** `src/lib/mastra/memory/episodic.ts`
 
 **Changes Made:**
+
 1. Added cache imports (lines 5-10)
 2. Rewrote `saveConversation` method (lines 82-162):
    - Parallel cache lookups for all chunks using `Promise.all`
@@ -87,6 +93,7 @@ logCacheMetrics(type, days): Promise<void>
    - Continue with existing vector search logic
 
 **Performance Optimization:**
+
 - Batch caching prevents sequential API calls
 - Parallel cache checks minimize latency
 - Only uncached chunks trigger OpenAI requests
@@ -96,6 +103,7 @@ logCacheMetrics(type, days): Promise<void>
 **File Modified:** `src/lib/memory/fact-extractor.ts`
 
 **Changes Made:**
+
 1. Added cache imports (lines 13-18)
 2. Modified `extractFacts` method (lines 161-195):
    - Check cache before calling `generateText`
@@ -104,6 +112,7 @@ logCacheMetrics(type, days): Promise<void>
    - Updated error logging to use `responseText` variable
 
 **Cache Key Components:**
+
 - Model: `"gpt-4o-mini"`
 - System: `FACT_EXTRACTION_SYSTEM_PROMPT` (500 tokens)
 - Prompt: Built from last 10 messages (~2000 tokens)
@@ -118,6 +127,7 @@ logCacheMetrics(type, days): Promise<void>
 **Endpoint:** `GET /api/cache-metrics?type={embedding|completion}&days={1-90}`
 
 **Response Format:**
+
 ```json
 {
   "type": "embedding",
@@ -133,11 +143,13 @@ logCacheMetrics(type, days): Promise<void>
 ```
 
 **Error Handling:**
+
 - Invalid type parameter: 400 Bad Request
 - Invalid days range: 400 Bad Request
 - Internal errors: 500 Internal Server Error
 
 **Validation:**
+
 - ✅ Tested embedding metrics: Working
 - ✅ Tested completion metrics: Working
 - ✅ Tested error handling: Working
@@ -149,12 +161,14 @@ logCacheMetrics(type, days): Promise<void>
 **Test Coverage:**
 
 **1. Cache Key Generation (4 tests)**
+
 - Deterministic keys for same input
 - Different keys for different inputs
 - Different keys for different models
 - Version prefix verification
 
 **2. Embedding Cache (5 tests)**
+
 - Cache miss returns null
 - Cache hit returns embedding
 - Store with 30-day TTL
@@ -162,6 +176,7 @@ logCacheMetrics(type, days): Promise<void>
 - Graceful error handling (storage)
 
 **3. Completion Cache (5 tests)**
+
 - Cache miss returns null
 - Cache hit returns completion text
 - Store with 7-day TTL
@@ -169,11 +184,13 @@ logCacheMetrics(type, days): Promise<void>
 - Invalid JSON handling
 
 **4. Metrics Tracking (3 tests)**
+
 - Record cache hit increments counters
 - Record cache miss increments counters
 - Error handling for metrics recording
 
 **5. Metrics Retrieval (5 tests)**
+
 - Single day metrics aggregation
 - Multi-day metrics aggregation
 - Missing metrics handled gracefully
@@ -181,11 +198,13 @@ logCacheMetrics(type, days): Promise<void>
 - Error handling for metrics retrieval
 
 **6. TTL Enforcement (3 tests)**
+
 - 30-day TTL for embeddings
 - 7-day TTL for completions
 - 90-day TTL for metrics
 
 **Test Results:**
+
 ```
 ✓ src/lib/cache/openai-cache.test.ts (25 tests) 9ms
 
@@ -201,12 +220,14 @@ Test Files  15 passed (15)
 ## Files Created/Modified
 
 ### Created (3 files)
+
 1. `claudedocs/PHASE_5_CACHING_STRATEGY.md` - Comprehensive design document
 2. `src/lib/cache/openai-cache.ts` - Cache utility module (361 lines)
 3. `src/app/api/cache-metrics/route.ts` - Metrics API endpoint
 4. `src/lib/cache/openai-cache.test.ts` - Unit tests (25 tests)
 
 ### Modified (2 files)
+
 1. `src/lib/mastra/memory/episodic.ts` - Embedding cache integration
    - Added imports (lines 5-10)
    - Rewrote saveConversation (lines 82-162)
@@ -221,6 +242,7 @@ Test Files  15 passed (15)
 ## Technical Achievements
 
 ### Cache Design
+
 - ✅ Deterministic SHA-256 key generation
 - ✅ Separate TTLs for different cache types
 - ✅ Version prefix for cache invalidation
@@ -228,6 +250,7 @@ Test Files  15 passed (15)
 - ✅ Performance logging for monitoring
 
 ### Integration Quality
+
 - ✅ Batch optimization for embeddings
 - ✅ Parallel cache lookups with Promise.all
 - ✅ Metrics tracking for every cache operation
@@ -235,6 +258,7 @@ Test Files  15 passed (15)
 - ✅ Backwards compatible with existing code
 
 ### Testing Excellence
+
 - ✅ 25 comprehensive unit tests
 - ✅ 100% function coverage
 - ✅ Error scenarios thoroughly tested
@@ -245,14 +269,14 @@ Test Files  15 passed (15)
 
 ## Performance Targets
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| Embedding cache hit rate | 70%+ | ⏳ Requires live Redis |
-| Completion cache hit rate | 50%+ | ⏳ Requires live Redis |
-| Cache lookup latency | <50ms (p95) | ⏳ Requires live Redis |
-| Cost reduction | 60%+ | 📊 Projected: 67% |
-| Test coverage | 15+ tests | ✅ 25 tests |
-| Zero breaking changes | Required | ✅ All tests passing |
+| Metric                    | Target      | Status                |
+| ------------------------- | ----------- | --------------------- |
+| Embedding cache hit rate  | 70%+        | ⏳ Requires live Redis |
+| Completion cache hit rate | 50%+        | ⏳ Requires live Redis |
+| Cache lookup latency      | <50ms (p95) | ⏳ Requires live Redis |
+| Cost reduction            | 60%+        | 📊 Projected: 67%      |
+| Test coverage             | 15+ tests   | ✅ 25 tests            |
+| Zero breaking changes     | Required    | ✅ All tests passing   |
 
 **Note:** Cache hit rate targets require live Redis instance with production traffic (Phase 3 dependency).
 
@@ -261,18 +285,21 @@ Test Files  15 passed (15)
 ## Quality Metrics
 
 **Before Phase 5:**
+
 - Total Tests: 293
 - Test Files: 14
 - Cache Implementation: None
 - OpenAI Cost Optimization: None
 
 **After Phase 5:**
+
 - Total Tests: **318** (+25)
 - Test Files: **15** (+1)
 - Cache Implementation: **Full coverage** (embeddings + completions)
 - OpenAI Cost Optimization: **67% projected savings**
 
 **Test Quality:**
+
 - All 318 tests passing ✅
 - Cache tests execute in <10ms ✅
 - Zero flaky tests ✅
@@ -293,12 +320,14 @@ Test Files  15 passed (15)
 ## Next Steps
 
 ### Immediate (Blocked by Phase 3)
+
 1. **Phase 3:** Run Redis setup script with Upstash credentials
    - Required for integration testing
    - Enables cache hit rate verification
    - Allows production cost savings measurement
 
 ### Future Enhancements (Post-Phase 3)
+
 1. **Phase 7:** Run integration tests with live Redis
    - Verify 70%+ embedding hit rate
    - Verify 50%+ completion hit rate
@@ -321,6 +350,7 @@ Test Files  15 passed (15)
 ## Risk Assessment
 
 ### Mitigated Risks ✅
+
 - **Stale Cache:** Version prefix allows invalidation
 - **Memory Pressure:** Aggressive TTLs + LRU eviction
 - **Cache Failures:** Graceful degradation, app still works
@@ -328,6 +358,7 @@ Test Files  15 passed (15)
 - **Performance:** Parallel operations, batch optimization
 
 ### Remaining Risks (Low Impact)
+
 - **Redis Downtime:** App degrades to direct OpenAI calls (acceptable)
 - **Cache Poisoning:** Input validation needed (future enhancement)
 - **Hit Rate Variance:** May fluctuate based on traffic patterns (expected)

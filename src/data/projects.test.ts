@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  projects,
-  getProjectBySlug,
   getFeaturedProjects,
+  getProjectBySlug,
   getProjectsByCategory,
+  projects,
   type Project,
 } from "./projects";
 
@@ -99,7 +99,11 @@ describe("Projects Data Layer", () => {
     });
 
     it("should return correct project for known slugs", () => {
-      const knownSlugs = ["north-glass", "elon-ai-agent", "developer-cheat-sheets"];
+      const knownSlugs = [
+        "north-glass",
+        "elon-ai-agent",
+        "developer-cheat-sheets",
+      ];
       knownSlugs.forEach((slug) => {
         const found = getProjectBySlug(slug);
         expect(found).toBeDefined();

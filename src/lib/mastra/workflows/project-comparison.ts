@@ -1,8 +1,8 @@
+import { projects, type Project } from "@/data/projects";
+import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
-import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import type { WorkflowDefinition, WorkflowEvent } from "./types";
-import { projects, type Project } from "@/data/projects";
 
 /**
  * Detects if the query is requesting project comparison
@@ -27,7 +27,8 @@ export function detectProjectComparison(query: string): boolean {
  */
 export const projectComparisonWorkflow: WorkflowDefinition = {
   name: "project-comparison",
-  description: "Compares projects across different dimensions and provides recommendations",
+  description:
+    "Compares projects across different dimensions and provides recommendations",
   detect: detectProjectComparison,
   steps: [], // Populated below
   formatEvent: (event: WorkflowEvent): string => {
@@ -43,7 +44,9 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
     }
   },
 
-  async *execute(context: AgentExecutionContext): AsyncGenerator<WorkflowEvent> {
+  async *execute(
+    context: AgentExecutionContext
+  ): AsyncGenerator<WorkflowEvent> {
     const totalSteps = 3;
 
     // Extract criteria from query
@@ -55,14 +58,17 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       type: "progress",
       step: 1,
       total: totalSteps,
-      message: `Finding projects matching: ${criteria.description}...`
+      message: `Finding projects matching: ${criteria.description}...`,
     };
 
     const filteredProjects = filterProjects(criteria);
-    const filterSummary = await summarizeFilteredProjects(filteredProjects, criteria);
+    const filterSummary = await summarizeFilteredProjects(
+      filteredProjects,
+      criteria
+    );
     yield {
       type: "agent-result",
-      content: filterSummary
+      content: filterSummary,
     };
 
     // Step 2: Feature Comparison
@@ -70,13 +76,16 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       type: "progress",
       step: 2,
       total: totalSteps,
-      message: "Comparing features across selected projects..."
+      message: "Comparing features across selected projects...",
     };
 
-    const featureComparison = await compareProjectFeatures(filteredProjects, criteria);
+    const featureComparison = await compareProjectFeatures(
+      filteredProjects,
+      criteria
+    );
     yield {
       type: "agent-result",
-      content: featureComparison
+      content: featureComparison,
     };
 
     // Step 3: Recommendation
@@ -84,7 +93,7 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       type: "progress",
       step: 3,
       total: totalSteps,
-      message: "Generating recommendation..."
+      message: "Generating recommendation...",
     };
 
     const recommendation = await generateRecommendation(
@@ -95,15 +104,15 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
     );
     yield {
       type: "agent-result",
-      content: recommendation
+      content: recommendation,
     };
 
     // Complete
     yield {
       type: "complete",
-      summary: `Project comparison complete for ${filteredProjects.length} projects. Recommendation provided based on ${criteria.description}.`
+      summary: `Project comparison complete for ${filteredProjects.length} projects. Recommendation provided based on ${criteria.description}.`,
     };
-  }
+  },
 };
 
 /**
@@ -124,7 +133,7 @@ interface ComparisonCriteria {
 function extractComparisonCriteria(query: string): ComparisonCriteria {
   const normalized = query.toLowerCase();
   const criteria: ComparisonCriteria = {
-    description: "all projects"
+    description: "all projects",
   };
 
   // Extract category
@@ -155,7 +164,15 @@ function extractComparisonCriteria(query: string): ComparisonCriteria {
   }
 
   // Extract technology
-  const techs = ["react", "next.js", "typescript", "python", "django", "fastapi", "node"];
+  const techs = [
+    "react",
+    "next.js",
+    "typescript",
+    "python",
+    "django",
+    "fastapi",
+    "node",
+  ];
   for (const tech of techs) {
     if (normalized.includes(tech)) {
       criteria.technology = tech;
@@ -180,22 +197,22 @@ function filterProjects(criteria: ComparisonCriteria): Project[] {
   let filtered = [...projects];
 
   if (criteria.category) {
-    filtered = filtered.filter(p => p.category === criteria.category);
+    filtered = filtered.filter((p) => p.category === criteria.category);
   }
 
   if (criteria.role) {
-    filtered = filtered.filter(p => p.role === criteria.role);
+    filtered = filtered.filter((p) => p.role === criteria.role);
   }
 
   if (criteria.technology) {
     const techLower = criteria.technology.toLowerCase();
-    filtered = filtered.filter(p =>
-      p.technologies.some(t => t.toLowerCase().includes(techLower))
+    filtered = filtered.filter((p) =>
+      p.technologies.some((t) => t.toLowerCase().includes(techLower))
     );
   }
 
   if (criteria.featured !== undefined) {
-    filtered = filtered.filter(p => p.featured === criteria.featured);
+    filtered = filtered.filter((p) => p.featured === criteria.featured);
   }
 
   // If no projects found, return all projects
@@ -209,7 +226,7 @@ async function summarizeFilteredProjects(
   projects: Project[],
   criteria: ComparisonCriteria
 ): Promise<string> {
-  const projectSummaries = projects.slice(0, 10).map(p => ({
+  const projectSummaries = projects.slice(0, 10).map((p) => ({
     title: p.title,
     description: p.description,
     category: p.category,
@@ -223,10 +240,14 @@ async function summarizeFilteredProjects(
 Criteria: ${criteria.description}
 
 Found Projects (${projects.length} total, showing ${projectSummaries.length}):
-${projectSummaries.map((p, i) => `${i + 1}. **${p.title}** (${p.role} | ${p.category})
+${projectSummaries
+  .map(
+    (p, i) => `${i + 1}. **${p.title}** (${p.role} | ${p.category})
    - ${p.description}
    - Technologies: ${p.technologies.join(", ")}
-   - Status: ${p.status}`).join("\n\n")}
+   - Status: ${p.status}`
+  )
+  .join("\n\n")}
 
 Provide a brief summary (2-3 paragraphs) of:
 1. What types of projects were found
@@ -250,7 +271,7 @@ async function compareProjectFeatures(
   projects: Project[],
   criteria: ComparisonCriteria
 ): Promise<string> {
-  const projectDetails = projects.slice(0, 5).map(p => ({
+  const projectDetails = projects.slice(0, 5).map((p) => ({
     title: p.title,
     description: p.description,
     longDescription: p.longDescription || p.description,
@@ -267,13 +288,17 @@ async function compareProjectFeatures(
 Criteria: ${criteria.description}
 
 Projects to Compare (${projectDetails.length}):
-${projectDetails.map((p, i) => `${i + 1}. **${p.title}**
+${projectDetails
+  .map(
+    (p, i) => `${i + 1}. **${p.title}**
    Description: ${p.description}
    Technologies: ${p.technologies.join(", ")}
    Category: ${p.category} | Role: ${p.role}
    Status: ${p.status}
    ${p.demoUrl ? `Demo: ${p.demoUrl}` : ""}
-   ${p.githubUrl ? `GitHub: ${p.githubUrl}` : ""}`).join("\n\n")}
+   ${p.githubUrl ? `GitHub: ${p.githubUrl}` : ""}`
+  )
+  .join("\n\n")}
 
 Provide a detailed feature comparison (3-4 paragraphs):
 1. **Technical Stack Comparison**: How do the technology choices differ?
@@ -305,7 +330,10 @@ async function generateRecommendation(
 Criteria: ${criteria.description}
 
 Projects Analyzed (${projects.length}):
-${projects.slice(0, 5).map((p, i) => `${i + 1}. ${p.title} (${p.role} | ${p.category})`).join("\n")}
+${projects
+  .slice(0, 5)
+  .map((p, i) => `${i + 1}. ${p.title} (${p.role} | ${p.category})`)
+  .join("\n")}
 
 Filter Summary:
 ${filterSummary}

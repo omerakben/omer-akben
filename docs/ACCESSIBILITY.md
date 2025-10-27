@@ -11,12 +11,14 @@ This document outlines the accessibility features and compliance measures implem
 ### 1. Keyboard Navigation
 
 #### Skip to Content
+
 - **Component**: `src/components/skip-to-content.tsx`
 - **Behavior**: Hidden until focused with Tab key
 - **Target**: `#main-content` on main element
 - **Styling**: High contrast, visible outline
 
 **Testing**:
+
 ```
 1. Press Tab key on page load
 2. Verify "Skip to main content" link appears
@@ -25,12 +27,14 @@ This document outlines the accessibility features and compliance measures implem
 ```
 
 #### Tab Navigation
+
 - All interactive elements accessible via Tab/Shift+Tab
 - Logical tab order (top to bottom, left to right)
 - No keyboard traps
 - Focus indicators visible on all interactive elements
 
 **Focus Order**:
+
 1. Skip to content link
 2. Logo/home link
 3. Navigation links (Journey, Projects, Skills, etc.)
@@ -42,10 +46,12 @@ This document outlines the accessibility features and compliance measures implem
 ### 2. Focus Indicators
 
 #### Enhanced Focus Styles
+
 - **Location**: `src/app/globals.css`
 - **Implementation**: CSS `:focus-visible` pseudo-class
 
 **Styles**:
+
 ```css
 /* General focus */
 *:focus-visible {
@@ -75,6 +81,7 @@ textarea:focus-visible {
 ```
 
 **Features**:
+
 - Visible in all 8 brightness modes (-3 to +3)
 - High contrast (always uses --brand-primary)
 - Offset for clarity
@@ -83,6 +90,7 @@ textarea:focus-visible {
 ### 3. Semantic HTML & ARIA
 
 #### Landmarks
+
 All pages use proper HTML5 semantic elements:
 
 ```html
@@ -95,11 +103,13 @@ All pages use proper HTML5 semantic elements:
 ```
 
 #### Heading Hierarchy
+
 - Single `<h1>` per page (page title)
 - Logical nesting: h1 → h2 → h3 (no skipping levels)
 - Descriptive heading text
 
 **Example Structure**:
+
 ```html
 <h1>Omer Akben - AI/ML Engineer</h1>
   <h2>Featured Projects</h2>
@@ -110,12 +120,14 @@ All pages use proper HTML5 semantic elements:
 ```
 
 #### ARIA Labels
+
 - All icon-only buttons have `aria-label`
 - All images have `alt` text (or `alt=""` if decorative)
 - Form inputs associated with labels
 - Dynamic content uses `aria-live` regions
 
 **Examples**:
+
 ```tsx
 // Icon button
 <Button aria-label="Open chat sidebar">
@@ -134,15 +146,18 @@ All pages use proper HTML5 semantic elements:
 ### 4. Color Contrast
 
 #### 8-Mode Brightness System
+
 All text and interactive elements maintain WCAG AA contrast ratios across all 8 brightness modes.
 
 **Contrast Requirements**:
+
 - **Normal text**: 4.5:1 minimum
 - **Large text** (18pt+ or 14pt bold+): 3:1 minimum
 - **Interactive elements**: 3:1 minimum
 - **Focus indicators**: 3:1 minimum
 
 **Testing Process**:
+
 1. Test each brightness mode: -3, -2, -1, 0, +1, +2, +3, auto
 2. Use Chrome DevTools Accessibility panel
 3. Check contrast ratios for:
@@ -152,11 +167,13 @@ All text and interactive elements maintain WCAG AA contrast ratios across all 8 
    - Link colors
 
 #### Color Independence
+
 - Information not conveyed by color alone
 - Icons and text labels used together
 - State changes include multiple cues (color + icon + text)
 
 **Example**:
+
 ```tsx
 // Good: Multiple indicators
 <Badge className="bg-brand-primary">
@@ -171,18 +188,21 @@ All text and interactive elements maintain WCAG AA contrast ratios across all 8 
 ### 5. Screen Reader Support
 
 #### Text Alternatives
+
 - All images have descriptive `alt` text
 - Decorative images use `alt=""`
 - Icon-only buttons have `aria-label`
 - Complex graphics have extended descriptions
 
 #### Form Accessibility
+
 - All inputs have associated labels
 - Error messages linked to inputs
 - Required fields marked with `aria-required`
 - Validation errors announced
 
 **Example**:
+
 ```tsx
 <div>
   <label htmlFor="email" className="block mb-2">
@@ -205,6 +225,7 @@ All text and interactive elements maintain WCAG AA contrast ratios across all 8 
 ```
 
 #### Live Regions
+
 - Toast notifications use `role="status"` or `role="alert"`
 - Dynamic content changes announced
 - Loading states communicated
@@ -212,17 +233,20 @@ All text and interactive elements maintain WCAG AA contrast ratios across all 8 
 ### 6. Responsive Design
 
 #### Mobile Accessibility
+
 - Touch targets minimum 44×44 pixels (iOS/Android guideline)
 - Adequate spacing between interactive elements
 - Mobile-friendly navigation (hamburger menu)
 - Viewport properly configured
 
 **Meta Tag**:
+
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 ```
 
 #### Text Scaling
+
 - Supports browser text zoom up to 200%
 - No horizontal scrolling at 200% zoom
 - Relative units (rem, em) for typography
@@ -231,6 +255,7 @@ All text and interactive elements maintain WCAG AA contrast ratios across all 8 
 ### 7. Motion & Animation
 
 #### Reduced Motion Support
+
 Respects `prefers-reduced-motion` system preference:
 
 ```tsx
@@ -246,6 +271,7 @@ const prefersReducedMotion = useReducedMotion();
 ```
 
 **Implementation**:
+
 - All animations respect `prefers-reduced-motion: reduce`
 - Essential animations (UI feedback) remain but simplified
 - Auto-play animations can be paused
@@ -254,6 +280,7 @@ const prefersReducedMotion = useReducedMotion();
 ## Testing Checklist
 
 ### Automated Testing
+
 - [ ] Run axe DevTools scan (0 violations target)
 - [ ] Run Lighthouse accessibility audit (100 score target)
 - [ ] Run WAVE accessibility checker
@@ -262,6 +289,7 @@ const prefersReducedMotion = useReducedMotion();
 ### Manual Testing
 
 #### Keyboard Navigation
+
 - [ ] Tab through entire page
 - [ ] All interactive elements reachable
 - [ ] Focus order logical
@@ -270,12 +298,14 @@ const prefersReducedMotion = useReducedMotion();
 - [ ] Arrow keys work in components (dropdowns, etc.)
 
 #### Screen Readers
+
 - [ ] Test with NVDA (Windows, free)
 - [ ] Test with JAWS (Windows, trial)
 - [ ] Test with VoiceOver (macOS/iOS, built-in)
 - [ ] Test with TalkBack (Android, built-in)
 
 **Testing Flow**:
+
 1. Navigate by headings (H key in NVDA/JAWS)
 2. Navigate by landmarks (D key in NVDA/JAWS)
 3. Navigate by links (Tab key)
@@ -284,6 +314,7 @@ const prefersReducedMotion = useReducedMotion();
 6. Test dynamic content updates
 
 #### Visual Testing
+
 - [ ] Test all 8 brightness modes
 - [ ] Verify contrast ratios (use Chrome DevTools)
 - [ ] Test with browser zoom (100%-200%)
@@ -291,6 +322,7 @@ const prefersReducedMotion = useReducedMotion();
 - [ ] Test with color blindness simulators
 
 #### Mobile Testing
+
 - [ ] Test on iOS device
 - [ ] Test on Android device
 - [ ] Test with VoiceOver on iOS
@@ -300,12 +332,14 @@ const prefersReducedMotion = useReducedMotion();
 ## Known Limitations
 
 ### Current Gaps (To Be Addressed)
+
 - [ ] Alt text audit needed for all images
 - [ ] Form validation messages need ARIA associations
 - [ ] Chat interface needs focus trap when open
 - [ ] Video captions (if videos added in future)
 
 ### Third-Party Components
+
 - Using shadcn/ui components (accessibility built-in)
 - Using Radix UI primitives (WCAG AA compliant)
 - Framer Motion animations (reduced motion supported)
@@ -315,6 +349,7 @@ const prefersReducedMotion = useReducedMotion();
 ### When Adding New Features
 
 #### Buttons
+
 ```tsx
 // Good: Descriptive text or aria-label
 <Button aria-label="Download resume in PDF format">
@@ -327,6 +362,7 @@ const prefersReducedMotion = useReducedMotion();
 ```
 
 #### Links
+
 ```tsx
 // Good: Descriptive link text
 <Link href="/projects/elon-ai-agent">
@@ -338,6 +374,7 @@ const prefersReducedMotion = useReducedMotion();
 ```
 
 #### Images
+
 ```tsx
 // Good: Descriptive alt text
 <Image
@@ -358,6 +395,7 @@ const prefersReducedMotion = useReducedMotion();
 ```
 
 #### Forms
+
 ```tsx
 // Good: Associated label and error handling
 <div>
@@ -379,7 +417,9 @@ const prefersReducedMotion = useReducedMotion();
 ```
 
 ### Code Review Checklist
+
 When reviewing PRs, check for:
+
 - [ ] All interactive elements keyboard accessible
 - [ ] Focus indicators visible
 - [ ] ARIA labels on icon-only buttons
@@ -393,11 +433,13 @@ When reviewing PRs, check for:
 ## Resources
 
 ### Standards & Guidelines
+
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [Inclusive Components](https://inclusive-components.design/)
 
 ### Tools
+
 - [axe DevTools](https://www.deque.com/axe/devtools/) (Browser extension)
 - [WAVE](https://wave.webaim.org/) (Web accessibility checker)
 - [Lighthouse](https://developers.google.com/web/tools/lighthouse) (Built into Chrome)
@@ -405,6 +447,7 @@ When reviewing PRs, check for:
 - [Color Contrast Checker](https://webaim.org/resources/contrastchecker/)
 
 ### Learning Resources
+
 - [WebAIM Articles](https://webaim.org/articles/)
 - [A11y Project Checklist](https://www.a11yproject.com/checklist/)
 - [MDN Accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)

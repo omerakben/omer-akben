@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Bot } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useChatSidebar } from '@/lib/chat-sidebar-context';
-import { useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { Bot } from "lucide-react";
+import { useEffect } from "react";
 
 export function GlobalChatButton() {
   const { openSidebar, newChat } = useChatSidebar();
@@ -11,21 +11,21 @@ export function GlobalChatButton() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // cmd/ctrl + K shortcut to open chat
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k' && !e.shiftKey) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k" && !e.shiftKey) {
         e.preventDefault();
         openSidebar();
       }
 
       // cmd/ctrl + shift + N shortcut for new chat
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'N') {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "N") {
         e.preventDefault();
         newChat();
         openSidebar(); // Also open sidebar if closed
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [openSidebar, newChat]);
 
   return (

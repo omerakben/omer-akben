@@ -10,26 +10,26 @@
  * Source: https://github.com/disposable-email-domains/disposable-email-domains
  */
 const DISPOSABLE_EMAIL_DOMAINS = [
-  'tempmail.com',
-  'guerrillamail.com',
-  '10minutemail.com',
-  'mailinator.com',
-  'throwaway.email',
-  'temp-mail.org',
-  'fakeinbox.com',
-  'trashmail.com',
-  'yopmail.com',
-  'sharklasers.com',
-  'maildrop.cc',
-  'getnada.com',
-  'mintemail.com',
-  'getairmail.com',
-  'tempinbox.com',
-  'dispostable.com',
-  'mohmal.com',
-  'mytemp.email',
-  'guerrillamailblock.com',
-  'spamgourmet.com',
+  "tempmail.com",
+  "guerrillamail.com",
+  "10minutemail.com",
+  "mailinator.com",
+  "throwaway.email",
+  "temp-mail.org",
+  "fakeinbox.com",
+  "trashmail.com",
+  "yopmail.com",
+  "sharklasers.com",
+  "maildrop.cc",
+  "getnada.com",
+  "mintemail.com",
+  "getairmail.com",
+  "tempinbox.com",
+  "dispostable.com",
+  "mohmal.com",
+  "mytemp.email",
+  "guerrillamailblock.com",
+  "spamgourmet.com",
 ];
 
 /**
@@ -37,7 +37,7 @@ const DISPOSABLE_EMAIL_DOMAINS = [
  */
 export function isDisposableEmail(email: string): boolean {
   try {
-    const domain = email.split('@')[1]?.toLowerCase();
+    const domain = email.split("@")[1]?.toLowerCase();
     if (!domain) {
       return false;
     }
@@ -57,14 +57,15 @@ export function validateContactEmail(email: string): {
   // Basic email format check
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return { valid: false, error: 'Invalid email format' };
+    return { valid: false, error: "Invalid email format" };
   }
 
   // Check for disposable email
   if (isDisposableEmail(email)) {
     return {
       valid: false,
-      error: 'Disposable email addresses are not allowed. Please use a permanent email address.',
+      error:
+        "Disposable email addresses are not allowed. Please use a permanent email address.",
     };
   }
 

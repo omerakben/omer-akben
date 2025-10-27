@@ -1,18 +1,41 @@
-import type { AISDKV5OutputStream } from "@mastra/core/stream";
+import {
+  BasePortfolioAgent,
+  type AgentExecutionContext,
+} from "@/lib/mastra/agents/base-agent";
+import {
+  buildContactInstructions,
+  contactAgent,
+} from "@/lib/mastra/agents/contact-agent";
+import {
+  buildNavigationInstructions,
+  navigationAgent,
+} from "@/lib/mastra/agents/navigation-agent";
+import {
+  buildPerformanceInstructions,
+  performanceAgent,
+} from "@/lib/mastra/agents/performance-agent";
+import {
+  buildProjectInstructions,
+  projectAgent,
+} from "@/lib/mastra/agents/project-agent";
+import {
+  buildResumeInstructions,
+  resumeAgent,
+} from "@/lib/mastra/agents/resume-agent";
+import { executeWorkflow, workflowRegistry } from "@/lib/mastra/workflows";
 import type { SystemMessage } from "@mastra/core/llm";
-import { BasePortfolioAgent, type AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { contactAgent, buildContactInstructions } from "@/lib/mastra/agents/contact-agent";
-import { navigationAgent, buildNavigationInstructions } from "@/lib/mastra/agents/navigation-agent";
-import { performanceAgent, buildPerformanceInstructions } from "@/lib/mastra/agents/performance-agent";
-import { projectAgent, buildProjectInstructions } from "@/lib/mastra/agents/project-agent";
-import { resumeAgent, buildResumeInstructions } from "@/lib/mastra/agents/resume-agent";
-import { workflowRegistry, executeWorkflow } from "@/lib/mastra/workflows";
+import type { AISDKV5OutputStream } from "@mastra/core/stream";
 import type { UIMessage } from "ai";
 
 const BASE_PROMPT = `You are the coordinator for Omer Akben's multi-agent assistant. Your job is to classify intent and select the best specialist agent.
 If the query is ambiguous, choose the safest agent that can help or ask a clarifying question.`;
 
-type PortfolioIntent = "resume" | "projects" | "contact" | "navigation" | "performance";
+type PortfolioIntent =
+  | "resume"
+  | "projects"
+  | "contact"
+  | "navigation"
+  | "performance";
 
 type AgentRoute = {
   agent: BasePortfolioAgent;
@@ -23,8 +46,14 @@ const ROUTES: Record<PortfolioIntent, AgentRoute> = {
   resume: { agent: resumeAgent, instructions: buildResumeInstructions },
   projects: { agent: projectAgent, instructions: buildProjectInstructions },
   contact: { agent: contactAgent, instructions: buildContactInstructions },
-  navigation: { agent: navigationAgent, instructions: buildNavigationInstructions },
-  performance: { agent: performanceAgent, instructions: buildPerformanceInstructions },
+  navigation: {
+    agent: navigationAgent,
+    instructions: buildNavigationInstructions,
+  },
+  performance: {
+    agent: performanceAgent,
+    instructions: buildPerformanceInstructions,
+  },
 };
 
 function extractLatestUserText(messages: UIMessage[]): string {
@@ -52,7 +81,9 @@ function classifyIntent(query: string): PortfolioIntent {
   if (/contact|email|reach|hire|connect/.test(normalized)) {
     return "contact";
   }
-  if (/navigate|section|scroll|where is|go to|show me the page/.test(normalized)) {
+  if (
+    /navigate|section|scroll|where is|go to|show me the page/.test(normalized)
+  ) {
     return "navigation";
   }
   if (/performance|lcp|cls|ttfb|metrics|optimi(s|z)e/.test(normalized)) {
@@ -65,7 +96,8 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
   constructor() {
     super({
       name: "coordinator",
-      description: "Routes chat queries to the correct specialist agent and orchestrates responses.",
+      description:
+        "Routes chat queries to the correct specialist agent and orchestrates responses.",
       model: "openai/gpt-4o-mini",
       instructions: {
         role: "system",
@@ -78,7 +110,9 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     return this.buildInstructionMessage(context, BASE_PROMPT);
   }
 
-  async route(context: AgentExecutionContext): Promise<AISDKV5OutputStream | null> {
+  async route(
+    context: AgentExecutionContext
+  ): Promise<AISDKV5OutputStream | null> {
     const query = extractLatestUserText(context.history);
 
     // Check for workflow match first (before single-agent routing)
@@ -129,7 +163,12 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
       {
         id: `workflow-user-${Date.now()}`,
         role: "user" as const,
-        parts: [{ type: "text" as const, text: "Present the workflow results that follow." }],
+        parts: [
+          {
+            type: "text" as const,
+            text: "Present the workflow results that follow.",
+          },
+        ],
       },
     ];
 
@@ -140,7 +179,7 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     const stream = await this.stream(workflowMessages, {
       instructions: {
         role: "system",
-        content: `Present the following pre-formatted workflow results exactly as provided, without modification or additional commentary:\n\n${workflowOutput}`
+        content: `Present the following pre-formatted workflow results exactly as provided, without modification or additional commentary:\n\n${workflowOutput}`,
       },
       // Memory removed - workflow results are pre-formatted and don't need memory context
       format: "aisdk" as const,

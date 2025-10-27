@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { collectContactInputSchema } from '@/lib/agent-tools/schemas';
-import { sendZoomLinkEmail } from '@/lib/email/send-zoom-link';
-import { saveContactToRedis } from '@/lib/redis/contact-storage';
-import { checkContactRateLimit } from '@/lib/rate-limit';
-import { validateContactEmail } from '@/lib/email/validation';
-import { logError } from '@/lib/log';
-import { z } from 'zod';
+import { collectContactInputSchema } from "@/lib/agent-tools/schemas";
+import { sendZoomLinkEmail } from "@/lib/email/send-zoom-link";
+import { validateContactEmail } from "@/lib/email/validation";
+import { logError } from "@/lib/log";
+import { checkContactRateLimit } from "@/lib/rate-limit";
+import { saveContactToRedis } from "@/lib/redis/contact-storage";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,14 +26,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Rate limiting check (1 per IP per 24 hours)
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'anonymous';
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "anonymous";
     const rateLimitOk = await checkContactRateLimit(ip);
 
     if (!rateLimitOk) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Contact collection limit reached. Please try again tomorrow.',
+          error: "Contact collection limit reached. Please try again tomorrow.",
         },
         { status: 429 }
       );
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
         ip,
       });
     } catch (storageError) {
-      logError('collect-contact:storage', storageError);
+      logError("collect-contact:storage", storageError);
       // Continue even if storage fails - prioritize user experience
     }
 
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
         conversationNotes: input.notes,
       });
     } catch (emailError) {
-      logError('collect-contact:email', emailError);
+      logError("collect-contact:email", emailError);
       // Continue even if email fails - contact is saved
     }
 
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
         zoomLink,
         message: emailResult?.success
           ? `Perfect! I've sent Omer's Zoom link to ${input.email}. Check your inbox!`
-          : 'Contact saved! I will have Omer reach out to you shortly.',
+          : "Contact saved! I will have Omer reach out to you shortly.",
         messageId: emailResult?.messageId,
       },
     });
@@ -91,17 +92,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: firstError?.message || 'Invalid input',
+          error: firstError?.message || "Invalid input",
         },
         { status: 400 }
       );
     }
 
-    logError('collect-contact', error);
+    logError("collect-contact", error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to collect contact information. Please try again.',
+        error: "Failed to collect contact information. Please try again.",
       },
       { status: 500 }
     );

@@ -28,7 +28,10 @@ export class RedisSemanticMemory {
     try {
       return JSON.parse(raw) as T;
     } catch (error) {
-      console.error("[RedisSemanticMemory] Failed to parse semantic memory", error);
+      console.error(
+        "[RedisSemanticMemory] Failed to parse semantic memory",
+        error
+      );
       return null;
     }
   }
@@ -38,7 +41,10 @@ export class RedisSemanticMemory {
     await this.redis.call("JSON.SET", key, "$", JSON.stringify(facts));
   }
 
-  async mergeFacts(userId: string, partialFacts: Record<string, unknown>): Promise<void> {
+  async mergeFacts(
+    userId: string,
+    partialFacts: Record<string, unknown>
+  ): Promise<void> {
     const current = (await this.getFacts(userId)) ?? { facts: {} };
     const merged = {
       facts: {

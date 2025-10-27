@@ -18,6 +18,7 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 **File:** `src/lib/redis/embeddings.ts` (138 lines)
 
 **Functions:**
+
 - `generateEmbedding(text)` - Generates 1536-dimensional vectors using OpenAI text-embedding-3-small
 - `embedProject(project)` - Embeds single project with combined title, description, technologies, category, and role
 - `embedAllProjects(projects)` - Batch processes all projects from `data/projects.ts`
@@ -25,6 +26,7 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 - `searchProjectsBySimilarity(query, limit)` - Performs KNN search and returns ranked results
 
 **Technical Approach:**
+
 - Combined project metadata into rich text representation for better semantic understanding
 - Stored embeddings as Float32Array converted to Uint8Array for efficient Redis storage
 - Used existing `knnSearch` function from `vector-search.ts` for consistency
@@ -35,6 +37,7 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 **File:** `scripts/setup-project-embeddings.ts` (45 lines)
 
 **Process:**
+
 1. Creates Redis vector index with proper schema
 2. Generates embeddings for all 9 projects
 3. Stores in Redis with metadata (slug, title, description, category, role, technologies, etc.)
@@ -47,6 +50,7 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 **File:** `src/app/api/tools/search-projects-semantic/route.ts` (75 lines)
 
 **Features:**
+
 - POST endpoint with JSON body: `{ query: string, limit?: number }`
 - Zod schema validation using `searchProjectsSemanticSchema`
 - Returns ranked results with similarity scores
@@ -56,11 +60,13 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 ### 4. Agent Tool Integration
 
 **Modified Files:**
+
 - `src/lib/agent-tools/schemas.ts` - Added `searchProjectsSemanticSchema` and output schema
 - `src/lib/mastra/tools.ts` - Created `searchProjectsSemanticTool` with clear description
 - `src/lib/mastra/agents/project-agent.ts` - Integrated tool and updated prompt
 
 **Agent Behavior:**
+
 - Uses semantic search for vague natural language queries
 - Falls back to `list_projects` for specific category/tag filters
 - Updated BASE_PROMPT with usage guidelines
@@ -68,6 +74,7 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 ### 5. Configuration Updates
 
 **Modified Files:**
+
 - `.env.example` - Added Redis environment variables with Upstash console link
 - `claudedocs/SEMANTIC_SEARCH_SETUP.md` - Comprehensive setup guide (160 lines)
 
@@ -76,12 +83,14 @@ Phase 3 of the Agentic Architecture Plan has been successfully implemented. The 
 **Current Status:** 236 tests passing
 
 **Test Files:**
+
 - ✅ `src/lib/agent-tools/schemas.test.ts` (68 tests) - Validates new schema
 - ✅ `src/lib/mastra/workflows/project-comparison.test.ts` (26 tests)
 - ✅ `src/lib/mastra/workflows/interview-prep.test.ts` (22 tests)
 - ✅ All other tests (120 tests)
 
 **Pending:**
+
 - Unit tests for semantic search functions (embedProject, searchProjectsBySimilarity)
 - E2E tests for semantic search via AI chat interface
 - Performance benchmarks for search latency (<100ms target)
@@ -115,6 +124,7 @@ From AGENTIC_ARCHITECTURE_PLAN.md:
 ### User Actions Required
 
 1. **Configure Redis Credentials**
+
    ```bash
    # Add to .env.local
    UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
@@ -122,6 +132,7 @@ From AGENTIC_ARCHITECTURE_PLAN.md:
    ```
 
 2. **Run Setup Script**
+
    ```bash
    npx tsx scripts/setup-project-embeddings.ts
    ```
@@ -144,7 +155,7 @@ From AGENTIC_ARCHITECTURE_PLAN.md:
 
 3. **Monitor Performance**
    - Measure actual search latency in production
-   - Monitor Redis memory usage (9 projects * 1536 dimensions * 4 bytes ≈ 55KB)
+   - Monitor Redis memory usage (9 projects *1536 dimensions* 4 bytes ≈ 55KB)
    - Track OpenAI embedding API costs
 
 4. **Consider Enhancements**
@@ -155,38 +166,45 @@ From AGENTIC_ARCHITECTURE_PLAN.md:
 ## Files Changed Summary
 
 ### Created (3 files, 258 lines)
+
 - ✅ `src/lib/redis/embeddings.ts` (138 lines) - Core embeddings module
 - ✅ `scripts/setup-project-embeddings.ts` (45 lines) - Setup automation
 - ✅ `src/app/api/tools/search-projects-semantic/route.ts` (75 lines) - API endpoint
 
 ### Modified (4 files)
+
 - ✅ `src/lib/agent-tools/schemas.ts` - Added semantic search schemas
 - ✅ `src/lib/mastra/tools.ts` - Added searchProjectsSemanticTool
 - ✅ `src/lib/mastra/agents/project-agent.ts` - Integrated semantic search
 - ✅ `.env.example` - Added Redis environment variables
 
 ### Documentation (2 files)
+
 - ✅ `claudedocs/SEMANTIC_SEARCH_SETUP.md` (160 lines) - Setup guide
 - ✅ `claudedocs/PHASE_3_COMPLETION_SUMMARY.md` (this file)
 
 ## Technical Decisions Log
 
 ### Why OpenAI text-embedding-3-small?
+
 - Cost-effective ($0.02 per 1M tokens)
 - 1536 dimensions (good balance of quality and performance)
 - Already using OpenAI for chat, consistent provider
 
 ### Why COSINE distance metric?
+
 - Standard for text embeddings (normalized vectors)
 - Better than L2 for high-dimensional spaces
 - Supported by Redis vector search
 
 ### Why separate setup script vs on-demand embedding?
+
 - One-time cost (9 projects = ~$0.0001)
 - Faster search (no embedding generation delay)
 - Predictable costs and performance
 
 ### Why store full project metadata in Redis?
+
 - Avoids secondary lookup to database/data file
 - Enables filtering on tags (category, role, technologies)
 - Redis Hash is efficient for structured data
@@ -194,6 +212,7 @@ From AGENTIC_ARCHITECTURE_PLAN.md:
 ## Phase 4 Preview
 
 Next phase (Semantic Memory) will build on this infrastructure:
+
 - Extract facts from conversations → store in Redis Hash
 - Use embeddings for fact retrieval (similar to project search)
 - Personalize follow-ups based on user history

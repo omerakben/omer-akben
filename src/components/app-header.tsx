@@ -1,11 +1,16 @@
 "use client";
 
-import { BrightnessControl } from "@/components/brightness-control";
 import { BrandLogo } from "@/components/brand-logo";
+import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { LOGO_SIZE } from "@/lib/constants";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { LOGO_SIZE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -36,9 +41,7 @@ export function AppHeader() {
   const { openSidebar } = useChatSidebar();
 
   return (
-    <header
-      className="sticky top-0 z-50 border-b border-border-line bg-surf-0/80 backdrop-blur-lg"
-    >
+    <header className="sticky top-0 z-50 border-b border-border-line bg-surf-0/80 backdrop-blur-lg">
       <div className="container mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center gap-3">
           {/* Logo */}

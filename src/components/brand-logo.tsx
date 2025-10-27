@@ -4,11 +4,17 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 import { BrightnessMode, useBrightness } from "@/lib/brightness-context";
-import { LIGHT_BRIGHTNESS_MODES, LOGO_SIZE, LOGO_SOURCES } from "@/lib/constants";
 import { getDocumentBrightness } from "@/lib/brightness-utils";
+import {
+  LIGHT_BRIGHTNESS_MODES,
+  LOGO_SIZE,
+  LOGO_SOURCES,
+} from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const LIGHT_MODE_SET = new Set<(typeof LIGHT_BRIGHTNESS_MODES)[number]>(LIGHT_BRIGHTNESS_MODES);
+const LIGHT_MODE_SET = new Set<(typeof LIGHT_BRIGHTNESS_MODES)[number]>(
+  LIGHT_BRIGHTNESS_MODES
+);
 
 type BrandLogoProps = {
   className?: string;
@@ -48,7 +54,9 @@ export function BrandLogo({
   sizes,
 }: BrandLogoProps) {
   const { brightness } = useBrightness();
-  const [resolvedBrightness, setResolvedBrightness] = useState<BrightnessMode>(resolveInitialBrightness);
+  const [resolvedBrightness, setResolvedBrightness] = useState<BrightnessMode>(
+    resolveInitialBrightness
+  );
 
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -79,7 +87,10 @@ export function BrandLogo({
     setResolvedBrightness((prev) => (prev === brightness ? prev : brightness));
   }, [brightness]);
 
-  const tone = useMemo(() => (isLightMode(resolvedBrightness) ? "light" : "dark"), [resolvedBrightness]);
+  const tone = useMemo(
+    () => (isLightMode(resolvedBrightness) ? "light" : "dark"),
+    [resolvedBrightness]
+  );
   const logoSrc = useMemo(
     () => (tone === "light" ? LOGO_SOURCES.light : LOGO_SOURCES.dark),
     [tone]

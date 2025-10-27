@@ -3,8 +3,8 @@
  * Tests intent classification, topic detection, and personalized follow-up generation
  */
 
-import { describe, expect, it, beforeEach } from "vitest";
 import type { SemanticMemory } from "@/lib/memory/types";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("followups", () => {
   describe("classifyIntent", () => {
@@ -44,7 +44,9 @@ describe("followups", () => {
       const { classifyIntent } = await import("./followups");
 
       expect(classifyIntent("What problems do you solve?")).toBe("problems");
-      expect(classifyIntent("What challenges are you passionate about?")).toBe("problems");
+      expect(classifyIntent("What challenges are you passionate about?")).toBe(
+        "problems"
+      );
       expect(classifyIntent("What do you focus on?")).toBe("problems");
     });
 
@@ -81,7 +83,9 @@ describe("followups", () => {
     it("should detect multiple topics", async () => {
       const { detectTopics } = await import("./followups");
 
-      const topics = detectTopics("I built a React app with a Python backend using machine learning");
+      const topics = detectTopics(
+        "I built a React app with a Python backend using machine learning"
+      );
       expect(topics.length).toBeGreaterThan(1);
     });
 

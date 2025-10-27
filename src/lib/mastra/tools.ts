@@ -1,5 +1,3 @@
-import { createTool } from "@mastra/core";
-import { z } from "zod";
 import {
   collectContactInputSchema,
   extractPageSummaryInputSchema,
@@ -9,6 +7,8 @@ import {
   searchProjectsSemanticSchema,
   triggerWorkflowInputSchema,
 } from "@/lib/agent-tools/schemas";
+import { createTool } from "@mastra/core";
+import { z } from "zod";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -53,7 +53,8 @@ export const navigatePageTool = createTool({
 
 export const scrollToSectionTool = createTool({
   id: "scroll_to_section",
-  description: "Scroll to a specific section on the current page using CSS selector or ARIA label.",
+  description:
+    "Scroll to a specific section on the current page using CSS selector or ARIA label.",
   inputSchema: scrollToSectionInputSchema,
   execute: async ({ context }) => {
     return {
@@ -78,7 +79,8 @@ export const extractPageSummaryTool = createTool({
 
 export const triggerWorkflowTool = createTool({
   id: "trigger_workflow",
-  description: "Trigger a backend workflow for CRM updates, email notifications, or analytics events.",
+  description:
+    "Trigger a backend workflow for CRM updates, email notifications, or analytics events.",
   inputSchema: triggerWorkflowInputSchema,
   execute: async ({ context }) => {
     return fetchJson("/api/tools/trigger-workflow", context);
@@ -87,7 +89,8 @@ export const triggerWorkflowTool = createTool({
 
 export const profilePerformanceTool = createTool({
   id: "profile_performance",
-  description: "Profile page performance with Chrome DevTools metrics (development only).",
+  description:
+    "Profile page performance with Chrome DevTools metrics (development only).",
   inputSchema: profilePerformanceInputSchema,
   execute: async ({ context }) => {
     return fetchJson("/api/tools/profile-performance", context);
@@ -96,13 +99,16 @@ export const profilePerformanceTool = createTool({
 
 export const downloadResumeTool = createTool({
   id: "download_resume",
-  description: "Download the latest version of Omer Akben's resume in the requested format.",
+  description:
+    "Download the latest version of Omer Akben's resume in the requested format.",
   inputSchema: z.object({
     format: z.enum(["pdf", "docx"]).default("pdf"),
   }),
   execute: async ({ context }) => {
     const params = new URLSearchParams({ format: context.format });
-    const response = await fetch(`${BASE_URL}/api/tools/download-resume?${params.toString()}`);
+    const response = await fetch(
+      `${BASE_URL}/api/tools/download-resume?${params.toString()}`
+    );
     return response.json();
   },
 });
@@ -122,7 +128,8 @@ export const listProjectsTool = createTool({
 
 export const searchProjectsSemanticTool = createTool({
   id: "search_projects_semantic",
-  description: "Search portfolio projects using natural language semantic search. Use this when the user asks vague questions like 'projects with machine learning' or 'what have you built with real-time features'.",
+  description:
+    "Search portfolio projects using natural language semantic search. Use this when the user asks vague questions like 'projects with machine learning' or 'what have you built with real-time features'.",
   inputSchema: searchProjectsSemanticSchema,
   execute: async ({ context }) => {
     return fetchJson("/api/tools/search-projects-semantic", context);
@@ -137,7 +144,9 @@ export const openProjectTool = createTool({
   }),
   execute: async ({ context }) => {
     const params = new URLSearchParams({ slug: context.slug });
-    const response = await fetch(`${BASE_URL}/api/tools/open-project?${params.toString()}`);
+    const response = await fetch(
+      `${BASE_URL}/api/tools/open-project?${params.toString()}`
+    );
     return response.json();
   },
 });

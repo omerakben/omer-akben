@@ -1,11 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Award, FileText, ExternalLink, Download, CheckCircle2, Eye } from "lucide-react";
 import { Credential } from "@/data/credentials";
 import { DURATION, STAGGER, VIEWPORT } from "@/lib/animations";
+import { motion } from "framer-motion";
+import {
+  Award,
+  CheckCircle2,
+  Download,
+  ExternalLink,
+  Eye,
+  FileText,
+  GraduationCap,
+} from "lucide-react";
 
 interface CredentialCardProps {
   credential: Credential;
@@ -46,7 +54,9 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
           <div className="flex items-start gap-4 mb-6">
             {/* Large Visual Icon/Badge */}
             <div className="flex-shrink-0">
-              <div className={`p-4 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 border-2 border-border-line group-hover:border-brand-primary/30 transition-all ${typeColors[credential.type]}`}>
+              <div
+                className={`p-4 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 border-2 border-border-line group-hover:border-brand-primary/30 transition-all ${typeColors[credential.type]}`}
+              >
                 <Icon className="w-10 h-10" />
               </div>
             </div>
@@ -54,11 +64,16 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
             <div className="flex-1 min-w-0">
               {/* Date and Type Badge */}
               <div className="flex items-center gap-2 mb-2">
-                <div className={`text-sm font-semibold ${typeColors[credential.type]}`}>
+                <div
+                  className={`text-sm font-semibold ${typeColors[credential.type]}`}
+                >
                   {credential.date}
                 </div>
                 {credential.type === "certification" && (
-                  <Badge variant="outline" className="text-xs border-brand-primary/30 text-brand-primary">
+                  <Badge
+                    variant="outline"
+                    className="text-xs border-brand-primary/30 text-brand-primary"
+                  >
                     Professional Certificate
                   </Badge>
                 )}
@@ -86,7 +101,9 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
           </div>
 
           {/* Description */}
-          <p className="text-text-2 mb-4 leading-relaxed">{credential.description}</p>
+          <p className="text-text-2 mb-4 leading-relaxed">
+            {credential.description}
+          </p>
 
           {/* Highlights */}
           {credential.highlights && credential.highlights.length > 0 && (
@@ -148,7 +165,9 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
                   {credential.credentialId && (
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-0 border border-border-line text-xs text-text-3">
                       <FileText className="w-3 h-3" />
-                      <span className="font-mono">ID: {credential.credentialId}</span>
+                      <span className="font-mono">
+                        ID: {credential.credentialId}
+                      </span>
                     </div>
                   )}
                 </>

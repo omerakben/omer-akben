@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 /**
  * Global Error Component
- * 
+ *
  * Catches errors in the root layout and provides a fallback UI.
  * This is a last-resort error boundary that catches errors even in layout.tsx.
  */
@@ -37,10 +37,22 @@ export default function GlobalError({
           }}
         >
           <div style={{ maxWidth: "600px" }}>
-            <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+            <h1
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "bold",
+                marginBottom: "1rem",
+              }}
+            >
               Critical Error
             </h1>
-            <p style={{ fontSize: "1.125rem", marginBottom: "2rem", color: "#b5c1df" }}>
+            <p
+              style={{
+                fontSize: "1.125rem",
+                marginBottom: "2rem",
+                color: "#b5c1df",
+              }}
+            >
               A critical error occurred. Please try refreshing the page.
             </p>
             {process.env.NODE_ENV === "development" && error.message && (
@@ -60,7 +72,9 @@ export default function GlobalError({
                 {error.message}
               </pre>
             )}
-            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+            <div
+              style={{ display: "flex", gap: "1rem", justifyContent: "center" }}
+            >
               <button
                 onClick={reset}
                 style={{

@@ -3,10 +3,15 @@
  * Tests filtering by category, featured status, limit, and validation
  */
 
-import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
+import { describe, expect, it } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/list-projects", () => {
   describe("Valid requests - no filters", () => {
@@ -92,7 +97,11 @@ describe("POST /api/tools/list-projects", () => {
       if (isSuccessResponse(json)) {
         // Should include projects from multiple categories
         const data = json.data as { projects: unknown[] };
-        const categories = new Set(data.projects.map((p: unknown) => (p as { category: string }).category));
+        const categories = new Set(
+          data.projects.map(
+            (p: unknown) => (p as { category: string }).category
+          )
+        );
         expect(categories.size).toBeGreaterThan(0);
       }
     });
@@ -234,8 +243,12 @@ describe("POST /api/tools/list-projects", () => {
       if (isSuccessResponse(json)) {
         const data = json.data as { projects: unknown[] };
         data.projects.forEach((project: unknown) => {
-          expect((project as { category: string; featured: boolean }).category).toBe("ai-ml");
-          expect((project as { category: string; featured: boolean }).featured).toBe(true);
+          expect(
+            (project as { category: string; featured: boolean }).category
+          ).toBe("ai-ml");
+          expect(
+            (project as { category: string; featured: boolean }).featured
+          ).toBe(true);
         });
       }
     });

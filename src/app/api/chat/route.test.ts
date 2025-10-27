@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
 import type { UIMessage } from "ai";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const loadThreadMessagesMock = vi.fn();
 const routeMock = vi.fn();
@@ -28,10 +28,22 @@ describe("chat route", () => {
     loadThreadMessagesMock.mockResolvedValue([]);
     routeMock.mockReset();
     routeMock.mockImplementation(async () => ({
-      toUIMessageStreamResponse: ({ onFinish }: { onFinish?: ({ messages }: { messages?: UIMessage[] }) => Promise<void> | void }) => {
+      toUIMessageStreamResponse: ({
+        onFinish,
+      }: {
+        onFinish?: ({
+          messages,
+        }: {
+          messages?: UIMessage[];
+        }) => Promise<void> | void;
+      }) => {
         onFinish?.({
           messages: [
-            { id: "2", role: "assistant", parts: [{ type: "text", text: "Hi" }] } as UIMessage,
+            {
+              id: "2",
+              role: "assistant",
+              parts: [{ type: "text", text: "Hi" }],
+            } as UIMessage,
           ],
         });
         return new Response(null, { status: 200 });
@@ -44,11 +56,17 @@ describe("chat route", () => {
   describe("GET", () => {
     it("returns history for a chat id", async () => {
       const messages: UIMessage[] = [
-        { id: "1", role: "assistant", parts: [{ type: "text", text: "Hello" }] },
+        {
+          id: "1",
+          role: "assistant",
+          parts: [{ type: "text", text: "Hello" }],
+        },
       ];
       loadThreadMessagesMock.mockResolvedValueOnce(messages);
       const routeModule = await import("./route");
-      const response = await routeModule.GET(new Request("http://localhost/api/chat?chatId=test"));
+      const response = await routeModule.GET(
+        new Request("http://localhost/api/chat?chatId=test")
+      );
       expect(response.status).toBe(200);
       const json = await response.json();
       expect(json).toEqual({ messages });
@@ -56,23 +74,30 @@ describe("chat route", () => {
 
     it("validates missing chat id", async () => {
       const routeModule = await import("./route");
-      const response = await routeModule.GET(new Request("http://localhost/api/chat"));
+      const response = await routeModule.GET(
+        new Request("http://localhost/api/chat")
+      );
       expect(response.status).toBe(400);
     });
   });
 
   describe("POST", () => {
-
     it("rejects invalid payloads", async () => {
       const routeModule = await import("./route");
-      const response = await routeModule.POST(new Request("http://localhost/api/chat", { method: "POST", body: "{}" }));
+      const response = await routeModule.POST(
+        new Request("http://localhost/api/chat", { method: "POST", body: "{}" })
+      );
       expect(response.status).toBe(400);
     });
 
     it("routes through coordinator and persists memory", async () => {
       const routeModule = await import("./route");
       loadThreadMessagesMock.mockResolvedValueOnce([
-        { id: "prev", role: "assistant", parts: [{ type: "text", text: "Prev" }] },
+        {
+          id: "prev",
+          role: "assistant",
+          parts: [{ type: "text", text: "Prev" }],
+        },
       ]);
 
       const response = await routeModule.POST(

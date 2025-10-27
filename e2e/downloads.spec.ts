@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 test("resume links resolve", async ({ request }) => {
-  const response = await request.get("/api/tools/download-resume?format=resume");
+  const response = await request.get(
+    "/api/tools/download-resume?format=resume"
+  );
   expect(response.ok()).toBeTruthy();
 
   const json = await response.json();

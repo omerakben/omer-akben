@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, vi } from "vitest";
 import type { UIMessage } from "ai";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const vectorUpsertMock = vi.fn();
 const embeddingsCreateMock = vi.fn();
@@ -36,9 +36,7 @@ describe("RedisEpisodicMemory", () => {
     const memory = new RedisEpisodicMemory();
     embeddingsCreateMock.mockResolvedValueOnce({ data: [] });
 
-    const messages: UIMessage[] = [
-      { id: "1", role: "user", parts: [] },
-    ];
+    const messages: UIMessage[] = [{ id: "1", role: "user", parts: [] }];
 
     await memory.saveConversation("thread", messages);
     expect(vectorUpsertMock).not.toHaveBeenCalled();

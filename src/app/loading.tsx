@@ -1,6 +1,6 @@
 /**
  * Loading Component
- * 
+ *
  * Displays a loading state while pages are being server-rendered.
  * Uses brand colors and brightness-aware styling.
  */
@@ -13,7 +13,7 @@ export default function Loading() {
           <div className="absolute inset-0 border-4 border-border-line rounded-full" />
           <div className="absolute inset-0 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
         </div>
-        
+
         {/* Loading text */}
         <div className="space-y-2">
           <p className="text-lg font-semibold text-text-1">Loading...</p>

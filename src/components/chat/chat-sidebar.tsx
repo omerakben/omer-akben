@@ -390,14 +390,20 @@ export function ChatSidebar() {
                   isPinned ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
-                <GripVertical aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                <GripVertical
+                  aria-hidden="true"
+                  className="w-4 h-4 text-brand-primary"
+                />
               </div>
             </div>
 
             {/* Header */}
             <div className="flex h-16 items-center justify-between px-4 border-b border-border-line bg-surf-0">
               <div className="flex items-center gap-2">
-                <Bot aria-hidden="true" className="w-5 h-5 text-brand-primary" />
+                <Bot
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary"
+                />
                 <span className="font-semibold text-text-1">AI Ozzy</span>
               </div>
               <div className="flex items-center gap-1">
@@ -547,7 +553,10 @@ export function ChatSidebar() {
                           {message.role === "assistant" && (
                             <div className="flex-shrink-0">
                               <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                                <Bot aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                                <Bot
+                                  aria-hidden="true"
+                                  className="w-4 h-4 text-brand-primary"
+                                />
                               </div>
                             </div>
                           )}
@@ -681,11 +690,17 @@ export function ChatSidebar() {
                                                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
                                               >
                                                 <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                                                  <Icon aria-hidden="true" className="w-2.5 h-2.5 text-brand-primary" />
+                                                  <Icon
+                                                    aria-hidden="true"
+                                                    className="w-2.5 h-2.5 text-brand-primary"
+                                                  />
                                                 </div>
                                                 <span>{link.label}</span>
                                                 {isExternal && (
-                                                  <ExternalLink aria-hidden="true" className="w-2.5 h-2.5" />
+                                                  <ExternalLink
+                                                    aria-hidden="true"
+                                                    className="w-2.5 h-2.5"
+                                                  />
                                                 )}
                                               </button>
                                             );
@@ -700,7 +715,10 @@ export function ChatSidebar() {
                           {message.role === "user" && (
                             <div className="flex-shrink-0">
                               <div className="w-8 h-8 rounded-full bg-surf-2 flex items-center justify-center">
-                                <User aria-hidden="true" className="w-4 h-4 text-text-2" />
+                                <User
+                                  aria-hidden="true"
+                                  className="w-4 h-4 text-text-2"
+                                />
                               </div>
                             </div>
                           )}
@@ -724,7 +742,10 @@ export function ChatSidebar() {
                     <div className="flex gap-3 justify-start">
                       <div className="flex-shrink-0">
                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                          <Bot aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                          <Bot
+                            aria-hidden="true"
+                            className="w-4 h-4 text-brand-primary"
+                          />
                         </div>
                       </div>
                       <div className="bg-surf-1 border border-border-line rounded-lg px-3 py-2">
@@ -758,7 +779,9 @@ export function ChatSidebar() {
                       // Submit on Enter, new line on Shift+Enter
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
-                        handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+                        handleSubmit(
+                          e as unknown as FormEvent<HTMLFormElement>
+                        );
                       }
                     }}
                     placeholder="Ask anything about me..."

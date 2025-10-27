@@ -1,4 +1,5 @@
 # Comprehensive Refactoring and Improvement Plan
+
 ## Omer Akben Portfolio - Technical Debt Reduction
 
 **Created:** 2025-10-20
@@ -19,25 +20,30 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ## Phase 1: Critical Fixes (Priority 1)
+
 **Timeline:** 1-2 days
 **Success Criteria:** Zero TypeScript errors, zero console.log in production, API routes tested
 
 ### Task 1.1: Fix TypeScript Compilation Errors
+
 **File:** `/src/lib/memory/fact-extractor.ts` and `/src/lib/memory/fact-extractor.test.ts`
 **Errors:** 30+ TypeScript compilation errors
 **Root Cause:** AI SDK v5 migration - UIMessage structure changed from `content` to `parts` array
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Audit all UIMessage usage** (30 minutes)
+
    ```bash
    grep -r "msg.content" src/lib/memory/
    grep -r "message.content" src/lib/memory/
    ```
+
    - Identify all occurrences of old message structure
    - Document each location and required change
 
 2. **Create helper function** (30 minutes)
+
    ```typescript
    // src/lib/utils/message-utils.ts
    import type { UIMessage } from "ai";
@@ -68,6 +74,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Update type guards and conditional checks
    - Add JSDoc comments explaining changes
    - Example refactoring:
+
      ```typescript
      // BEFORE (broken)
      const content = typeof msg.content === "string" ? msg.content : "";
@@ -80,6 +87,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Refactor `fact-extractor.test.ts` to use new message structure
    - Update all mock messages to use `parts` array
    - Example test refactoring:
+
      ```typescript
      // BEFORE
      { role: "user", content: "test message" }
@@ -93,19 +101,23 @@ This plan addresses the technical debt identified in the comprehensive codebase 
      ```
 
 5. **Verify compilation** (15 minutes)
+
    ```bash
    npx tsc --noEmit
    ```
+
    - Should report zero errors
    - Run all tests to ensure no regressions
 
 **Success Criteria:**
+
 - ✅ `npx tsc --noEmit` returns 0 errors
 - ✅ All unit tests passing (318/318)
 - ✅ Helper function has JSDoc documentation
 - ✅ Code follows AI SDK v5 patterns
 
 **Files Modified:**
+
 - `/src/lib/utils/message-utils.ts` (new)
 - `/src/lib/memory/fact-extractor.ts`
 - `/src/lib/memory/fact-extractor.test.ts`
@@ -113,10 +125,11 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ### Task 1.2: Add API Route Tests
+
 **Files:** 13 untested API routes in `/src/app/api/`
 **Impact:** Critical - production code without coverage
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Setup test infrastructure** (1 hour)
    - Create `/src/app/api/tools/test-utils.ts` with shared test helpers
@@ -169,6 +182,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
      11. `profile-performance` - metrics
 
    - Common test structure for each:
+
      ```typescript
      // src/app/api/tools/[name]/route.test.ts
      import { describe, it, expect } from "vitest";
@@ -207,19 +221,23 @@ This plan addresses the technical debt identified in the comprehensive codebase 
      ```
 
 5. **Run full test suite** (15 minutes)
+
    ```bash
    npm test
    ```
+
    - Verify all new tests pass
    - Check test count increased from 318 to ~400+
 
 **Success Criteria:**
+
 - ✅ All 13 API routes have corresponding test files
 - ✅ Minimum 3 tests per route (happy path, validation, error)
 - ✅ Test coverage >80% for API routes
 - ✅ All tests passing
 
 **Files Created:**
+
 - `/src/app/api/tools/test-utils.ts`
 - `/src/app/api/cache-metrics/route.test.ts`
 - `/src/app/api/suggest-followups/route.test.ts`
@@ -230,13 +248,15 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ### Task 1.3: Remove Production Console Logs
+
 **File:** `/src/lib/cache/openai-cache.ts`
 **Lines:** 134, 205, 350
 **Impact:** Medium - exposes internal metrics
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Create debug logger utility** (30 minutes)
+
    ```typescript
    // src/lib/utils/logger.ts
    const isDevelopment = process.env.NODE_ENV === "development";
@@ -270,6 +290,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 3. **Test in both environments** (15 minutes)
+
    ```bash
    # Development - should see logs
    NODE_ENV=development npm run dev
@@ -284,28 +305,33 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Ensure error logging still works
 
 **Success Criteria:**
+
 - ✅ No console.log in production builds
 - ✅ Debug logging works in development
 - ✅ Error logging works in all environments
 - ✅ Build size unchanged (logger adds minimal bytes)
 
 **Files Modified:**
+
 - `/src/lib/utils/logger.ts` (new)
 - `/src/lib/cache/openai-cache.ts`
 
 ---
 
 ## Phase 2: High Priority Improvements (Priority 2)
+
 **Timeline:** 1 day
 **Success Criteria:** Zero code duplication, zero ESLint warnings, core utilities documented
 
 ### Task 2.1: Extract Duplicated Chat Code
+
 **Files:** `/src/components/chat/chat-sidebar.tsx`, `/src/components/chat/chat-interface.tsx`
 **Impact:** High - DRY violation, maintenance burden
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Create shared utility file** (30 minutes)
+
    ```typescript
    // src/lib/chat-utils.ts
    import {
@@ -359,22 +385,26 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Verify component still works
 
 4. **Test both components** (30 minutes)
+
    ```bash
    npm test -- chat-sidebar.test.tsx
    npm test -- chat-interface.test.tsx
    ```
+
    - Ensure all tests pass
    - Verify UI renders correctly in dev server
    - Test suggested questions clickable
    - Test icon rendering
 
 **Success Criteria:**
+
 - ✅ No duplicated code between files
 - ✅ Shared utility has JSDoc documentation
 - ✅ All existing tests pass
 - ✅ UI functionality unchanged
 
 **Files Modified:**
+
 - `/src/lib/chat-utils.ts` (new, ~40 lines)
 - `/src/components/chat/chat-sidebar.tsx` (-18 lines)
 - `/src/components/chat/chat-interface.tsx` (-23 lines)
@@ -384,12 +414,14 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ### Task 2.2: Clean Up ESLint Warnings
+
 **Warnings:** 7 total across 5 files
 **Impact:** Code quality, maintainability
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Fix unused variable in openai-cache.test.ts:50** (5 minutes)
+
    ```typescript
    // BEFORE
    const expectedKey = `cache:embed:v1:${hash}`;
@@ -400,6 +432,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 2. **Fix unused import in followups.test.ts:6** (5 minutes)
+
    ```typescript
    // BEFORE
    import { describe, it, expect, beforeEach, vi } from "vitest";
@@ -410,6 +443,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 
 3. **Fix unused variables in interview-prep.test.ts** (10 minutes)
    - Lines 168, 215: Replace `_` with explicit variable names or use void operator
+
    ```typescript
    // BEFORE
    const _ = await generateText({ ... });
@@ -422,6 +456,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Lines 172, 270: Same pattern as above
 
 5. **Fix unused import in workflow-executor.ts:2** (5 minutes)
+
    ```typescript
    // BEFORE
    import type { WorkflowDefinition, WorkflowResult } from "./types";
@@ -431,18 +466,22 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 6. **Run ESLint** (5 minutes)
+
    ```bash
    npm run lint
    ```
+
    - Should report 0 warnings
    - Verify 0 errors maintained
 
 **Success Criteria:**
+
 - ✅ `npm run lint` reports 0 warnings
 - ✅ `npm run lint` reports 0 errors
 - ✅ All tests still passing
 
 **Files Modified:**
+
 - `/src/lib/cache/openai-cache.test.ts`
 - `/src/lib/followups.test.ts`
 - `/src/lib/mastra/workflows/interview-prep.test.ts`
@@ -452,12 +491,14 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ### Task 2.3: Add JSDoc to Core Utilities
+
 **Files:** 3 critical files without documentation
 **Impact:** Developer experience, maintainability
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Document rate-limit.ts** (30 minutes)
+
    ```typescript
    /**
     * Rate limiting configuration for API routes
@@ -500,6 +541,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 2. **Document metadata.ts** (30 minutes)
+
    ```typescript
    /**
     * Next.js metadata generation utilities
@@ -534,6 +576,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 3. **Document redis-memory.ts** (30 minutes)
+
    ```typescript
    /**
     * Redis-backed LangGraph checkpoint saver
@@ -567,12 +610,14 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Run TypeScript compilation to check syntax
 
 **Success Criteria:**
+
 - ✅ All exported functions have JSDoc comments
 - ✅ JSDoc includes @param, @returns, @example
 - ✅ Examples are tested and accurate
 - ✅ IDE hover shows documentation
 
 **Files Modified:**
+
 - `/src/lib/rate-limit.ts`
 - `/src/lib/metadata.ts`
 - `/src/lib/memory/redis-memory.ts`
@@ -580,19 +625,22 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ## Phase 3: Medium Priority (Priority 3)
+
 **Timeline:** 1-2 days
 **Success Criteria:** Agent tests added, type safety improved, unused code removed
 
 ### Task 3.1: Add Mastra Agent Tests
+
 **Files:** 9 untested agent files
 **Impact:** High - core feature without coverage
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Test coordinator routing logic** (2 hours)
    - File: `/src/lib/mastra/agents/coordinator.test.ts`
    - Mock all specialist agents
    - Test intent classification:
+
      ```typescript
      describe("classifyIntent", () => {
        it("should classify resume queries", () => {
@@ -609,6 +657,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
        });
      });
      ```
+
    - Test workflow detection
    - Test agent routing
 
@@ -621,6 +670,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - base-agent.test.ts
 
    - Common test pattern:
+
      ```typescript
      describe("[Agent]Agent", () => {
        it("should build instructions correctly", async () => {
@@ -644,17 +694,20 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Test Zod schema integration
 
 4. **Run test suite** (15 minutes)
+
    ```bash
    npm test
    ```
 
 **Success Criteria:**
+
 - ✅ 9 new test files created
 - ✅ Minimum 5 tests per agent
 - ✅ Coordinator routing 100% covered
 - ✅ All tests passing
 
 **Files Created:**
+
 - `/src/lib/mastra/agents/coordinator.test.ts`
 - `/src/lib/mastra/agents/project-agent.test.ts`
 - `/src/lib/mastra/agents/resume-agent.test.ts`
@@ -670,12 +723,14 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ### Task 3.2: Fix Type Safety Issues
+
 **Files:** 2 files with `eslint-disable` for `any` types
 **Impact:** Type safety, maintainability
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Define proper checkpoint types** (1 hour)
+
    ```typescript
    // src/lib/memory/types.ts
    import type { Checkpoint } from "@langchain/langgraph";
@@ -708,6 +763,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 2. **Update redis-memory.ts** (30 minutes)
+
    ```typescript
    // BEFORE
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -723,6 +779,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 3. **Update brightness-control.test.tsx** (30 minutes)
+
    ```typescript
    // BEFORE
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -740,18 +797,21 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    ```
 
 4. **Verify type safety** (15 minutes)
+
    ```bash
    npx tsc --noEmit
    npm run lint
    ```
 
 **Success Criteria:**
+
 - ✅ Zero `eslint-disable` for `any` types
 - ✅ Proper type definitions created
 - ✅ Type guards used for runtime validation
 - ✅ TypeScript compilation clean
 
 **Files Modified:**
+
 - `/src/lib/memory/types.ts` (new)
 - `/src/lib/memory/redis-memory.ts`
 - `/src/components/brightness-control.test.tsx`
@@ -759,25 +819,30 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ### Task 3.3: Audit Unused Exports
+
 **Files:** 3 files with potentially unused exports
 **Impact:** Bundle size, code clarity
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Audit animations.ts exports** (30 minutes)
+
    ```bash
    # Find all imports from animations.ts
    grep -r "from.*animations" src/
    ```
+
    - List all 13 exports
    - Check which are actually imported
    - Remove unused variants
    - Document which animations are for which components
 
 2. **Audit constants.ts exports** (20 minutes)
+
    ```bash
    grep -r "from.*constants" src/
    ```
+
    - Check `statusColors` usage
    - Check `roleColors` usage
    - Check `LOGO_SIZE` usage
@@ -791,20 +856,24 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Add TODO if schemas are planned for future use
 
 4. **Run build and check bundle size** (15 minutes)
+
    ```bash
    npm run build
    npm run analyze
    ```
+
    - Compare bundle sizes before/after
    - Ensure no unexpected size increase
 
 **Success Criteria:**
+
 - ✅ All exports are actively used
 - ✅ Unused code removed
 - ✅ Documentation added for export purpose
 - ✅ Bundle size maintained or reduced
 
 **Files Modified:**
+
 - `/src/lib/animations.ts`
 - `/src/lib/constants.ts`
 - `/src/lib/structured-data.ts`
@@ -812,13 +881,15 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ---
 
 ## Phase 4: Optional Improvements (Priority 4)
+
 **Timeline:** 1 day (optional)
 **Success Criteria:** TODOs resolved, components refactored, additional tests
 
 ### Task 4.1: Implement TODO Features
+
 **TODOs:** 2 instances
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Implement cache lookup time tracking** (2 hours)
    - File: `/src/lib/cache/openai-cache.ts:327`
@@ -835,20 +906,23 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Add tests
 
 **Success Criteria:**
+
 - ✅ Zero TODO comments
 - ✅ Features fully implemented
 - ✅ Tests added for new features
 
 **Files Modified:**
+
 - `/src/lib/cache/openai-cache.ts`
 - `/src/components/chat/chat-interface.tsx`
 
 ---
 
 ### Task 4.2: Split Large Components
+
 **Files:** 3 large component files (>400 lines)
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Extract message rendering from chat-sidebar** (1.5 hours)
    - Create `/src/components/chat/message-list.tsx`
@@ -863,21 +937,24 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Add tests
 
 **Success Criteria:**
+
 - ✅ No files >500 lines
 - ✅ Components have single responsibility
 - ✅ All tests passing
 - ✅ UI unchanged
 
 **Files Created:**
+
 - `/src/components/chat/message-list.tsx`
 - `/src/components/chat/tool-result.tsx`
 
 ---
 
 ### Task 4.3: Add Component Tests
+
 **Files:** 2 context hooks without tests
 
-#### Implementation Steps:
+#### Implementation Steps
 
 1. **Test brightness-context** (1 hour)
    - File: `/src/lib/brightness-context.test.tsx`
@@ -892,11 +969,13 @@ This plan addresses the technical debt identified in the comprehensive codebase 
    - Test pin/unpin functionality
 
 **Success Criteria:**
+
 - ✅ Context hooks have test coverage
 - ✅ localStorage mocking works correctly
 - ✅ All state transitions tested
 
 **Files Created:**
+
 - `/src/lib/brightness-context.test.tsx`
 - `/src/lib/chat-sidebar-context.test.tsx`
 
@@ -905,24 +984,31 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 ## Implementation Timeline
 
 ### Week 1: Critical Fixes
+
 **Days 1-2:** Phase 1 (Critical)
+
 - Day 1 Morning: Task 1.1 (TypeScript errors)
 - Day 1 Afternoon: Task 1.2 (API tests - cache, followups)
 - Day 2 Morning: Task 1.2 continued (tool routes)
 - Day 2 Afternoon: Task 1.3 (console.log cleanup)
 
 **Day 3:** Phase 2 (High Priority)
+
 - Morning: Tasks 2.1 & 2.2 (deduplication, ESLint)
 - Afternoon: Task 2.3 (JSDoc documentation)
 
 ### Week 2: Medium Priority
+
 **Days 4-5:** Phase 3 (Medium)
+
 - Day 4: Task 3.1 (Mastra agent tests)
 - Day 5 Morning: Task 3.2 (Type safety)
 - Day 5 Afternoon: Task 3.3 (Unused exports)
 
 ### Optional: Low Priority
+
 **Day 6:** Phase 4 (Optional)
+
 - Task 4.1: TODO features
 - Task 4.2: Component splitting
 - Task 4.3: Additional tests
@@ -934,6 +1020,7 @@ This plan addresses the technical debt identified in the comprehensive codebase 
 After each phase, verify:
 
 ### Quality Gates
+
 - [ ] `npm test` - All tests passing
 - [ ] `npx tsc --noEmit` - Zero TypeScript errors
 - [ ] `npm run lint` - Zero ESLint errors/warnings
@@ -941,6 +1028,7 @@ After each phase, verify:
 - [ ] `npm run analyze` - Bundle size acceptable
 
 ### Code Quality
+
 - [ ] No console.log in production code
 - [ ] No eslint-disable without justification
 - [ ] No TODO comments (or documented in issues)
@@ -948,6 +1036,7 @@ After each phase, verify:
 - [ ] Code duplication minimized
 
 ### Test Coverage
+
 - [ ] All API routes tested
 - [ ] All agents tested
 - [ ] Core utilities tested
@@ -958,12 +1047,14 @@ After each phase, verify:
 ## Risk Mitigation
 
 ### Rollback Strategy
+
 1. **Feature Flags:** Wrap risky changes in environment checks
 2. **Incremental:** One phase at a time, validate before proceeding
 3. **Git Branches:** Use feature branches for each phase
 4. **Backup:** Commit before starting each task
 
 ### Blockers
+
 - **TypeScript Errors:** May require deeper AI SDK v5 refactoring
   - Mitigation: Start with helper function, iterate on usage
 - **Test Infrastructure:** API tests may need complex mocks
@@ -976,26 +1067,28 @@ After each phase, verify:
 ## Success Metrics
 
 ### Before Implementation
-| Metric | Current |
-|--------|---------|
-| TypeScript Errors | 30+ |
-| ESLint Warnings | 7 |
-| Console.log (production) | 3 |
-| API Route Tests | 1/14 (7%) |
-| Total Tests | 318 |
-| Code Duplication | 2 instances |
-| Undocumented Utilities | 3 files |
+
+| Metric                   | Current     |
+| ------------------------ | ----------- |
+| TypeScript Errors        | 30+         |
+| ESLint Warnings          | 7           |
+| Console.log (production) | 3           |
+| API Route Tests          | 1/14 (7%)   |
+| Total Tests              | 318         |
+| Code Duplication         | 2 instances |
+| Undocumented Utilities   | 3 files     |
 
 ### After Implementation
-| Metric | Target |
-|--------|--------|
-| TypeScript Errors | 0 ✅ |
-| ESLint Warnings | 0 ✅ |
-| Console.log (production) | 0 ✅ |
-| API Route Tests | 14/14 (100%) ✅ |
-| Total Tests | ~500 ✅ |
-| Code Duplication | 0 ✅ |
-| Undocumented Utilities | 0 ✅ |
+
+| Metric                   | Target         |
+| ------------------------ | -------------- |
+| TypeScript Errors        | 0 ✅            |
+| ESLint Warnings          | 0 ✅            |
+| Console.log (production) | 0 ✅            |
+| API Route Tests          | 14/14 (100%) ✅ |
+| Total Tests              | ~500 ✅         |
+| Code Duplication         | 0 ✅            |
+| Undocumented Utilities   | 0 ✅            |
 
 ---
 
@@ -1004,12 +1097,14 @@ After each phase, verify:
 This refactoring plan addresses all critical technical debt while maintaining the excellent health score of 100/100. The phased approach ensures continuous validation and minimizes risk.
 
 **Immediate Next Steps:**
+
 1. Create feature branch: `git checkout -b refactor/phase-1-critical-fixes`
 2. Start with Task 1.1 (TypeScript errors)
 3. Validate after each task completion
 4. Merge to main after Phase 1 validation
 
 **Long-term Benefits:**
+
 - Production-ready codebase
 - Improved developer experience
 - Better test coverage
@@ -1018,6 +1113,7 @@ This refactoring plan addresses all critical technical debt while maintaining th
 - Reduced technical debt
 
 **Estimated Total Impact:**
+
 - Time Investment: 3-5 days
 - Test Count: +182 tests (318 → 500)
 - Code Quality: Excellent → Production-Grade

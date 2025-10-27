@@ -3,10 +3,15 @@
  * Tests performance profiling (development-only feature)
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/profile-performance", () => {
   beforeEach(() => {
@@ -102,7 +107,9 @@ describe("POST /api/tools/profile-performance", () => {
       const json = await getResponseJson(response);
 
       if (isSuccessResponse(json)) {
-        const data = json.data as { metrics: { lcp: unknown; fid: unknown; cls: unknown; ttfb: unknown } };
+        const data = json.data as {
+          metrics: { lcp: unknown; fid: unknown; cls: unknown; ttfb: unknown };
+        };
         const { metrics } = data;
         // Verify metrics are numbers
         expect(typeof metrics.lcp).toBe("number");
@@ -214,11 +221,14 @@ describe("POST /api/tools/profile-performance", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/profile-performance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "invalid json{",
-      });
+      const req = new Request(
+        "http://localhost:3000/api/tools/profile-performance",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "invalid json{",
+        }
+      );
 
       const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);

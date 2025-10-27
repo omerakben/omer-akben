@@ -9,22 +9,22 @@
  * User professional role classification
  */
 export type UserRole =
-  | "recruiter"       // Hiring manager or talent acquisition
-  | "developer"       // Software engineer or developer
-  | "hiring_manager"  // Technical hiring manager
-  | "student"         // Student or learner
-  | "founder"         // Startup founder or entrepreneur
-  | "unknown";        // Unable to determine
+  | "recruiter" // Hiring manager or talent acquisition
+  | "developer" // Software engineer or developer
+  | "hiring_manager" // Technical hiring manager
+  | "student" // Student or learner
+  | "founder" // Startup founder or entrepreneur
+  | "unknown"; // Unable to determine
 
 /**
  * User experience level classification
  */
 export type ExperienceLevel =
-  | "junior"    // 0-2 years experience
-  | "mid"       // 3-5 years experience
-  | "senior"    // 6+ years experience
-  | "lead"      // Lead/Staff/Principal level
-  | "unknown";  // Unable to determine
+  | "junior" // 0-2 years experience
+  | "mid" // 3-5 years experience
+  | "senior" // 6+ years experience
+  | "lead" // Lead/Staff/Principal level
+  | "unknown"; // Unable to determine
 
 /**
  * Complete semantic memory profile for a user

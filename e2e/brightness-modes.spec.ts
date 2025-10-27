@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("8-Mode Brightness System", () => {
   const modes = ["-3", "-2", "-1", "0", "+1", "+2", "+3", "auto"] as const;
@@ -9,7 +9,9 @@ test.describe("8-Mode Brightness System", () => {
 
   test("should render BrightnessControl with all 8 modes", async ({ page }) => {
     // Verify brightness control is visible
-    const brightnessControl = page.locator('[aria-label*="brightness"]').first();
+    const brightnessControl = page
+      .locator('[aria-label*="brightness"]')
+      .first();
     await expect(brightnessControl).toBeVisible({ timeout: 5000 });
 
     // Verify all mode buttons exist
@@ -23,12 +25,15 @@ test.describe("8-Mode Brightness System", () => {
     await expect(autoButton).toBeVisible();
   });
 
-  test("should switch brightness modes and update data-brightness attribute", async ({ page }) => {
+  test("should switch brightness modes and update data-brightness attribute", async ({
+    page,
+  }) => {
     for (const mode of modes) {
       // Click the mode button
-      const button = mode === "auto"
-        ? page.locator('button:has-text("Auto")')
-        : page.locator(`button:has-text("${mode}")`);
+      const button =
+        mode === "auto"
+          ? page.locator('button:has-text("Auto")')
+          : page.locator(`button:has-text("${mode}")`);
 
       await button.click();
 
@@ -43,26 +48,29 @@ test.describe("8-Mode Brightness System", () => {
 
   test.describe("Accessibility - Text Contrast", () => {
     for (const mode of modes) {
-      test(`Mode ${mode}: text should be readable with sufficient contrast`, async ({ page }) => {
+      test(`Mode ${mode}: text should be readable with sufficient contrast`, async ({
+        page,
+      }) => {
         // Set brightness mode
-        const button = mode === "auto"
-          ? page.locator('button:has-text("Auto")')
-          : page.locator(`button:has-text("${mode}")`);
+        const button =
+          mode === "auto"
+            ? page.locator('button:has-text("Auto")')
+            : page.locator(`button:has-text("${mode}")`);
         await button.click();
 
         // Wait for mode to apply
         await page.waitForTimeout(300);
 
         // Verify hero section text is visible (primary text)
-        const heroHeading = page.locator('h1').first();
+        const heroHeading = page.locator("h1").first();
         await expect(heroHeading).toBeVisible();
 
         // Verify body text is visible
-        const bodyText = page.locator('p').first();
+        const bodyText = page.locator("p").first();
         await expect(bodyText).toBeVisible();
 
         // Verify navigation links are visible
-        const navLink = page.locator('nav a').first();
+        const navLink = page.locator("nav a").first();
         await expect(navLink).toBeVisible();
 
         // Check computed styles for text color (should not be transparent)
@@ -77,18 +85,21 @@ test.describe("8-Mode Brightness System", () => {
 
   test.describe("Accessibility - Border Visibility", () => {
     for (const mode of modes) {
-      test(`Mode ${mode}: borders should be visible on cards`, async ({ page }) => {
+      test(`Mode ${mode}: borders should be visible on cards`, async ({
+        page,
+      }) => {
         // Set brightness mode
-        const button = mode === "auto"
-          ? page.locator('button:has-text("Auto")')
-          : page.locator(`button:has-text("${mode}")`);
+        const button =
+          mode === "auto"
+            ? page.locator('button:has-text("Auto")')
+            : page.locator(`button:has-text("${mode}")`);
         await button.click();
 
         // Wait for mode to apply
         await page.waitForTimeout(300);
 
         // Check if project cards have visible borders
-        const projectCard = page.locator('.card').first();
+        const projectCard = page.locator(".card").first();
         if (await projectCard.isVisible({ timeout: 2000 }).catch(() => false)) {
           const borderColor = await projectCard.evaluate((el) => {
             return window.getComputedStyle(el).borderColor;
@@ -102,11 +113,14 @@ test.describe("8-Mode Brightness System", () => {
 
   test.describe("CSS Custom Properties Application", () => {
     for (const mode of modes) {
-      test(`Mode ${mode}: CSS custom properties should update`, async ({ page }) => {
+      test(`Mode ${mode}: CSS custom properties should update`, async ({
+        page,
+      }) => {
         // Set brightness mode
-        const button = mode === "auto"
-          ? page.locator('button:has-text("Auto")')
-          : page.locator(`button:has-text("${mode}")`);
+        const button =
+          mode === "auto"
+            ? page.locator('button:has-text("Auto")')
+            : page.locator(`button:has-text("${mode}")`);
         await button.click();
 
         // Wait for mode to apply
@@ -117,9 +131,9 @@ test.describe("8-Mode Brightness System", () => {
           const root = document.documentElement;
           const styles = window.getComputedStyle(root);
           return {
-            textColor1: styles.getPropertyValue('--color-text-1'),
-            surfBg0: styles.getPropertyValue('--color-surf-0'),
-            brandPrimary: styles.getPropertyValue('--color-brand-primary'),
+            textColor1: styles.getPropertyValue("--color-text-1"),
+            surfBg0: styles.getPropertyValue("--color-surf-0"),
+            brandPrimary: styles.getPropertyValue("--color-brand-primary"),
           };
         });
 
@@ -133,11 +147,14 @@ test.describe("8-Mode Brightness System", () => {
 
   test.describe("Component Rendering", () => {
     for (const mode of modes) {
-      test(`Mode ${mode}: key components should render properly`, async ({ page }) => {
+      test(`Mode ${mode}: key components should render properly`, async ({
+        page,
+      }) => {
         // Set brightness mode
-        const button = mode === "auto"
-          ? page.locator('button:has-text("Auto")')
-          : page.locator(`button:has-text("${mode}")`);
+        const button =
+          mode === "auto"
+            ? page.locator('button:has-text("Auto")')
+            : page.locator(`button:has-text("${mode}")`);
         await button.click();
 
         // Wait for mode to apply
@@ -167,7 +184,9 @@ test.describe("8-Mode Brightness System", () => {
   });
 
   test.describe("Dark Mode Detection", () => {
-    test("Modes -3, -2, -1, 0 should be considered dark modes", async ({ page }) => {
+    test("Modes -3, -2, -1, 0 should be considered dark modes", async ({
+      page,
+    }) => {
       const darkModes = ["-3", "-2", "-1", "0"];
 
       for (const mode of darkModes) {
@@ -190,7 +209,9 @@ test.describe("8-Mode Brightness System", () => {
       }
     });
 
-    test("Modes +1, +2, +3 should be considered light modes", async ({ page }) => {
+    test("Modes +1, +2, +3 should be considered light modes", async ({
+      page,
+    }) => {
       const lightModes = ["+1", "+2", "+3"];
 
       for (const mode of lightModes) {
@@ -215,7 +236,9 @@ test.describe("8-Mode Brightness System", () => {
   });
 
   test.describe("Persistence", () => {
-    test("should persist brightness mode across page reload", async ({ page }) => {
+    test("should persist brightness mode across page reload", async ({
+      page,
+    }) => {
       // Set to mode +2
       const button = page.locator('button:has-text("+2")');
       await button.click();
@@ -262,11 +285,14 @@ test.describe("8-Mode Brightness System", () => {
 
   test.describe("Interactive Elements", () => {
     for (const mode of modes) {
-      test(`Mode ${mode}: buttons should be clickable and interactive`, async ({ page }) => {
+      test(`Mode ${mode}: buttons should be clickable and interactive`, async ({
+        page,
+      }) => {
         // Set brightness mode
-        const button = mode === "auto"
-          ? page.locator('button:has-text("Auto")')
-          : page.locator(`button:has-text("${mode}")`);
+        const button =
+          mode === "auto"
+            ? page.locator('button:has-text("Auto")')
+            : page.locator(`button:has-text("${mode}")`);
         await button.click();
 
         // Wait for mode to apply
@@ -278,7 +304,7 @@ test.describe("8-Mode Brightness System", () => {
         await expect(chatButton).toBeEnabled();
 
         // Test that navigation links are interactive
-        const navLinks = page.locator('nav a');
+        const navLinks = page.locator("nav a");
         const firstNavLink = navLinks.first();
         await expect(firstNavLink).toBeVisible();
         await expect(firstNavLink).toBeEnabled();

@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { useEffect } from "react";
 
 /**
  * Error Component
- * 
+ *
  * Next.js App Router error boundary for handling runtime errors.
  * Displays a user-friendly error message with recovery options.
  */

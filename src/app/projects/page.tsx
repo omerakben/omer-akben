@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Briefcase, Filter } from "lucide-react";
-import { ProjectCard } from "@/components/project-card";
 import { PageHeader } from "@/components/page-header";
+import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { projects } from "@/data/projects";
+import { Briefcase, Filter } from "lucide-react";
+import { useState } from "react";
 
 // Note: Metadata export not supported in Client Components
 // SEO handled by root layout
@@ -20,7 +20,9 @@ const allTechnologies = Array.from(
 
 export default function ProjectsPage() {
   const [selectedRole, setSelectedRole] = useState<RoleFilter>("All");
-  const [selectedTechnologies, setSelectedTechnologies] = useState<string[]>([]);
+  const [selectedTechnologies, setSelectedTechnologies] = useState<string[]>(
+    []
+  );
 
   const toggleTechnology = (tech: string) => {
     setSelectedTechnologies((prev) =>
@@ -74,7 +76,9 @@ export default function ProjectsPage() {
             <div>
               <div className="text-sm font-medium text-text-2 mb-3">Role:</div>
               <div className="flex flex-wrap gap-2">
-                {(["All", "Full-Stack", "AI", "QA", "QA/AI"] as RoleFilter[]).map((role) => (
+                {(
+                  ["All", "Full-Stack", "AI", "QA", "QA/AI"] as RoleFilter[]
+                ).map((role) => (
                   <Badge
                     key={role}
                     variant={selectedRole === role ? "default" : "outline"}
@@ -97,12 +101,18 @@ export default function ProjectsPage() {
 
             {/* Technology Filter */}
             <div>
-              <div className="text-sm font-medium text-text-2 mb-3">Technologies:</div>
+              <div className="text-sm font-medium text-text-2 mb-3">
+                Technologies:
+              </div>
               <div className="flex flex-wrap gap-2">
                 {allTechnologies.map((tech) => (
                   <Badge
                     key={tech}
-                    variant={selectedTechnologies.includes(tech) ? "default" : "outline"}
+                    variant={
+                      selectedTechnologies.includes(tech)
+                        ? "default"
+                        : "outline"
+                    }
                     className="cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                     onClick={() => toggleTechnology(tech)}
                     tabIndex={0}

@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, CheckCircle2, MapPin, Building2 } from "lucide-react";
-import { useState, memo } from "react";
 import { DURATION } from "@/lib/animations";
+import { AnimatePresence, motion } from "framer-motion";
+import { Building2, CheckCircle2, ChevronDown, MapPin } from "lucide-react";
+import { memo, useState } from "react";
 
 export interface TimelineItem {
   year: string;
@@ -34,7 +34,13 @@ const typeIcons = {
 } as const;
 
 // Memoized to prevent unnecessary re-renders when parent updates
-const TimelineCard = memo(function TimelineCard({ item, index }: { item: TimelineItem; index: number }) {
+const TimelineCard = memo(function TimelineCard({
+  item,
+  index,
+}: {
+  item: TimelineItem;
+  index: number;
+}) {
   const [isExpanded, setIsExpanded] = useState(index === 0); // First card expanded by default
   const Icon = typeIcons[item.type];
 
@@ -47,12 +53,9 @@ const TimelineCard = memo(function TimelineCard({ item, index }: { item: Timelin
       className="relative flex items-start md:flex-row"
     >
       {/* Content */}
-      <div className="flex-1 md:pl-12 pl-8"
-      >
+      <div className="flex-1 md:pl-12 pl-8">
         {/* Removed layout prop for better performance - expand/collapse handled by AnimatePresence */}
-        <motion.div
-          className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-[24px] p-6 hover:border-brand-primary/50 transition-all duration-300 shadow-lg shadow-surf-2/50 hover:shadow-xl hover:shadow-brand-primary/10 group"
-        >
+        <motion.div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-[24px] p-6 hover:border-brand-primary/50 transition-all duration-300 shadow-lg shadow-surf-2/50 hover:shadow-xl hover:shadow-brand-primary/10 group">
           {/* Background gradient on hover */}
           <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5 rounded-[24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -66,7 +69,9 @@ const TimelineCard = memo(function TimelineCard({ item, index }: { item: Timelin
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <div className={`text-sm font-semibold mb-1 ${typeColors[item.type]}`}>
+                <div
+                  className={`text-sm font-semibold mb-1 ${typeColors[item.type]}`}
+                >
                   {item.year}
                 </div>
                 <h2 className="text-xl md:text-2xl font-bold text-text-1 mb-1">
@@ -199,7 +204,11 @@ export function EnhancedTimeline({ items }: TimelineProps) {
 
       <div className="space-y-16">
         {items.map((item, index) => (
-          <TimelineCard key={`${item.year}-${item.title}`} item={item} index={index} />
+          <TimelineCard
+            key={`${item.year}-${item.title}`}
+            item={item}
+            index={index}
+          />
         ))}
       </div>
     </div>

@@ -9,11 +9,11 @@ import {
   type Intent,
   type Topic,
   INTENTS,
-  TOPIC_KEYWORDS,
   TOPIC_FOLLOWUPS,
+  TOPIC_KEYWORDS,
   containsAnyKeyword,
-} from '@/config/assistantFaq';
-import type { SemanticMemory } from '@/lib/memory/types';
+} from "@/config/assistantFaq";
+import type { SemanticMemory } from "@/lib/memory/types";
 
 // ============================================================================
 // INTENT CLASSIFICATION
@@ -24,7 +24,9 @@ import type { SemanticMemory } from '@/lib/memory/types';
  * Returns null if no clear intent is detected
  */
 export function classifyIntent(message: string): Intent | null {
-  const intents = Object.entries(INTENTS) as Array<[Exclude<Intent, 'general'>, typeof INTENTS[keyof typeof INTENTS]]>;
+  const intents = Object.entries(INTENTS) as Array<
+    [Exclude<Intent, "general">, (typeof INTENTS)[keyof typeof INTENTS]]
+  >;
 
   for (const [intent, pattern] of intents) {
     if (containsAnyKeyword(message, pattern.keywords)) {
@@ -129,40 +131,45 @@ function generatePersonalizedFollowups(
     return null;
   }
 
-  const { role, experienceLevel, interests, techFocus, jobSearch } = semanticMemory;
+  const { role, experienceLevel, interests, techFocus, jobSearch } =
+    semanticMemory;
 
   // Skip if role is unknown and no other context
-  if (role === 'unknown' && interests.length === 0 && techFocus.length === 0) {
+  if (role === "unknown" && interests.length === 0 && techFocus.length === 0) {
     return null;
   }
 
   const followups: string[] = [];
 
   // Role-based personalization
-  if (role === 'recruiter') {
+  if (role === "recruiter") {
     if (jobSearch) {
       followups.push(...PERSONALIZED_FOLLOWUPS.recruiter.jobSearch);
     }
     if (interests.length > 0) {
-      followups.push(...PERSONALIZED_FOLLOWUPS.recruiter.withInterests(interests));
+      followups.push(
+        ...PERSONALIZED_FOLLOWUPS.recruiter.withInterests(interests)
+      );
     }
     followups.push(...PERSONALIZED_FOLLOWUPS.recruiter.general);
-  } else if (role === 'developer') {
+  } else if (role === "developer") {
     if (interests.length > 0) {
-      followups.push(...PERSONALIZED_FOLLOWUPS.developer.withInterests(interests));
+      followups.push(
+        ...PERSONALIZED_FOLLOWUPS.developer.withInterests(interests)
+      );
     }
-    if (experienceLevel === 'junior') {
+    if (experienceLevel === "junior") {
       followups.push(...PERSONALIZED_FOLLOWUPS.developer.junior);
-    } else if (experienceLevel === 'mid') {
+    } else if (experienceLevel === "mid") {
       followups.push(...PERSONALIZED_FOLLOWUPS.developer.mid);
-    } else if (experienceLevel === 'senior' || experienceLevel === 'lead') {
+    } else if (experienceLevel === "senior" || experienceLevel === "lead") {
       followups.push(...PERSONALIZED_FOLLOWUPS.developer.senior);
     }
-  } else if (role === 'hiring_manager') {
+  } else if (role === "hiring_manager") {
     followups.push(...PERSONALIZED_FOLLOWUPS.hiring_manager);
-  } else if (role === 'student') {
+  } else if (role === "student") {
     followups.push(...PERSONALIZED_FOLLOWUPS.student);
-  } else if (role === 'founder') {
+  } else if (role === "founder") {
     followups.push(...PERSONALIZED_FOLLOWUPS.founder);
   }
 
@@ -175,7 +182,7 @@ function generatePersonalizedFollowups(
   }
 
   // Filter out recently shown
-  const available = followups.filter(q => !recentlyShown.includes(q));
+  const available = followups.filter((q) => !recentlyShown.includes(q));
 
   // Return 2 personalized follow-ups if available
   if (available.length >= 2) {
@@ -202,9 +209,9 @@ function generateHeuristicFollowups(
 
   // Try intent-based follow-ups first
   const intent = classifyIntent(combined);
-  if (intent && intent !== 'general') {
+  if (intent && intent !== "general") {
     const followups = INTENTS[intent].followups;
-    const available = followups.filter(q => !recentlyShown.includes(q));
+    const available = followups.filter((q) => !recentlyShown.includes(q));
     if (available.length >= 2) {
       return [available[0], available[1]];
     }
@@ -212,7 +219,9 @@ function generateHeuristicFollowups(
       // Mix with topic-based
       const topics = detectTopics(combined);
       if (topics.length > 0) {
-        const topicFollowups = TOPIC_FOLLOWUPS[topics[0]].filter(q => !recentlyShown.includes(q));
+        const topicFollowups = TOPIC_FOLLOWUPS[topics[0]].filter(
+          (q) => !recentlyShown.includes(q)
+        );
         if (topicFollowups.length > 0) {
           return [available[0], topicFollowups[0]];
         }
@@ -228,7 +237,9 @@ function generateHeuristicFollowups(
     for (const topic of topics) {
       allTopicFollowups.push(...TOPIC_FOLLOWUPS[topic]);
     }
-    const available = allTopicFollowups.filter(q => !recentlyShown.includes(q));
+    const available = allTopicFollowups.filter(
+      (q) => !recentlyShown.includes(q)
+    );
     if (available.length >= 2) {
       return [available[0], available[1]];
     }
@@ -245,8 +256,10 @@ function generateHeuristicFollowups(
     "What are your technical strengths?",
   ];
 
-  const available = fallbacks.filter(q => !recentlyShown.includes(q));
-  return available.length >= 2 ? [available[0], available[1]] : [fallbacks[0], fallbacks[1]];
+  const available = fallbacks.filter((q) => !recentlyShown.includes(q));
+  return available.length >= 2
+    ? [available[0], available[1]]
+    : [fallbacks[0], fallbacks[1]];
 }
 
 // ============================================================================
@@ -263,15 +276,16 @@ async function generateLLMFollowups(
   recentlyShown: string[]
 ): Promise<string[] | null> {
   // Check if LLM mode is enabled
-  const enableServerSuggest = process.env.NEXT_PUBLIC_ENABLE_SERVER_SUGGEST === '1';
+  const enableServerSuggest =
+    process.env.NEXT_PUBLIC_ENABLE_SERVER_SUGGEST === "1";
   if (!enableServerSuggest) {
     return null; // Fall back to heuristic
   }
 
   try {
-    const response = await fetch('/api/suggest-followups', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/suggest-followups", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         userMessage,
         assistantMessage,
@@ -280,19 +294,27 @@ async function generateLLMFollowups(
     });
 
     if (!response.ok) {
-      console.warn('[FollowUps] LLM endpoint failed, falling back to heuristic');
+      console.warn(
+        "[FollowUps] LLM endpoint failed, falling back to heuristic"
+      );
       return null;
     }
 
     const data = await response.json();
-    if (data.suggestions && Array.isArray(data.suggestions) && data.suggestions.length === 2) {
+    if (
+      data.suggestions &&
+      Array.isArray(data.suggestions) &&
+      data.suggestions.length === 2
+    ) {
       return data.suggestions;
     }
 
-    console.warn('[FollowUps] Invalid LLM response format, falling back to heuristic');
+    console.warn(
+      "[FollowUps] Invalid LLM response format, falling back to heuristic"
+    );
     return null;
   } catch (error) {
-    console.error('[FollowUps] LLM endpoint error:', error);
+    console.error("[FollowUps] LLM endpoint error:", error);
     return null;
   }
 }
@@ -319,18 +341,29 @@ export async function getFollowups(
 ): Promise<string[]> {
   // Try personalized follow-ups first if semantic memory available
   if (semanticMemory) {
-    const personalizedFollowups = generatePersonalizedFollowups(semanticMemory, recentlyShown);
+    const personalizedFollowups = generatePersonalizedFollowups(
+      semanticMemory,
+      recentlyShown
+    );
     if (personalizedFollowups) {
       return personalizedFollowups;
     }
   }
 
   // Try LLM if enabled
-  const llmFollowups = await generateLLMFollowups(userMessage, assistantMessage, recentlyShown);
+  const llmFollowups = await generateLLMFollowups(
+    userMessage,
+    assistantMessage,
+    recentlyShown
+  );
   if (llmFollowups) {
     return llmFollowups;
   }
 
   // Fallback to heuristic
-  return generateHeuristicFollowups(userMessage, assistantMessage, recentlyShown);
+  return generateHeuristicFollowups(
+    userMessage,
+    assistantMessage,
+    recentlyShown
+  );
 }

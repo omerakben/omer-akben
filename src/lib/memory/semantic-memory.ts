@@ -6,18 +6,18 @@
  * array merging and 90-day TTL for privacy compliance.
  */
 
-import { getRedisClient } from "@/lib/redis/client";
 import type {
-  SemanticMemory,
-  ExtractedFacts,
-  UserRole,
   ExperienceLevel,
+  ExtractedFacts,
+  SemanticMemory,
+  UserRole,
 } from "@/lib/memory/types";
 import {
   DEFAULT_SEMANTIC_MEMORY,
-  SEMANTIC_MEMORY_TTL,
   SEMANTIC_MEMORY_LIMITS,
+  SEMANTIC_MEMORY_TTL,
 } from "@/lib/memory/types";
+import { getRedisClient } from "@/lib/redis/client";
 
 const SEMANTIC_MEMORY_PREFIX = "memory:semantic:";
 
@@ -38,8 +38,11 @@ function parseSemanticMemory(data: Record<string, string>): SemanticMemory {
     company: data.company || null,
     interests: data.interests ? JSON.parse(data.interests) : [],
     experienceLevel:
-      (data.experienceLevel as ExperienceLevel) || DEFAULT_SEMANTIC_MEMORY.experienceLevel,
-    visitedProjects: data.visitedProjects ? JSON.parse(data.visitedProjects) : [],
+      (data.experienceLevel as ExperienceLevel) ||
+      DEFAULT_SEMANTIC_MEMORY.experienceLevel,
+    visitedProjects: data.visitedProjects
+      ? JSON.parse(data.visitedProjects)
+      : [],
     techFocus: data.techFocus ? JSON.parse(data.techFocus) : [],
     jobSearch: data.jobSearch === "true",
     lastUpdated: data.lastUpdated || new Date().toISOString(),
@@ -49,7 +52,9 @@ function parseSemanticMemory(data: Record<string, string>): SemanticMemory {
 /**
  * Serializes semantic memory for Redis Hash storage
  */
-function serializeSemanticMemory(memory: SemanticMemory): Record<string, string> {
+function serializeSemanticMemory(
+  memory: SemanticMemory
+): Record<string, string> {
   return {
     role: memory.role,
     company: memory.company || "",
@@ -87,7 +92,9 @@ function mergeArrayWithLimit(
  *   console.log(memory.role, memory.interests);
  * }
  */
-export async function getSemanticMemory(userId: string): Promise<SemanticMemory | null> {
+export async function getSemanticMemory(
+  userId: string
+): Promise<SemanticMemory | null> {
   // Skip anonymous users
   if (userId === "anonymous") {
     return null;
@@ -105,7 +112,10 @@ export async function getSemanticMemory(userId: string): Promise<SemanticMemory 
 
     return parseSemanticMemory(data);
   } catch (error) {
-    console.error("[SemanticMemory] Failed to retrieve semantic memory", { userId, error });
+    console.error("[SemanticMemory] Failed to retrieve semantic memory", {
+      userId,
+      error,
+    });
     return null;
   }
 }
@@ -149,7 +159,10 @@ export async function saveSemanticMemory(
     // Set TTL to 90 days for privacy compliance
     await redis.expire(key, SEMANTIC_MEMORY_TTL);
   } catch (error) {
-    console.error("[SemanticMemory] Failed to save semantic memory", { userId, error });
+    console.error("[SemanticMemory] Failed to save semantic memory", {
+      userId,
+      error,
+    });
     throw error;
   }
 }
@@ -184,7 +197,9 @@ export async function mergeSemanticMemory(
 
   try {
     // Get existing memory or use defaults
-    const existing = (await getSemanticMemory(userId)) || { ...DEFAULT_SEMANTIC_MEMORY };
+    const existing = (await getSemanticMemory(userId)) || {
+      ...DEFAULT_SEMANTIC_MEMORY,
+    };
 
     // Merge single values (replace if provided)
     const merged: SemanticMemory = {
@@ -216,7 +231,10 @@ export async function mergeSemanticMemory(
     // Save merged memory
     await saveSemanticMemory(userId, merged);
   } catch (error) {
-    console.error("[SemanticMemory] Failed to merge semantic memory", { userId, error });
+    console.error("[SemanticMemory] Failed to merge semantic memory", {
+      userId,
+      error,
+    });
     // Graceful degradation: log error but don't throw
   }
 }
@@ -241,7 +259,10 @@ export async function clearSemanticMemory(userId: string): Promise<void> {
     const key = buildKey(userId);
     await redis.del(key);
   } catch (error) {
-    console.error("[SemanticMemory] Failed to clear semantic memory", { userId, error });
+    console.error("[SemanticMemory] Failed to clear semantic memory", {
+      userId,
+      error,
+    });
     throw error;
   }
 }

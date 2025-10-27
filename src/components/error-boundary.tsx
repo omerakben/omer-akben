@@ -1,8 +1,8 @@
 "use client";
 
-import { Component, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import { Component, ReactNode } from "react";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -14,7 +14,10 @@ interface ErrorBoundaryState {
   error?: Error;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -26,7 +29,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error to monitoring service in production
-    console.error('Error Boundary caught:', error, errorInfo);
+    console.error("Error Boundary caught:", error, errorInfo);
   }
 
   render() {
@@ -42,9 +45,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             Something went wrong
           </h2>
           <p className="text-text-2 mb-6 max-w-md">
-            {process.env.NODE_ENV === 'development'
+            {process.env.NODE_ENV === "development"
               ? this.state.error?.message
-              : 'An unexpected error occurred. Please try again.'}
+              : "An unexpected error occurred. Please try again."}
           </p>
           <Button
             onClick={() => {

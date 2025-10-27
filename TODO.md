@@ -185,7 +185,7 @@ AFTER:   Homepage 236KB,  /skills 193KB ✅
 - ✅ Kept production-safe `console.error` statements
 - ✅ Verified Next.js config removes console.log in production builds
 
-**Status:** 
+**Status:**
 - Debug logs removed: 2/2 ✅
 - Production console.error retained for error tracking
 - next.config.ts already configured with `removeConsole` for production

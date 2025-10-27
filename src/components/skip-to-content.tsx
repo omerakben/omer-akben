@@ -2,10 +2,10 @@
 
 /**
  * Skip to Content Link
- * 
+ *
  * Accessibility component that allows keyboard users to skip navigation
  * and jump directly to the main content.
- * 
+ *
  * Features:
  * - Hidden until focused via Tab key
  * - Positioned at top of viewport when visible

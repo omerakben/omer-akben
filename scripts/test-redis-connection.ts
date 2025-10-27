@@ -5,8 +5,8 @@
  * Usage: npx tsx scripts/test-redis-connection.ts
  */
 
-import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { config } from "dotenv";
 import { resolve } from "path";
 
@@ -24,7 +24,9 @@ async function testRedisConnection() {
 
   if (!url || !token) {
     console.error("❌ Missing environment variables!");
-    console.log("   Required: UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN");
+    console.log(
+      "   Required: UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN"
+    );
     console.log("   Please check your .env or .env.local file");
     process.exit(1);
   }
@@ -95,7 +97,6 @@ async function testRedisConnection() {
     console.log("   - Start your dev server: npm run dev");
     console.log("   - Test rate limiting on API routes");
     console.log("   - Check rate limit headers in browser DevTools");
-
   } catch (error) {
     console.error("❌ Redis connection failed!");
     console.error("   Error:", error);

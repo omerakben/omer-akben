@@ -7,6 +7,7 @@
 ## Current Architecture
 
 ### Vector Store Separation
+
 The codebase now uses **two separate vector stores** for different purposes:
 
 1. **Upstash Vector** (Episodic Memory)
@@ -22,6 +23,7 @@ The codebase now uses **two separate vector stores** for different purposes:
    - Files: `embeddings.ts`, project setup scripts
 
 ### Routing Logic
+
 The `knnSearch()` function in `vector-search.ts` routes queries based on index parameter:
 
 ```typescript
@@ -39,17 +41,21 @@ return knnSearchVector(vector, limit, returnFields);
 ## Problem Summary (Historical)
 
 ### What Happened
+
 Chat API was crashing with error:
+
 ```
 [RedisClient] FT.SEARCH request failed with status 400
 ```
 
 ### Root Cause
+
 - **Current Setup**: Upstash Redis (standard key-value store)
 - **Code Requirement**: Redis Stack with RedisSearch module for vector search
 - **Mismatch**: `FT.SEARCH` command not available in standard Redis
 
 ### Impact
+
 - ✅ **Working**: Rate limiting, caching, checkpoints, JSON operations
 - ❌ **Failing**: Episodic memory search (conversation history retrieval)
 
@@ -58,27 +64,33 @@ Chat API was crashing with error:
 ## Solution Implemented
 
 ### Phase 1: Upstash Vector Integration (2025-10-20)
+
 Migrated episodic memory to Upstash Vector to eliminate `FT.SEARCH` dependency.
 
 **Files Modified**:
+
 - `src/lib/redis/vector-client.ts` - NEW: Singleton Vector client
 - `src/lib/redis/vector-search.ts` - REFACTORED: Vector SDK integration
 - `src/lib/mastra/memory/episodic.ts` - REFACTORED: Direct Vector storage
 
 ### Phase 2: Dual-Path Fix (2025-10-21)
+
 Fixed breaking change where project search was accidentally migrated to Vector.
 
 **Problem**: Initial Vector integration broke project semantic search by routing ALL knnSearch calls to Vector instead of Redis FT.SEARCH.
 
 **Solution**: Added index-based routing in `knnSearch()`:
+
 - Projects: Continue using Redis FT.SEARCH (data stored in Redis)
 - Episodic: Use Upstash Vector (data stored in Vector)
 
 **Files Modified**:
+
 - `src/lib/redis/vector-search.ts` - Split into `knnSearchRedis` + `knnSearchVector` with routing logic
 - `src/lib/mastra/memory/episodic.ts` - Changed `knnSearch("")` to `knnSearch(undefined)`
 
 **Results**:
+
 - ✅ Episodic memory fully functional via Upstash Vector
 - ✅ Project semantic search working via Redis FT.SEARCH
 - ✅ Dual-path routing prevents breaking changes
@@ -88,6 +100,7 @@ Fixed breaking change where project search was accidentally migrated to Vector.
 - ✅ Production build: Successful
 
 **Costs**:
+
 - Upstash Vector: Free tier ($0/month for episodic memory usage)
 - Upstash Redis: Free tier ($0/month for project embeddings + other features)
 
@@ -110,7 +123,9 @@ UPSTASH_REDIS_REST_TOKEN=...
 ## Testing & Validation
 
 ### Phase 1 Testing (Episodic Memory Migration)
+
 **Pre-Fix Behavior**:
+
 ```bash
 POST /api/chat → 500 error
 [ChatRoute] Failed to process chat request
@@ -118,6 +133,7 @@ Error: [RedisClient] FT.SEARCH request failed with status 400
 ```
 
 **Post-Fix Behavior**:
+
 ```bash
 POST /api/chat → 200 OK
 Episodic memory: vectorClient.query() → results
@@ -125,11 +141,14 @@ Test suite: 531/531 passing
 ```
 
 ### Phase 2 Testing (Dual-Path Fix)
+
 **Problem Identified**:
+
 - Project search (`/api/tools/search-projects-semantic`) would return empty results
 - knnSearch was routing ALL queries to Vector instead of Redis
 
 **Solution Verified**:
+
 - Project queries (`index="project_embeddings_idx"`) → Redis FT.SEARCH ✅
 - Episodic queries (`index=undefined`) → Upstash Vector ✅
 - All 531 tests still passing ✅
@@ -147,6 +166,7 @@ If you want to fully migrate project embeddings to Upstash Vector (currently the
 5. Simplify routing to Vector-only
 
 **Current Status**: NOT NEEDED - Dual-path works fine and preserves existing data.
+
 ```bash
 # Start dev server
 npm run dev
@@ -161,6 +181,7 @@ POST /api/chat → 200 OK
 ```
 
 ### Quality Gates
+
 ```bash
 npx tsc --noEmit  # ✅ Passes
 npm run lint      # Should pass
@@ -173,17 +194,21 @@ npm run build     # Should pass
 ## Recommendations
 
 ### Immediate (DONE)
+
 ✅ Graceful degradation implemented
 ✅ Chat API functional
 ✅ Rate limiting active
 
 ### Short-term (Optional)
+
 1. **Add feature flag** for episodic memory:
+
    ```typescript
    const ENABLE_EPISODIC_MEMORY = process.env.ENABLE_EPISODIC_MEMORY === 'true';
    ```
 
 2. **Monitoring**: Track episodic memory availability
+
    ```typescript
    if (episodicResults.length === 0) {
      console.warn("[Memory] Episodic search returned no results");
@@ -191,6 +216,7 @@ npm run build     # Should pass
    ```
 
 ### Long-term (Consider)
+
 1. **Evaluate need**: Is episodic memory critical?
    - Current: Semantic memory (JSON) still works
    - Question: How often is conversation history searched?
@@ -210,6 +236,7 @@ npm run build     # Should pass
 ## Environment Variables
 
 ### Current Setup (Standard Redis)
+
 ```bash
 # .env or .env.local
 UPSTASH_REDIS_REST_URL=https://shining-bobcat-5247.upstash.io
@@ -228,6 +255,7 @@ UPSTASH_REDIS_REST_TOKEN=ARR_AAImcD...
 ```
 
 ### Future Setup (if adding Upstash Vector)
+
 ```bash
 # Standard Redis (keep for rate limiting + cache)
 UPSTASH_REDIS_REST_URL=https://shining-bobcat-5247.upstash.io
@@ -243,6 +271,7 @@ UPSTASH_VECTOR_REST_TOKEN=your-vector-token
 ## Monitoring Checklist
 
 ### What's Working ✅
+
 - [ ] Rate limiting headers in API responses
 - [ ] Chat API returns 200 OK
 - [ ] Embedding cache hits/misses logged
@@ -250,12 +279,14 @@ UPSTASH_VECTOR_REST_TOKEN=your-vector-token
 - [ ] Checkpoints created for conversations
 
 ### What to Watch ⚠️
+
 - [ ] Console warnings about vector search
 - [ ] Episodic memory search returns empty
 - [ ] No conversation history in responses (expected)
 - [ ] Embedding generation still happening (cache misses)
 
 ### Commands
+
 ```bash
 # Check Redis monitor
 cat redis-monitor.csv
@@ -278,11 +309,13 @@ curl -I http://localhost:3000/api/chat?chatId=test-123
 ## Conclusion
 
 **Current State**: Production-ready with graceful degradation
+
 - Chat works without episodic memory
 - All other Redis features operational
 - Zero technical debt (clean error handling)
 
 **Next Steps**: User decision
+
 1. Accept current behavior (recommended for MVP)
 2. Add Upstash Vector if episodic memory becomes critical
 3. Monitor usage to determine actual need

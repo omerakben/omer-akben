@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  saveThread,
-  loadThread,
   cleanExpiredThreads,
   deleteThread,
   listThreads,
+  loadThread,
+  saveThread,
   type Thread,
 } from "./thread-memory";
 
@@ -31,10 +31,10 @@ const localStorageMock: Storage = (() => {
       delete mock[key];
     },
     clear(): void {
-      Object.keys(store).forEach(key => {
+      Object.keys(store).forEach((key) => {
         delete mock[key];
       });
-      Object.keys(store).forEach(key => delete store[key]);
+      Object.keys(store).forEach((key) => delete store[key]);
     },
     get length(): number {
       return Object.keys(store).length;
@@ -223,12 +223,15 @@ describe("thread-memory", () => {
     });
 
     it("should handle corrupted thread data during cleanup", () => {
-      localStorage.setItem("thread_good", JSON.stringify({
-        id: "good",
-        messages: [],
-        createdAt: Date.now(),
-        lastAccessedAt: Date.now(),
-      }));
+      localStorage.setItem(
+        "thread_good",
+        JSON.stringify({
+          id: "good",
+          messages: [],
+          createdAt: Date.now(),
+          lastAccessedAt: Date.now(),
+        })
+      );
       localStorage.setItem("thread_bad", "invalid json");
 
       expect(() => cleanExpiredThreads()).not.toThrow();
@@ -375,9 +378,15 @@ describe("thread-memory", () => {
       expect(threads).toHaveLength(3);
 
       // Each thread maintains its own state
-      expect(loadThread("user1")).toEqual([{ id: "1", role: "user", content: "User 1" }]);
-      expect(loadThread("user2")).toEqual([{ id: "2", role: "user", content: "User 2" }]);
-      expect(loadThread("user3")).toEqual([{ id: "3", role: "user", content: "User 3" }]);
+      expect(loadThread("user1")).toEqual([
+        { id: "1", role: "user", content: "User 1" },
+      ]);
+      expect(loadThread("user2")).toEqual([
+        { id: "2", role: "user", content: "User 2" },
+      ]);
+      expect(loadThread("user3")).toEqual([
+        { id: "3", role: "user", content: "User 3" },
+      ]);
     });
 
     it("should persist threads across multiple operations", () => {
@@ -461,7 +470,9 @@ describe("thread-memory", () => {
 
     it("should handle rapid sequential saves", () => {
       for (let i = 0; i < 10; i++) {
-        saveThread("rapid-test", [{ id: `${i}`, role: "user", content: `Msg ${i}` }]);
+        saveThread("rapid-test", [
+          { id: `${i}`, role: "user", content: `Msg ${i}` },
+        ]);
       }
 
       const loaded = loadThread("rapid-test");

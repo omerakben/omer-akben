@@ -1,5 +1,5 @@
-import { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
+import { MetadataRoute } from "next";
 
 const baseUrl = "https://omerakben.com";
 

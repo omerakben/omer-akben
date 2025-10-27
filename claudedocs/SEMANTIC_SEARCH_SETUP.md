@@ -9,6 +9,7 @@ Phase 3 of the Agentic Architecture implementation adds semantic search capabili
 The following components have been implemented:
 
 ### 1. Embeddings Module (`src/lib/redis/embeddings.ts`)
+
 - `generateEmbedding(text)` - Generates OpenAI embeddings using text-embedding-3-small
 - `embedProject(project)` - Embeds single project with metadata
 - `embedAllProjects(projects)` - Batch embedding for all projects
@@ -16,20 +17,24 @@ The following components have been implemented:
 - `searchProjectsBySimilarity(query, limit)` - KNN semantic search
 
 ### 2. Setup Script (`scripts/setup-project-embeddings.ts`)
+
 - Creates Redis vector index (1536 dimensions, COSINE distance)
 - Embeds all projects from `data/projects.ts`
 - Stores embeddings in Redis Hash format
 
 ### 3. API Endpoint (`src/app/api/tools/search-projects-semantic/route.ts`)
+
 - POST endpoint with Zod validation
 - Returns ranked results with similarity scores
 - Error handling and logging
 
 ### 4. Agent Tool (`src/lib/mastra/tools.ts`)
+
 - `searchProjectsSemanticTool` - Mastra agent tool
 - Integrated into `projectAgent` with usage instructions
 
 ### 5. Schema Definitions (`src/lib/agent-tools/schemas.ts`)
+
 - `searchProjectsSemanticSchema` - Input validation
 - `searchProjectsSemanticOutputSchema` - Output structure
 
@@ -46,7 +51,7 @@ UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-token-here
 ```
 
-Get Redis credentials from: https://console.upstash.com/
+Get Redis credentials from: <https://console.upstash.com/>
 
 ## Setup Instructions
 
@@ -69,6 +74,7 @@ npx tsx scripts/setup-project-embeddings.ts
 ```
 
 Expected output:
+
 ```
 [Setup] Starting project embeddings setup...
 [Setup] Found 9 projects to embed
@@ -90,12 +96,15 @@ Test semantic search with:
 ### 3. Test Semantic Search
 
 #### Via AI Chat (Recommended)
+
 Ask the AI agent natural language questions:
+
 - "Show me projects with machine learning"
 - "What have you built with real-time features?"
 - "Find projects related to AI"
 
 #### Via API Endpoint
+
 ```bash
 curl -X POST http://localhost:3000/api/tools/search-projects-semantic \
   -H "Content-Type: application/json" \
@@ -106,6 +115,7 @@ curl -X POST http://localhost:3000/api/tools/search-projects-semantic \
 ```
 
 Expected response:
+
 ```json
 {
   "success": true,
@@ -126,6 +136,7 @@ Expected response:
 ## Technical Details
 
 ### Vector Index Schema
+
 - **Index name**: `project_embeddings_idx`
 - **Key prefix**: `project:embedding:{slug}`
 - **Vector field**: `embedding`
@@ -134,12 +145,15 @@ Expected response:
   - Distance metric: COSINE
 
 ### Embedding Content
+
 Each project is embedded with combined text:
+
 ```
 {title}. {longDescription || description}. Technologies: {technologies}. Category: {category}. Role: {role}.
 ```
 
 ### Storage Format (Redis Hash)
+
 ```
 project:embedding:{slug}
 {
@@ -173,32 +187,39 @@ project:embedding:{slug}
 ## Troubleshooting
 
 ### Setup Script Fails with Redis Error
+
 **Error**: `Missing environment variable UPSTASH_REDIS_REST_URL`
 **Solution**: Ensure `.env.local` has Redis credentials from Upstash console
 
 ### OpenAI Embedding Error
+
 **Error**: `OpenAI API key invalid`
 **Solution**: Verify `OPENAI_API_KEY` in `.env.local` is correct
 
 ### No Results from Semantic Search
+
 **Issue**: Search returns empty results
 **Solution**:
+
 1. Verify setup script completed successfully
 2. Check Redis index exists: `FT.INFO project_embeddings_idx`
 3. Re-run setup script if needed
 
 ### Low Similarity Scores
+
 **Issue**: All results have low scores (<0.5)
 **Solution**: This is expected for dissimilar queries. Adjust limit or query phrasing.
 
 ## Files Modified/Created
 
 **Created:**
+
 - `src/lib/redis/embeddings.ts` (138 lines)
 - `scripts/setup-project-embeddings.ts` (45 lines)
 - `src/app/api/tools/search-projects-semantic/route.ts` (75 lines)
 
 **Modified:**
+
 - `src/lib/agent-tools/schemas.ts` (added searchProjectsSemanticSchema)
 - `src/lib/mastra/tools.ts` (added searchProjectsSemanticTool)
 - `src/lib/mastra/agents/project-agent.ts` (integrated semantic search tool)

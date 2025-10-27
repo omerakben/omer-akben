@@ -29,6 +29,7 @@ await sendMessage({
 ```
 
 **Reality**: The `useChat()` hook from `@ai-sdk/react` returns:
+
 ```typescript
 {
   messages: Message[];
@@ -71,6 +72,7 @@ The AI SDK expects simple `{ role, content }` format, not the `parts` array stru
 **Problem**: Zero error handling or user feedback when things go wrong.
 
 **Missing**:
+
 - No `try/catch` around API calls
 - No error state display
 - No error messages to user
@@ -90,17 +92,20 @@ The AI SDK expects simple `{ role, content }` format, not the `parts` array stru
 ## Evidence
 
 ### Browser Network Request
+
 ✅ Request to `/api/chat` succeeded (278ms)
 ✅ API route exists and is properly configured
 ✅ OpenAI API key is present in `.env`
 
 ### What Should Have Happened
+
 1. User clicks "Tell me about yourself"
 2. Message sent to `/api/chat`
 3. OpenAI streams response back
 4. Response displayed in chat UI
 
 ### What Actually Happens
+
 1. User clicks "Tell me about yourself" ✅
 2. Input field populated ✅
 3. User manually clicks send button
@@ -116,17 +121,19 @@ The AI SDK expects simple `{ role, content }` format, not the `parts` array stru
 - **Model**: gpt-4o-mini
 - **API Route**: `/api/chat` exists and configured correctly
 - **API Key**: Present in `.env` (valid)
-- **Dev Server**: Running on http://localhost:3001
+- **Dev Server**: Running on <http://localhost:3001>
 
 ## Impact Assessment
 
 ### For Recruiter Demo ⚠️
+
 - **Severity**: 10/10 - Complete failure
 - **User Experience**: Professional site appearance masks total non-functionality
 - **First Impression**: Devastating - appears broken/unfinished
 - **Job Risk**: Immediate disqualification from consideration
 
 ### Technical Debt
+
 - Indicates lack of testing before implementation
 - No integration tests for chat functionality
 - Missing error handling throughout
@@ -142,16 +149,19 @@ The AI SDK expects simple `{ role, content }` format, not the `parts` array stru
 ## Recommended Fix Priority
 
 ### Priority 1 (MUST FIX - Job Killer) 🔴
+
 1. Replace `sendMessage` with `append` function
 2. Fix message format from `parts` array to `content` string
 3. Add basic error handling
 
 ### Priority 2 (Should Fix - Poor UX) 🟡
+
 4. Auto-submit suggested questions
 5. Add error state display to UI
 6. Add retry mechanism
 
 ### Priority 3 (Nice to Have - Polish) 🟢
+
 7. Add typing indicators
 8. Add message timestamps
 9. Add scroll-to-bottom on new messages

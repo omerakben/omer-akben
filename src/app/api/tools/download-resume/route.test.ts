@@ -3,10 +3,15 @@
  * Tests format validation, file info retrieval, and error handling
  */
 
-import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
+import { describe, expect, it } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/download-resume", () => {
   describe("Valid requests", () => {
@@ -112,11 +117,14 @@ describe("POST /api/tools/download-resume", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/download-resume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "invalid json{",
-      });
+      const req = new Request(
+        "http://localhost:3000/api/tools/download-resume",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "invalid json{",
+        }
+      );
 
       const response = await POST(req as NextRequest);
       const json = await getResponseJson(response);

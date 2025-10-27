@@ -12,8 +12,8 @@
 import {
   getIconBySlug as getGeneratedIcon,
   getAvailableIcons as getGeneratedIcons,
-  type SimpleIcon
-} from './icon-manifest-generated';
+  type SimpleIcon,
+} from "./icon-manifest-generated";
 
 /**
  * Type-safe icon lookup function

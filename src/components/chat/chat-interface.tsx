@@ -1,15 +1,30 @@
 "use client";
 
-import type { UIMessage } from "ai";
-import { AlertCircle, Bot, Copy, RefreshCw, Send, User, X, Briefcase, Zap, FileText, ExternalLink, ArrowRight, Github, Mail } from "lucide-react";
-import { type FormEvent, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import type { UIMessage } from "ai";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertCircle,
+  ArrowRight,
+  Bot,
+  Briefcase,
+  Copy,
+  ExternalLink,
+  FileText,
+  Github,
+  Mail,
+  RefreshCw,
+  Send,
+  User,
+  X,
+  Zap,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const suggestedQuestions = [
   "Tell me about yourself.",
@@ -80,7 +95,10 @@ export function ChatInterface({
 
     // Auto-submit after brief delay
     setTimeout(() => {
-      const formEvent = new Event("submit", { bubbles: true, cancelable: true });
+      const formEvent = new Event("submit", {
+        bubbles: true,
+        cancelable: true,
+      });
       const form = document.querySelector("form");
       if (form) {
         form.dispatchEvent(formEvent);
@@ -121,7 +139,10 @@ export function ChatInterface({
             exit={{ opacity: 0, y: -20 }}
             className="flex-shrink-0 px-6 pt-6"
           >
-            <Alert variant="destructive" className="glass-message border border-destructive/30">
+            <Alert
+              variant="destructive"
+              className="glass-message border border-destructive/30"
+            >
               <AlertCircle aria-hidden="true" className="h-4 w-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span>{error}</span>
@@ -161,7 +182,10 @@ export function ChatInterface({
                 transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
                 className="w-20 h-20 rounded-full bg-brand-primary/20 flex items-center justify-center mb-6"
               >
-                <Bot aria-hidden="true" className="w-10 h-10 text-brand-primary" />
+                <Bot
+                  aria-hidden="true"
+                  className="w-10 h-10 text-brand-primary"
+                />
               </motion.div>
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -177,8 +201,8 @@ export function ChatInterface({
                 transition={{ delay: 0.3 }}
                 className="text-text-2 text-lg max-w-2xl mb-8"
               >
-                Ask me anything about Omer&apos;s experience, skills, or projects.
-                I&apos;m here to help!
+                Ask me anything about Omer&apos;s experience, skills, or
+                projects. I&apos;m here to help!
               </motion.p>
 
               {/* Quick Actions */}
@@ -201,9 +225,14 @@ export function ChatInterface({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Briefcase aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                      <Briefcase
+                        aria-hidden="true"
+                        className="w-4 h-4 text-brand-primary"
+                      />
                     </div>
-                    <span className="text-text-1 font-medium">View Projects</span>
+                    <span className="text-text-1 font-medium">
+                      View Projects
+                    </span>
                   </motion.button>
                   <motion.button
                     type="button"
@@ -213,7 +242,10 @@ export function ChatInterface({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Zap aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                      <Zap
+                        aria-hidden="true"
+                        className="w-4 h-4 text-brand-primary"
+                      />
                     </div>
                     <span className="text-text-1 font-medium">See Skills</span>
                   </motion.button>
@@ -225,7 +257,10 @@ export function ChatInterface({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                      <FileText aria-hidden="true" className="w-4 h-4 text-brand-primary" />
+                      <FileText
+                        aria-hidden="true"
+                        className="w-4 h-4 text-brand-primary"
+                      />
                     </div>
                     <span className="text-text-1 font-medium">Get Resume</span>
                   </motion.button>
@@ -300,7 +335,10 @@ export function ChatInterface({
                         className="flex-shrink-0 mt-1"
                       >
                         <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                          <Bot aria-hidden="true" className="w-6 h-6 text-brand-primary" />
+                          <Bot
+                            aria-hidden="true"
+                            className="w-6 h-6 text-brand-primary"
+                          />
                         </div>
                       </motion.div>
                     )}
@@ -346,16 +384,24 @@ export function ChatInterface({
                             ),
                             li: ({ children }) => <li>{children}</li>,
                             strong: ({ children }) => (
-                              <strong className="font-semibold">{children}</strong>
+                              <strong className="font-semibold">
+                                {children}
+                              </strong>
                             ),
                             h1: ({ children }) => (
-                              <h1 className="text-lg font-bold mb-2">{children}</h1>
+                              <h1 className="text-lg font-bold mb-2">
+                                {children}
+                              </h1>
                             ),
                             h2: ({ children }) => (
-                              <h2 className="text-base font-bold mb-2">{children}</h2>
+                              <h2 className="text-base font-bold mb-2">
+                                {children}
+                              </h2>
                             ),
                             h3: ({ children }) => (
-                              <h3 className="text-sm font-bold mb-1">{children}</h3>
+                              <h3 className="text-sm font-bold mb-1">
+                                {children}
+                              </h3>
                             ),
                           }}
                         >
@@ -363,51 +409,88 @@ export function ChatInterface({
                         </ReactMarkdown>
 
                         {/* Navigation Links */}
-                        {!isUser && message.parts && (() => {
-                          // Filter parts array for tool calls
-                          const toolParts = message.parts.filter((part): part is typeof part & { type: string; result: unknown } =>
-                            'type' in part && 'result' in part && part.type === "tool-provide_navigation_links"
-                          );
+                        {!isUser &&
+                          message.parts &&
+                          (() => {
+                            // Filter parts array for tool calls
+                            const toolParts = message.parts.filter(
+                              (
+                                part
+                              ): part is typeof part & {
+                                type: string;
+                                result: unknown;
+                              } =>
+                                "type" in part &&
+                                "result" in part &&
+                                part.type === "tool-provide_navigation_links"
+                            );
 
-                          if (toolParts.length === 0) return null;
+                            if (toolParts.length === 0) return null;
 
-                          return (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {toolParts.map((toolPart, partIndex: number) => {
-                                const result = toolPart.result as { success: boolean; data?: { links: Array<{ label: string; href: string; type: "internal" | "external" }> } };
-                                if (!result.success || !result.data?.links) return null;
+                            return (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {toolParts.map(
+                                  (toolPart, partIndex: number) => {
+                                    const result = toolPart.result as {
+                                      success: boolean;
+                                      data?: {
+                                        links: Array<{
+                                          label: string;
+                                          href: string;
+                                          type: "internal" | "external";
+                                        }>;
+                                      };
+                                    };
+                                    if (!result.success || !result.data?.links)
+                                      return null;
 
-                                return result.data.links.map((link, linkIndex) => {
-                                  const Icon = getIconComponent();
-                                  const isExternal = link.type === "external";
+                                    return result.data.links.map(
+                                      (link, linkIndex) => {
+                                        const Icon = getIconComponent();
+                                        const isExternal =
+                                          link.type === "external";
 
-                                  return (
-                                    <motion.button
-                                      key={`${partIndex}-${linkIndex}`}
-                                      type="button"
-                                      onClick={() => {
-                                        if (isExternal) {
-                                          window.open(link.href, "_blank", "noopener,noreferrer");
-                                        } else {
-                                          router.push(link.href);
-                                        }
-                                      }}
-                                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
-                                      whileHover={{ scale: 1.05 }}
-                                      whileTap={{ scale: 0.95 }}
-                                    >
-                                      <div className="w-4 h-4 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <Icon aria-hidden="true" className="w-3 h-3 text-brand-primary" />
-                                      </div>
-                                      <span>{link.label}</span>
-                                      {isExternal && <ExternalLink aria-hidden="true" className="w-3 h-3" />}
-                                    </motion.button>
-                                  );
-                                });
-                              })}
-                            </div>
-                          );
-                        })()}
+                                        return (
+                                          <motion.button
+                                            key={`${partIndex}-${linkIndex}`}
+                                            type="button"
+                                            onClick={() => {
+                                              if (isExternal) {
+                                                window.open(
+                                                  link.href,
+                                                  "_blank",
+                                                  "noopener,noreferrer"
+                                                );
+                                              } else {
+                                                router.push(link.href);
+                                              }
+                                            }}
+                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                          >
+                                            <div className="w-4 h-4 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                              <Icon
+                                                aria-hidden="true"
+                                                className="w-3 h-3 text-brand-primary"
+                                              />
+                                            </div>
+                                            <span>{link.label}</span>
+                                            {isExternal && (
+                                              <ExternalLink
+                                                aria-hidden="true"
+                                                className="w-3 h-3"
+                                              />
+                                            )}
+                                          </motion.button>
+                                        );
+                                      }
+                                    );
+                                  }
+                                )}
+                              </div>
+                            );
+                          })()}
 
                         {/* Message Actions */}
                         {!isUser && hoveredMessageId === message.id && (
@@ -428,7 +511,10 @@ export function ChatInterface({
                               className="h-7 px-2 bg-surf-2/90 glass-message border border-border-line/50 hover:bg-surf-1/90 text-text-2"
                               title="Copy message"
                             >
-                              <Copy aria-hidden="true" className="w-3.5 h-3.5" />
+                              <Copy
+                                aria-hidden="true"
+                                className="w-3.5 h-3.5"
+                              />
                             </Button>
                             <Button
                               variant="ghost"
@@ -437,7 +523,10 @@ export function ChatInterface({
                               className="h-7 px-2 bg-surf-2/90 glass-message border border-border-line/50 hover:bg-surf-1/90 text-text-2"
                               title="Regenerate response"
                             >
-                              <RefreshCw aria-hidden="true" className="w-3.5 h-3.5" />
+                              <RefreshCw
+                                aria-hidden="true"
+                                className="w-3.5 h-3.5"
+                              />
                             </Button>
                           </motion.div>
                         )}
@@ -452,7 +541,10 @@ export function ChatInterface({
                         className="flex-shrink-0 mt-1"
                       >
                         <div className="w-10 h-10 rounded-full bg-surf-2 flex items-center justify-center">
-                          <User aria-hidden="true" className="w-6 h-6 text-text-2" />
+                          <User
+                            aria-hidden="true"
+                            className="w-6 h-6 text-text-2"
+                          />
                         </div>
                       </motion.div>
                     )}
@@ -466,7 +558,9 @@ export function ChatInterface({
                       transition={{ delay: 0.2 }}
                       className="ml-14 space-y-2"
                     >
-                      <p className="text-xs text-text-3 mb-2">Suggested questions:</p>
+                      <p className="text-xs text-text-3 mb-2">
+                        Suggested questions:
+                      </p>
                       {followUpQuestions.map((question, qIndex) => (
                         <motion.button
                           key={qIndex}
@@ -496,7 +590,10 @@ export function ChatInterface({
             >
               <div className="flex-shrink-0 mt-1">
                 <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                  <Bot aria-hidden="true" className="w-6 h-6 text-brand-primary" />
+                  <Bot
+                    aria-hidden="true"
+                    className="w-6 h-6 text-brand-primary"
+                  />
                 </div>
               </div>
               <div className="max-w-[75%] rounded-2xl px-5 py-4 bg-surf-1/80 text-text-1 glass-message border border-border-line/30 shadow-md">

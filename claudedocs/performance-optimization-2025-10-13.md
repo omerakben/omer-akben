@@ -5,6 +5,7 @@
 **Critical Issue**: Home (2.3MB) and Skills (2.28MB) pages have unacceptably large First Load JS bundles, significantly impacting user experience and Lighthouse scores.
 
 **Attempts Made**:
+
 1. ✅ Next.js dynamic imports with `ssr: false` - Minimal impact
 2. ✅ Framer Motion official LazyMotion with domAnimation - Minimal impact
 
@@ -28,6 +29,7 @@ Shared chunks:                           166 kB
 ```
 
 **Root Cause Analysis**:
+
 - Framer Motion library (~100KB+) loaded eagerly
 - Simple-icons library (large icon set) included
 - All animations defined upfront with motion components
@@ -40,6 +42,7 @@ Shared chunks:                           166 kB
 **Implementation**: `/Users/ozzy-mac/Projects/omer-akben/src/components/lazy-motion.tsx` (v1)
 
 **Approach**:
+
 ```typescript
 export const LazyMotion = {
   div: dynamic(
@@ -51,11 +54,13 @@ export const LazyMotion = {
 ```
 
 **Theory**: Dynamic imports with `ssr: false` would:
+
 - Prevent server-side rendering of animations
 - Code-split each motion component
 - Reduce initial bundle size
 
 **Results** (Build #1):
+
 ```
 Route (app)                              Size  First Load JS
 ├ ○ /                                    11.9 kB         2.3 MB   ❌ No improvement
@@ -63,12 +68,14 @@ Route (app)                              Size  First Load JS
 ```
 
 **Why It Failed**:
+
 - `ssr: false` only prevents SSR, doesn't code-split
 - Framer Motion still included in client bundle
 - Each dynamic import creates separate chunk but all loaded together
 - Shared chunks still contain motion dependencies
 
 **Lessons Learned**:
+
 - Next.js dynamic imports ≠ true lazy loading
 - `ssr: false` is for hydration control, not bundle optimization
 - Module dependencies are included regardless of dynamic imports
@@ -80,6 +87,7 @@ Route (app)                              Size  First Load JS
 **Implementation**: `/Users/ozzy-mac/Projects/omer-akben/src/components/lazy-motion.tsx` (v2)
 
 **Approach**:
+
 ```typescript
 const loadFeatures = () =>
   import("framer-motion").then((mod) => mod.domAnimation);
@@ -94,12 +102,14 @@ export function LazyMotionProvider({ children }: LazyMotionProviderProps) {
 ```
 
 **Theory**: Framer Motion's official lazy loading with domAnimation:
+
 - Use smaller domAnimation subset (~50KB vs ~100KB)
 - Load features asynchronously
 - Share features across all animations in context
 - Replace `motion` with `m` components
 
 **Changes Made**:
+
 - `/Users/ozzy-mac/Projects/omer-akben/src/components/hero-section.tsx`
   - Wrapped content in `<LazyMotionProvider>`
   - Changed all `motion.*` to `m.*`
@@ -110,6 +120,7 @@ export function LazyMotionProvider({ children }: LazyMotionProviderProps) {
   - Changed `LazyMotion.div` to `m.div`
 
 **Results** (Build #2):
+
 ```
 Route (app)                              Size  First Load JS
 ├ ○ /                                    11.1 kB         2.3 MB   ❌ Still 2.3MB
@@ -117,6 +128,7 @@ Route (app)                              Size  First Load JS
 ```
 
 **Why It Failed**:
+
 - domAnimation feature is imported dynamically but Framer Motion core is not
 - The `m` components still require the full motion library
 - LazyMotion reduces feature size but not core library size
@@ -124,6 +136,7 @@ Route (app)                              Size  First Load JS
 - Multiple LazyMotion contexts (3 in hero) may duplicate loading
 
 **Lessons Learned**:
+
 - LazyMotion optimizes features, not the core library
 - Framer Motion architecture requires core library upfront
 - Shared chunk optimization prevents true lazy loading
@@ -148,6 +161,7 @@ Next.js's intelligent bundling system is working *against* us:
 ### What's Actually in the Bundle
 
 Analyzing the 2.3MB First Load JS:
+
 ```
 Shared chunks:                           102 kB
 ├ chunks/255-2f47c7e189226b96.js        45.5 kB  ← Likely React + UI components
@@ -158,11 +172,13 @@ Page-specific:                            11.1 kB (home) / 5.13 kB (skills)
 ```
 
 **Hypothesis**: The 54.2 kB chunk contains:
+
 - Framer Motion core library (~40-50KB)
 - Simple-icons subset (~10-20KB)
 - Animation utilities (~5KB)
 
 **The Missing MB**: Where's the other 2.2MB coming from?
+
 - Likely source maps in development build
 - Uncompressed assets
 - Next.js runtime and React
@@ -193,6 +209,7 @@ npm run analyze
 **Strategy**: Remove Framer Motion entirely, use CSS animations
 
 **Benefits**:
+
 - ✅ Zero JavaScript for animations
 - ✅ ~100KB+ bundle size reduction
 - ✅ Better performance (GPU-accelerated)
@@ -200,12 +217,14 @@ npm run analyze
 - ✅ Simpler code, easier to maintain
 
 **Implementation**:
+
 1. Create `src/styles/animations.css` with keyframes
 2. Replace motion components with regular HTML elements
 3. Add Tailwind animation utilities
 4. Use IntersectionObserver for scroll-triggered animations
 
 **Example Conversion**:
+
 ```tsx
 // Before (Framer Motion)
 <motion.div
@@ -244,6 +263,7 @@ npm run analyze
 ```
 
 **Trade-offs**:
+
 - ❌ Loss of complex animations (spring physics, gestures)
 - ❌ More manual IntersectionObserver setup
 - ✅ Simpler mental model
@@ -275,6 +295,7 @@ const GitHubIcon = () => (
 ```
 
 **Verification Needed**: Check if simple-icons tree-shaking is working
+
 - Current verification showed tree-shaking IS working (only 5 icons imported)
 - If bundle analyzer shows full library, manual SVG imports may be needed
 
@@ -285,12 +306,14 @@ const GitHubIcon = () => (
 **Strategy**: Load animations only when visible
 
 **Benefits**:
+
 - ✅ Animations load on-demand
 - ✅ Better perceived performance
 - ✅ Reduced initial JavaScript execution
 - ✅ Progressive enhancement
 
 **Implementation**:
+
 ```typescript
 // src/hooks/use-in-view.ts
 export function useInView() {
@@ -330,6 +353,7 @@ const { ref, isInView } = useInView();
 **Strategy**: Separate home and skills animations into page-specific bundles
 
 **Implementation**:
+
 ```typescript
 // src/app/page.tsx
 const HeroAnimations = dynamic(
@@ -350,6 +374,7 @@ const HeroAnimations = dynamic(
 ### Week 1: Critical Performance Fixes
 
 **Day 1-2: CSS Animation Migration** (P1)
+
 - Create animation utilities in `src/styles/animations.css`
 - Replace hero section Framer Motion with CSS
 - Implement IntersectionObserver for scroll triggers
@@ -357,18 +382,21 @@ const HeroAnimations = dynamic(
 - **Expected Reduction**: 2.3MB → ~200KB
 
 **Day 3: Skills Page Animation Replacement** (P1)
+
 - Replace skills page Framer Motion with CSS
 - Add staggered animation utilities
 - Test filter interactions
 - **Expected Reduction**: 2.28MB → ~180KB
 
 **Day 4: Verification & Testing** (P1)
+
 - Run `npm run analyze` to confirm reductions
 - Lighthouse audit (target ≥95 score)
 - Cross-browser testing
 - Performance metrics documentation
 
 **Day 5: Simple-Icons Optimization** (P2)
+
 - Verify tree-shaking with bundle analyzer
 - Manual SVG imports if needed
 - Test icon rendering
@@ -376,24 +404,28 @@ const HeroAnimations = dynamic(
 ### Week 2: Polish & Launch Prep
 
 **Day 6-7: Accessibility Audit** (P1 from review-analysis)
+
 - Run axe DevTools audit
 - Test with screen reader (NVDA/VoiceOver)
 - Keyboard navigation verification
 - Color contrast validation (all 8 brightness modes)
 
 **Day 8: Security Hardening** (P1 from review-analysis)
+
 - HTTPS redirect verification
 - CSP header testing
 - Environment variable audit
 - Rate limiting verification
 
 **Day 9: Mobile & Cross-Browser Testing** (P1 from review-analysis)
+
 - iOS Safari testing (iPhone, iPad)
 - Android Chrome testing
 - Desktop browsers (Chrome, Firefox, Safari, Edge)
 - Document results
 
 **Day 10: Final QA & Documentation** (P1)
+
 - End-to-end user flow testing
 - Performance baseline documentation
 - Lighthouse score verification (≥95 target)
@@ -405,19 +437,20 @@ const HeroAnimations = dynamic(
 
 ### Performance Targets
 
-| Metric              | Current   | Target    | Acceptable |
-| ------------------- | --------- | --------- | ---------- |
-| **Home First Load** | 2.3 MB    | <200 KB   | <500 KB    |
-| **Skills First Load** | 2.28 MB | <180 KB   | <450 KB    |
-| **Lighthouse Score** | Unknown  | ≥95       | ≥90        |
-| **FCP (First Contentful Paint)** | Unknown | <1.8s | <2.5s |
-| **LCP (Largest Contentful Paint)** | Unknown | <2.5s | <4.0s |
-| **TBT (Total Blocking Time)** | Unknown | <200ms | <600ms |
-| **CLS (Cumulative Layout Shift)** | Unknown | <0.1 | <0.25 |
+| Metric                             | Current | Target  | Acceptable |
+| ---------------------------------- | ------- | ------- | ---------- |
+| **Home First Load**                | 2.3 MB  | <200 KB | <500 KB    |
+| **Skills First Load**              | 2.28 MB | <180 KB | <450 KB    |
+| **Lighthouse Score**               | Unknown | ≥95     | ≥90        |
+| **FCP (First Contentful Paint)**   | Unknown | <1.8s   | <2.5s      |
+| **LCP (Largest Contentful Paint)** | Unknown | <2.5s   | <4.0s      |
+| **TBT (Total Blocking Time)**      | Unknown | <200ms  | <600ms     |
+| **CLS (Cumulative Layout Shift)**  | Unknown | <0.1    | <0.25      |
 
 ### Quality Gates
 
 **Must Pass Before Launch**:
+
 - ✅ All pages < 500KB First Load JS
 - ✅ Lighthouse Performance ≥ 90
 - ✅ Lighthouse Accessibility = 100
@@ -427,6 +460,7 @@ const HeroAnimations = dynamic(
 - ✅ Screen reader compatible
 
 **Should Pass Before Launch**:
+
 - ✅ Lighthouse Performance ≥ 95
 - ✅ All pages < 200KB First Load JS
 - ✅ FCP < 1.8s
@@ -440,17 +474,20 @@ const HeroAnimations = dynamic(
 ### Current State After LazyMotion Implementation
 
 **Files Modified**:
+
 - `/Users/ozzy-mac/Projects/omer-akben/src/components/lazy-motion.tsx` (v2)
 - `/Users/ozzy-mac/Projects/omer-akben/src/components/hero-section.tsx`
 - `/Users/ozzy-mac/Projects/omer-akben/src/app/skills/page.tsx`
 
 **Issues**:
+
 1. **Multiple LazyMotion Contexts**: Hero section has 3 separate contexts (main, robot, scroll) - may duplicate loading
 2. **Inconsistent Import Pattern**: Mixing `motion` and `m` components
 3. **No Fallback**: Animations just don't run if features fail to load
 4. **Code Complexity**: LazyMotion adds wrapper boilerplate
 
 **Recommendation**: If pursuing CSS animation strategy, **revert all LazyMotion changes**:
+
 ```bash
 git checkout src/components/lazy-motion.tsx
 git checkout src/components/hero-section.tsx
@@ -464,23 +501,27 @@ Then start fresh with CSS animation implementation.
 ## Alternative Strategies (Not Recommended)
 
 ### Option A: Minimal Animations
+
 - Remove all animations except critical ones (hero, CTAs)
 - Keep Framer Motion but use sparingly
 - **Impact**: ~50KB reduction
 - **Trade-off**: Less polished UX
 
 ### Option B: Animation Toggle
+
 - Add user preference for reduced motion
 - Disable animations for users who prefer it
 - **Impact**: Better accessibility
 - **Trade-off**: Doesn't reduce bundle size
 
 ### Option C: Different Animation Library
+
 - Replace Framer Motion with lighter alternative (react-spring, gsap)
 - **Impact**: ~30-50KB reduction
 - **Trade-off**: Still JavaScript-based, new learning curve
 
 ### Option D: Server Components Only
+
 - Remove all client-side animations
 - Use server-rendered content only
 - **Impact**: Massive bundle reduction
@@ -493,6 +534,7 @@ Then start fresh with CSS animation implementation.
 **Key Finding**: Both Next.js dynamic imports and Framer Motion's LazyMotion failed to reduce bundle size because the core library is included in shared chunks regardless of lazy loading strategies.
 
 **Recommendation**: **Pursue CSS animation replacement strategy** (Priority 2) for maximum impact:
+
 - Expected reduction: 2.3MB → ~200KB (>90% improvement)
 - Timeline: 2-3 days implementation
 - Risk: Low (CSS animations are well-supported)
@@ -501,6 +543,7 @@ Then start fresh with CSS animation implementation.
 **Alternative**: If CSS animations are unacceptable, investigate why bundle sizes are 2.3MB (likely source maps or uncompressed assets) by running `npm run analyze` first.
 
 **Next Action**: User decision required on strategy:
+
 1. **Go aggressive**: CSS animations (remove Framer Motion entirely)
 2. **Investigate first**: Run bundle analyzer to understand 2.3MB
 3. **Accept limitation**: Keep Framer Motion, optimize elsewhere
@@ -510,6 +553,7 @@ Then start fresh with CSS animation implementation.
 ## Appendix: Build Output Comparison
 
 ### Before Optimization
+
 ```
 Route (app)                              Size  First Load JS
 ├ ○ /                                    13.2 kB         2.33 MB
@@ -517,6 +561,7 @@ Route (app)                              Size  First Load JS
 ```
 
 ### After Attempt #1 (Next.js Dynamic)
+
 ```
 Route (app)                              Size  First Load JS
 ├ ○ /                                    11.9 kB         2.3 MB   (-1.3 kB page, -30 kB First Load)
@@ -524,6 +569,7 @@ Route (app)                              Size  First Load JS
 ```
 
 ### After Attempt #2 (LazyMotion)
+
 ```
 Route (app)                              Size  First Load JS
 ├ ○ /                                    11.1 kB         2.3 MB   (-0.8 kB page, no change)

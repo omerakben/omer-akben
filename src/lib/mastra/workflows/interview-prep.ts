@@ -1,9 +1,9 @@
-import { openai } from "@ai-sdk/openai";
-import { generateText } from "ai";
-import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import type { WorkflowDefinition, WorkflowEvent } from "./types";
 import { facts } from "@/data/facts";
 import { getFeaturedProjects, type Project } from "@/data/projects";
+import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
+import { openai } from "@ai-sdk/openai";
+import { generateText } from "ai";
+import type { WorkflowDefinition, WorkflowEvent } from "./types";
 
 /**
  * Detects if the query is requesting interview preparation help
@@ -28,7 +28,8 @@ export function detectInterviewPrep(query: string): boolean {
  */
 export const interviewPrepWorkflow: WorkflowDefinition = {
   name: "interview-prep",
-  description: "Helps prepare for technical interviews with resume review, skills assessment, and practice questions",
+  description:
+    "Helps prepare for technical interviews with resume review, skills assessment, and practice questions",
   detect: detectInterviewPrep,
   steps: [], // Populated below
   formatEvent: (event: WorkflowEvent): string => {
@@ -44,7 +45,9 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
     }
   },
 
-  async *execute(context: AgentExecutionContext): AsyncGenerator<WorkflowEvent> {
+  async *execute(
+    context: AgentExecutionContext
+  ): AsyncGenerator<WorkflowEvent> {
     const totalSteps = 3;
 
     // Extract interview details from query
@@ -57,13 +60,13 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
       type: "progress",
       step: 1,
       total: totalSteps,
-      message: "Reviewing your resume and experience..."
+      message: "Reviewing your resume and experience...",
     };
 
     const resumeReview = await reviewResume(interviewType, company);
     yield {
       type: "agent-result",
-      content: resumeReview
+      content: resumeReview,
     };
 
     // Step 2: Skills Assessment
@@ -71,13 +74,13 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
       type: "progress",
       step: 2,
       total: totalSteps,
-      message: "Assessing your technical skills from projects..."
+      message: "Assessing your technical skills from projects...",
     };
 
     const skillsAssessment = await assessSkills(interviewType, company);
     yield {
       type: "agent-result",
-      content: skillsAssessment
+      content: skillsAssessment,
     };
 
     // Step 3: Practice Questions
@@ -85,7 +88,7 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
       type: "progress",
       step: 3,
       total: totalSteps,
-      message: "Generating tailored practice questions..."
+      message: "Generating tailored practice questions...",
     };
 
     const practiceQuestions = await generatePracticeQuestions(
@@ -96,22 +99,32 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
     );
     yield {
       type: "agent-result",
-      content: practiceQuestions
+      content: practiceQuestions,
     };
 
     // Complete
     yield {
       type: "complete",
-      summary: `Interview preparation complete for ${interviewType || "technical"} ${company ? `at ${company}` : "interview"}. Good luck!`
+      summary: `Interview preparation complete for ${interviewType || "technical"} ${company ? `at ${company}` : "interview"}. Good luck!`,
     };
-  }
+  },
 };
 
 /**
  * Extract interview type from query (e.g., "React", "Python", "Full-stack")
  */
 function extractInterviewType(query: string): string {
-  const techs = ["react", "typescript", "python", "javascript", "node", "next.js", "full-stack", "frontend", "backend"];
+  const techs = [
+    "react",
+    "typescript",
+    "python",
+    "javascript",
+    "node",
+    "next.js",
+    "full-stack",
+    "frontend",
+    "backend",
+  ];
   const normalized = query.toLowerCase();
 
   for (const tech of techs) {
@@ -127,20 +140,25 @@ function extractInterviewType(query: string): string {
  * Extract company name from query
  */
 function extractCompany(query: string): string | null {
-  const companyMatch = query.match(/(?:at|for|with)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/);
+  const companyMatch = query.match(
+    /(?:at|for|with)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/
+  );
   return companyMatch ? companyMatch[1] : null;
 }
 
 /**
  * Step 1: Review resume and experience
  */
-async function reviewResume(interviewType: string, company: string | null): Promise<string> {
+async function reviewResume(
+  interviewType: string,
+  company: string | null
+): Promise<string> {
   const resumeData = {
     name: facts.personal.fullName,
     title: facts.personal.title,
     experience: facts.professional.yearsOfExperience,
     education: facts.education[0]?.degree || "Not specified",
-    certifications: facts.certifications?.map(c => c.name) || [],
+    certifications: facts.certifications?.map((c) => c.name) || [],
   };
 
   const prompt = `You are helping prepare for a ${interviewType} interview${company ? ` at ${company}` : ""}.
@@ -170,7 +188,10 @@ Keep the response concise (3-4 paragraphs).`;
 /**
  * Step 2: Assess skills from projects
  */
-async function assessSkills(interviewType: string, company: string | null): Promise<string> {
+async function assessSkills(
+  interviewType: string,
+  company: string | null
+): Promise<string> {
   const projects = getFeaturedProjects().slice(0, 5);
   const projectSummaries = projects.map((p: Project) => ({
     title: p.title,
@@ -181,9 +202,16 @@ async function assessSkills(interviewType: string, company: string | null): Prom
   const prompt = `You are assessing technical skills for a ${interviewType} interview${company ? ` at ${company}` : ""}.
 
 Recent Projects:
-${projectSummaries.map((p: { title: string; description: string; technologies: string[] }, i: number) => `${i + 1}. ${p.title}
+${projectSummaries
+  .map(
+    (
+      p: { title: string; description: string; technologies: string[] },
+      i: number
+    ) => `${i + 1}. ${p.title}
    - ${p.description}
-   - Technologies: ${p.technologies.join(", ")}`).join("\n\n")}
+   - Technologies: ${p.technologies.join(", ")}`
+  )
+  .join("\n\n")}
 
 Provide a skills assessment:
 1. Core technical skills demonstrated

@@ -1,7 +1,7 @@
 import { searchProjectsSemanticSchema } from "@/lib/agent-tools/schemas";
+import { logError } from "@/lib/log";
 import { searchProjectsBySimilarity } from "@/lib/redis/embeddings";
 import { NextResponse } from "next/server";
-import { logError } from "@/lib/log";
 
 /**
  * POST /api/tools/search-projects-semantic

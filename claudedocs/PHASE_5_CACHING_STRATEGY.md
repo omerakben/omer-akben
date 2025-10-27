@@ -11,6 +11,7 @@ Implement Redis-backed caching layer for OpenAI API calls to reduce costs, impro
 ### 1. Embedding Generation (episodic.ts:83-86, 119-122)
 
 **Current Implementation:**
+
 ```typescript
 // saveConversation: Batch embedding generation
 const embeddings = await openai.embeddings.create({
@@ -26,6 +27,7 @@ const embedding = await openai.embeddings.create({
 ```
 
 **Cache Characteristics:**
+
 - **Deterministic**: Same input → same output (100% reproducible)
 - **Frequency**: Every conversation save (saveLTM) + every search query
 - **Input Size**: 4KB average per chunk
@@ -33,6 +35,7 @@ const embedding = await openai.embeddings.create({
 - **Cache Hit Potential**: **80-90%** (repeated queries, similar conversations)
 
 **Cache Strategy:**
+
 - Key: `cache:embed:v1:{sha256(model+input)}`
 - TTL: **30 days** (deterministic, safe to cache long-term)
 - Storage: JSON `{embedding: number[], created_at: string}`
@@ -40,6 +43,7 @@ const embedding = await openai.embeddings.create({
 ### 2. Fact Extraction (fact-extractor.ts:161-166)
 
 **Current Implementation:**
+
 ```typescript
 const result = await generateText({
   model: openai("gpt-4o-mini"),
@@ -50,6 +54,7 @@ const result = await generateText({
 ```
 
 **Cache Characteristics:**
+
 - **Semi-deterministic**: Temperature 0.3 → mostly consistent output
 - **Frequency**: Every conversation end (chat API onFinish)
 - **Input Size**: 2.5KB system prompt + 10KB conversation context
@@ -57,6 +62,7 @@ const result = await generateText({
 - **Cache Hit Potential**: **50-60%** (similar conversations, same prompts)
 
 **Cache Strategy:**
+
 - Key: `cache:completion:v1:{sha256(model+system+prompt+temp)}`
 - TTL: **7 days** (balance freshness vs cost savings)
 - Storage: JSON `{text: string, usage: {}, created_at: string}`
@@ -65,6 +71,7 @@ const result = await generateText({
 ### 3. Follow-up Suggestions (optional, if LLM-based)
 
 **Analysis Needed**: Check if `suggest-followups` uses LLM or heuristic. If LLM:
+
 - Apply same completion caching strategy
 - TTL: 3 days (content changes more frequently)
 
@@ -77,6 +84,7 @@ const result = await generateText({
 **File**: `src/lib/cache/openai-cache.ts`
 
 **API Design:**
+
 ```typescript
 // Embedding cache
 export async function getCachedEmbedding(
@@ -121,6 +129,7 @@ interface CacheMetrics {
 ```
 
 **Key Generation:**
+
 ```typescript
 function generateCacheKey(type: string, version: string, ...inputs: string[]): string {
   const content = inputs.join("::");
@@ -132,10 +141,12 @@ function generateCacheKey(type: string, version: string, ...inputs: string[]): s
 ### Phase 5.2: Embedding Cache Integration
 
 **Files to Modify:**
+
 - `src/lib/mastra/memory/episodic.ts:83-86` (saveConversation)
 - `src/lib/mastra/memory/episodic.ts:119-122` (search)
 
 **Implementation Pattern:**
+
 ```typescript
 async function getEmbeddingWithCache(input: string): Promise<number[]> {
   // 1. Check cache
@@ -161,6 +172,7 @@ async function getEmbeddingWithCache(input: string): Promise<number[]> {
 ```
 
 **Batch Optimization:**
+
 - Check cache for all chunks first
 - Only call OpenAI for misses
 - Parallel cache lookups with Promise.all
@@ -168,9 +180,11 @@ async function getEmbeddingWithCache(input: string): Promise<number[]> {
 ### Phase 5.3: Completion Cache Integration
 
 **Files to Modify:**
+
 - `src/lib/memory/fact-extractor.ts:161-166`
 
 **Implementation Pattern:**
+
 ```typescript
 export async function extractFacts(messages: UIMessage[]): Promise<ExtractedFacts | null> {
   if (messages.length < 2) {
@@ -218,11 +232,13 @@ export async function extractFacts(messages: UIMessage[]): Promise<ExtractedFact
 ### Phase 5.4: Metrics and Monitoring
 
 **Metrics Storage:**
+
 - Key: `cache:metrics:{type}:{YYYY-MM-DD}`
 - Data: Hash with `hits`, `misses`, `lookup_times` (array)
 - TTL: 90 days
 
 **Metrics API:**
+
 ```typescript
 // GET /api/cache-metrics?type=embedding&days=7
 export async function GET(req: Request) {
@@ -236,6 +252,7 @@ export async function GET(req: Request) {
 ```
 
 **Dashboard Logging:**
+
 ```typescript
 // Log metrics every 100 requests
 if (totalCalls % 100 === 0) {
@@ -246,6 +263,7 @@ if (totalCalls % 100 === 0) {
 ### Phase 5.5: Testing
 
 **Unit Tests** (`src/lib/cache/openai-cache.test.ts`):
+
 - Cache key generation (deterministic hashing)
 - Embedding cache hit/miss
 - Completion cache hit/miss
@@ -253,6 +271,7 @@ if (totalCalls % 100 === 0) {
 - TTL enforcement (mock Redis expire)
 
 **Integration Tests** (`src/lib/mastra/memory/episodic.test.ts`):
+
 - Verify embeddings cached after first call
 - Verify batch caching (multiple chunks)
 - Verify search query caching
@@ -261,28 +280,31 @@ if (totalCalls % 100 === 0) {
 
 ## Performance Targets
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Embedding cache hit rate | 70%+ | cache:metrics:embedding:hits / total_calls |
-| Completion cache hit rate | 50%+ | cache:metrics:completion:hits / total_calls |
-| Cache lookup latency | <50ms | Avg of lookup_times array |
-| Cost reduction | 60%+ | (hits / total_calls) * avg_cost_per_request |
+| Metric                    | Target | Measurement                                 |
+| ------------------------- | ------ | ------------------------------------------- |
+| Embedding cache hit rate  | 70%+   | cache:metrics:embedding:hits / total_calls  |
+| Completion cache hit rate | 50%+   | cache:metrics:completion:hits / total_calls |
+| Cache lookup latency      | <50ms  | Avg of lookup_times array                   |
+| Cost reduction            | 60%+   | (hits / total_calls) * avg_cost_per_request |
 
 ---
 
 ## Cost Savings Estimation
 
 **Assumptions:**
+
 - 1000 conversations/day
 - 5 episodic searches/day per user (100 users)
 - 1000 fact extractions/day
 
 **Embedding Costs** (text-embedding-3-small):
+
 - Without cache: 1500 requests/day * $0.00008 = **$0.12/day** ($43.80/year)
 - With 80% hit rate: 300 requests/day * $0.00008 = **$0.024/day** ($8.76/year)
 - **Savings: $35/year (80%)**
 
 **Completion Costs** (gpt-4o-mini):
+
 - Without cache: 1000 requests/day * $0.001 = **$1/day** ($365/year)
 - With 50% hit rate: 500 requests/day * $0.001 = **$0.50/day** ($182.50/year)
 - **Savings: $182.50/year (50%)**
@@ -297,6 +319,7 @@ if (totalCalls % 100 === 0) {
 
 **Scenario**: System prompt changes, cached completions outdated
 **Mitigation**:
+
 - Include version in cache key (`cache:completion:v1:...`)
 - Increment version when prompts change
 - Clear old cache with `SCAN + DEL` script
@@ -305,6 +328,7 @@ if (totalCalls % 100 === 0) {
 
 **Scenario**: Cache grows too large (>10GB)
 **Mitigation**:
+
 - Aggressive TTLs (30 days for embeddings, 7 for completions)
 - Monitor Redis memory with `INFO memory`
 - Implement LRU eviction policy in Redis config
@@ -313,6 +337,7 @@ if (totalCalls % 100 === 0) {
 
 **Scenario**: Malicious input → cached bad embedding
 **Mitigation**:
+
 - Validate input before caching (max length, no control chars)
 - Skip caching for suspicious patterns
 - Monitor cache hit rate anomalies
@@ -322,6 +347,7 @@ if (totalCalls % 100 === 0) {
 ## Success Criteria
 
 ✅ **Phase 5 Complete When:**
+
 1. Embedding cache implemented with 70%+ hit rate
 2. Completion cache implemented with 50%+ hit rate
 3. Cache lookup <50ms (p95)
@@ -334,6 +360,7 @@ if (totalCalls % 100 === 0) {
 ## Next Steps
 
 After Phase 5.1 design approval:
+
 1. **Phase 5.2**: Implement `openai-cache.ts` utility module
 2. **Phase 5.3**: Integrate embedding cache into episodic.ts
 3. **Phase 5.4**: Integrate completion cache into fact-extractor.ts

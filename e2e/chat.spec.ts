@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Chat Functionality", () => {
   test.beforeEach(async ({ page }) => {
@@ -40,7 +40,9 @@ test.describe("Chat Functionality", () => {
     await sendButton.click();
 
     // Wait for user message to appear
-    await expect(page.locator("text=Hello, what can you help me with?")).toBeVisible();
+    await expect(
+      page.locator("text=Hello, what can you help me with?")
+    ).toBeVisible();
 
     // Wait for assistant response (with timeout for API call)
     await expect(
@@ -67,7 +69,9 @@ test.describe("Chat Functionality", () => {
     await expect(page.locator("ul, ol")).toBeVisible({ timeout: 15000 });
   });
 
-  test("should have clickable links with correct attributes", async ({ page }) => {
+  test("should have clickable links with correct attributes", async ({
+    page,
+  }) => {
     // Open chat sidebar
     const chatButton = page.locator('button[aria-label*="chat" i]').first();
     await chatButton.click();
@@ -112,14 +116,18 @@ test.describe("Chat Functionality", () => {
     }
 
     // Get the messages container
-    const messagesContainer = page.locator(
-      '[class*="messages"], [class*="chat-messages"], [class*="overflow"]'
-    ).first();
+    const messagesContainer = page
+      .locator(
+        '[class*="messages"], [class*="chat-messages"], [class*="overflow"]'
+      )
+      .first();
 
     // Check if the container is scrolled to bottom (within a small threshold)
     const isScrolledToBottom = await messagesContainer.evaluate((el) => {
       const threshold = 50; // Allow 50px threshold
-      return Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
+      return (
+        Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold
+      );
     });
 
     expect(isScrolledToBottom).toBeTruthy();
@@ -151,7 +159,9 @@ test.describe("Chat Functionality", () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test("should persist chat state when expanding to full screen", async ({ page }) => {
+  test("should persist chat state when expanding to full screen", async ({
+    page,
+  }) => {
     // Open chat sidebar
     const chatButton = page.locator('button[aria-label*="chat" i]').first();
     await chatButton.click();
@@ -176,10 +186,14 @@ test.describe("Chat Functionality", () => {
     await page.waitForURL("**/chat");
 
     // Verify the test message is still visible on the full-screen page
-    await expect(page.locator(`text=${testMessage}`)).toBeVisible({ timeout: 5000 });
+    await expect(page.locator(`text=${testMessage}`)).toBeVisible({
+      timeout: 5000,
+    });
   });
 
-  test("should handle empty message submission gracefully", async ({ page }) => {
+  test("should handle empty message submission gracefully", async ({
+    page,
+  }) => {
     // Open chat sidebar
     const chatButton = page.locator('button[aria-label*="chat" i]').first();
     await chatButton.click();

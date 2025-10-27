@@ -2,7 +2,7 @@ import { facts } from "@/data/facts";
 
 /**
  * Structured Data (JSON-LD) Utilities
- * 
+ *
  * Generates schema.org structured data for SEO and rich snippets.
  */
 
@@ -115,7 +115,9 @@ export function getSoftwareApplicationSchema({
  * BreadcrumbList Schema for navigation
  * Helps search engines understand site structure
  */
-export function getBreadcrumbListSchema(items: { name: string; url: string }[]) {
+export function getBreadcrumbListSchema(
+  items: { name: string; url: string }[]
+) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

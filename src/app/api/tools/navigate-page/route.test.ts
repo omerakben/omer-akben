@@ -3,10 +3,15 @@
  * Tests domain validation, URL validation, and navigation parameters
  */
 
-import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
+import { describe, expect, it } from "vitest";
+import {
+  createMockRequest,
+  getResponseJson,
+  isErrorResponse,
+  isSuccessResponse,
+} from "../test-utils";
 import { POST } from "./route";
-import { createMockRequest, getResponseJson, isSuccessResponse, isErrorResponse } from "../test-utils";
 
 describe("POST /api/tools/navigate-page", () => {
   describe("Valid requests", () => {
@@ -174,7 +179,9 @@ describe("POST /api/tools/navigate-page", () => {
     });
 
     it("should handle array instead of object", async () => {
-      const req = createMockRequest([{ url: "https://omerakben.com" }] as unknown);
+      const req = createMockRequest([
+        { url: "https://omerakben.com" },
+      ] as unknown);
       const response = await POST(req);
       const json = await getResponseJson(response);
 

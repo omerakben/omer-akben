@@ -3,8 +3,8 @@
  * Tests CRUD operations, array merging, TTL enforcement, and anonymous user handling
  */
 
-import { describe, expect, it, beforeEach, vi } from "vitest";
-import type { SemanticMemory, ExtractedFacts } from "./types";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { ExtractedFacts, SemanticMemory } from "./types";
 import { SEMANTIC_MEMORY_TTL } from "./types";
 
 const hgetallMock = vi.fn();
@@ -131,7 +131,9 @@ describe("semantic-memory", () => {
         lastUpdated: "2025-01-15T10:00:00.000Z",
       };
 
-      await expect(saveSemanticMemory("anonymous", memory)).resolves.not.toThrow();
+      await expect(
+        saveSemanticMemory("anonymous", memory)
+      ).resolves.not.toThrow();
       expect(hsetMock).not.toHaveBeenCalled();
     });
 
@@ -161,7 +163,10 @@ describe("semantic-memory", () => {
           interests: JSON.stringify(["React", "TypeScript"]),
         })
       );
-      expect(expireMock).toHaveBeenCalledWith("memory:semantic:user-123", SEMANTIC_MEMORY_TTL);
+      expect(expireMock).toHaveBeenCalledWith(
+        "memory:semantic:user-123",
+        SEMANTIC_MEMORY_TTL
+      );
     });
 
     it("should serialize arrays as JSON strings", async () => {
@@ -196,7 +201,9 @@ describe("semantic-memory", () => {
         newInterests: ["React"],
       };
 
-      await expect(mergeSemanticMemory("anonymous", facts)).resolves.not.toThrow();
+      await expect(
+        mergeSemanticMemory("anonymous", facts)
+      ).resolves.not.toThrow();
       expect(hgetallMock).not.toHaveBeenCalled();
     });
 
@@ -280,7 +287,12 @@ describe("semantic-memory", () => {
       const mergedProjects = JSON.parse(callArgs.visitedProjects);
       const mergedTechFocus = JSON.parse(callArgs.techFocus);
 
-      expect(mergedInterests).toEqual(["React", "Vue", "TypeScript", "Angular"]);
+      expect(mergedInterests).toEqual([
+        "React",
+        "Vue",
+        "TypeScript",
+        "Angular",
+      ]);
       expect(mergedProjects).toEqual(["project-1", "project-2"]);
       expect(mergedTechFocus).toEqual(["frontend", "backend"]);
     });
@@ -289,7 +301,16 @@ describe("semantic-memory", () => {
       hgetallMock.mockResolvedValueOnce({
         role: "developer",
         company: "",
-        interests: JSON.stringify(["React", "Vue", "Angular", "Svelte", "Solid", "Qwik", "Preact", "Lit"]),
+        interests: JSON.stringify([
+          "React",
+          "Vue",
+          "Angular",
+          "Svelte",
+          "Solid",
+          "Qwik",
+          "Preact",
+          "Lit",
+        ]),
         experienceLevel: "senior",
         visitedProjects: "[]",
         techFocus: "[]",
@@ -327,7 +348,9 @@ describe("semantic-memory", () => {
         role: "developer",
       };
 
-      await expect(mergeSemanticMemory("user-123", facts)).resolves.not.toThrow();
+      await expect(
+        mergeSemanticMemory("user-123", facts)
+      ).resolves.not.toThrow();
     });
   });
 

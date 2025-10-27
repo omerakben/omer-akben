@@ -268,12 +268,11 @@ export const collectContactInputSchema = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name must be less than 100 characters")
     .describe("Visitor's full name"),
-  email: z.string().email("Invalid email format").describe("Visitor's email address"),
-  company: z
+  email: z
     .string()
-    .max(100)
-    .optional()
-    .describe("Company name (optional)"),
+    .email("Invalid email format")
+    .describe("Visitor's email address"),
+  company: z.string().max(100).optional().describe("Company name (optional)"),
   purpose: z
     .enum(["hire", "collaborate", "interview", "consult", "other"])
     .describe("Reason for contact"),

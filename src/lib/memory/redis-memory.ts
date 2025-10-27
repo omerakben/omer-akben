@@ -1,8 +1,17 @@
-import type { UIMessage } from "ai";
-import type { ChannelVersions, CheckpointMetadata } from "@langchain/langgraph-checkpoint";
 import { getCheckpointer } from "@/lib/mastra/memory/checkpointer";
-import { RedisEpisodicMemory, type EpisodicMemoryResult } from "@/lib/mastra/memory/episodic";
-import { RedisSemanticMemory, type SemanticMemoryPayload } from "@/lib/mastra/memory/semantic";
+import {
+  RedisEpisodicMemory,
+  type EpisodicMemoryResult,
+} from "@/lib/mastra/memory/episodic";
+import {
+  RedisSemanticMemory,
+  type SemanticMemoryPayload,
+} from "@/lib/mastra/memory/semantic";
+import type {
+  ChannelVersions,
+  CheckpointMetadata,
+} from "@langchain/langgraph-checkpoint";
+import type { UIMessage } from "ai";
 
 export class RedisMemoryManager {
   private readonly episodic = new RedisEpisodicMemory();
@@ -34,27 +43,42 @@ export class RedisMemoryManager {
   }
 
   async loadSTM(threadId: string): Promise<UIMessage[]> {
-    const checkpoint = await getCheckpointer().get({ configurable: { thread_id: threadId } });
-    return (checkpoint?.channel_values?.messages as UIMessage[] | undefined) ?? [];
+    const checkpoint = await getCheckpointer().get({
+      configurable: { thread_id: threadId },
+    });
+    return (
+      (checkpoint?.channel_values?.messages as UIMessage[] | undefined) ?? []
+    );
   }
 
   async saveLTM(threadId: string, messages: UIMessage[]): Promise<void> {
     await this.episodic.saveConversation(threadId, messages);
   }
 
-  async retrieveEpisodic(query: string, limit = 3): Promise<EpisodicMemoryResult[]> {
+  async retrieveEpisodic(
+    query: string,
+    limit = 3
+  ): Promise<EpisodicMemoryResult[]> {
     return this.episodic.search(query, limit);
   }
 
-  async setSemantic(userId: string, payload: SemanticMemoryPayload): Promise<void> {
+  async setSemantic(
+    userId: string,
+    payload: SemanticMemoryPayload
+  ): Promise<void> {
     await this.semantic.setFacts(userId, payload);
   }
 
-  async mergeSemantic(userId: string, facts: Record<string, unknown>): Promise<void> {
+  async mergeSemantic(
+    userId: string,
+    facts: Record<string, unknown>
+  ): Promise<void> {
     await this.semantic.mergeFacts(userId, facts);
   }
 
-  async getSemantic<T = SemanticMemoryPayload>(userId: string): Promise<T | null> {
+  async getSemantic<T = SemanticMemoryPayload>(
+    userId: string
+  ): Promise<T | null> {
     return this.semantic.getFacts<T>(userId);
   }
 

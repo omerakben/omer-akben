@@ -1,16 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Zap, Search } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { skillsData, getLevelColor } from "@/data/skills";
+import { getLevelColor, skillsData } from "@/data/skills";
 import { SkillIcon } from "@/lib/skill-icons";
+import { motion } from "framer-motion";
+import { Search, Zap } from "lucide-react";
+import { useMemo, useState } from "react";
 
-const LEVEL_FILTER_OPTIONS = ["All", "Expert", "Advanced", "Proficient"] as const;
+const LEVEL_FILTER_OPTIONS = [
+  "All",
+  "Expert",
+  "Advanced",
+  "Proficient",
+] as const;
 type LevelFilterOption = (typeof LEVEL_FILTER_OPTIONS)[number];
 
 const LEVEL_BUTTON_BASE_CLASSES =
@@ -20,12 +25,16 @@ const LEVEL_INACTIVE_CLASSES =
 const LEVEL_ACTIVE_STYLES: Record<Exclude<LevelFilterOption, "All">, string> = {
   Expert: "bg-brand-primary text-surf-0 shadow-lg shadow-brand-primary/30",
   Advanced: "bg-accent-primary text-white shadow-lg shadow-accent-primary/30",
-  Proficient: "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg",
+  Proficient:
+    "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg",
 };
 const LEVEL_ALL_ACTIVE_CLASSES =
   "bg-surf-1 text-text-1 border-2 border-brand-primary/40 shadow-lg shadow-brand-primary/20";
 
-function getLevelButtonClasses(level: LevelFilterOption, selectedLevel: LevelFilterOption) {
+function getLevelButtonClasses(
+  level: LevelFilterOption,
+  selectedLevel: LevelFilterOption
+) {
   if (level !== selectedLevel) {
     return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_INACTIVE_CLASSES}`;
   }
@@ -55,7 +64,10 @@ export default function SkillsPage() {
     return skillsData
       .map((skillCategory) => {
         // Filter by category first
-        if (selectedCategory !== "All" && skillCategory.category !== selectedCategory) {
+        if (
+          selectedCategory !== "All" &&
+          skillCategory.category !== selectedCategory
+        ) {
           return null;
         }
 
@@ -158,28 +170,50 @@ export default function SkillsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-start gap-3 p-4 bg-surf-0/50 rounded-xl border border-border-line">
                 <div className="shrink-0">
-                  <Badge className={`${getLevelColor("Expert")} text-xs font-bold`}>Expert</Badge>
+                  <Badge
+                    className={`${getLevelColor("Expert")} text-xs font-bold`}
+                  >
+                    Expert
+                  </Badge>
                 </div>
                 <div>
-                  <p className="text-text-1 font-medium text-sm mb-1">Expert Level</p>
-                  <p className="text-text-3 text-xs">Production experience & deep knowledge</p>
+                  <p className="text-text-1 font-medium text-sm mb-1">
+                    Expert Level
+                  </p>
+                  <p className="text-text-3 text-xs">
+                    Production experience & deep knowledge
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 bg-surf-0/50 rounded-xl border border-border-line">
                 <div className="shrink-0">
-                  <Badge className={`${getLevelColor("Advanced")} text-xs font-bold`}>Advanced</Badge>
+                  <Badge
+                    className={`${getLevelColor("Advanced")} text-xs font-bold`}
+                  >
+                    Advanced
+                  </Badge>
                 </div>
                 <div>
-                  <p className="text-text-1 font-medium text-sm mb-1">Advanced Level</p>
-                  <p className="text-text-3 text-xs">Strong working knowledge</p>
+                  <p className="text-text-1 font-medium text-sm mb-1">
+                    Advanced Level
+                  </p>
+                  <p className="text-text-3 text-xs">
+                    Strong working knowledge
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 bg-surf-0/50 rounded-xl border border-border-line">
                 <div className="shrink-0">
-                  <Badge className={`${getLevelColor("Proficient")} text-xs font-bold`}>Proficient</Badge>
+                  <Badge
+                    className={`${getLevelColor("Proficient")} text-xs font-bold`}
+                  >
+                    Proficient
+                  </Badge>
                 </div>
                 <div>
-                  <p className="text-text-1 font-medium text-sm mb-1">Proficient Level</p>
+                  <p className="text-text-1 font-medium text-sm mb-1">
+                    Proficient Level
+                  </p>
                   <p className="text-text-3 text-xs">Working knowledge</p>
                 </div>
               </div>
@@ -188,7 +222,9 @@ export default function SkillsPage() {
         </Card>
 
         {/* Results Count */}
-        {(searchQuery || selectedLevel !== "All" || selectedCategory !== "All") && (
+        {(searchQuery ||
+          selectedLevel !== "All" ||
+          selectedCategory !== "All") && (
           <Card className="mb-6 border-border-line">
             <CardContent className="py-4">
               <div className="flex items-center justify-between">
@@ -202,7 +238,10 @@ export default function SkillsPage() {
                   </span>{" "}
                   skills
                   {searchQuery && (
-                    <span className="text-text-1 font-medium"> matching &quot;{searchQuery}&quot;</span>
+                    <span className="text-text-1 font-medium">
+                      {" "}
+                      matching &quot;{searchQuery}&quot;
+                    </span>
                   )}
                 </div>
                 <button
@@ -280,9 +319,13 @@ export default function SkillsPage() {
                                 className="w-5 h-5 text-brand-primary group-hover:scale-110 transition-transform"
                               />
                             </div>
-                            <span className="text-text-1 font-medium">{skill.name}</span>
+                            <span className="text-text-1 font-medium">
+                              {skill.name}
+                            </span>
                           </div>
-                          <Badge className={`${getLevelColor(skill.level)} text-xs font-bold`}>
+                          <Badge
+                            className={`${getLevelColor(skill.level)} text-xs font-bold`}
+                          >
                             {skill.level}
                           </Badge>
                         </div>

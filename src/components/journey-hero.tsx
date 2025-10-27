@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
-import { Briefcase, Code2, Building2, TrendingUp } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { DURATION } from "@/lib/animations";
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { Briefcase, Building2, Code2, TrendingUp } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface StatCardProps {
   icon: React.ElementType;
@@ -41,7 +41,13 @@ function AnimatedCounter({ value }: { value: number }) {
   return <span ref={ref}>0</span>;
 }
 
-function StatCard({ icon: Icon, value, label, suffix = "", delay }: StatCardProps) {
+function StatCard({
+  icon: Icon,
+  value,
+  label,
+  suffix = "",
+  delay,
+}: StatCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -112,8 +118,8 @@ export function JourneyHero() {
 
           <p className="text-lg md:text-xl text-text-2 max-w-3xl mx-auto">
             From QA automation to full-stack development and AI engineering—
-            <br className="hidden md:block" />
-            a timeline of growth, innovation, and impact.
+            <br className="hidden md:block" />a timeline of growth, innovation,
+            and impact.
           </p>
         </motion.div>
 
@@ -150,7 +156,9 @@ export function JourneyHero() {
           className="text-center"
         >
           <div className="inline-flex flex-col items-center">
-            <p className="text-sm text-text-3 mb-4">Scroll to explore my journey</p>
+            <p className="text-sm text-text-3 mb-4">
+              Scroll to explore my journey
+            </p>
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{

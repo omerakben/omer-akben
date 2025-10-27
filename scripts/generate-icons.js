@@ -4,25 +4,72 @@
  * This script extracts only the icons we need, reducing bundle size from 2.3MB to ~50KB
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Icons we actually use in the application (53 icons vs 3000+)
 const REQUIRED_ICONS = [
-  'amazonwebservices', 'anthropic', 'azuredevops', 'csharp', 'css3',
-  'cucumber', 'cursor', 'cypress', 'django', 'docker', 'dotnet',
-  'express', 'fastapi', 'figma', 'flagsmith', 'git', 'github',
-  'githubcopilot', 'go', 'googleanalytics', 'googleoptimize', 'html5',
-  'jenkins', 'jest', 'junit5', 'kubernetes', 'langchain', 'launchdarkly',
-  'make', 'microsoftazure', 'microsoftsqlserver', 'mongodb', 'mysql',
-  'n8n', 'nextdotjs', 'nodedotjs', 'openai', 'openjdk', 'playwright',
-  'postman', 'postgresql', 'python', 'react', 'redis', 'selenium',
-  'tailwindcss', 'tensorflow', 'testinglibrary', 'typescript',
-  'visualstudiocode', 'vitest', 'vuedotjs', 'zapier', 'javascript'
+  "amazonwebservices",
+  "anthropic",
+  "azuredevops",
+  "csharp",
+  "css3",
+  "cucumber",
+  "cursor",
+  "cypress",
+  "django",
+  "docker",
+  "dotnet",
+  "express",
+  "fastapi",
+  "figma",
+  "flagsmith",
+  "git",
+  "github",
+  "githubcopilot",
+  "go",
+  "googleanalytics",
+  "googleoptimize",
+  "html5",
+  "jenkins",
+  "jest",
+  "junit5",
+  "kubernetes",
+  "langchain",
+  "launchdarkly",
+  "make",
+  "microsoftazure",
+  "microsoftsqlserver",
+  "mongodb",
+  "mysql",
+  "n8n",
+  "nextdotjs",
+  "nodedotjs",
+  "openai",
+  "openjdk",
+  "playwright",
+  "postman",
+  "postgresql",
+  "python",
+  "react",
+  "redis",
+  "selenium",
+  "tailwindcss",
+  "tensorflow",
+  "testinglibrary",
+  "typescript",
+  "visualstudiocode",
+  "vitest",
+  "vuedotjs",
+  "zapier",
+  "javascript",
 ];
 
-const iconsDir = path.join(__dirname, '../node_modules/simple-icons/icons');
-const outputFile = path.join(__dirname, '../src/lib/icon-manifest-generated.ts');
+const iconsDir = path.join(__dirname, "../node_modules/simple-icons/icons");
+const outputFile = path.join(
+  __dirname,
+  "../src/lib/icon-manifest-generated.ts"
+);
 
 // Read SVG files and extract path data
 const icons = {};
@@ -36,7 +83,7 @@ for (const slug of REQUIRED_ICONS) {
     continue;
   }
 
-  const svgContent = fs.readFileSync(svgPath, 'utf8');
+  const svgContent = fs.readFileSync(svgPath, "utf8");
 
   // Extract title and path from SVG
   const titleMatch = svgContent.match(/<title>(.*?)<\/title>/);
@@ -46,7 +93,7 @@ for (const slug of REQUIRED_ICONS) {
     icons[slug] = {
       title: titleMatch[1],
       path: pathMatch[1],
-      slug: slug
+      slug: slug,
     };
   }
 }
@@ -58,7 +105,7 @@ const iconDataForJson = Object.entries(icons).reduce((acc, [slug, data]) => {
     title: data.title,
     slug: slug,
     svg: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>${data.title}</title><path d="${data.path}"/></svg>`,
-    path: data.path
+    path: data.path,
   };
   return acc;
 }, {});
@@ -104,11 +151,13 @@ export function getIconCount(): number {
 `;
 
 // Write generated file
-fs.writeFileSync(outputFile, tsContent, 'utf8');
+fs.writeFileSync(outputFile, tsContent, "utf8");
 
-console.log(`✅ Generated ${Object.keys(icons).length}/${REQUIRED_ICONS.length} icons`);
+console.log(
+  `✅ Generated ${Object.keys(icons).length}/${REQUIRED_ICONS.length} icons`
+);
 console.log(`📦 Output: ${outputFile}`);
 
 if (missingIcons.length > 0) {
-  console.log(`⚠️  Missing icons: ${missingIcons.join(', ')}`);
+  console.log(`⚠️  Missing icons: ${missingIcons.join(", ")}`);
 }

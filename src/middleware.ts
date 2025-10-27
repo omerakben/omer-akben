@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import { apiRateLimit, chatRateLimit, toolsRateLimit } from "@/lib/rate-limit";
+import { NextRequest, NextResponse } from "next/server";
 
 function getRateLimitKey(request: NextRequest): string {
   // Use IP address from x-forwarded-for header or fallback to anonymous
@@ -48,7 +48,10 @@ export async function middleware(request: NextRequest) {
       // Add rate limit headers to successful responses
       const response = NextResponse.next();
       response.headers.set("X-RateLimit-Limit", result.limit.toString());
-      response.headers.set("X-RateLimit-Remaining", result.remaining.toString());
+      response.headers.set(
+        "X-RateLimit-Remaining",
+        result.remaining.toString()
+      );
       response.headers.set("X-RateLimit-Reset", result.reset.toString());
 
       return response;

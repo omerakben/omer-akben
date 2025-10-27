@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { facts } from '@/data/facts';
+import { Button } from "@/components/ui/button";
+import { facts } from "@/data/facts";
+import { Mail } from "lucide-react";
 
 interface EmailActionButtonProps {
   /**
@@ -20,11 +20,11 @@ interface EmailActionButtonProps {
   /**
    * Button variant (default, outline, ghost)
    */
-  variant?: 'default' | 'outline' | 'ghost';
+  variant?: "default" | "outline" | "ghost";
   /**
    * Button size
    */
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  size?: "default" | "sm" | "lg" | "icon";
 }
 
 /**
@@ -39,16 +39,16 @@ interface EmailActionButtonProps {
  */
 export function EmailActionButton({
   subject = "Let's connect",
-  body = '',
-  className = '',
-  variant = 'default',
-  size = 'default',
+  body = "",
+  className = "",
+  variant = "default",
+  size = "default",
 }: EmailActionButtonProps) {
   const email = facts.personal.email;
 
   // Construct mailto link
   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}${
-    body ? `&body=${encodeURIComponent(body)}` : ''
+    body ? `&body=${encodeURIComponent(body)}` : ""
   }`;
 
   const handleClick = () => {

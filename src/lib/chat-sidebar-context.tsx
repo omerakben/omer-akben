@@ -1,10 +1,16 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const STORAGE_KEYS = {
-  PINNED: 'sidebar_pinned',
-  WIDTH: 'sidebar_width',
+  PINNED: "sidebar_pinned",
+  WIDTH: "sidebar_width",
 } as const;
 
 const DEFAULT_WIDTH = 480; // px
@@ -44,12 +50,12 @@ export function ChatSidebarProvider({
 
   // Load persisted state from localStorage on mount
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       const savedPinned = localStorage.getItem(STORAGE_KEYS.PINNED);
       if (savedPinned !== null) {
-        const isPinnedValue = savedPinned === 'true';
+        const isPinnedValue = savedPinned === "true";
         setIsPinnedState(isPinnedValue);
 
         // If sidebar was pinned, it should be open on mount
@@ -61,12 +67,16 @@ export function ChatSidebarProvider({
       const savedWidth = localStorage.getItem(STORAGE_KEYS.WIDTH);
       if (savedWidth !== null) {
         const parsedWidth = parseInt(savedWidth, 10);
-        if (!isNaN(parsedWidth) && parsedWidth >= MIN_WIDTH && parsedWidth <= MAX_WIDTH) {
+        if (
+          !isNaN(parsedWidth) &&
+          parsedWidth >= MIN_WIDTH &&
+          parsedWidth <= MAX_WIDTH
+        ) {
           setWidthState(parsedWidth);
         }
       }
     } catch (error) {
-      console.error('[ChatSidebar] Failed to load persisted state:', error);
+      console.error("[ChatSidebar] Failed to load persisted state:", error);
     }
   }, []);
 
@@ -100,7 +110,7 @@ export function ChatSidebarProvider({
     try {
       localStorage.setItem(STORAGE_KEYS.PINNED, pinned.toString());
     } catch (error) {
-      console.error('[ChatSidebar] Failed to persist pinned state:', error);
+      console.error("[ChatSidebar] Failed to persist pinned state:", error);
     }
 
     // If pinning, ensure sidebar is open and restore body scroll
@@ -118,7 +128,7 @@ export function ChatSidebarProvider({
     try {
       localStorage.setItem(STORAGE_KEYS.WIDTH, clampedWidth.toString());
     } catch (error) {
-      console.error('[ChatSidebar] Failed to persist width:', error);
+      console.error("[ChatSidebar] Failed to persist width:", error);
     }
   }, []);
 

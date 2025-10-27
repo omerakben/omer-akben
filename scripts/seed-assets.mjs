@@ -22,7 +22,10 @@ for (const file of files) {
 
 const readmePath = `${dir}/README.txt`;
 if (!existsSync(readmePath)) {
-  writeFileSync(readmePath, "Place final PDF/DOCX assets here before launch.\n");
+  writeFileSync(
+    readmePath,
+    "Place final PDF/DOCX assets here before launch.\n"
+  );
 }
 
 console.log("Seeded placeholder assets.");

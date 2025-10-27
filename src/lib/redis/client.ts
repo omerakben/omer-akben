@@ -44,7 +44,11 @@ export interface RedisStackExtensions {
       options?: { ON?: string; PREFIX?: string | string[] }
     ) => Promise<unknown>;
     info: (index: string) => Promise<unknown>;
-    search: (index: string, query: string, options?: FtSearchOptions) => Promise<FtSearchResult>;
+    search: (
+      index: string,
+      query: string,
+      options?: FtSearchOptions
+    ) => Promise<FtSearchResult>;
   };
 }
 
@@ -105,7 +109,9 @@ async function executeCommand(
   });
 
   if (!response.ok) {
-    throw new Error(`[RedisClient] ${command} request failed with status ${response.status}`);
+    throw new Error(
+      `[RedisClient] ${command} request failed with status ${response.status}`
+    );
   }
 
   const data = (await response.json()) as { result?: unknown; error?: string };
@@ -127,7 +133,9 @@ function buildFtCreateArguments(
   args.push("ON", onValue);
 
   if (options?.PREFIX) {
-    const prefixes = Array.isArray(options.PREFIX) ? options.PREFIX : [options.PREFIX];
+    const prefixes = Array.isArray(options.PREFIX)
+      ? options.PREFIX
+      : [options.PREFIX];
     args.push("PREFIX", String(prefixes.length), ...prefixes);
   }
 
@@ -209,7 +217,11 @@ function parseSearchResult(result: unknown): FtSearchResult {
   return { total: Number.isNaN(parsedTotal) ? 0 : parsedTotal, documents };
 }
 
-function extendWithStackCommands(client: Redis, baseUrl: string, token: string): RedisStackClient {
+function extendWithStackCommands(
+  client: Redis,
+  baseUrl: string,
+  token: string
+): RedisStackClient {
   const augmented = client as RedisStackClient;
   if (typeof augmented.call === "function") {
     return augmented;
@@ -239,8 +251,14 @@ export function getRedisClient(): RedisStackClient {
     return cachedClient;
   }
 
-  const url = assertEnv(process.env.UPSTASH_REDIS_REST_URL, "UPSTASH_REDIS_REST_URL");
-  const token = assertEnv(process.env.UPSTASH_REDIS_REST_TOKEN, "UPSTASH_REDIS_REST_TOKEN");
+  const url = assertEnv(
+    process.env.UPSTASH_REDIS_REST_URL,
+    "UPSTASH_REDIS_REST_URL"
+  );
+  const token = assertEnv(
+    process.env.UPSTASH_REDIS_REST_TOKEN,
+    "UPSTASH_REDIS_REST_TOKEN"
+  );
 
   const baseClient = new Redis({ url, token });
   cachedClient = extendWithStackCommands(baseClient, url, token);

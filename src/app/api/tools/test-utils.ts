@@ -52,7 +52,9 @@ export function createMockRequest(
  * expect(json.success).toBe(true);
  * ```
  */
-export async function getResponseJson(response: NextResponse): Promise<unknown> {
+export async function getResponseJson(
+  response: NextResponse
+): Promise<unknown> {
   const text = await response.text();
   return JSON.parse(text);
 }
@@ -83,7 +85,9 @@ export interface ApiResponse<T = unknown> {
  * }
  * ```
  */
-export function isSuccessResponse<T>(response: unknown): response is ApiResponse<T> & { success: true; data: T } {
+export function isSuccessResponse<T>(
+  response: unknown
+): response is ApiResponse<T> & { success: true; data: T } {
   return (
     typeof response === "object" &&
     response !== null &&
@@ -108,7 +112,9 @@ export function isSuccessResponse<T>(response: unknown): response is ApiResponse
  * }
  * ```
  */
-export function isErrorResponse(response: unknown): response is ApiResponse & { success: false; error: string } {
+export function isErrorResponse(
+  response: unknown
+): response is ApiResponse & { success: false; error: string } {
   return (
     typeof response === "object" &&
     response !== null &&

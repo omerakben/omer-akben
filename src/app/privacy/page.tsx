@@ -9,7 +9,9 @@ export default function Privacy() {
       </p>
       <ul>
         <li>Data retention: minimal, logs for troubleshooting only.</li>
-        <li>No sale of personal data. No third-party trackers beyond analytics.</li>
+        <li>
+          No sale of personal data. No third-party trackers beyond analytics.
+        </li>
         <li>Contact for requests: me@omerakben.com</li>
       </ul>
     </main>

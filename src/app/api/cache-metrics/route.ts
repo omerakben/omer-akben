@@ -20,9 +20,9 @@
  * }
  */
 
-import { NextRequest, NextResponse } from "next/server";
 import { getCacheMetrics, type CacheType } from "@/lib/cache/openai-cache";
 import { logError } from "@/lib/log";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
@@ -32,7 +32,9 @@ export async function GET(req: NextRequest) {
     const type = searchParams.get("type") as CacheType | null;
     if (!type || !["embedding", "completion"].includes(type)) {
       return NextResponse.json(
-        { error: "Invalid type parameter. Must be 'embedding' or 'completion'" },
+        {
+          error: "Invalid type parameter. Must be 'embedding' or 'completion'",
+        },
         { status: 400 }
       );
     }

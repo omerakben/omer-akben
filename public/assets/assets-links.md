@@ -67,6 +67,7 @@ GitHub:
 ### Tools & Technologies
 
 #### Development Tools
+
 - Git/GitHub (version control, CI/CD)
 - VS Code (primary IDE)
 - Postman (API testing and development)
@@ -75,6 +76,7 @@ GitHub:
 - Kubernetes (orchestration)
 
 #### Testing Tools
+
 - Playwright (End-to-End and API testing)
 - Selenium WebDriver (UI automation)
 - REST Assured (API testing - Java)
@@ -85,12 +87,14 @@ GitHub:
 - Appium (mobile testing)
 
 #### CI/CD & DevOps
+
 - GitHub Actions (CI/CD pipelines)
 - Jenkins (automation server)
 - Azure DevOps (CI/CD and project management)
 - Selenium Grid (distributed testing)
 
 #### AI/ML Tools
+
 - LangChain (LLM application framework)
 - LangGraph (agentic workflow orchestration)
 - OpenAI API (GPT models)
@@ -98,11 +102,13 @@ GitHub:
 - Vector Databases: pgvector, FAISS, Pinecone, Weaviate
 
 #### Cloud Platforms
+
 - AWS: Lambda, API Gateway, S3
 - Azure: Entra ID, Azure DevOps
 - Vercel (deployment platform)
 
 #### Databases
+
 - PostgreSQL (with pgvector extension)
 - SQL Server
 - MongoDB
@@ -113,5 +119,6 @@ GitHub:
 **Primary Resume:** Omer_Akben_Resume_2025_Extended.md
 **Experience:** 6+ years (as of 2025)
 **Key Employment Dates:**
+
 - Test Automation Architect (SDET) — Oteemo | February 2025 – September 2025
 - SDET / QA Automation Engineer — Fannie Mae | March 2021 – September 2022

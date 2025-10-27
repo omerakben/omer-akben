@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
 import type { Mock } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   __resetRedisClientForTesting,
   getRedisClient,
@@ -9,7 +9,9 @@ import {
 const ORIGINAL_ENV = { ...process.env };
 const ORIGINAL_FETCH = global.fetch;
 
-function mockFetchSequence(results: Array<{ result?: unknown; error?: string }>) {
+function mockFetchSequence(
+  results: Array<{ result?: unknown; error?: string }>
+) {
   const fetchMock = vi.fn();
   results.forEach((payload) => {
     fetchMock.mockResolvedValueOnce({
@@ -53,7 +55,9 @@ describe("redis client", () => {
         headers: expect.objectContaining({ Authorization: "Bearer token" }),
       })
     );
-    const payload = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string);
+    const payload = JSON.parse(
+      (fetchMock.mock.calls[0][1] as RequestInit).body as string
+    );
     expect(payload).toEqual(["SET", "foo", "bar"]);
   });
 
@@ -79,7 +83,9 @@ describe("redis client", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
-    const searchPayload = JSON.parse((fetchMock.mock.calls[1][1] as RequestInit).body as string);
+    const searchPayload = JSON.parse(
+      (fetchMock.mock.calls[1][1] as RequestInit).body as string
+    );
     expect(searchPayload.slice(0, 3)).toEqual(["FT.SEARCH", "idx", "*"]);
   });
 });

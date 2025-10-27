@@ -1,8 +1,8 @@
 "use client";
 
+import { slideUp, staggerContainer } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
-import { slideUp, staggerContainer } from "@/lib/animations";
 
 interface PageHeaderProps {
   icon: LucideIcon;
@@ -14,7 +14,12 @@ interface PageHeaderProps {
 /**
  * Reusable page header component for consistent design across all pages
  */
-export function PageHeader({ icon: Icon, title, description, className = "" }: PageHeaderProps) {
+export function PageHeader({
+  icon: Icon,
+  title,
+  description,
+  className = "",
+}: PageHeaderProps) {
   return (
     <motion.div
       variants={staggerContainer}
