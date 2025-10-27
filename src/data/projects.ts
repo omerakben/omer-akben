@@ -272,8 +272,7 @@ export const projects: Project[] = [
     role: "QA",
     category: "tools",
     featured: true,
-    githubUrl:
-      "https://github.com/omerakben/tuel-Selenium-WebDriver-RestSharp",
+    githubUrl: "https://github.com/omerakben/tuel-Selenium-WebDriver-RestSharp",
     status: "completed",
   },
 ];

@@ -224,12 +224,12 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
             Mission & Delivery Outcomes
           </h2>
           <p className="text-text-2 leading-relaxed mb-6">
-            Transit to Fully Open-Source TUEL is my reference implementation for how
-            modern SDET teams should structure Selenium + RestSharp codebases.
-            The initiative graduates a legacy financial solution into a
-            reusable, observability-first framework that any enterprise can fork,
-            containerize, and trust inside regulated pipelines. Each delivery
-            phase is shipped and documented—smart waits, centralized
+            Transit to Fully Open-Source TUEL is my reference implementation for
+            how modern SDET teams should structure Selenium + RestSharp
+            codebases. The initiative graduates a legacy financial solution into
+            a reusable, observability-first framework that any enterprise can
+            fork, containerize, and trust inside regulated pipelines. Each
+            delivery phase is shipped and documented—smart waits, centralized
             configuration, structured logging, and security hardening all landed
             with matching guides so teams can adopt the stack without churn.
           </p>
@@ -255,42 +255,65 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
               key={useCase.title}
               className="bg-surf-1 border border-border-line rounded-[20px] p-6"
             >
-              <useCase.icon aria-hidden="true" className="w-5 h-5 mb-3 text-brand-primary" />
+              <useCase.icon
+                aria-hidden="true"
+                className="w-5 h-5 mb-3 text-brand-primary"
+              />
               <h3 className="text-xl font-semibold text-text-1 mb-2">
                 {useCase.title}
               </h3>
-              <p className="text-text-2 leading-relaxed">{useCase.description}</p>
+              <p className="text-text-2 leading-relaxed">
+                {useCase.description}
+              </p>
             </div>
           ))}
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">Architecture Pillars</h2>
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Architecture Pillars
+          </h2>
           <p className="text-text-2 leading-relaxed mb-6">
-            Every layer is battle-tested across API suites, UI flows, authentication,
-            configuration, and observability so the framework behaves predictably
-            whether you run it locally, inside Docker, or against Selenium Grid.
+            Every layer is battle-tested across API suites, UI flows,
+            authentication, configuration, and observability so the framework
+            behaves predictably whether you run it locally, inside Docker, or
+            against Selenium Grid.
           </p>
           <div className="grid gap-6 md:grid-cols-2">
             {architecturePillars.map((pillar) => (
-              <div key={pillar.title} className="bg-surf-0 border border-border-subtle rounded-2xl p-6">
-                <pillar.icon aria-hidden="true" className="w-5 h-5 text-brand-primary mb-3" />
+              <div
+                key={pillar.title}
+                className="bg-surf-0 border border-border-subtle rounded-2xl p-6"
+              >
+                <pillar.icon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary mb-3"
+                />
                 <h3 className="text-lg font-semibold text-text-1 mb-2">
                   {pillar.title}
                 </h3>
-                <p className="text-text-2 leading-relaxed">{pillar.description}</p>
+                <p className="text-text-2 leading-relaxed">
+                  {pillar.description}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">Implementation Wins</h2>
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Implementation Wins
+          </h2>
           <div className="grid gap-6 md:grid-cols-2">
             {implementationWins.map((win) => (
-              <div key={win.title} className="bg-surf-0 border border-border-subtle rounded-2xl p-6">
+              <div
+                key={win.title}
+                className="bg-surf-0 border border-border-subtle rounded-2xl p-6"
+              >
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-text-1">{win.title}</h3>
+                  <h3 className="text-lg font-semibold text-text-1">
+                    {win.title}
+                  </h3>
                   <span className="text-sm font-medium text-green-300">
                     {win.status}
                   </span>
@@ -303,7 +326,9 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">Delivery Phases</h2>
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Delivery Phases
+          </h2>
           <div className="space-y-4">
             {roadmap.map((item) => (
               <div
@@ -326,12 +351,15 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">Operational Metrics</h2>
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Operational Metrics
+          </h2>
           <p className="text-text-2 leading-relaxed mb-6">
             Quality gates are enforced through dotnet test, Docker Compose, and
             GitHub workflows. Suites are expected to execute under five minutes,
-            maintain 95%+ stability, and expose actionable reporting (screenshots,
-            structured logs, performance metrics) for every failure.
+            maintain 95%+ stability, and expose actionable reporting
+            (screenshots, structured logs, performance metrics) for every
+            failure.
           </p>
           <ul className="space-y-3">
             {metrics.map((metric) => (
