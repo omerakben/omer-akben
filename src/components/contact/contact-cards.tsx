@@ -62,17 +62,17 @@ export function PhoneContactCard({ delay = 0 }: { delay?: number }) {
 }
 
 export function CalendarContactCard({ delay = 0 }: { delay?: number }) {
-  const zoomLink =
-    process.env.NEXT_PUBLIC_ZOOM_LINK ||
-    "https://us06web.zoom.us/j/2675124566?pwd=663790";
+  const calendlyLink =
+    process.env.NEXT_PUBLIC_CALENDLY_LINK ||
+    "https://calendly.com/omerakben/30min";
 
   return (
     <ContactMethodCard
       icon={Calendar}
       label="Schedule"
-      value="Book a Meeting"
-      subtitle="30-minute consultation"
-      href={zoomLink}
+      value="Let's Chat"
+      subtitle="30-min casual conversation"
+      href={calendlyLink}
       brandColor={CONTACT_BRANDS.calendar}
       external
       delay={delay}
