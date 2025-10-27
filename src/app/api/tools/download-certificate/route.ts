@@ -8,16 +8,17 @@ const CERTIFICATE_MAP = {
     size: 250000, // ~250KB
     format: "pdf",
     googleDriveUrl:
-      "https://drive.google.com/file/d/1toTPdvyQzySkm1hEmwssMfxHGAXkOUMh/view?usp=sharing",
-    certificateName: "AWS Certified Solutions Architect",
+      "https://drive.google.com/file/d/1wosKaBVPTEsShVnQQWpi28eB40XEHtOD/view?usp=sharing",
+    certificateName: "AWS Cloud Practitioner Essentials",
     issuer: "Amazon Web Services",
-    year: "2024",
+    year: "2022",
   },
   nss: {
     filename: "Omer-Akben-NSS-Certificate.pdf",
     size: 200000, // ~200KB
     format: "pdf",
-    googleDriveUrl: undefined, // No Google Drive link available yet
+    googleDriveUrl:
+      "https://drive.google.com/file/d/1vjwfgNY__4bb3yRa9Ic5LbS_O-fgeFbn/view?usp=sharing",
     certificateName: "Nashville Software School Graduate",
     issuer: "Nashville Software School",
     year: "2025",

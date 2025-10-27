@@ -30,9 +30,9 @@ describe("POST /api/tools/download-certificate", () => {
           format: "pdf",
           size: expect.any(Number),
           googleDriveUrl: expect.stringContaining("drive.google.com"),
-          certificateName: "AWS Certified Solutions Architect",
+          certificateName: "AWS Cloud Practitioner Essentials",
           issuer: "Amazon Web Services",
-          year: "2024",
+          year: "2022",
         });
       }
     });
@@ -51,13 +51,15 @@ describe("POST /api/tools/download-certificate", () => {
           filename: "Omer-Akben-NSS-Certificate.pdf",
           format: "pdf",
           size: expect.any(Number),
+          googleDriveUrl: expect.stringContaining("drive.google.com"),
           certificateName: "Nashville Software School Graduate",
           issuer: "Nashville Software School",
           year: "2025",
         });
-        // NSS certificate doesn't have Google Drive URL
-        const data = json.data as { googleDriveUrl?: unknown };
-        expect(data.googleDriveUrl).toBeUndefined();
+        // NSS certificate now has Google Drive URL
+        const data = json.data as { googleDriveUrl?: string };
+        expect(data.googleDriveUrl).toBeDefined();
+        expect(data.googleDriveUrl).toContain("drive.google.com");
       }
     });
 

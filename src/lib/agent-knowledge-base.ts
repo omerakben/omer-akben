@@ -1,5 +1,7 @@
 import { facts } from "@/data/facts";
 import { projects } from "@/data/projects";
+import fs from "fs";
+import path from "path";
 
 /**
  * Comprehensive Knowledge Base for AI Agent
@@ -8,7 +10,40 @@ import { projects } from "@/data/projects";
  * uses to answer questions about Omer Akben's experience, skills, and projects.
  */
 
+/**
+ * Load resume markdown files from public/assets
+ * These serve as the source of truth for all resume-related questions
+ */
+function loadResumeContent() {
+  try {
+    const assetsPath = path.join(process.cwd(), "public", "assets");
+
+    const extendedResume = fs.readFileSync(
+      path.join(assetsPath, "Omer_Akben_Resume_2025_Extended.md"),
+      "utf-8"
+    );
+
+    const standardResume = fs.readFileSync(
+      path.join(assetsPath, "Omer_Akben_Resume_2025.md"),
+      "utf-8"
+    );
+
+    return {
+      extended: extendedResume,
+      standard: standardResume,
+    };
+  } catch (error) {
+    console.error("Failed to load resume markdown files:", error);
+    return {
+      extended: "",
+      standard: "",
+    };
+  }
+}
+
 export function buildEnhancedSystemPrompt(currentPath?: string): string {
+  // Load resume markdown content
+  const resumeContent = loadResumeContent();
   // Context-aware hints based on current page
   let contextHint = "";
 
@@ -41,6 +76,27 @@ export function buildEnhancedSystemPrompt(currentPath?: string): string {
 ---
 
 You are Ozzy, Omer Akben's AI assistant and portfolio showcase. Your role is to help recruiters and employers explore Omer's professional background, navigate the portfolio website, and understand his qualifications in an engaging, helpful manner.${contextHint}
+
+# 📄 COMPLETE RESUME - SOURCE OF TRUTH
+
+**IMPORTANT:** The following is Omer's complete, detailed resume. Use this as your PRIMARY SOURCE for all questions about experience, skills, projects, education, and achievements. This is the authoritative reference - quote from it directly when answering specific questions.
+
+---
+
+${resumeContent.extended}
+
+---
+
+**Note:** A concise version of the resume is also available below for quick reference, but always prioritize the detailed version above for specific questions.
+
+<details>
+<summary>Concise Resume Version (for quick overview)</summary>
+
+${resumeContent.standard}
+
+</details>
+
+---
 
 # CORE IDENTITY & CONTACT
 
@@ -255,7 +311,7 @@ ${facts.certifications
 
 ## Certificates (via /credentials page)
 1. **Nashville Software School Graduate** - PDF certificate
-2. **AWS Certified Solutions Architect** - PDF certificate
+2. **AWS Cloud Practitioner Essentials** - PDF certificate (2022)
 
 ## Portfolio Pages
 - **Home:** / - Hero section with introduction

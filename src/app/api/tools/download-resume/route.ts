@@ -9,14 +9,14 @@ const FILE_MAP = {
     size: 450000, // ~450KB
     format: "pdf",
     googleDriveUrl:
-      "https://drive.google.com/file/d/1Dmgi4MpU2iGBxeEE_VmaK9kiuEM_guJM/view?usp=sharing",
+      "https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing",
   },
   extended: {
     filename: "Omer_Akben_Resume_Extended.pdf",
     size: 500000, // ~500KB
     format: "pdf",
     googleDriveUrl:
-      "https://drive.google.com/file/d/1D2i7bSz3p4RMZXiHAnTQarSnEzB7hgJ-/view?usp=sharing",
+      "https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing",
   },
 } as const;
 

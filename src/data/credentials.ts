@@ -147,7 +147,7 @@ export const credentials: Credential[] = [
     title: "AWS Cloud Practitioner Essentials",
     institution: "Amazon Web Services",
     institutionUrl: "https://aws.amazon.com/certification/",
-    date: "2024",
+    date: "2022",
     description:
       "Foundational understanding of AWS Cloud concepts, services, security, architecture, pricing, and support. Covers core AWS services including compute, storage, networking, and databases.",
     type: "certification",

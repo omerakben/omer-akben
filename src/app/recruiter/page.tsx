@@ -465,7 +465,7 @@ export default function RecruiterPage() {
 
                   <div className="p-3 border border-border-line rounded-lg bg-surf-1">
                     <p className="text-sm font-medium text-text-1 mb-2">
-                      AWS Certified Solutions Architect (2024)
+                      AWS Cloud Practitioner Essentials (2022)
                     </p>
                     <div className="flex gap-2">
                       <Button

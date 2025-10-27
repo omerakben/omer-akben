@@ -1,38 +1,30 @@
 # Resume Files & Google Drive Links
 
-## Resumes
-
-### Original Resume (DOCX)
-
-File: Omer_Akben_Resume_2025.docx
-Google Drive: <https://docs.google.com/document/d/1JzK080W6maa8nrMw0GvPQYKiDpZ68Wn8Nu0qRLF1pz0/edit?usp=sharing>
+## Resumes (PDF Only - Public Access)
 
 ### Original Resume (PDF)
 
 File: Omer_Akben_Resume.pdf
-Google Drive: <https://drive.google.com/file/d/1Dmgi4MpU2iGBxeEE_VmaK9kiuEM_guJM/view?usp=sharing>
-
-### Extended Resume (DOCX)
-
-File: Omer_Akben_Resume_2025_Extended.docx
-Google Drive: <https://docs.google.com/document/d/18bPwKR51zq3jAJjwWx9jbZXBkUF_4CvZEtxDDx77FOw/edit?usp=sharing>
+Google Drive: <https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing>
 
 ### Extended Resume (PDF)
 
 File: Omer_Akben_Resume_Extended.pdf
-Google Drive: <https://drive.google.com/file/d/1D2i7bSz3p4RMZXiHAnTQarSnEzB7hgJ-/view?usp=sharing>
+Google Drive: <https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing>
+
+> **Note:** DOCX versions are kept private for direct job application submissions only.
 
 ## Certificates
 
 ### AWS Certificate
 
 File: Omer-Akben-AWS-Certificate.pdf
-Google Drive: <https://drive.google.com/file/d/1toTPdvyQzySkm1hEmwssMfxHGAXkOUMh/view?usp=sharing>
+Google Drive: <https://drive.google.com/file/d/1wosKaBVPTEsShVnQQWpi28eB40XEHtOD/view?usp=sharing>
 
 ### NSS Certificate
 
 File: Omer-Akben-NSS-Certificate.pdf
-Google Drive: <https://drive.google.com/file/d/1uQ5dbvGXVVbjMfjJENlAHPLyS-1b201k/view?usp=sharing>
+Google Drive: <https://drive.google.com/file/d/1vjwfgNY__4bb3yRa9Ic5LbS_O-fgeFbn/view?usp=sharing>
 
 ## Contact Information
 

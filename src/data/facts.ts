@@ -182,9 +182,9 @@ export const facts = {
 
   certifications: [
     {
-      name: "AWS Certified Solutions Architect",
+      name: "AWS Cloud Practitioner Essentials",
       issuer: "Amazon Web Services",
-      year: "2024",
+      year: "2022",
     },
     {
       name: "Nashville Software School Graduate",

@@ -241,13 +241,13 @@ describe("agent-tools schemas", () => {
         filename: "aws-cert.pdf",
         size: 2048,
         format: "pdf",
-        certificateName: "AWS Solutions Architect",
+        certificateName: "AWS Cloud Practitioner Essentials",
         issuer: "Amazon Web Services",
-        year: "2023",
+        year: "2022",
       });
-      expect(result.certificateName).toBe("AWS Solutions Architect");
+      expect(result.certificateName).toBe("AWS Cloud Practitioner Essentials");
       expect(result.issuer).toBe("Amazon Web Services");
-      expect(result.year).toBe("2023");
+      expect(result.year).toBe("2022");
     });
 
     it("should require all mandatory fields", () => {

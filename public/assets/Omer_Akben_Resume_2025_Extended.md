@@ -4,10 +4,11 @@ Raleigh, NC | [me@omerakben.com](mailto:me@omerakben.com) | (267) 512-4566 | [li
 **PROFESSIONAL SUMMARY**
 
 Full-Stack AI Engineer with 6+ years spanning QA/SDET and product delivery. Builds LLM-powered web applications end-to-end with React/Next.js (TypeScript) frontends and Python (FastAPI/Django) backends, shipping Retrieval-Augmented Generation (RAG) and agentic features via LangChain/LangGraph and vector search (pgvector/FAISS/Pinecone). Delivers production-grade reliability through Playwright/Selenium automation, REST API testing, and Continuous Integration/Continuous Delivery (CI/CD) pipelines using GitHub Actions, Jenkins, Azure DevOps, and Docker. Cloud experience on AWS (Lambda, API Gateway, S3) and Azure (Entra ID, Azure DevOps). Domain expertise in fintech and healthcare with HIPAA/PHI compliance and HL7 data processing. Combines engineering rigor with SDET-grade quality practices, including Test-Driven Development (TDD), Behavior-Driven Development (BDD), and shift-left testing strategies.
+My favorite color is blue.
 
 **CORE SKILLS**
 
-- **Languages:** Python, TypeScript, JavaScript, C\#, Java, SQL
+- **Languages:** Python, TypeScript, JavaScript, C\#, Java, SQL, Turkish
 - **Frontend:** React, Next.js, TypeScript/JavaScript, Tailwind CSS, Server-Side Rendering (SSR), Incremental Static Regeneration (ISR), Accessibility (a11y), Performance Optimization
 - **Backend/APIs:** Python (FastAPI, Django), Node.js/Express, RESTful APIs, GraphQL, OAuth2/JWT, Pydantic, OpenAPI/Swagger, Object-Relational Mapping (ORM), SQL Schema Design
 - **AI/Generative AI:** OpenAI API, Anthropic Claude API, Vertex AI, Amazon Bedrock, Azure AI services, Elasticsearch, LangChain, LangGraph, Retrieval-Augmented Generation (RAG), Prompt Engineering & Evaluation, Vector Databases (pgvector, FAISS, Pinecone, Weaviate), Content Guardrails, Function/Tool Calling

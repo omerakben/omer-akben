@@ -110,7 +110,7 @@ export const downloadCertificateInputSchema = z.object({
   type: z
     .enum(["aws", "nss"])
     .describe(
-      "Certificate type: aws (AWS Solutions Architect) or nss (Nashville Software School)"
+      "Certificate type: aws (AWS Cloud Practitioner Essentials) or nss (Nashville Software School)"
     ),
 });
 
