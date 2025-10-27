@@ -9,6 +9,10 @@ import type { ExtractedFacts } from "./types";
 
 const generateTextMock = vi.fn();
 const mergeSemanticMemoryMock = vi.fn();
+const getCachedCompletionMock = vi.fn();
+const setCachedCompletionMock = vi.fn();
+const recordCacheHitMock = vi.fn();
+const recordCacheMissMock = vi.fn();
 
 vi.mock("ai", () => ({
   generateText: generateTextMock,
@@ -22,10 +26,27 @@ vi.mock("@/lib/memory/semantic-memory", () => ({
   mergeSemanticMemory: mergeSemanticMemoryMock,
 }));
 
+vi.mock("@/lib/cache/openai-cache", () => ({
+  getCachedCompletion: getCachedCompletionMock,
+  setCachedCompletion: setCachedCompletionMock,
+  recordCacheHit: recordCacheHitMock,
+  recordCacheMiss: recordCacheMissMock,
+}));
+
 describe("fact-extractor", () => {
   beforeEach(() => {
     generateTextMock.mockReset();
     mergeSemanticMemoryMock.mockReset();
+    getCachedCompletionMock.mockReset();
+    setCachedCompletionMock.mockReset();
+    recordCacheHitMock.mockReset();
+    recordCacheMissMock.mockReset();
+
+    // Default: cache miss (return null) so generateText is always called
+    getCachedCompletionMock.mockResolvedValue(null);
+    setCachedCompletionMock.mockResolvedValue(undefined);
+    recordCacheHitMock.mockResolvedValue(undefined);
+    recordCacheMissMock.mockResolvedValue(undefined);
   });
 
   describe("extractFacts", () => {

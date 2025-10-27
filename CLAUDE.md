@@ -2,6 +2,42 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚀 Production Status
+
+**Live Site:** <https://omerakben.com/>
+**Status:** Production deployment active
+**Deployment:** Vercel (main branch → production)
+
+## Git Workflow
+
+**Branch Strategy:**
+
+- `main` - Production branch (auto-deploys to <https://omerakben.com/>)
+- `pre-deployment` - Pre-production staging branch (all features branch from here)
+- `feature/*` - Feature branches (branch from `pre-deployment`, merge back via PR)
+
+**Critical Rules:**
+
+1. **Always branch from `pre-deployment`** for new features
+2. **All 6 quality gates MUST pass** before merging to `pre-deployment`
+3. **Pre-deployment → main** merges require manual approval after testing
+4. **Never commit directly to main** - production deployments are intentional
+
+**Workflow Example:**
+
+```bash
+git checkout pre-deployment
+git pull origin pre-deployment
+git checkout -b feature/contact-collection
+# Make changes, test locally
+npm test && npm run lint && npx tsc --noEmit && npm run build && npm run size
+git commit -m "feat: add contact collection tool"
+git push origin feature/contact-collection
+# Create PR to pre-deployment, wait for CI/CD
+# After approval, merge to pre-deployment
+# Test on staging, then merge pre-deployment → main for production
+```
+
 ## TL;DR
 
 Personal portfolio with AI assistant powered by Vercel AI SDK. Next.js 15 + React 19 + TypeScript + Tailwind 4.
@@ -128,6 +164,51 @@ npx tsc --noEmit                                 # TypeScript check
 - Generation script: `scripts/generate-icons.js` (run during build)
 - Achievement: 90% bundle reduction (2.33MB → 236KB)
 - Pattern: `import { getIcon } from '@/lib/icon-manifest'` then `getIcon('react')`
+
+**6. Proactive Contact Collection** ⚠️ **In Development**
+
+See [OZZY_CONTACT_COLLECTION_PLAN.md](OZZY_CONTACT_COLLECTION_PLAN.md) for complete implementation plan.
+
+**Overview**: Ozzy AI proactively collects visitor contact information and sends Zoom meeting links when conversations show mutual interest.
+
+**Key Components:**
+
+- **Email Service**: Resend with React Email templates
+- **Tool**: `collect_contact` - Collects name, email, company, purpose
+- **Rate Limiting**: 1 collection per IP per 24 hours (Redis-backed)
+- **Engagement Tracking**: Proactive prompt after 3+ positive messages
+- **Security**: Email validation, disposable email blocking, PII redaction, 7-day TTL
+
+**Trigger Conditions:**
+
+1. **Explicit Request**: User asks "send me the link", "email me", "schedule a call"
+2. **Engagement Score ≥60**: Based on message count, topics discussed, projects viewed, resume downloads
+3. **High-Value User**: Recruiter/hiring manager role + 3+ messages + multiple topics
+
+**Email Flow:**
+
+```text
+User shows interest → Ozzy asks permission → User provides contact →
+API validates email → Save to Redis (7-day TTL) → Send Resend email →
+Return Zoom link immediately → Continue conversation
+```
+
+**Environment Variables Required:**
+
+```bash
+RESEND_API_KEY=re_...                              # Email service
+OMER_ZOOM_LINK=https://calendly.com/.../30min     # Meeting link
+OMER_EMAIL=me@omerakben.com                        # Reply-to address
+```
+
+**Implementation Status:**
+
+- ✅ Resend account configured
+- ✅ Email templates designed (React Email)
+- ✅ Domain verification completed
+- ⏳ Tool implementation in progress
+- ⏳ Engagement tracking in progress
+- ⏳ System prompt updates pending
 
 ---
 
@@ -350,7 +431,7 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
 3. **Never Bypass Validation**: No workarounds to make tests pass - fix root causes
 4. **Zero Technical Debt**: No TODO comments, no console.log, no hardcoded values
 5. **Always Wait for Hydration**: E2E tests must account for SSR → hydration timing
-6. **Environment Variables Required**: All 5 env vars must be set in deployment environment
+6. **Environment Variables Required**: All 8 env vars must be set in deployment environment (OpenAI, Upstash Redis, Upstash Vector, Resend)
 
 ### Test Configuration
 
