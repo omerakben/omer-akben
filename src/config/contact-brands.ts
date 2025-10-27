@@ -12,9 +12,9 @@ export const CONTACT_BRANDS = {
   },
   github: {
     name: "GitHub",
-    primary: "#24292e",
-    hover: "#171a1e",
-    rgb: "36, 41, 46",
+    primary: "#5FED83", // GitHub Brand Green 3 - vibrant and visible on dark backgrounds
+    hover: "#BFFFD1", // GitHub Brand Green 1 - lighter green for hover
+    rgb: "95, 237, 131", // RGB values for Green 3
   },
   calendar: {
     name: "Google Calendar",

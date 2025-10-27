@@ -1,5 +1,6 @@
 "use client";
 
+import { CONTACT_BRANDS } from "@/config/contact-brands";
 import { facts } from "@/data/facts";
 import { Calendar, Github, Linkedin, Mail, Phone } from "lucide-react";
 import { ContactMethodCard } from "./contact-method-card";
@@ -12,7 +13,7 @@ export function LinkedInContactCard({ delay = 0 }: { delay?: number }) {
       value="Omer AKBEN"
       subtitle={facts.personal.title}
       href={facts.social.linkedin}
-      brandColor="#0077B5"
+      brandColor={CONTACT_BRANDS.linkedin}
       external
       delay={delay}
     />
@@ -27,7 +28,7 @@ export function GitHubContactCard({ delay = 0 }: { delay?: number }) {
       value="@omerakben"
       subtitle="Open Source Projects"
       href={facts.social.github}
-      brandColor="#24292e"
+      brandColor={CONTACT_BRANDS.github}
       external
       delay={delay}
     />
@@ -61,14 +62,19 @@ export function PhoneContactCard({ delay = 0 }: { delay?: number }) {
 }
 
 export function CalendarContactCard({ delay = 0 }: { delay?: number }) {
+  const zoomLink =
+    process.env.NEXT_PUBLIC_ZOOM_LINK ||
+    "https://us06web.zoom.us/j/2675124566?pwd=663790";
+
   return (
     <ContactMethodCard
       icon={Calendar}
       label="Schedule"
       value="Book a Meeting"
       subtitle="30-minute consultation"
-      href="#"
-      brandColor="#4285F4"
+      href={zoomLink}
+      brandColor={CONTACT_BRANDS.calendar}
+      external
       delay={delay}
     />
   );
