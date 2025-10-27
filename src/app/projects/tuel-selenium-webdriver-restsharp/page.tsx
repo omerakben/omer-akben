@@ -24,142 +24,142 @@ export const metadata: Metadata = createMetadata({
   path: "/projects/tuel-selenium-webdriver-restsharp",
 });
 
+const missionHighlights = [
+  "Modernize a legacy financial-services test harness into a vendor-neutral .NET 8 baseline.",
+  "Offer a plug-and-play starting point for teams that need combined API + UI automation.",
+  "Prove SDET craft with observable, secure defaults (logging, masking, auditability).",
+  "Publish reusable documentation so new contributors can ship in under a day.",
+];
+
+const useCases = [
+  {
+    icon: Briefcase,
+    title: "Regulated Enterprises",
+    description:
+      "Banks, fintech, healthcare teams can enforce Azure AD flows, Key Vault-managed secrets, and auditable logging without writing boilerplate from scratch.",
+  },
+  {
+    icon: Code,
+    title: "Full-Stack SDET Squads",
+    description:
+      "API and UI engineers can share a single repo with Page Object patterns, RestSharp clients, and environment-aware configuration that scales from laptops to Selenium Grid.",
+  },
+  {
+    icon: Shield,
+    title: "Security-Conscious Pipelines",
+    description:
+      "SecretManager references (env://, kv://, enc://) plus HTTPS-first Docker configs keep tokens masked, even when running parallel suites in CI.",
+  },
+  {
+    icon: Zap,
+    title: "Modernization Programs",
+    description:
+      "Teams replacing brittle Thread.Sleep calls or Console.WriteLine debugging get smart waits, retry helpers, and structured logging with minimal code churn.",
+  },
+];
+
+const architecturePillars = [
+  {
+    icon: Layers,
+    title: "Layered Test Stack",
+    description:
+      "Discrete API (RestSharp) and UI (Selenium WebDriver) layers share domain models - Products, Orders, Customers, Templates, Pricing - so scenarios stay business-focused.",
+  },
+  {
+    icon: Shield,
+    title: "Security & Auth",
+    description:
+      "Multiple OAuth flows (Azure Entra client credentials, ROPC, local JWT) plus enforced HTTPS in Docker keep test credentials aligned with production controls.",
+  },
+  {
+    icon: FileText,
+    title: "Configuration Governance",
+    description:
+      "TestConfiguration.cs centralizes every timeout, retry, and logging toggle with environment overrides (`dev`, `staging`, `prod`) and encrypted secrets when needed.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Observability",
+    description:
+      "TestLogger outputs structured logs with masking, color-coded console traces, and hooks for future sinks so failures read like incident timelines.",
+  },
+];
+
+const implementationWins = [
+  {
+    title: "Thread.Sleep Eradication",
+    status: "Completed",
+    impact: "2-5x faster UI suites",
+    details:
+      "UIHelper, Base.cs, and LoginPOM now rely on WebDriverWait-based helpers (`WaitVisible`, `WaitForPageTransition`) plus async-friendly retry logic.",
+  },
+  {
+    title: "Centralized Configuration",
+    status: "Completed",
+    impact: "Consistent timeouts & security",
+    details:
+      "TestConfiguration.cs exposes typed getters for every timeout, retry, and security flag, so Docker, local, and CI runs stay in sync.",
+  },
+  {
+    title: "Structured Logging",
+    status: "Completed",
+    impact: "Faster debugging",
+    details:
+      "TestLogger standardizes Trace->Critical levels, masks secrets automatically, and colorizes console output for healthier on-call triage.",
+  },
+  {
+    title: "Security Hardening",
+    status: "Completed",
+    impact: "Production-ready defaults",
+    details:
+      "HTTPS-by-default docker-compose, forced secure BaseURL/BaseurlAPI settings, and audit logging stubs ensure no plaintext secrets escape.",
+  },
+];
+
+const roadmap = [
+  {
+    phase: "Phase 1",
+    label: "Critical Fixes",
+    status: "Completed",
+    details:
+      "LoginPOM + Base.cs migrations removed Thread.Sleep and validated the new helper patterns across priority flows.",
+  },
+  {
+    phase: "Phase 2",
+    label: "Remaining Thread.Sleep",
+    status: "Completed",
+    details:
+      "All 45 legacy Thread.Sleep calls across HealthCheck, Dashboard, Members, and validator suites migrated to smart waits and retry helpers.",
+  },
+  {
+    phase: "Phase 3",
+    label: "Console Output Cleanup",
+    status: "Completed",
+    details:
+      "26 Console.WriteLine instances replaced with TestLogger so every event now emits structured, masked output.",
+  },
+  {
+    phase: "Phase 4",
+    label: "Zero-Warning Build",
+    status: "Completed",
+    details:
+      "Compiler warnings triaged and resolved, giving the framework a clean build and CI gate.",
+  },
+];
+
+const metrics = [
+  "95%+ suite reliability with <5 minute full-run target",
+  "Smart waits and pooling eliminate Thread.Sleep entirely across suites",
+  "Structured logging coverage across suites with masked secrets and timeline output",
+  "Dockerized `dotnet test` workflow mirrors local, CI, and Selenium Grid runs",
+];
+
 export default function TuelSeleniumWebDriverRestSharpPage() {
   const project = getProjectBySlug("tuel-selenium-webdriver-restsharp");
 
   if (!project) {
     notFound();
   }
-
-  const missionHighlights = [
-    "Modernize a legacy financial-services test harness into a vendor-neutral .NET 8 baseline.",
-    "Offer a plug-and-play starting point for teams that need combined API + UI automation.",
-    "Prove SDET craft with observable, secure defaults (logging, masking, auditability).",
-    "Publish reusable documentation so new contributors can ship in under a day.",
-  ];
-
-  const useCases = [
-    {
-      icon: Briefcase,
-      title: "Regulated Enterprises",
-      description:
-        "Banks, fintech, healthcare teams can enforce Azure AD flows, Key Vault-managed secrets, and auditable logging without writing boilerplate from scratch.",
-    },
-    {
-      icon: Code,
-      title: "Full-Stack SDET Squads",
-      description:
-        "API and UI engineers can share a single repo with Page Object patterns, RestSharp clients, and environment-aware configuration that scales from laptops to Selenium Grid.",
-    },
-    {
-      icon: Shield,
-      title: "Security-Conscious Pipelines",
-      description:
-        "SecretManager references (env://, kv://, enc://) plus HTTPS-first Docker configs keep tokens masked, even when running parallel suites in CI.",
-    },
-    {
-      icon: Zap,
-      title: "Modernization Programs",
-      description:
-        "Teams replacing brittle Thread.Sleep calls or Console.WriteLine debugging get smart waits, retry helpers, and structured logging with minimal code churn.",
-    },
-  ];
-
-  const architecturePillars = [
-    {
-      icon: Layers,
-      title: "Layered Test Stack",
-      description:
-        "Discrete API (RestSharp) and UI (Selenium WebDriver) layers share domain models - Products, Orders, Customers, Templates, Pricing - so scenarios stay business-focused.",
-    },
-    {
-      icon: Shield,
-      title: "Security & Auth",
-      description:
-        "Multiple OAuth flows (Azure Entra client credentials, ROPC, local JWT) plus enforced HTTPS in Docker keep test credentials aligned with production controls.",
-    },
-    {
-      icon: FileText,
-      title: "Configuration Governance",
-      description:
-        "TestConfiguration.cs centralizes every timeout, retry, and logging toggle with environment overrides (`dev`, `staging`, `prod`) and encrypted secrets when needed.",
-    },
-    {
-      icon: CheckCircle2,
-      title: "Observability",
-      description:
-        "TestLogger outputs structured logs with masking, color-coded console traces, and hooks for future sinks so failures read like incident timelines.",
-    },
-  ];
-
-  const implementationWins = [
-    {
-      title: "Thread.Sleep Eradication",
-      status: "Completed",
-      impact: "2-5x faster UI suites",
-      details:
-        "UIHelper, Base.cs, and LoginPOM now rely on WebDriverWait-based helpers (`WaitVisible`, `WaitForPageTransition`) plus async-friendly retry logic.",
-    },
-    {
-      title: "Centralized Configuration",
-      status: "Completed",
-      impact: "Consistent timeouts & security",
-      details:
-        "TestConfiguration.cs exposes typed getters for every timeout, retry, and security flag, so Docker, local, and CI runs stay in sync.",
-    },
-    {
-      title: "Structured Logging",
-      status: "Completed",
-      impact: "Faster debugging",
-      details:
-        "TestLogger standardizes Trace->Critical levels, masks secrets automatically, and colorizes console output for healthier on-call triage.",
-    },
-    {
-      title: "Security Hardening",
-      status: "Completed",
-      impact: "Production-ready defaults",
-      details:
-        "HTTPS-by-default docker-compose, forced secure BaseURL/BaseurlAPI settings, and audit logging stubs ensure no plaintext secrets escape.",
-    },
-  ];
-
-  const roadmap = [
-    {
-      phase: "Phase 1",
-      label: "Critical Fixes",
-      status: "Completed",
-      details:
-        "LoginPOM + Base.cs migrations removed Thread.Sleep and validated the new helper patterns across priority flows.",
-    },
-    {
-      phase: "Phase 2",
-      label: "Remaining Thread.Sleep",
-      status: "Completed",
-      details:
-        "All 45 legacy Thread.Sleep calls across HealthCheck, Dashboard, Members, and validator suites migrated to smart waits and retry helpers.",
-    },
-    {
-      phase: "Phase 3",
-      label: "Console Output Cleanup",
-      status: "Completed",
-      details:
-        "26 Console.WriteLine instances replaced with TestLogger so every event now emits structured, masked output.",
-    },
-    {
-      phase: "Phase 4",
-      label: "Zero-Warning Build",
-      status: "Completed",
-      details:
-        "Compiler warnings triaged and resolved, giving the framework a clean build and CI gate.",
-    },
-  ];
-
-  const metrics = [
-    "95%+ suite reliability with <5 minute full-run target",
-    "Smart waits and pooling eliminate Thread.Sleep entirely across suites",
-    "Structured logging coverage across suites with masked secrets and timeline output",
-    "Dockerized `dotnet test` workflow mirrors local, CI, and Selenium Grid runs",
-  ];
 
   return (
     <main className="min-h-screen bg-surf-0 py-20">
