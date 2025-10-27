@@ -39,65 +39,73 @@ export function AppHeader() {
     <header
       className="sticky top-0 z-50 border-b border-border-line bg-surf-0/80 backdrop-blur-lg"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+      <div className="container mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center gap-3">
           {/* Logo */}
           <Link
             href="/"
             className={cn(
-              "flex items-center justify-center hover:opacity-90 transition-opacity",
+              "flex items-center justify-center hover:opacity-90 transition-opacity lg:-ml-6 xl:-ml-10",
               LOGO_SIZE.className
             )}
           >
             <BrandLogo priority />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
-            {routes.map((route) => {
-              const Icon = route.icon;
-              return (
-                <Link
-                  key={route.href}
-                  href={route.href}
-                  className={cn(
-                    "nav-item flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
-                    pathname === route.href
-                      ? "text-brand-primary"
-                      : "text-text-2 transition-colors hover:text-text-1"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {route.label}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Desktop navigation + controls */}
+          <div className="hidden md:flex flex-1 items-center gap-4">
+            <nav className="flex flex-1 items-center gap-1">
+              {routes.map((route, index) => {
+                const Icon = route.icon;
+                return (
+                  <Link
+                    key={route.href}
+                    href={route.href}
+                    className={cn(
+                      "nav-item flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
+                      pathname === route.href
+                        ? "text-brand-primary"
+                        : "text-text-2 transition-colors hover:text-text-1",
+                      index === 0 && "pl-0"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {route.label}
+                  </Link>
+                );
+              })}
+            </nav>
 
-          {/* Right Section: Brightness Control + Open Chat + Mobile Menu */}
-          <div className="flex items-center gap-3">
-            <div className="hidden lg:block">
-              <BrightnessControl />
+            <div className="flex items-center gap-2 lg:-mr-2 xl:-mr-6">
+              <div className="hidden lg:block">
+                <BrightnessControl />
+              </div>
+
+              <Button
+                size="sm"
+                onClick={openSidebar}
+                className="flex items-center gap-2 bg-gradient-to-r from-brand-primary to-[#2563EB] hover:opacity-90"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Open Chat
+              </Button>
             </div>
+          </div>
 
+          {/* Mobile actions */}
+          <div className="ml-auto flex items-center gap-2 md:hidden">
             <Button
+              variant="ghost"
               size="sm"
+              aria-label="Open chat"
               onClick={openSidebar}
-              className="hidden md:flex items-center gap-2 bg-gradient-to-r from-brand-primary to-[#2563EB] hover:opacity-90"
             >
-              <MessageCircle className="h-4 w-4" />
-              Open Chat
+              <MessageCircle className="h-5 w-5" />
             </Button>
 
-            {/* Mobile Menu */}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="md:hidden"
-                  aria-label="Open menu"
-                >
+                <Button variant="ghost" size="sm" aria-label="Open menu">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>

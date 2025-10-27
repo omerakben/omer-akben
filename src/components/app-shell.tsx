@@ -13,7 +13,7 @@ import {
   useChatSidebar,
 } from "@/lib/chat-sidebar-context";
 import { Analytics } from "@vercel/analytics/next";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 /**
@@ -43,15 +43,23 @@ function LayoutContainer({ children }: { children: ReactNode }) {
     }
   }, [isPinned, width, isMounted]);
 
+  // Use a ref to apply the margin via CSS custom property
+  // This avoids inline style linting issues while maintaining dynamic behavior
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.style.setProperty(
+        "--sidebar-margin",
+        `${marginRight}px`
+      );
+    }
+  }, [marginRight]);
+
   return (
     <div
-      className="transition-[margin-right] duration-300 ease-out"
-      style={
-        {
-          "--sidebar-margin": `${marginRight}px`,
-          marginRight: "var(--sidebar-margin)",
-        } as CSSProperties
-      }
+      ref={containerRef}
+      className="app-shell-container transition-[margin-right] duration-300 ease-out"
     >
       {children}
     </div>

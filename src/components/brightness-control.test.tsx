@@ -1,216 +1,120 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { BrightnessControl } from "./brightness-control";
 import * as BrightnessContext from "@/lib/brightness-context";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { BrightnessControl } from "./brightness-control";
 
-// Mock the brightness context
+type BrightnessValue = "-3" | "-2" | "-1" | "0" | "+1" | "+2" | "+3" | "auto";
+
 const mockSetBrightness = vi.fn();
+const useBrightnessSpy = vi.spyOn(BrightnessContext, "useBrightness");
+
+const renderWithBrightness = (brightness: BrightnessValue) => {
+  useBrightnessSpy.mockReturnValue({
+    brightness,
+    setBrightness: mockSetBrightness,
+  } as ReturnType<typeof BrightnessContext.useBrightness>);
+
+  return render(<BrightnessControl />);
+};
 
 describe("BrightnessControl", () => {
-  const renderWithBrightness = (brightness: string) => {
-    vi.spyOn(BrightnessContext, "useBrightness").mockReturnValue({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      brightness: brightness as any,
-      setBrightness: mockSetBrightness,
-    });
-    return render(<BrightnessControl />);
-  };
-
   beforeEach(() => {
     mockSetBrightness.mockClear();
+    useBrightnessSpy.mockReset();
   });
 
-  describe("Rendering", () => {
-    it("should render all brightness mode buttons", () => {
-      renderWithBrightness("0");
-
-      // Check for moon button
-      expect(screen.getByLabelText("Set minimum brightness")).toBeInTheDocument();
-
-      // Check for numeric mode buttons
-      const modes = ["-3", "-2", "-1", "0", "+1", "+2", "+3"];
-      modes.forEach((mode) => {
-        expect(screen.getByText(mode)).toBeInTheDocument();
-      });
-
-      // Check for sun button
-      expect(screen.getByLabelText("Set maximum brightness")).toBeInTheDocument();
-
-      // Check for auto button
-      expect(screen.getByText("Auto")).toBeInTheDocument();
-    });
-
-    it("should highlight current brightness mode", () => {
-      renderWithBrightness("+1");
-      const activeButton = screen.getByText("+1");
-      expect(activeButton.className).toContain("bg-brand-primary");
-    });
-
-    it("should highlight auto mode when active", () => {
-      renderWithBrightness("auto");
-      const autoButton = screen.getByText("Auto");
-      expect(autoButton.className).toContain("bg-brand-primary");
-    });
-
-    it("should render Moon icon for dark mode trigger", () => {
-      renderWithBrightness("0");
-      const moonButton = screen.getByLabelText("Set minimum brightness");
-      expect(moonButton).toBeInTheDocument();
-    });
-
-    it("should render Sun icon for bright mode trigger", () => {
-      renderWithBrightness("0");
-      const sunButton = screen.getByLabelText("Set maximum brightness");
-      expect(sunButton).toBeInTheDocument();
-    });
+  it("exposes slider semantics", () => {
+    renderWithBrightness("0");
+    const slider = screen.getByRole("slider");
+    expect(slider).toHaveAttribute("aria-valuemin", "-3");
+    expect(slider).toHaveAttribute("aria-valuemax", "3");
+    expect(slider).toHaveAttribute("aria-orientation", "horizontal");
   });
 
-  describe("Interactions", () => {
-    it("should call setBrightness when moon button is clicked", () => {
-      renderWithBrightness("0");
-      const moonButton = screen.getByLabelText("Set minimum brightness");
-      fireEvent.click(moonButton);
-      expect(mockSetBrightness).toHaveBeenCalledWith("-3");
-    });
-
-    it("should call setBrightness when sun button is clicked", () => {
-      renderWithBrightness("0");
-      const sunButton = screen.getByLabelText("Set maximum brightness");
-      fireEvent.click(sunButton);
-      expect(mockSetBrightness).toHaveBeenCalledWith("+3");
-    });
-
-    it("should call setBrightness when numeric mode is clicked", () => {
-      renderWithBrightness("0");
-      const plusTwoButton = screen.getByText("+2");
-      fireEvent.click(plusTwoButton);
-      expect(mockSetBrightness).toHaveBeenCalledWith("+2");
-    });
-
-    it("should call setBrightness when auto is clicked", () => {
-      renderWithBrightness("0");
-      const autoButton = screen.getByText("Auto");
-      fireEvent.click(autoButton);
-      expect(mockSetBrightness).toHaveBeenCalledWith("auto");
-    });
-
-    it("should handle all mode transitions", () => {
-      renderWithBrightness("0");
-      const modes = ["-3", "-2", "-1", "0", "+1", "+2", "+3"];
-
-      modes.forEach((mode) => {
-        const button = screen.getByText(mode);
-        fireEvent.click(button);
-        expect(mockSetBrightness).toHaveBeenCalledWith(mode);
-      });
-    });
+  it("renders moon icon on the knob at minimum brightness", () => {
+    renderWithBrightness("-3");
+    expect(screen.getByTestId("brightness-knob-icon-moon")).toBeInTheDocument();
+    expect(screen.queryByTestId("brightness-knob-icon-sun")).toBeNull();
+    expect(
+      screen.getByTestId("brightness-track-icon-moon").className
+    ).toContain("opacity-0");
   });
 
-  describe("Visual States", () => {
-    it("should show correct hover styles for dark mode", () => {
-      renderWithBrightness("-1");
-      const button = screen.getByText("0");
-      expect(button.className).toContain("hover:bg-white/10");
-    });
-
-    it("should show correct hover styles for light mode", () => {
-      renderWithBrightness("+2");
-      const button = screen.getByText("+1");
-      expect(button.className).toContain("hover:bg-black/10");
-    });
-
-    it("should apply dark mode styles for negative brightness values", () => {
-      renderWithBrightness("-2");
-      const button = screen.getByText("-1");
-      expect(button.className).toContain("hover:bg-white/10");
-    });
-
-    it("should apply light mode styles for positive brightness values", () => {
-      renderWithBrightness("+1");
-      const button = screen.getByText("+2");
-      expect(button.className).toContain("hover:bg-black/10");
-    });
-
-    it("should apply dark mode styles for brightness 0", () => {
-      renderWithBrightness("0");
-      const button = screen.getByText("+1");
-      expect(button.className).toContain("hover:bg-white/10");
-    });
-
-    it("should apply dark mode styles for auto mode", () => {
-      renderWithBrightness("auto");
-      const button = screen.getByText("0");
-      expect(button.className).toContain("hover:bg-white/10");
-    });
+  it("renders sun icon on the knob at maximum brightness", () => {
+    renderWithBrightness("+3");
+    expect(screen.getByTestId("brightness-knob-icon-sun")).toBeInTheDocument();
+    expect(screen.queryByTestId("brightness-knob-icon-moon")).toBeNull();
+    expect(screen.getByTestId("brightness-track-icon-sun").className).toContain(
+      "opacity-0"
+    );
   });
 
-  describe("Accessibility", () => {
-    it("should have accessible button labels for icon buttons", () => {
-      renderWithBrightness("0");
-      expect(screen.getByLabelText("Set minimum brightness")).toBeInTheDocument();
-      expect(screen.getByLabelText("Set maximum brightness")).toBeInTheDocument();
-    });
-
-    it("should have text labels for mode buttons", () => {
-      renderWithBrightness("0");
-      const modes = ["-3", "-2", "-1", "0", "+1", "+2", "+3"];
-      modes.forEach((mode) => {
-        expect(screen.getByText(mode)).toBeInTheDocument();
-      });
-    });
-
-    it("should have text label for auto button", () => {
-      renderWithBrightness("0");
-      expect(screen.getByText("Auto")).toBeInTheDocument();
-    });
-
-    it("buttons should be focusable", () => {
-      renderWithBrightness("0");
-      const autoButton = screen.getByText("Auto");
-      autoButton.focus();
-      expect(document.activeElement).toBe(autoButton);
-    });
+  it("shows the indicator line for intermediate brightness values", () => {
+    renderWithBrightness("0");
+    const knob = screen.getByTestId("brightness-knob");
+    const indicator = knob.querySelector(".brightness-knob-line");
+    expect(indicator).not.toBeNull();
   });
 
-  describe("Edge Cases", () => {
-    it("should handle rapid mode changes", () => {
-      renderWithBrightness("0");
-      const modes = [
-        { text: "+1", value: "+1" },
-        { text: "-1", value: "-1" },
-        { text: "+2", value: "+2" },
-        { text: "-2", value: "-2" },
-        { text: "Auto", value: "auto" },
-      ];
+  it("keeps track edge icons visible when not at extremes", () => {
+    renderWithBrightness("+1");
+    expect(
+      screen.getByTestId("brightness-track-icon-moon").className
+    ).not.toContain("opacity-0");
+    expect(
+      screen.getByTestId("brightness-track-icon-sun").className
+    ).not.toContain("opacity-0");
+  });
 
-      modes.forEach((mode) => {
-        const button = screen.getByText(mode.text);
-        fireEvent.click(button);
-      });
-
-      expect(mockSetBrightness).toHaveBeenCalledTimes(5);
+  it("handles clicking the track to jump to a brightness mode", () => {
+    renderWithBrightness("-3");
+    const track = screen.getByTestId("brightness-track");
+    const rectSpy = vi.spyOn(track, "getBoundingClientRect").mockReturnValue({
+      width: 300,
+      height: 44,
+      top: 0,
+      left: 0,
+      right: 300,
+      bottom: 44,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
     });
 
-    it("should not break when clicking already active mode", () => {
-      renderWithBrightness("+1");
-      const activeButton = screen.getByText("+1");
-      fireEvent.click(activeButton);
-      expect(mockSetBrightness).toHaveBeenCalledWith("+1");
+    fireEvent.click(track, { clientX: 150, clientY: 22 });
+
+    expect(mockSetBrightness).toHaveBeenCalledWith("0");
+    rectSpy.mockRestore();
+  });
+
+  it("supports dragging the knob to the maximum value", () => {
+    renderWithBrightness("0");
+    const track = screen.getByTestId("brightness-track");
+    const knob = screen.getByTestId("brightness-knob");
+
+    const rectSpy = vi.spyOn(track, "getBoundingClientRect").mockReturnValue({
+      width: 240,
+      height: 44,
+      top: 0,
+      left: 0,
+      right: 240,
+      bottom: 44,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
     });
 
-    it("should maintain state consistency across mode changes", () => {
-      const { rerender } = renderWithBrightness("0");
+    fireEvent.mouseDown(knob, { clientX: 0, clientY: 22 });
+    fireEvent.mouseMove(document, { clientX: 240, clientY: 22 });
+    fireEvent.mouseUp(document);
 
-      // Simulate brightness change
-      vi.spyOn(BrightnessContext, "useBrightness").mockReturnValue({
-        brightness: "+2",
-        setBrightness: mockSetBrightness,
-      });
+    expect(mockSetBrightness).toHaveBeenLastCalledWith("+3");
+    rectSpy.mockRestore();
+  });
 
-      rerender(<BrightnessControl />);
-
-      const activeButton = screen.getByText("+2");
-      expect(activeButton.className).toContain("bg-brand-primary");
-    });
+  it("announces automatic mode through aria-valuetext", () => {
+    renderWithBrightness("auto");
+    const slider = screen.getByRole("slider");
+    expect(slider).toHaveAttribute("aria-valuetext", "Automatic brightness");
   });
 });

@@ -43,7 +43,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         {/* Page Header */}
         <PageHeader
           icon={Briefcase}

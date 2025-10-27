@@ -23,15 +23,10 @@ export function HeroSectionStatic() {
       {/* Background gradient accent - Dual radial gradients for depth */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(40% 40% at 60% 45%, rgba(16, 185, 129, 0.08), transparent 60%), radial-gradient(28% 28% at 48% 62%, rgba(37, 99, 235, 0.07), transparent 60%)",
-          filter: "blur(40px)",
-        }}
+        className="absolute inset-0 -z-10 pointer-events-none hero-bg-gradient"
       />
 
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text Content */}
           <div className="hero-content-stagger">
@@ -189,11 +184,7 @@ export function HeroSectionStatic() {
             {/* Glow effect behind robot */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60"
-              style={{
-                background:
-                  "radial-gradient(50% 50% at 50% 50%, rgba(56, 189, 248, 0.18), transparent 60%)",
-              }}
+              className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60 robot-glow-effect"
             />
             {/* Robot with breathe animation */}
             <div
