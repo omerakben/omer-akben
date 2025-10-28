@@ -19,7 +19,7 @@ import {
   toolResponseSchema,
   triggerWorkflowInputSchema,
   triggerWorkflowOutputSchema,
-} from "./schemas";
+} from "@/lib/tools/zod-schemas";
 
 describe("agent-tools schemas", () => {
   describe("toolResponseSchema", () => {
