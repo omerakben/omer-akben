@@ -1,40 +1,10 @@
-import { z } from "zod";
+import {
+  navigatePageInputSchema,
+  type NavigatePageInput,
+} from "@/lib/tools/zod-schemas";
 
-/**
- * Navigation Tool Schema
- * Allows AI agent to suggest navigation to relevant pages
- */
-
-export const navigatePageSchema = z.object({
-  page: z
-    .enum([
-      "home",
-      "projects",
-      "project-detail",
-      "skills",
-      "journey",
-      "credentials",
-      "contact",
-      "recruiter",
-      "chat",
-    ])
-    .describe("The page to navigate to"),
-
-  slug: z
-    .string()
-    .optional()
-    .describe(
-      "Project slug for project-detail page (e.g., 'north-glass', 'elon-ai-agent')"
-    ),
-
-  reason: z
-    .string()
-    .describe(
-      "Brief explanation of why this page is relevant to the user's query"
-    ),
-});
-
-export type NavigatePageInput = z.infer<typeof navigatePageSchema>;
+export const navigatePageSchema = navigatePageInputSchema;
+export type { NavigatePageInput };
 
 /**
  * Page metadata for agent context

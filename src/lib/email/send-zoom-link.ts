@@ -2,7 +2,21 @@ import { render } from "@react-email/render";
 import { Resend } from "resend";
 import { ZoomLinkEmail } from "./templates/ZoomLinkEmail";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend: Resend | null = null;
+
+function getResendClient(): Resend | null {
+  if (resend) {
+    return resend;
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+
+  resend = new Resend(apiKey);
+  return resend;
+}
 
 interface SendZoomLinkEmailInput {
   to: string;
@@ -26,6 +40,14 @@ export async function sendZoomLinkEmail({
   conversationNotes,
 }: SendZoomLinkEmailInput): Promise<SendZoomLinkEmailResult> {
   try {
+    const client = getResendClient();
+    if (!client) {
+      return {
+        success: false,
+        error: "Email service not configured. Please contact support.",
+      };
+    }
+
     // Get Zoom link from environment variable
     const zoomLink = process.env.OMER_ZOOM_LINK;
 
@@ -47,7 +69,7 @@ export async function sendZoomLinkEmail({
     );
 
     // Send email via Resend
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await client.emails.send({
       from: "Omer Akben <noreply@omerakben.com>",
       to: [to],
       subject: `Let's connect! Here's my Zoom link`,
