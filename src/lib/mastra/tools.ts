@@ -7,6 +7,7 @@ import {
   searchProjectsSemanticSchema,
   triggerWorkflowInputSchema,
 } from "@/lib/agent-tools/schemas";
+import { getContactMastraTool } from "@/lib/tools";
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 
@@ -151,14 +152,7 @@ export const openProjectTool = createTool({
   },
 });
 
-export const getContactTool = createTool({
-  id: "get_contact",
-  description: "Retrieve the best contact information for Omer Akben.",
-  execute: async () => {
-    const response = await fetch(`${BASE_URL}/api/tools/get-contact`);
-    return response.json();
-  },
-});
+export const getContactTool = getContactMastraTool;
 
 export const collectContactTool = createTool({
   id: "collect_contact",

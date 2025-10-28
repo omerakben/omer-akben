@@ -1,15 +1,13 @@
-import { getContactInfo } from "@/data/facts";
+import { resolveGetContact } from "@/lib/tools/implementations/get-contact";
 import { NextResponse } from "next/server";
 
 // Support both GET and POST for agent tool compatibility
 export async function GET() {
   try {
-    const contact = getContactInfo();
+    const data = await resolveGetContact({});
     return NextResponse.json({
       success: true,
-      data: {
-        contact,
-      },
+      data,
     });
   } catch (error) {
     return NextResponse.json(
@@ -24,12 +22,10 @@ export async function GET() {
 
 export async function POST() {
   try {
-    const contact = getContactInfo();
+    const data = await resolveGetContact({});
     return NextResponse.json({
       success: true,
-      data: {
-        contact,
-      },
+      data,
     });
   } catch (error) {
     return NextResponse.json(
