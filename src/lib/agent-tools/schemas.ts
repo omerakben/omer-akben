@@ -16,7 +16,7 @@ export const downloadResumeOutputSchema = z.object({
   url: z.string().url(),
   filename: z.string(),
   size: z.number(),
-  format: z.string().describe("File format (pdf or docx)"),
+  format: z.string().describe("File format (PDF only - DOCX not available)"),
   googleDriveUrl: z
     .string()
     .url()
