@@ -43,10 +43,10 @@ export const collectContact = tool<
   CollectContactResponse
 >({
   description:
-    "Collect visitor contact information, persist it securely, and share Omer's Zoom link after consent.",
+    "Collect visitor contact information (name, email, company, purpose) and automatically send a professional email via Resend with Omer's Zoom link. Validates email addresses, rate limits (5 per email/IP per 24h), and persists data securely to Redis.",
   inputSchema: collectContactInputSchema,
   outputSchema: collectContactResponseSchema,
-  execute: async (input, options) => {
+  execute: async (input, options?) => {
     const emailValidation = validateContactEmail(input.email);
     if (!emailValidation.valid) {
       return createErrorResponse(emailValidation.error ?? "Invalid email format");

@@ -100,9 +100,9 @@ export const profilePerformanceTool = createTool({
 export const downloadResumeTool = createTool({
   id: "download_resume",
   description:
-    "Download the latest version of Omer Akben's resume in the requested format.",
+    "Download Omer Akben's resume. Only 2 PDF formats available: 'resume' (original) or 'extended' (detailed with projects). DOCX is not available.",
   inputSchema: z.object({
-    format: z.enum(["pdf", "docx"]).default("pdf"),
+    format: z.enum(["resume", "extended"]).default("resume"),
   }),
   execute: async ({ context }) => {
     const params = new URLSearchParams({ format: context.format });
