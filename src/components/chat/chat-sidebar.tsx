@@ -571,16 +571,25 @@ export function ChatSidebar() {
                               remarkPlugins={[remarkGfm]}
                               components={{
                                 a: ({ href, children }) => {
-                                  // Detect internal vs external links
-                                  const isInternal =
-                                    href?.startsWith("/") ||
-                                    href?.startsWith("#") ||
-                                    href?.includes("omerakben.com");
+                                  // Detect internal vs external links securely
+                                  const INTERNAL_HOSTNAMES = ["omerakben.com", "www.omerakben.com"];
+                                  let isInternal = href?.startsWith("/") || href?.startsWith("#");
+
+                                  if (!isInternal && href) {
+                                    try {
+                                      const url = new URL(href, "https://omerakben.com");
+                                      isInternal = INTERNAL_HOSTNAMES.includes(url.hostname);
+                                    } catch {
+                                      // If URL parsing fails, treat as external
+                                      isInternal = false;
+                                    }
+                                  }
 
                                   if (isInternal) {
-                                    // Internal link: Navigate in same window
+                                    // Internal link: Navigate in same window using <a> for accessibility
                                     return (
-                                      <button
+                                      <a
+                                        href={href}
                                         onClick={(e) => {
                                           e.preventDefault();
                                           if (href) {
@@ -588,14 +597,14 @@ export function ChatSidebar() {
                                             router.push(href);
                                           }
                                         }}
-                                        className={`underline hover:no-underline cursor-pointer inline ${
+                                        className={`underline hover:no-underline cursor-pointer ${
                                           message.role === "user"
                                             ? "text-white"
                                             : "text-brand-primary"
                                         }`}
                                       >
                                         {children}
-                                      </button>
+                                      </a>
                                     );
                                   }
 

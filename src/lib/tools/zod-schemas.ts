@@ -48,7 +48,7 @@ export const downloadResumeInputSchema = z.object({
 });
 
 export const downloadResumeOutputSchema = z.object({
-  url: z.string().url(),
+  url: z.string(), // Accepts relative paths like /assets/file.pdf
   filename: z.string(),
   size: z.number(),
   format: z.string().describe("File format (pdf or docx)"),
@@ -165,7 +165,7 @@ export const downloadCertificateInputSchema = z.object({
 });
 
 export const downloadCertificateOutputSchema = z.object({
-  url: z.string().url(),
+  url: z.string(), // Accepts relative paths like /assets/file.pdf
   filename: z.string(),
   size: z.number(),
   format: z.string().describe("File format (pdf)"),

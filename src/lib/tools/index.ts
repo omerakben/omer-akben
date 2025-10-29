@@ -17,6 +17,16 @@ import { scrollToSection } from "@/lib/tools/implementations/scroll-to-section";
 import { searchProjectsSemantic } from "@/lib/tools/implementations/search-projects-semantic";
 import { triggerWorkflow } from "@/lib/tools/implementations/trigger-workflow";
 
+/**
+ * Converts an AI SDK tool to Mastra format with runtime schema validation.
+ *
+ * Type Safety Assumptions:
+ * - Input/Output types match the Zod schemas provided in the AI tool
+ * - Context from Mastra matches Input type after validation
+ * - Options from Mastra match ToolCallOptions structure
+ *
+ * @throws Error if tool doesn't implement execute() or schemas are invalid
+ */
 const adaptAiToolToMastra = <Input, Output>(
   id: string,
   aiTool: AiTool<Input, Output>
@@ -25,9 +35,22 @@ const adaptAiToolToMastra = <Input, Output>(
     throw new Error(`AI tool ${id} does not implement execute()`);
   }
 
+  // Runtime validation: Ensure schemas are valid Zod objects
+  if (
+    typeof aiTool.inputSchema !== "object" ||
+    typeof aiTool.outputSchema !== "object" ||
+    !("safeParse" in aiTool.inputSchema) ||
+    !("safeParse" in aiTool.outputSchema)
+  ) {
+    throw new Error(
+      `AI tool ${id} does not provide valid Zod schemas for inputSchema/outputSchema`
+    );
+  }
+
   return createMastraTool({
     id,
     description: aiTool.description ?? "",
+    // Runtime validation ensures these are valid Zod schemas
     inputSchema: aiTool.inputSchema as unknown as ZodTypeAny,
     outputSchema: aiTool.outputSchema as unknown as ZodTypeAny,
     execute: async ({ context }, options) =>
