@@ -2,8 +2,7 @@ import { createTool as createMastraTool } from "@mastra/core";
 import type { Tool as AiTool, ToolCallOptions } from "ai";
 import type { ZodTypeAny } from "zod";
 
-// TODO: Re-enable when email dependencies (@react-email/render, resend) are installed
-// import { collectContact } from "@/lib/tools/implementations/collect-contact";
+import { collectContact } from "@/lib/tools/implementations/collect-contact";
 import { downloadCertificate } from "@/lib/tools/implementations/download-certificate";
 import { downloadResume } from "@/lib/tools/implementations/download-resume";
 import { extractPageSummary } from "@/lib/tools/implementations/extract-page-summary";
@@ -74,8 +73,9 @@ export const aiToolRegistry = {
   search_projects_semantic: searchProjectsSemantic,
   open_project: openProject,
   get_contact: getContact,
-  // TODO: Re-enable when email dependencies are installed
-  // collect_contact: collectContact,
+  ...(process.env.ENABLE_CONTACT_COLLECTION === "true"
+    ? { collect_contact: collectContact }
+    : {}),
 } as const;
 
 export type PortfolioToolId = keyof typeof aiToolRegistry;
@@ -123,11 +123,16 @@ export const mastraToolRegistry = {
   ),
   open_project: adaptAiToolToMastra("open_project", aiToolRegistry.open_project),
   get_contact: adaptAiToolToMastra("get_contact", aiToolRegistry.get_contact),
-  // TODO: Re-enable when email dependencies are installed
-  // collect_contact: adaptAiToolToMastra(
-  //   "collect_contact",
-  //   aiToolRegistry.collect_contact
-  // ),
+  ...(process.env.ENABLE_CONTACT_COLLECTION === "true" &&
+  "collect_contact" in aiToolRegistry &&
+  aiToolRegistry.collect_contact
+    ? {
+        collect_contact: adaptAiToolToMastra(
+          "collect_contact",
+          aiToolRegistry.collect_contact
+        ),
+      }
+    : {}),
 } as const;
 
 export const provideNavigationLinksTool =
@@ -147,7 +152,9 @@ export const searchProjectsSemanticTool =
   mastraToolRegistry.search_projects_semantic;
 export const openProjectTool = mastraToolRegistry.open_project;
 export const getContactTool = mastraToolRegistry.get_contact;
-// TODO: Re-enable when email dependencies are installed
-// export const collectContactTool = mastraToolRegistry.collect_contact;
+export const collectContactTool =
+  "collect_contact" in mastraToolRegistry
+    ? mastraToolRegistry.collect_contact
+    : undefined;
 
 export const mastraToolList = Object.values(mastraToolRegistry);
