@@ -570,20 +570,51 @@ export function ChatSidebar() {
                             <ReactMarkdown
                               remarkPlugins={[remarkGfm]}
                               components={{
-                                a: ({ href, children }) => (
-                                  <a
-                                    href={href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`underline hover:no-underline ${
-                                      message.role === "user"
-                                        ? "text-white"
-                                        : "text-brand-primary"
-                                    }`}
-                                  >
-                                    {children}
-                                  </a>
-                                ),
+                                a: ({ href, children }) => {
+                                  // Detect internal vs external links
+                                  const isInternal =
+                                    href?.startsWith("/") ||
+                                    href?.startsWith("#") ||
+                                    href?.includes("omerakben.com");
+
+                                  if (isInternal) {
+                                    // Internal link: Navigate in same window
+                                    return (
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          if (href) {
+                                            closeSidebar();
+                                            router.push(href);
+                                          }
+                                        }}
+                                        className={`underline hover:no-underline cursor-pointer inline ${
+                                          message.role === "user"
+                                            ? "text-white"
+                                            : "text-brand-primary"
+                                        }`}
+                                      >
+                                        {children}
+                                      </button>
+                                    );
+                                  }
+
+                                  // External link: Open in new tab
+                                  return (
+                                    <a
+                                      href={href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`underline hover:no-underline ${
+                                        message.role === "user"
+                                          ? "text-white"
+                                          : "text-brand-primary"
+                                      }`}
+                                    >
+                                      {children}
+                                    </a>
+                                  );
+                                },
                                 p: ({ children }) => (
                                   <p className="mb-2 last:mb-0">{children}</p>
                                 ),
