@@ -2,10 +2,11 @@ import {
   BasePortfolioAgent,
   type AgentExecutionContext,
 } from "@/lib/mastra/agents/base-agent";
-import {
-  buildContactInstructions,
-  contactAgent,
-} from "@/lib/mastra/agents/contact-agent";
+// TODO: Re-enable when email dependencies are installed
+// import {
+//   buildContactInstructions,
+//   contactAgent,
+// } from "@/lib/mastra/agents/contact-agent";
 import {
   buildNavigationInstructions,
   navigationAgent,
@@ -33,7 +34,7 @@ If the query is ambiguous, choose the safest agent that can help or ask a clarif
 type PortfolioIntent =
   | "resume"
   | "projects"
-  | "contact"
+  // | "contact" // TODO: Re-enable when email dependencies are installed
   | "navigation"
   | "performance";
 
@@ -45,7 +46,8 @@ type AgentRoute = {
 const ROUTES: Record<PortfolioIntent, AgentRoute> = {
   resume: { agent: resumeAgent, instructions: buildResumeInstructions },
   projects: { agent: projectAgent, instructions: buildProjectInstructions },
-  contact: { agent: contactAgent, instructions: buildContactInstructions },
+  // TODO: Re-enable when email dependencies are installed
+  // contact: { agent: contactAgent, instructions: buildContactInstructions },
   navigation: {
     agent: navigationAgent,
     instructions: buildNavigationInstructions,
@@ -78,9 +80,10 @@ function classifyIntent(query: string): PortfolioIntent {
   if (/project|portfolio|work|case study|build/.test(normalized)) {
     return "projects";
   }
-  if (/contact|email|reach|hire|connect/.test(normalized)) {
-    return "contact";
-  }
+  // TODO: Re-enable when email dependencies are installed
+  // if (/contact|email|reach|hire|connect/.test(normalized)) {
+  //   return "contact";
+  // }
   if (
     /navigate|section|scroll|where is|go to|show me the page/.test(normalized)
   ) {

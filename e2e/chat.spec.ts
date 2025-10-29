@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test";
 
+// Skip chat E2E tests in CI to avoid OpenAI API calls and timeout issues
+// These tests make real AI API calls which are slow, expensive, and unreliable
+// Run locally with: npm run test:e2e -- chat.spec.ts
 test.describe("Chat Functionality", () => {
+  // Skip all chat tests in CI environment
+  test.skip(!!process.env.CI, "Skipping chat tests in CI (real API calls)");
+
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
   });
