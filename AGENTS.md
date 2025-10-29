@@ -217,7 +217,7 @@ All tools in `src/app/api/tools/`:
 3. `list_projects` - Filterable project catalog
 4. `open_project` - Project details by slug
 5. `get_contact` - Contact information
-6. `collect_contact` - Proactive contact collection (Resend + Zoom)
+6. `collect_contact` - Proactive contact collection with email delivery (rate limit: 5/IP/24h)
 7. `navigate_page` - Page navigation
 8. `provide_navigation_links` - Navigation structure
 9. `extract_summary` - Content summarization
@@ -341,6 +341,57 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 
 **Graceful Degradation:**
 - Falls back to in-memory rate limiting if Redis unavailable
+
+### 7. Contact Collection System (Production-Ready)
+
+**Feature:** `collect_contact` tool - Proactive visitor engagement with automated email delivery
+
+**Implementation:** `src/lib/tools/implementations/collect-contact.ts`
+
+**Components:**
+- **Email Service:** Resend API with React Email templates (`lib/email/templates/ZoomLinkEmail.tsx`)
+- **Rate Limiting:** 5 requests per IP per 24 hours (increased from 1 for recruiter team sharing)
+- **Storage:** Redis-backed contact persistence with 7-day TTL
+- **Validation:** Email format validation, disposable email blocking, PII redaction
+
+**Trigger Conditions:**
+1. **Explicit Request:** User asks "send me the link", "email me", "schedule a call"
+2. **Engagement Score ≥60:** Based on message count, topics discussed, projects viewed
+3. **High-Value User:** Recruiter/hiring manager + 3+ messages + multiple topics
+
+**Email Flow:**
+```
+User shows interest → Ozzy asks permission → User provides contact →
+Validate email → Save to Redis (7-day TTL) → Send via Resend →
+Return Zoom link immediately → Continue conversation
+```
+
+**Email Template Features:**
+- Professional branding with Omer's contact info
+- Direct Calendly/Zoom meeting link
+- Resume download links (Original + Extended PDF formats)
+- Clean HTML/text fallback design
+- Reply-to address configured
+
+**Environment Variables Required:**
+```bash
+RESEND_API_KEY=re_...                              # Email service
+OMER_ZOOM_LINK=https://calendly.com/.../30min     # Meeting link
+OMER_EMAIL=me@omerakben.com                        # Reply-to address
+```
+
+**Security Features:**
+- Server-side only (no client exposure of API keys)
+- Email validation with format checking
+- Rate limiting prevents spam (5 per IP per 24h)
+- PII redaction in logs
+- 7-day contact data retention
+
+**Rationale for 5/24h Limit:**
+- Original: 1 request per 24 hours per IP (too restrictive)
+- Updated: 5 requests per 24 hours per IP
+- Reasoning: Allows recruiting teams at same company (shared IP) to each use the feature
+- Balance: Prevents spam while supporting legitimate business use case
 
 ---
 
@@ -620,6 +671,101 @@ To add a new AI agent tool:
 - ✅ All 8 routes tested for accessibility (WCAG 2A)
 - ✅ Bundle size within budget (7.73 KB / 40 KB homepage)
 - ✅ PII redaction logger in place
+
+---
+
+## 📚 Recent Implementation Notes (October 2025)
+
+### Contact Collection Feature
+
+**PR:** #43 - Recruiter Email System with Proactive Contact Collection
+
+**Timeline:** October 27-29, 2025
+
+**Key Implementation:**
+
+1. **Rate Limit Optimization**
+   - Initial: 1 request per IP per 24 hours (too restrictive)
+   - Final: 5 requests per IP per 24 hours
+   - Rationale: Support recruiting teams at same company (shared IP) while preventing spam
+   - Files: `src/lib/rate-limit.ts`, `src/lib/tools/implementations/collect-contact.ts`
+
+2. **Email Template Enhancement**
+   - Added resume download links directly in email (Google Drive)
+   - Original Resume: [Link](https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing)
+   - Extended Resume: [Link](https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing)
+   - Professional branding with React Email components
+   - File: `src/lib/email/templates/ZoomLinkEmail.tsx`
+
+3. **Resume Format Standardization**
+   - Removed ALL DOCX mentions from AI knowledge base
+   - Only 2 PDF formats available: Original and Extended
+   - DOCX kept private for direct job applications only
+   - Updated 3 schema files: `agent-knowledge-base.ts`, `tools/zod-schemas.ts`, `agent-tools/schemas.ts`
+
+4. **Tool Description Updates**
+   - Mastra tool: `downloadResumeTool` - explicitly states "Only 2 PDF formats available"
+   - AI SDK tool: `downloadResume` - schema validation enforces PDF-only
+   - Prevented AI Ozzy from offering unavailable DOCX format
+
+**Testing Approach:**
+- Manual validation via Playwright for real browser testing
+- Verified email template rendering and link accessibility
+- Tested AI agent responses to ensure no DOCX mentions
+- All 6 quality gates passed (lint, tsc, test, build, size, e2e)
+
+**Security Considerations:**
+- Server-side API key management (Resend)
+- Rate limiting via Redis (Upstash)
+- Email validation and sanitization
+- PII redaction in logs
+- 7-day contact data retention
+
+---
+
+### Lessons Learned
+
+**1. Rate Limiting Strategy**
+- **Learning:** Initial rate limits may be too conservative for real-world usage patterns
+- **Solution:** Consider business context (recruiting teams share IPs) when setting limits
+- **Balance:** 5 requests per 24h prevents spam while supporting legitimate collaboration
+- **Implementation:** Simple numeric change in `Ratelimit.slidingWindow()` configuration
+
+**2. Email Template Design**
+- **Learning:** Include all relevant resources (resume links) directly in email
+- **Benefit:** Reduces friction - recipients get everything they need in one message
+- **Implementation:** Direct Google Drive links with descriptive labels
+- **User Experience:** Recipients can download resumes without additional navigation
+
+**3. AI Knowledge Base Consistency**
+- **Learning:** AI agent knowledge base must be single source of truth
+- **Problem:** Multiple schema files caused inconsistent AI responses about resume formats
+- **Solution:** Updated ALL schema locations (3 files) + knowledge base documentation
+- **Prevention:** Document which formats exist and explicitly state unavailable formats
+
+**4. Manual Testing for AI Behavior**
+- **Learning:** Unit tests validate API logic, but can't verify AI agent responses
+- **Tool:** Playwright for real browser testing of AI conversations
+- **Validation:** Manually tested that AI Ozzy no longer mentions DOCX format
+- **Coverage:** Tested edge cases like "do you have Word format?" queries
+
+**5. Documentation Completeness**
+- **Learning:** Implementation notes should capture rationale, not just changes
+- **Important:** Document WHY decisions were made (e.g., rate limit increase from 1→5)
+- **Benefit:** Future developers understand trade-offs and business context
+- **Practice:** Update AGENTS.md and CLAUDE.md after significant implementations
+
+**6. Environment Variable Management**
+- **Learning:** New features often require new environment variables
+- **Checklist:** Update `.env.example`, document in AGENTS.md/CLAUDE.md, configure in CI/CD
+- **Security:** Never expose secrets in client-side code or commit to version control
+- **Verification:** Test that production deployment has all required env vars
+
+**7. Quality Gate Enforcement**
+- **Learning:** All 6 quality gates must pass before merge (no exceptions)
+- **Gates:** TypeScript (0 errors), ESLint (0 errors), Tests (531/531), Build, Size, E2E
+- **Benefit:** Catches regressions early, maintains zero technical debt
+- **CI/CD:** GitHub Actions enforces gates on every push to pre-deployment
 
 ---
 
