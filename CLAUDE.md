@@ -204,7 +204,7 @@ See [OZZY_CONTACT_COLLECTION_PLAN.md](OZZY_CONTACT_COLLECTION_PLAN.md) for compl
 
 - **Email Service**: Resend with React Email templates
 - **Tool**: `collect_contact` - Collects name, email, company, purpose
-- **Rate Limiting**: 1 collection per IP per 24 hours (Redis-backed)
+- **Rate Limiting**: 5 collections per IP per 24 hours (Redis-backed, increased for recruiter team sharing)
 - **Engagement Tracking**: Proactive prompt after 3+ positive messages
 - **Security**: Email validation, disposable email blocking, PII redaction, 7-day TTL
 
@@ -233,11 +233,13 @@ OMER_EMAIL=me@omerakben.com                        # Reply-to address
 **Implementation Status:**
 
 - ✅ Resend account configured
-- ✅ Email templates designed (React Email)
+- ✅ Email templates designed (React Email) with resume links
 - ✅ Domain verification completed
-- ⏳ Tool implementation in progress
-- ⏳ Engagement tracking in progress
-- ⏳ System prompt updates pending
+- ✅ Tool implementation complete (`collect_contact`)
+- ✅ Rate limiting configured (5 per IP per 24h)
+- ✅ Resume format standardization (PDF-only, no DOCX)
+- ✅ System prompt and knowledge base updated
+- ✅ Production deployment ready (PR #43)
 
 ---
 
@@ -661,3 +663,160 @@ ANALYZE=true  # Enable bundle analyzer
 - `TODO.md` - Implementation roadmap with health score tracking
 - `AI_AGENT.md` - Agent documentation and capabilities
 - `claudedocs/` - Additional documentation and analyses
+
+---
+
+## 📚 Recent Implementation Notes (October 2025)
+
+### Contact Collection Feature
+
+**PR:** #43 - Recruiter Email System with Proactive Contact Collection
+
+**Timeline:** October 27-29, 2025
+
+**Key Implementation:**
+
+1. **Rate Limit Optimization**
+   - Initial: 1 request per IP per 24 hours (too restrictive)
+   - Final: 5 requests per IP per 24 hours
+   - Rationale: Support recruiting teams at same company (shared IP) while preventing spam
+   - Files: `src/lib/rate-limit.ts`, `src/lib/tools/implementations/collect-contact.ts`
+   - Change: `Ratelimit.slidingWindow(1, "24 h")` → `Ratelimit.slidingWindow(5, "24 h")`
+
+2. **Email Template Enhancement**
+   - Added resume download links directly in email (Google Drive)
+   - Original Resume: [Link](https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing)
+   - Extended Resume: [Link](https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing)
+   - Professional branding with React Email components
+   - File: `src/lib/email/templates/ZoomLinkEmail.tsx`
+
+3. **Resume Format Standardization**
+   - Removed ALL DOCX mentions from AI knowledge base
+   - Only 2 PDF formats available: Original and Extended
+   - DOCX kept private for direct job applications only
+   - Updated 3 schema files:
+     - `src/lib/agent-knowledge-base.ts`
+     - `src/lib/tools/zod-schemas.ts`
+     - `src/lib/agent-tools/schemas.ts`
+
+4. **Tool Description Updates**
+   - Mastra tool: `downloadResumeTool` - explicitly states "Only 2 PDF formats available"
+   - AI SDK tool: `downloadResume` - schema validation enforces PDF-only
+   - Contact collection tool: Updated to reflect 5 per 24h rate limit
+   - Prevented AI Ozzy from offering unavailable DOCX format
+
+**Testing Approach:**
+- Manual validation via Playwright for real browser testing
+- Verified email template rendering and link accessibility
+- Tested AI agent responses to ensure no DOCX mentions
+- All 6 quality gates passed (lint, tsc, test, build, size, e2e)
+
+**Security Considerations:**
+- Server-side API key management (Resend)
+- Rate limiting via Redis (Upstash)
+- Email validation and sanitization
+- PII redaction in logs
+- 7-day contact data retention
+
+---
+
+### Lessons Learned
+
+**1. Rate Limiting Strategy**
+- **Learning:** Initial rate limits may be too conservative for real-world usage patterns
+- **Problem:** 1 per 24h blocked recruiting teams at same company (shared IP)
+- **Solution:** Consider business context when setting limits
+- **Balance:** 5 requests per 24h prevents spam while supporting legitimate collaboration
+- **Implementation:** Simple numeric change in `Ratelimit.slidingWindow()` configuration
+- **User Feedback:** Request came from recognizing recruiter use case (showing to colleagues)
+
+**2. Email Template Design**
+- **Learning:** Include all relevant resources (resume links) directly in email
+- **Benefit:** Reduces friction - recipients get everything they need in one message
+- **Implementation:** Direct Google Drive links with descriptive labels in email body
+- **User Experience:** Recipients can download resumes without additional navigation
+- **Professional Touch:** Maintains branding and provides clear call-to-action
+
+**3. AI Knowledge Base Consistency**
+- **Learning:** AI agent knowledge base must be single source of truth
+- **Problem:** Multiple schema files caused inconsistent AI responses about resume formats
+- **Solution:** Updated ALL schema locations (3 files) + knowledge base documentation
+- **Prevention:** Document which formats exist and explicitly state unavailable formats
+- **Testing:** Manual validation required to verify AI behavior changes
+
+**4. Manual Testing for AI Behavior**
+- **Learning:** Unit tests validate API logic, but can't verify AI agent responses
+- **Tool:** Playwright for real browser testing of AI conversations
+- **Validation:** Manually tested that AI Ozzy no longer mentions DOCX format
+- **Coverage:** Tested edge cases like "do you have Word format?" queries
+- **Approach:** Interactive testing catches behavioral issues unit tests miss
+
+**5. Documentation Completeness**
+- **Learning:** Implementation notes should capture rationale, not just changes
+- **Important:** Document WHY decisions were made (e.g., rate limit increase from 1→5)
+- **Benefit:** Future developers understand trade-offs and business context
+- **Practice:** Update AGENTS.md and CLAUDE.md after significant implementations
+- **Context Preservation:** Helps onboarding and troubleshooting
+
+**6. Environment Variable Management**
+- **Learning:** New features often require new environment variables
+- **Checklist:** Update `.env.example`, document in AGENTS.md/CLAUDE.md, configure in CI/CD
+- **Security:** Never expose secrets in client-side code or commit to version control
+- **Verification:** Test that production deployment has all required env vars
+- **For Contact Collection:** Required RESEND_API_KEY, OMER_EMAIL, OMER_ZOOM_LINK
+
+**7. Quality Gate Enforcement**
+- **Learning:** All 6 quality gates must pass before merge (no exceptions)
+- **Gates:** TypeScript (0 errors), ESLint (0 errors), Tests (531/531), Build, Size, E2E
+- **Benefit:** Catches regressions early, maintains zero technical debt
+- **CI/CD:** GitHub Actions enforces gates on every push to pre-deployment
+- **Result:** Production-ready code, no shortcuts
+
+**8. Iterative Development Based on User Needs**
+- **Learning:** Real-world usage reveals constraints not caught in initial design
+- **Example:** Rate limit of 1 seemed reasonable initially, but blocked legitimate use case
+- **Response:** Quick iteration to adjust limit based on user feedback
+- **Agility:** Simple changes (1→5) had significant UX impact
+- **Validation:** User confirmed the change addressed their concern
+
+---
+
+## 📋 Implementation Checklist Template
+
+For future AI agent tool implementations:
+
+**Planning Phase:**
+- [ ] Define clear tool purpose and triggers
+- [ ] Design Zod schemas for input/output validation
+- [ ] Consider rate limiting requirements
+- [ ] Plan security measures (validation, sanitization, PII)
+- [ ] Document environment variables needed
+
+**Implementation Phase:**
+- [ ] Create API route handler (`src/app/api/tools/[name]/route.ts`)
+- [ ] Implement tool schema in `lib/agent-tools/schemas.ts`
+- [ ] Add Mastra tool in `lib/mastra/tools.ts` (if needed)
+- [ ] Update AI knowledge base (`lib/agent-knowledge-base.ts`)
+- [ ] Configure rate limiting in `lib/rate-limit.ts`
+
+**Testing Phase:**
+- [ ] Write unit tests for API route
+- [ ] Test Zod schema validation (valid + invalid inputs)
+- [ ] Manual testing via Playwright for AI behavior
+- [ ] Verify rate limiting works correctly
+- [ ] Test all 6 quality gates pass
+
+**Documentation Phase:**
+- [ ] Update AGENTS.md with tool details
+- [ ] Update CLAUDE.md with implementation notes
+- [ ] Document environment variables in `.env.example`
+- [ ] Add lessons learned section
+- [ ] Update README.md if needed
+
+**Deployment Phase:**
+- [ ] Configure environment variables in Vercel
+- [ ] Configure secrets in GitHub Actions
+- [ ] Create PR with comprehensive description
+- [ ] Verify CI/CD passes all gates
+- [ ] Monitor production deployment
+

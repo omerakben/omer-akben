@@ -72,16 +72,46 @@ export const ZoomLinkEmail = ({
 
           <Section style={divider} />
 
+          <Text style={text}>
+            <strong>Resume Downloads (PDF):</strong>
+            <br />
+            <Link
+              href="https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing"
+              style={resumeLink}
+            >
+              → Original Resume
+            </Link>
+            <br />
+            <Link
+              href="https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing"
+              style={resumeLink}
+            >
+              → Extended Resume (with detailed projects)
+            </Link>
+          </Text>
+
+          <Section style={divider} />
+
           <Text style={footer}>
             <strong>Omer &quot;Ozzy&quot; Akben</strong>
             <br />
             Full-Stack AI Engineer • SDET
             <br />
-            📧 {myEmail}
             <br />
-            🌐 <Link href="https://omerakben.com">omerakben.com</Link>
+            <span style={contactLabel}>Email:</span>{" "}
+            <Link href={`mailto:${myEmail}`} style={contactLink}>
+              {myEmail}
+            </Link>
             <br />
-            💼 <Link href="https://linkedin.com/in/omerakben">LinkedIn</Link>
+            <span style={contactLabel}>Web:</span>{" "}
+            <Link href="https://omerakben.com" style={contactLink}>
+              omerakben.com
+            </Link>
+            <br />
+            <span style={contactLabel}>LinkedIn:</span>{" "}
+            <Link href="https://linkedin.com/in/omerakben" style={contactLink}>
+              /in/omerakben
+            </Link>
           </Text>
 
           <Text style={disclaimer}>
@@ -173,6 +203,23 @@ const disclaimer = {
   fontSize: "12px",
   lineHeight: "18px",
   marginTop: "32px",
+};
+
+const contactLabel = {
+  color: "#00FFC6",
+  fontWeight: "600" as const,
+  fontSize: "13px",
+};
+
+const contactLink = {
+  color: "#666",
+  textDecoration: "none",
+};
+
+const resumeLink = {
+  color: "#00FFC6",
+  textDecoration: "none",
+  fontWeight: "500" as const,
 };
 
 export default ZoomLinkEmail;

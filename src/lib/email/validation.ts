@@ -6,8 +6,9 @@
  */
 
 /**
- * List of common disposable email domains
+ * List of common disposable email domains (updated 2025)
  * Source: https://github.com/disposable-email-domains/disposable-email-domains
+ * Last updated: January 2025
  */
 const DISPOSABLE_EMAIL_DOMAINS = [
   "tempmail.com",
@@ -30,6 +31,17 @@ const DISPOSABLE_EMAIL_DOMAINS = [
   "mytemp.email",
   "guerrillamailblock.com",
   "spamgourmet.com",
+  // 2025 additions
+  "emailondeck.com",
+  "emailfake.com",
+  "temp-mail.io",
+  "disposablemail.com",
+  "tempmailo.com",
+  "burnermail.io",
+  "inboxkitten.com",
+  "mailsac.com",
+  "mailtemp.net",
+  "temporary-mail.net",
 ];
 
 /**
