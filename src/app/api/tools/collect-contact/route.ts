@@ -1,5 +1,6 @@
 import { collectContact } from "@/lib/tools/implementations/collect-contact";
 import { NextResponse } from "next/server";
+import type { ToolCallOptions } from "ai";
 
 /**
  * Collect Contact API Route
@@ -32,10 +33,11 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     // Execute the collect_contact tool
-    // Note: Not providing toolCallId so rate limiting uses email-based keys
+    // Note: Empty toolCallId so rate limiting falls back to email-based keys
     const result = await collectContact.execute!(body, {
       messages: [],
-    } as any);
+      toolCallId: "",
+    } as ToolCallOptions);
 
     // Check if result has success property and handle accordingly
     if (typeof result === "object" && result !== null && "success" in result) {
