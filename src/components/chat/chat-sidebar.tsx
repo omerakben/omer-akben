@@ -570,20 +570,60 @@ export function ChatSidebar() {
                             <ReactMarkdown
                               remarkPlugins={[remarkGfm]}
                               components={{
-                                a: ({ href, children }) => (
-                                  <a
-                                    href={href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`underline hover:no-underline ${
-                                      message.role === "user"
-                                        ? "text-white"
-                                        : "text-brand-primary"
-                                    }`}
-                                  >
-                                    {children}
-                                  </a>
-                                ),
+                                a: ({ href, children }) => {
+                                  // Detect internal vs external links securely
+                                  const INTERNAL_HOSTNAMES = ["omerakben.com", "www.omerakben.com"];
+                                  let isInternal = href?.startsWith("/") || href?.startsWith("#");
+
+                                  if (!isInternal && href) {
+                                    try {
+                                      const url = new URL(href, "https://omerakben.com");
+                                      isInternal = INTERNAL_HOSTNAMES.includes(url.hostname);
+                                    } catch {
+                                      // If URL parsing fails, treat as external
+                                      isInternal = false;
+                                    }
+                                  }
+
+                                  if (isInternal) {
+                                    // Internal link: Navigate in same window using <a> for accessibility
+                                    return (
+                                      <a
+                                        href={href}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          if (href) {
+                                            closeSidebar();
+                                            router.push(href);
+                                          }
+                                        }}
+                                        className={`underline hover:no-underline cursor-pointer ${
+                                          message.role === "user"
+                                            ? "text-white"
+                                            : "text-brand-primary"
+                                        }`}
+                                      >
+                                        {children}
+                                      </a>
+                                    );
+                                  }
+
+                                  // External link: Open in new tab
+                                  return (
+                                    <a
+                                      href={href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`underline hover:no-underline ${
+                                        message.role === "user"
+                                          ? "text-white"
+                                          : "text-brand-primary"
+                                      }`}
+                                    >
+                                      {children}
+                                    </a>
+                                  );
+                                },
                                 p: ({ children }) => (
                                   <p className="mb-2 last:mb-0">{children}</p>
                                 ),

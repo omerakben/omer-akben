@@ -1,4 +1,5 @@
-import { contactAgent } from "@/lib/mastra/agents/contact-agent";
+// TODO: Re-enable when email dependencies are installed
+// import { contactAgent } from "@/lib/mastra/agents/contact-agent";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
 import { navigationAgent } from "@/lib/mastra/agents/navigation-agent";
 import { performanceAgent } from "@/lib/mastra/agents/performance-agent";
@@ -11,7 +12,8 @@ export const mastra = new Mastra({
     coordinator: coordinatorAgent,
     resume: resumeAgent,
     project: projectAgent,
-    contact: contactAgent,
+    // TODO: Re-enable when email dependencies are installed
+    // contact: contactAgent,
     navigation: navigationAgent,
     performance: performanceAgent,
   },
