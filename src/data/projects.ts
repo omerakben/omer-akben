@@ -14,7 +14,7 @@ export interface Project {
   githubUrl?: string;
   startDate?: string;
   endDate?: string;
-  status?: "completed" | "in-progress" | "planned";
+  status?: "completed" | "in-progress" | "planned" | "beta" | "placeholder";
 }
 
 export const projects: Project[] = [

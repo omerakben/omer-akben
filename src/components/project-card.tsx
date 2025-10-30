@@ -1,5 +1,6 @@
 "use client";
 
+import { StatusPill, type StatusVariant } from "@/components/StatusPill";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,7 @@ export interface ProjectCardProps {
   demoUrl?: string;
   githubUrl?: string;
   slug?: string;
-  status?: "completed" | "in-progress" | "planned";
+  status?: "completed" | "in-progress" | "planned" | "beta" | "placeholder";
   index?: number;
 }
 
@@ -40,6 +41,13 @@ export function ProjectCard({
 }: ProjectCardProps) {
   // First 6 cards (2 rows of 3) should animate immediately on page load
   const shouldAnimateImmediately = index < 6;
+
+  const pillStatuses: StatusVariant[] = [
+    "beta",
+    "in-progress",
+    "planned",
+    "placeholder",
+  ];
 
   return (
     <motion.div
@@ -84,9 +92,14 @@ export function ProjectCard({
 
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
-            <CardTitle className="group-hover:text-brand-primary transition-colors">
-              {slug ? <Link href={`/projects/${slug}`}>{title}</Link> : title}
-            </CardTitle>
+            <div className="flex flex-col gap-2">
+              <CardTitle className="group-hover:text-brand-primary transition-colors">
+                {slug ? <Link href={`/projects/${slug}`}>{title}</Link> : title}
+              </CardTitle>
+              {status && pillStatuses.includes(status as StatusVariant) && (
+                <StatusPill status={status as StatusVariant} />
+              )}
+            </div>
             <div className="flex gap-2 shrink-0">
               {githubUrl && (
                 <Button

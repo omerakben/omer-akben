@@ -1,6 +1,7 @@
+import { StatusPill, type StatusVariant } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/data/projects";
-import { roleColors, statusColors } from "@/lib/constants";
+import { roleColors } from "@/lib/constants";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +11,13 @@ interface ProjectPageContentProps {
 }
 
 export function ProjectPageContent({ project }: ProjectPageContentProps) {
+  const pillStatuses: StatusVariant[] = [
+    "beta",
+    "in-progress",
+    "planned",
+    "placeholder",
+  ];
+
   return (
     <main className="min-h-screen bg-surf-0 py-20">
       <div className="max-w-4xl mx-auto px-4 md:px-8">
@@ -28,15 +36,16 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
             >
               {project.role}
             </span>
-            {project.status && (
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium border capitalize ${
-                  statusColors[project.status]
-                }`}
-              >
-                {project.status}
+            {project.status === "completed" && (
+              <span className="px-3 py-1 rounded-full text-sm font-medium border border-brand-primary/30 bg-brand-primary/10 text-brand-primary">
+                Live
               </span>
             )}
+            {project.status &&
+              project.status !== "completed" &&
+              pillStatuses.includes(project.status as StatusVariant) && (
+                <StatusPill status={project.status as StatusVariant} />
+              )}
             {project.featured && (
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                 Featured

@@ -24,6 +24,7 @@
 
 - [About](#-about)
 - [Key Features](#-key-features)
+- [WIP + Cache Preferences](#-wip--cache-preferences)
 - [Tech Stack](#-tech-stack)
 - [AI Features](#-ai-features-ozzy-assistant)
 - [Getting Started](#-getting-started)
@@ -80,6 +81,15 @@
 - **Test Coverage** - 544 tests across 27 files (100% pass rate)
 - **CI/CD Pipeline** - 6 quality gates enforced on every commit
 - **Production Ready** - deployed on Vercel with zero-downtime updates
+
+---
+
+## 🚧 WIP + Cache Preferences
+
+- **Work-in-Progress gate** – first-time modal acknowledgement per build with optional “What’s New” toast.
+- **Caching control** – toggle between Performance (stale-while-revalidate) and Always fresh (no-store) directly from the banner.
+- **Transparency** – review deployment notes at [/status](/status) and cookie usage at [/legal/cookies](/legal/cookies).
+- **One-click reset** – “Clear cache” removes cookies, Cache Storage, and local/session storage for a clean refresh.
 
 ---
 
