@@ -1,6 +1,7 @@
+import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/data/projects";
-import { roleColors, statusColors } from "@/lib/constants";
+import { roleColors } from "@/lib/constants";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,15 +29,7 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
             >
               {project.role}
             </span>
-            {project.status && (
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium border capitalize ${
-                  statusColors[project.status]
-                }`}
-              >
-                {project.status}
-              </span>
-            )}
+            {project.status && <StatusPill status={project.status} />}
             {project.featured && (
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                 Featured

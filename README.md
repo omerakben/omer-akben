@@ -24,6 +24,7 @@
 
 - [About](#-about)
 - [Key Features](#-key-features)
+- [WIP + Cache Preferences](#-wip--cache-preferences)
 - [Tech Stack](#-tech-stack)
 - [AI Features](#-ai-features-ozzy-assistant)
 - [Getting Started](#-getting-started)
@@ -80,6 +81,18 @@
 - **Test Coverage** - 544 tests across 27 files (100% pass rate)
 - **CI/CD Pipeline** - 6 quality gates enforced on every commit
 - **Production Ready** - deployed on Vercel with zero-downtime updates
+
+- **🚧 Work-in-Progress Experience** - banner + modal keep visitors informed of live iterations
+- **🧭 Cache Controls** - visitors can choose performance or always-fresh API responses
+
+---
+
+## 🚧 WIP + Cache Preferences
+
+- **First-visit modal** tied to the active build ID communicates that pages are shipping in public.
+- **Sticky SiteStatus banner** surfaces build metadata, cache toggle, and a one-click clear cache action.
+- **Caching preferences** are persisted via `ozzy_cache_pref` and honored by API routes (e.g. [`/api/example`](src/app/api/example/route.ts)).
+- **Status resources**: [Status dashboard](/status) and [Cookie policy](/legal/cookies) outline what is working, what is missing, and how cookies behave.
 
 ---
 

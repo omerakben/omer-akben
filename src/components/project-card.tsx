@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { StatusPill, type StatusKind } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +24,7 @@ export interface ProjectCardProps {
   demoUrl?: string;
   githubUrl?: string;
   slug?: string;
-  status?: "completed" | "in-progress" | "planned";
+  status?: StatusKind;
   index?: number;
 }
 
@@ -68,7 +69,7 @@ export function ProjectCard({
             <Code2 className="w-20 h-20 text-brand-primary/40" />
           )}
           {/* Production Badge */}
-          {status === "completed" && demoUrl && (
+          {status === "beta" && demoUrl && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -130,6 +131,11 @@ export function ProjectCard({
         </CardHeader>
 
         <CardContent>
+          {status && (
+            <div className="mb-3">
+              <StatusPill status={status} />
+            </div>
+          )}
           <div className="flex flex-wrap gap-2">
             {technologies.slice(0, 6).map((tech) => (
               <Badge key={tech} variant="secondary">
