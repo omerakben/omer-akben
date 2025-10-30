@@ -499,38 +499,104 @@ My capstone project DEADLINE (A- grade) demonstrates production-level test archi
 **Recruiter asks about DEADLINE project:**
 "DEADLINE is my capstone project—a production full-stack developer operations platform achieving an A- (92/100) UI/UX grade. Here's what makes it stand out:
 
-**Mission:** Eliminate developer context-switching chaos by centralizing scattered artifacts (ENV variables, AI prompts, documentation links) into a secure, workspace-isolated command center. Stop Slack archeology and .env confusion.
+**Mission:** Eliminate developer context-switching chaos by centralizing scattered artifacts (ENV variables, AI prompts, documentation links) into a secure, workspace-isolated command center. Stop Slack archeology, .env confusion, and lost prompt templates.
 
-**Key Features:**
-- Polymorphic artifact system: ENV_VAR (encrypted secrets), PROMPT (AI prompt templates), DOC_LINK (documentation hub)
-- Multi-environment management: Separate DEV/STAGING/PROD configurations per workspace
-- Security-first: Masked sensitive values, immutable audit logs (user, IP, timestamp), rate limiting (10 reveals/min, 60 searches/hour)
-- Firebase Authentication (Email/Password + Google OAuth) for secure access
-- 64/64 backend tests passing, zero linting errors
+**The Problem It Solves:**
+Software developers manage hundreds of critical artifacts across multiple projects: environment variables, API keys, database URLs, AI prompts, documentation links, and configuration snippets. These artifacts are scattered across .env files, Notion docs, Slack threads, and developer notebooks, making them difficult to find, share, and keep secure. Traditional solutions like password managers aren't designed for development workflows, and cloud secret managers are often overkill for individual developers or small teams.
 
-**Tech Stack:** Django 5 + PostgreSQL (Railway) + Next.js 15 (Vercel) + Firebase Auth
+**The Solution:**
+DEADLINE provides a unified command center for development artifacts with:
+- **Polymorphic Artifact System**: Three artifact types unified in one interface
+  - ENV_VAR: Environment variables with encrypted storage (key/value pairs)
+  - PROMPT: AI prompt templates with title/content (for GPT-4, Claude, etc.)
+  - DOC_LINK: Documentation URLs with metadata and notes
+- **Multi-Environment Management**: Separate DEV/STAGING/PROD configurations per workspace with environment-scoped artifact visibility
+- **Security-First Architecture**:
+  - Masked sensitive values (e.g., ••••••••) with explicit reveal-on-click tracking
+  - Immutable audit logs capturing every ENV_VAR reveal (user, IP, timestamp)
+  - Firebase Authentication (Email/Password + Google OAuth) required for secure access
+  - Rate limiting via django-ratelimit (10 reveals/min, 60 searches/hour) prevents credential harvesting
+  - Workspace isolation ensures zero data leakage between teams
+- **Comprehensive Tagging & Search**: Tag artifacts by project, technology, or custom categories with full-text search
+- **Professional UI/UX**: Achieved A- (92/100) in Playwright visual testing with:
+  - Professional micro-interactions (hover states with scale effects, loading feedback)
+  - Accessible focus rings (#2563EB for keyboard navigation)
+  - Mobile-responsive design validated across desktop (1512px), tablet (768px), and mobile (375px)
+  - Custom 404 page with helpful navigation
+
+**Tech Stack:**
+- **Backend**: Django 5 REST API with Django REST Framework, deployed on Railway with PostgreSQL database
+- **Frontend**: Next.js 15 App Router with React 19, deployed on Vercel with Tailwind CSS styling
+- **Authentication**: Firebase Admin SDK for token verification, workspace isolation via owner_uid scoping
+- **Infrastructure**: Railway (backend + PostgreSQL), Vercel (frontend + Edge hosting)
+- **Quality Assurance**: 64/64 backend tests passing (pytest), Playwright visual testing (A- grade), zero ESLint errors
+
+**Architecture Highlights:**
+- **Polymorphic Artifact Model**: Django's ContentType framework handles three distinct artifact types with type-specific validation
+- **Environment-Aware Uniqueness**: Constraints prevent duplicate artifacts within same workspace/environment
+- **API Documentation**: OpenAPI/Swagger documentation at /api/docs/ with ReDoc alternative
+- **Alembic Migrations**: Schema evolution management for database changes
+- **Firebase Auth Flow**: Client-side Firebase SDK → ID token → Backend Admin SDK verification → Workspace scoping
 
 **Real-World Use Cases:**
-- Development teams centralize microservices ENV variables across environments
-- AI/ML engineers store prompt templates with version history, tagged by model (GPT-4, Claude)
-- Engineering onboarding: new hires get workspace templates with all docs and ENV vars pre-loaded
-- Audit compliance: track every ENV_VAR reveal for HIPAA, SOC 2, GDPR
+1. **Development Teams**: Centralize microservices ENV variables so junior devs find staging credentials instantly instead of pinging seniors. Onboard new team members with pre-configured workspace templates.
+2. **AI/ML Engineers**: Store prompt templates (system prompts, few-shot examples) with version history, tagged by model (GPT-4, Claude) or use case (summarization, classification).
+3. **Engineering Onboarding**: New hires clone workspace template with all docs, ENV vars, and code snippets pre-loaded for first-day productivity.
+4. **Documentation Hub**: Replace scattered Confluence/Notion pages with tagged DOC_LINKs—API docs, runbooks, architectural diagrams all searchable in one place.
+5. **Audit Compliance**: Track every ENV_VAR reveal for HIPAA, SOC 2, GDPR compliance with immutable logs showing who accessed what secret, when, and from where.
+6. **Remote Teams**: Async-first knowledge sharing—no more "can someone DM me the API key?" in Slack. Workspace permissions for multi-tenant access control.
 
-**Live Links:**
-- Demo: https://deadline-demo.vercel.app (requires Firebase sign-up for security)
-- GitHub: https://github.com/omerakben/deadline
-- Backend API: https://deadline-production.up.railway.app/api/v1/
-- API Docs (Swagger): https://deadline-production.up.railway.app/api/docs/
-- OpenAPI Schema: https://deadline-production.up.railway.app/api/schema/
+**Development Process (6 Phases):**
+1. **Architecture & Design**: Designed Django models with polymorphic artifact system, planned REST API endpoints and authentication flow, created Next.js frontend scaffolding with App Router structure.
+2. **Backend Implementation**: Built Django REST API with DRF serializers, implemented Firebase Admin SDK authentication middleware, created PostgreSQL schema with Alembic migrations, deployed to Railway with environment configuration.
+3. **Frontend Development**: Built Next.js pages with TypeScript, integrated Firebase Authentication with session management, created React Hook Form validation for all artifact types, implemented Tailwind CSS styling with responsive design.
+4. **Demo Mode & UI Polish**: Implemented zero-signup demo authentication with session tokens, created Django management command for demo data seeding, added prominent "Launch Demo" CTA with recruiter-focused UX, seeded sample workspaces with realistic artifacts.
+5. **Visual Testing & Optimization**: Conducted Playwright visual testing across all viewports, implemented Priority 1 improvements (hover states, loading feedback, focus rings), validated mobile responsiveness (375px, 768px, 1512px), achieved A- grade with zero ESLint warnings.
+6. **Production Deployment**: Deployed backend to Railway with PostgreSQL provisioning, deployed frontend to Vercel with custom domain, configured CORS and environment variables, tested end-to-end authentication and demo mode in production.
 
-**What Makes It Stand Out:**
-- Production-ready with live deployments on Railway + Vercel
-- Full-stack mastery: Django backend + Next.js frontend + PostgreSQL + Firebase
-- SDET rigor: 64 tests, Playwright visual testing (A- grade), built testable from day one
-- Security mindset: audit logs, rate limiting, workspace isolation, masked secrets
-- Developer empathy: solves real pain points I experienced during development
+**Live Deployments (All Production-Ready):**
+- **Frontend (Vercel)**: https://deadline-demo.vercel.app
+  - Next.js 15 + Firebase Auth (Email/Password + Google OAuth)
+  - Mobile-responsive UI with A- (92/100) UI/UX grade
+  - Custom domain with Vercel Edge hosting
+- **Backend API (Railway)**: https://deadline-production.up.railway.app/api/v1/
+  - Django 5 REST Framework + PostgreSQL
+  - Firebase Admin SDK authentication
+  - Rate limiting and workspace isolation
+- **API Documentation (Swagger UI)**: https://deadline-production.up.railway.app/api/docs/
+  - Interactive API explorer with authentication flows
+  - Try-it-out functionality for all endpoints
+- **OpenAPI Schema**: https://deadline-production.up.railway.app/api/schema/
+  - Machine-readable API specification
+  - Integration with API clients and code generation tools
+- **GitHub Repository**: https://github.com/omerakben/deadline
+  - Open-source codebase with comprehensive README
+  - Django backend + Next.js frontend monorepo structure
 
-Check out /projects/capstone-deadline for the complete case study with mission, vision, use cases, and technical deep dive!"
+**Why DEADLINE Matters:**
+1. **Security First**: Masked ENV variables with explicit reveal tracking, immutable audit logs capture user/IP/timestamp, rate limiting prevents credential harvesting attacks, workspace isolation ensures zero data leakage between teams.
+2. **Multi-Environment Management**: Separate DEV/STAGING/PROD configurations per workspace—no more "which .env did I update?" confusion with environment-scoped artifact visibility.
+3. **Knowledge Centralization**: Store reusable prompts (AI prompts, SQL templates) and documentation links alongside environment config—everything searchable with comprehensive tagging.
+4. **Developer Experience**: Responsive Next.js 15 UI validated across mobile/tablet/desktop, OpenAPI documentation with Swagger UI, import/export for backups, professional micro-interactions (A- grade).
+5. **Production-Grade Quality**: 64/64 backend tests passing (pytest), zero linting errors, zero TypeScript errors, live deployments on Railway (backend) + Vercel (frontend), achieved A- (92/100) in Playwright visual testing.
+
+**Technical Implementation Deep Dive:**
+- **Backend Architecture**: Django 5 REST API deployed on Railway with PostgreSQL database, Django REST Framework for API endpoints, Firebase Admin SDK for authentication verification, polymorphic artifact models using Django's ContentType framework, Alembic migrations manage schema evolution.
+- **Frontend Stack**: Next.js 15 App Router with React 19 deployed on Vercel, React Hook Form for validation, Tailwind CSS for styling, Radix UI primitives (shadcn/ui) for accessible components, Firebase SDK handles client-side authentication with session tokens, Context API manages global state.
+- **Quality Assurance**: Comprehensive UI/UX testing with Playwright MCP visual automation, achieved A- grade (92/100) with validation across desktop/tablet/mobile viewports, ESLint with zero warnings, TypeScript strict mode, React Hook Form validation ensures code quality, custom 404 error page with illustration.
+
+**Mission & Vision:**
+- **Mission**: Eliminate developer context-switching chaos by centralizing scattered artifacts (ENV variables, AI prompts, documentation links) into a secure, workspace-isolated command center. Stop Slack archeology, .env confusion, and lost prompt templates.
+- **Vision**: Become the trusted single source of truth for developer knowledge artifacts, enabling teams to ship faster with less cognitive overhead. Scale from solo developers to enterprise teams with security-first principles (Firebase auth, audit logs, workspace isolation).
+
+**Results & Impact:**
+- **A- UI/UX Grade**: 92/100 in Playwright visual testing with professional micro-interactions
+- **64/64 Backend Tests Passing**: Models, views, serializers, permissions all validated with pytest
+- **3 Artifact Types**: ENV_VAR, PROMPT, DOC_LINK polymorphism with type-specific validation
+- **100% Mobile Responsive**: Validated across all device sizes (375px, 768px, 1512px)
+- **Production-Ready**: DEADLINE demonstrates production-ready full-stack development with focus on developer experience, security-first design, and compliance-ready audit logging. Firebase Authentication ensures secure access while workspace isolation prevents data leakage between teams. Rate limiting and immutable audit logs make it enterprise-ready for HIPAA/SOC 2/GDPR compliance.
+
+Check out /projects/capstone-deadline for the complete case study with mission, vision, use cases, technical deep dive, architecture diagrams, and development process!"
 
 **Recruiter asks about Tuel Animation Library:**
 "Tuel is my open-source React animation library—think of it as a professional animation toolkit for developers who want polished motion design without becoming animation experts. Here's what makes it unique:
