@@ -41,7 +41,7 @@ export function AppHeader() {
   const { openSidebar } = useChatSidebar();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-line bg-surf-0/80 backdrop-blur-lg">
+    <header className="sticky top-[var(--site-status-offset,0px)] z-50 border-b border-border-line bg-surf-0/80 backdrop-blur-lg transition-[top] duration-300 ease-out">
       <div className="container mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center gap-3">
           {/* Logo */}

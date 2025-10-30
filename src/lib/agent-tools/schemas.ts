@@ -45,7 +45,7 @@ export const projectSchema = z.object({
   featured: z.boolean(),
   demoUrl: z.string().url().optional(),
   githubUrl: z.string().url().optional(),
-  status: z.enum(["completed", "in-progress", "planned"]),
+  status: z.enum(["beta", "in-progress", "planned", "placeholder", "completed"]),
 });
 
 export const listProjectsOutputSchema = z.object({

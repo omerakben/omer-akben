@@ -284,6 +284,7 @@ npm run analyze      # Analyze bundle composition
 
 - **[AGENTS.md](AGENTS.md)** - Agent architecture, tools, and implementation details
 - **[CLAUDE.md](CLAUDE.md)** - Development guidelines and Claude Code workflows
+- **[WIP + Cache Preferences](docs/wip-and-cache.md)** - Banner/modal behavior, preference APIs, and cookie details. Live routes: [/status](https://omerakben.com/status) and [/legal/cookies](https://omerakben.com/legal/cookies).
 
 ### Internal Documentation
 

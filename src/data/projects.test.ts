@@ -5,7 +5,7 @@ import {
   getProjectsByCategory,
   projects,
   type Project,
-} from "./projects";
+} from "@/data/projects";
 
 describe("Projects Data Layer", () => {
   describe("projects array", () => {
@@ -64,7 +64,13 @@ describe("Projects Data Layer", () => {
     });
 
     it("should have valid status values when present", () => {
-      const validStatuses = ["completed", "in-progress", "planned"];
+      const validStatuses = [
+        "beta",
+        "in-progress",
+        "planned",
+        "placeholder",
+        "completed",
+      ];
       projects.forEach((project) => {
         if (project.status) {
           expect(validStatuses).toContain(project.status);

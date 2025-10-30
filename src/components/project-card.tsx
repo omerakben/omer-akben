@@ -1,5 +1,6 @@
 "use client";
 
+import StatusPill from "@/components/StatusPill";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,7 @@ export interface ProjectCardProps {
   demoUrl?: string;
   githubUrl?: string;
   slug?: string;
-  status?: "completed" | "in-progress" | "planned";
+  status?: "beta" | "in-progress" | "planned" | "placeholder";
   index?: number;
 }
 
@@ -68,7 +69,7 @@ export function ProjectCard({
             <Code2 className="w-20 h-20 text-brand-primary/40" />
           )}
           {/* Production Badge */}
-          {status === "completed" && demoUrl && (
+          {status === "beta" && demoUrl && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -84,9 +85,12 @@ export function ProjectCard({
 
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
-            <CardTitle className="group-hover:text-brand-primary transition-colors">
-              {slug ? <Link href={`/projects/${slug}`}>{title}</Link> : title}
-            </CardTitle>
+            <div className="flex flex-col gap-2">
+              <CardTitle className="group-hover:text-brand-primary transition-colors">
+                {slug ? <Link href={`/projects/${slug}`}>{title}</Link> : title}
+              </CardTitle>
+              {status ? <StatusPill status={status} /> : null}
+            </div>
             <div className="flex gap-2 shrink-0">
               {githubUrl && (
                 <Button

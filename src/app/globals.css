@@ -27,6 +27,7 @@
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --radius: 0.625rem;
+  --site-status-offset: 0px;
 
   /* Brand Blue scale */
   --brand-50: #eff6ff;
