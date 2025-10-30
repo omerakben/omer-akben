@@ -4,7 +4,6 @@ import { createMetadata } from "@/lib/metadata";
 import {
   ArrowLeft,
   CheckCircle2,
-  Database,
   ExternalLink,
   Eye,
   FileText,
@@ -16,6 +15,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -225,30 +225,138 @@ export default function DeadlineCaseStudyPage() {
           </p>
         </div>
 
-        {/* Architecture Diagram Placeholder */}
-        {project.image && (
-          <div className="mb-8">
-            <div className="bg-surf-1 border border-border-line rounded-[20px] overflow-hidden">
-              <div className="p-4 border-b border-border-line">
-                <h3 className="text-lg font-bold text-text-1">
-                  Application Architecture
-                </h3>
+        {/* Dashboard Screenshot */}
+        <figure className="mb-8">
+          <Image
+            src="/deadline_img/deadline-dashboard.png"
+            alt="DEADLINE dashboard showing workspace overview with artifact counts, environment filters, and recent activity feed"
+            width={3456}
+            height={1926}
+            className="rounded-[20px] border border-border-line w-full h-auto"
+            priority={false}
+            quality={90}
+            loading="lazy"
+          />
+          <figcaption className="text-text-3 text-sm mt-3 text-center">
+            Dashboard Overview: Multi-tenant workspace management with real-time artifact tracking
+          </figcaption>
+        </figure>
+
+        {/* Application Architecture */}
+        <div className="mb-8">
+          <div className="bg-surf-1 border border-border-line rounded-[20px] overflow-hidden">
+            <div className="p-4 border-b border-border-line">
+              <h3 className="text-lg font-bold text-text-1">
+                Application Architecture
+              </h3>
+            </div>
+            <div className="p-8">
+              <div className="bg-surf-0 border border-border-line rounded-lg p-6 overflow-x-auto">
+                <pre className="text-sm text-text-2 font-mono whitespace-pre">
+                  {`
+┌─────────────────────────────────────────────────────────────────┐
+│                    Client Layer (Browser)                       │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │         Next.js 15 App (Vercel Edge)                    │    │
+│  │  - React 19 UI Components                               │    │
+│  │  - TypeScript + Tailwind CSS                            │    │
+│  │  - Firebase Client SDK (Auth)                           │    │
+│  │  - Server Actions & API Routes                          │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+                            │
+                            │ HTTPS/REST
+                            │
+┌───────────────────────────▼─────────────────────────────────────┐
+│                  Authentication Layer                           │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │            Firebase Authentication                       │   │
+│  │  ┌────────────────┐      ┌──────────────────┐            │   │
+│  │  │ Email/Password │      │  Google OAuth    │            │   │
+│  │  └────────────────┘      └──────────────────┘            │   │
+│  │                                                          │   │
+│  │  Firebase Admin SDK (Backend) ←→ Firebase Client SDK     │   │
+│  └──────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                            │
+                            │ Token Validation
+                            │
+┌───────────────────────────▼─────────────────────────────────────┐
+│                    Backend Layer (Railway)                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │         Django 5 REST API (DRF)                         │    │
+│  │                                                         │    │
+│  │  ┌──────────────────────────────────────────────────┐   │    │
+│  │  │  API Endpoints                                   │   │    │
+│  │  │  - /api/v1/artifacts/ (CRUD)                     │   │    │
+│  │  │  - /api/v1/artifacts/reveal/ (ENV_VAR reveal)    │   │    │
+│  │  │  - /api/v1/audit-logs/ (Immutable logs)          │   │    │
+│  │  │  - /api/docs/ (Swagger UI)                       │   │    │
+│  │  │  - /api/schema/ (OpenAPI)                        │   │    │
+│  │  └──────────────────────────────────────────────────┘   │    │
+│  │                                                         │    │
+│  │  ┌──────────────────────────────────────────────────┐   │    │
+│  │  │  Core Features                                   │   │    │
+│  │  │  - Polymorphic Artifact Model (ContentType)      │   │    │
+│  │  │  - Workspace Isolation (owner_uid scoping)       │   │    │
+│  │  │  - Rate Limiting (django-ratelimit)              │   │    │
+│  │  │  - Encryption (cryptography.fernet)              │   │    │
+│  │  │  - Audit Logging (immutable records)             │   │    │
+│  │  └──────────────────────────────────────────────────┘   │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+                            │
+                            │ SQL Queries
+                            │
+┌───────────────────────────▼─────────────────────────────────────┐
+│                   Data Layer (Railway)                          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │              PostgreSQL Database                        │    │
+│  │                                                         │    │
+│  │  Tables:                                                │    │
+│  │  - artifacts (polymorphic: ENV_VAR, PROMPT, DOC_LINK)   │    │
+│  │  - audit_logs (immutable reveal tracking)               │    │
+│  │  - users (Firebase UID references)                      │    │
+│  │                                                         │    │
+│  │  Managed by: Alembic migrations                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+
+                   Deployment & Quality Assurance
+
+┌─────────────────────────────────────────────────────────────────┐
+│  Production Deployments                                         │
+│  - Frontend: https://deadline-demo.vercel.app (Vercel Edge)     │
+│  - Backend: https://deadline-production.up.railway.app (Railway)│
+│                                                                 │
+│  Testing & Quality                                              │
+│  - Backend: pytest (64/64 tests passing)                        │
+│  - Frontend: Playwright (A- grade, 92/100 UI/UX)                │
+│  - API Docs: Swagger UI + OpenAPI 3.0 schema                    │
+└─────────────────────────────────────────────────────────────────┘`}
+                </pre>
               </div>
-              <div className="p-8 flex items-center justify-center min-h-[400px] text-text-3">
-                <div className="text-center">
-                  <Database
-                    aria-hidden="true"
-                    className="w-16 h-16 mx-auto mb-4 opacity-50"
-                  />
-                  <p>Architecture diagram coming soon</p>
-                  <p className="text-sm mt-2">
-                    Django 5 + Railway ↔ Next.js 15 + Vercel
-                  </p>
-                </div>
+              <div className="mt-4 text-sm text-text-3">
+                <p className="mb-2">
+                  <strong className="text-text-2">Data Flow:</strong> User
+                  authenticates via Firebase → Frontend sends API requests with
+                  Firebase token → Backend validates token and owner_uid →
+                  Applies workspace isolation → Performs database operations →
+                  Returns filtered results
+                </p>
+                <p>
+                  <strong className="text-text-2">Security:</strong> All ENV_VAR
+                  values encrypted at rest, masked in UI, reveal tracking via
+                  immutable audit logs, rate limiting on sensitive endpoints
+                </p>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Key Features */}
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
@@ -365,6 +473,23 @@ export default function DeadlineCaseStudyPage() {
             </div>
           </div>
         </div>
+
+        {/* Workspace Screenshot */}
+        <figure className="mb-8">
+          <Image
+            src="/deadline_img/deadline-workspace.png"
+            alt="DEADLINE workspace interface displaying polymorphic artifacts (ENV_VAR, PROMPT, DOC_LINK) with environment scoping, tags, and reveal tracking"
+            width={3456}
+            height={1926}
+            className="rounded-[20px] border border-border-line w-full h-auto"
+            priority={false}
+            quality={90}
+            loading="lazy"
+          />
+          <figcaption className="text-text-3 text-sm mt-3 text-center">
+            Workspace View: Environment-scoped artifact management with masked secrets and audit logging
+          </figcaption>
+        </figure>
 
         {/* Technical Implementation */}
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
