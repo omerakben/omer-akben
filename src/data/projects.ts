@@ -14,7 +14,7 @@ export interface Project {
   githubUrl?: string;
   startDate?: string;
   endDate?: string;
-  status?: "completed" | "in-progress" | "planned";
+  status?: "beta" | "in-progress" | "planned" | "placeholder";
 }
 
 export const projects: Project[] = [
@@ -49,7 +49,7 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/omerakben/deadline",
     startDate: "September 2024",
     endDate: "October 2024",
-    status: "completed",
+    status: "beta",
   },
   {
     id: "9",
@@ -105,7 +105,7 @@ export const projects: Project[] = [
     category: "tools",
     featured: true,
     githubUrl: "https://github.com/omerakben/tuel-Selenium-WebDriver-RestSharp",
-    status: "completed",
+    status: "beta",
   },
 
   // TIER 2: Live Production Projects
@@ -130,7 +130,7 @@ export const projects: Project[] = [
     featured: true,
     demoUrl: "https://www.northglassnc.com",
     githubUrl: "https://github.com/omerakben/north-glass",
-    status: "completed",
+    status: "beta",
   },
   {
     id: "2",
@@ -154,7 +154,7 @@ export const projects: Project[] = [
     demoUrl:
       "https://elon-ai-agent.happyplant-fd188d6c.canadacentral.azurecontainerapps.io/docs",
     githubUrl: "https://github.com/omerakben/elon-ai-agent",
-    status: "completed",
+    status: "beta",
   },
   {
     id: "3",
@@ -176,7 +176,7 @@ export const projects: Project[] = [
     featured: true,
     demoUrl: "https://developer-cheat-sheets.vercel.app/",
     githubUrl: "https://github.com/omerakben/developer-cheat-sheets",
-    status: "completed",
+    status: "beta",
   },
 
   // TIER 2: Ready to Deploy
@@ -202,7 +202,7 @@ export const projects: Project[] = [
     displayOrder: 1,
     demoUrl: "https://elon-ai-toolbox-mdxazqewk-omera.vercel.app",
     githubUrl: "https://github.com/omerakben/elon-ai-toolbox",
-    status: "completed",
+    status: "beta",
   },
   {
     id: "6",
@@ -225,7 +225,7 @@ export const projects: Project[] = [
     featured: false,
     demoUrl: "https://oteemo-ai-roadmap.vercel.app",
     githubUrl: "https://github.com/omerakben/oteemo-ai-roadmap",
-    status: "completed",
+    status: "beta",
   },
 
   // TIER 3: Production-Ready with Minor Items
@@ -250,7 +250,7 @@ export const projects: Project[] = [
     category: "ai-ml",
     featured: false,
     githubUrl: "https://github.com/omerakben/tuel-chatbot",
-    status: "completed",
+    status: "beta",
   },
   {
     id: "8",

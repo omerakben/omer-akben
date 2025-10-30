@@ -1,5 +1,5 @@
 import { facts } from "@/data/facts";
-import { projects } from "@/data/projects";
+import { projects, type Project } from "@/data/projects";
 import fs from "fs";
 import path from "path";
 
@@ -39,6 +39,17 @@ function loadResumeContent() {
       standard: "",
     };
   }
+}
+
+function formatProjectStatus(status: Project["status"]) {
+  if (!status) {
+    return "Not specified";
+  }
+
+  return status
+    .split("-")
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
 }
 
 export function buildEnhancedSystemPrompt(currentPath?: string): string {
@@ -213,7 +224,7 @@ ${projects
 **Slug:** ${project.slug}
 **Category:** ${project.category.toUpperCase()}
 **Role:** ${project.role}
-**Status:** ${project.status}
+**Status:** ${formatProjectStatus(project.status)}
 ${project.featured ? "**⭐ FEATURED PROJECT**" : ""}
 
 **Description:**

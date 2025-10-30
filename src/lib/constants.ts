@@ -3,9 +3,11 @@
  * Used for displaying project completion status across the site
  */
 export const statusColors = {
-  completed: "bg-green-500/10 text-green-400 border-green-500/20",
-  "in-progress": "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  planned: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  beta: "bg-brand-primary/15 text-brand-primary border-brand-primary/30",
+  "in-progress":
+    "bg-accent-primary/15 text-accent-primary border-accent-primary/30",
+  planned: "bg-surf-2 text-text-2 border-border-line/80",
+  placeholder: "bg-transparent text-text-3 border-border-line/60",
 } as const;
 
 /**

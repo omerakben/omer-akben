@@ -289,6 +289,12 @@ npm run analyze      # Analyze bundle composition
 
 - **[PRD](claudedocs/PRD.md)** - Product requirements document
 - **[Ozzy Implementation Guide](claudedocs/ozzy-implementation-guide.md)** - Step-by-step agent setup
+- **[WIP + Cache Preferences](docs/wip-and-cache.md)** - Build identity, cookies, and API endpoints
+
+### WIP + Cache Preferences
+
+- [Status updates](https://omerakben.com/status) – live view of the current build, what works, and what&apos;s planned
+- [Cookie policy](https://omerakben.com/legal/cookies) – plain-English explanation of the WIP acknowledgement and cache cookies
 
 ### Key Files Reference
 

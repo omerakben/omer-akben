@@ -64,7 +64,12 @@ describe("Projects Data Layer", () => {
     });
 
     it("should have valid status values when present", () => {
-      const validStatuses = ["completed", "in-progress", "planned"];
+      const validStatuses = [
+        "beta",
+        "in-progress",
+        "planned",
+        "placeholder",
+      ];
       projects.forEach((project) => {
         if (project.status) {
           expect(validStatuses).toContain(project.status);
