@@ -30,7 +30,7 @@ const socialLinks = [
     icon: Linkedin,
   },
   {
-    href: facts.social.twitter || "https://twitter.com/omerakben",
+    href: facts.social.twitter || "https://x.com/mrfrkkbn",
     label: "Twitter",
     icon: Twitter,
   },

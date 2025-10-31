@@ -40,9 +40,9 @@ export function createMockRequest(
 }
 
 /**
- * Extracts and parses JSON from NextResponse
+ * Extracts and parses JSON from Response or NextResponse
  *
- * @param response - NextResponse from API route
+ * @param response - Response or NextResponse from API route
  * @returns Parsed JSON data
  *
  * @example
@@ -53,7 +53,7 @@ export function createMockRequest(
  * ```
  */
 export async function getResponseJson(
-  response: NextResponse
+  response: Response | NextResponse
 ): Promise<unknown> {
   const text = await response.text();
   return JSON.parse(text);

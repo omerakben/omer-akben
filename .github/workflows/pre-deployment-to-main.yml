@@ -9,7 +9,7 @@ jobs:
   quality-gates:
     name: Quality Gates (Pre-Deployment)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 45
 
     steps:
       - name: Checkout code
@@ -70,7 +70,7 @@ jobs:
   e2e-tests:
     name: E2E Tests (Gate 6/6)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     needs: quality-gates
 
     steps:

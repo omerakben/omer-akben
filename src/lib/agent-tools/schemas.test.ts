@@ -179,7 +179,7 @@ describe("agent-tools schemas", () => {
           location: "Nashville, TN",
           linkedin: "https://linkedin.com/in/omerakben",
           github: "https://github.com/omerakben",
-          twitter: "https://twitter.com/omerakben",
+          twitter: "https://x.com/mrfrkkbn",
         },
       });
       expect(result.contact.email).toBe("me@omerakben.com");
