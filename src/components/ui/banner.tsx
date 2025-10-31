@@ -57,7 +57,7 @@ const Banner = React.forwardRef<HTMLDivElement, BannerProps>(
 Banner.displayName = "Banner";
 
 const BannerTitle = React.forwardRef<
-  HTMLParagraphElement,
+  HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
   <h5
@@ -69,8 +69,8 @@ const BannerTitle = React.forwardRef<
 BannerTitle.displayName = "BannerTitle";
 
 const BannerDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}

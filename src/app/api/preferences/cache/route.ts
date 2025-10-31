@@ -1,3 +1,4 @@
+import { logError } from "@/lib/log";
 import { getRedisClient } from "@/lib/redis/client";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -12,23 +13,6 @@ const SetPreferenceRequestSchema = z.object({
   preference: CachePreferenceSchema,
 });
 
-// Response type definitions (for reference only)
-type GetPreferenceResponse = {
-  success: boolean;
-  data?: {
-    preference: CachePreference | null;
-  };
-  error?: string;
-};
-
-type SetPreferenceResponse = {
-  success: boolean;
-  data?: {
-    preference: CachePreference;
-  };
-  error?: string;
-};
-
 // Redis key prefix and TTL
 const REDIS_KEY_PREFIX = "cache_pref:";
 const TTL_SECONDS = 90 * 24 * 60 * 60; // 90 days
@@ -41,13 +25,6 @@ function ensureJsonResponse(data: unknown, status = 200) {
     status,
     headers: { "Content-Type": "application/json" },
   });
-}
-
-/**
- * Helper to log errors consistently
- */
-function logError(context: string, error: unknown) {
-  console.error(`[${context}]`, error);
 }
 
 /**

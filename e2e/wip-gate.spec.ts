@@ -2,8 +2,13 @@ import { expect, test } from "@playwright/test";
 
 test.describe("WIP Gate - Modal and Banner Flow", () => {
   test.beforeEach(async ({ page, context }) => {
-    // Clear localStorage to simulate first visit
+    // Clear cookies and localStorage to simulate first visit
     await context.clearCookies();
+    await page.goto("about:blank");
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
     await page.goto("/", { waitUntil: "networkidle" });
 
     // Wait for hydration to complete

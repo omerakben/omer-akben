@@ -795,7 +795,7 @@ To add a new AI agent tool:
 
 **Bug Fix:**
 - Fixed template literal syntax error (backticks inside template literal)
-- Changed `Located at `/status`, this page shows:` → `Located at /status, this page shows:`
+- Changed: Located at `/status`, this page shows: → Located at /status, this page shows:
 - Resolved chat API 500 error (ReferenceError: status is not defined)
 
 **Quality Gates:** All 6 passed - TypeScript (0 errors), ESLint (0 errors), Tests (667/667), Build, Bundle Size

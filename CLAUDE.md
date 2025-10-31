@@ -814,9 +814,9 @@ ANALYZE=true  # Enable bundle analyzer
 **Bug Fix:**
 
 **Template Literal Syntax Error** - Fixed chat API 500 error
-- **Problem:** Line 187 used backticks inside template literal: `Located at `/status`, this page shows:`
+- **Problem:** Line 187 used backticks inside template literal: Located at `/status`, this page shows:
 - **Impact:** JavaScript parser treated `status` as undefined variable, breaking chat API
-- **Solution:** Removed backticks: `Located at /status, this page shows:`
+- **Solution:** Removed backticks: Located at /status, this page shows:
 - **Verification:** curl test showed HTTP 200 OK after fix
 
 **Quality Gate Results:**
@@ -841,19 +841,19 @@ ANALYZE=true  # Enable bundle analyzer
 
 **Lessons Learned:**
 
-**1. Template Literal Nesting**
+### 1. Template Literal Nesting
 - **Problem:** Using backticks inside template literals breaks JavaScript parsing
 - **Detection:** Runtime error only - no TypeScript/ESLint warnings
 - **Solution:** Use grep to search for nested backticks, replace with plain text
 - **Prevention:** Be cautious with path references inside template literals
 
-**2. AI Agent System Prompts**
+### 2. AI Agent System Prompts
 - **Scale:** Single file contains entire AI personality (~46K tokens)
 - **Impact:** Small changes have large behavioral effects
 - **Testing:** Manual validation required - unit tests can't verify AI responses
 - **Iteration:** Conversational tone guidelines shaped through real interactions
 
-**3. User Trust Elements**
+### 3. User Trust Elements
 - **Research:** Studied ChatGPT, Claude, Perplexity disclaimer patterns
 - **Placement:** Always visible, low visual weight, clear message
 - **Balance:** Honest about limitations without undermining confidence
