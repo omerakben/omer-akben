@@ -769,6 +769,41 @@ To add a new AI agent tool:
 
 ---
 
+### Ozzy AI Agent: Transparency & Conversational Improvements
+
+**Date:** October 31, 2025
+
+**Overview:** Enhanced Ozzy AI with transparency disclaimers, status page knowledge, and conversational tone improvements.
+
+**Key Implementations:**
+
+1. **AI Transparency Disclaimer**
+   - Industry-standard disclaimer in chat sidebar: "Ozzy is an AI assistant and can make mistakes. Please verify important information."
+   - File: `src/components/chat/chat-sidebar.tsx`
+   - Follows ChatGPT, Claude, Perplexity patterns
+
+2. **Status Page Knowledge**
+   - 62-line section in agent knowledge base covering WIP modal, banner, /status page
+   - Guidelines for discussing development status positively
+   - File: `src/lib/agent-knowledge-base.ts`
+
+3. **Conversational Tone Guidelines**
+   - 22-line "Your Personality & Communication Style" section
+   - Outcome-focused language over technical specifications
+   - Philosophy: Start with "why" and "what", dive into "how" only when asked
+   - File: `src/lib/agent-knowledge-base.ts`
+
+**Bug Fix:**
+- Fixed template literal syntax error (backticks inside template literal)
+- Changed `Located at `/status`, this page shows:` → `Located at /status, this page shows:`
+- Resolved chat API 500 error (ReferenceError: status is not defined)
+
+**Quality Gates:** All 6 passed - TypeScript (0 errors), ESLint (0 errors), Tests (667/667), Build, Bundle Size
+
+**Deployment:** Commit d5b2faf to pre-deployment branch, CI/CD running
+
+---
+
 ## 📋 Summary: Core Principles
 
 1. **Quality First** - All 6 quality gates must pass before commit
@@ -784,7 +819,7 @@ To add a new AI agent tool:
 
 ---
 
-**Version:** 1.0
-**Last Updated:** October 27, 2025
+**Version:** 1.1
+**Last Updated:** October 31, 2025
 **Maintained By:** All AI coding agents working on this repository
 **Related Files:** CLAUDE.md (Claude-specific), README.md (project overview)
