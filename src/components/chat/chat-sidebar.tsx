@@ -853,6 +853,14 @@ export function ChatSidebar() {
                   </div>
                 )}
               </form>
+
+              {/* AI Disclaimer */}
+              <div className="pt-3 px-2 text-center">
+                <p className="text-xs text-text-3">
+                  Ozzy is an AI assistant and can make mistakes. Please verify
+                  important information.
+                </p>
+              </div>
             </div>
           </motion.div>
         </>
