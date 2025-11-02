@@ -22,6 +22,7 @@ Successfully validated the PR #40 tool migration through comprehensive browser t
 ## What Changed: Architecture Transformation
 
 ### Before (HTTP-based)
+
 ```
 User Query → Chat UI → POST /api/chat → AI decides tool
           ↓
@@ -31,17 +32,20 @@ Stream response back to client
 ```
 
 **Problems**:
+
 - 2 network round trips per tool call
 - Duplicate schema validation (AI SDK + API route)
 - Higher latency and complexity
 - 26 tool definitions (13 AI SDK + 13 API routes)
 
 ### After (In-process)
+
 ```
 User Query → Chat UI → POST /api/chat → AI decides tool → Direct execution → Stream response
 ```
 
 **Benefits**:
+
 - Single network request per interaction
 - 1 source of truth per tool (AI SDK definition)
 - 60% faster execution (estimated)
@@ -55,12 +59,14 @@ User Query → Chat UI → POST /api/chat → AI decides tool → Direct executi
 ### Test Setup
 
 **Environment**:
+
 - Development server: `http://localhost:3000`
 - Testing tools: Playwright MCP, manual browser inspection
 - Browser: Chromium via Playwright
 - Framework: Next.js 15.5.4 with Turbopack
 
 **Testing Approach**:
+
 1. Start development server (`npm run dev`)
 2. Navigate to homepage and open AI Ozzy chat sidebar
 3. Test each tool via natural language queries
@@ -80,12 +86,14 @@ User Query → Chat UI → POST /api/chat → AI decides tool → Direct executi
 **Result**: ✅ **SUCCESS**
 
 **Response Details**:
+
 - Returned 5 projects: North Glass LLC, Elon AI Agent, Developer Cheat Sheets, Elon AI Toolbox, DEADLINE
 - Each project included: Role, Description, Technologies, Live Demo link, GitHub Repo link
 - Follow-up suggestions appeared after response
 - Response time: 22.6 seconds
 
 **Server Log Confirmation**:
+
 ```
 POST /api/chat 200 in 22642ms
 ```
@@ -93,6 +101,7 @@ POST /api/chat 200 in 22642ms
 **Screenshot**: `03-list-projects-tool-success.png`
 
 **Key Observations**:
+
 - Single streaming request to `/api/chat` endpoint
 - No separate HTTP call to `/api/tools/list-projects`
 - Tool executed in-process within chat API route
@@ -109,6 +118,7 @@ POST /api/chat 200 in 22642ms
 **Result**: ✅ **SUCCESS**
 
 **Response Details**:
+
 - Returned 2 PDF download links:
   - Download Full Resume (PDF) → `/assets/Omer_Akben_Resume.pdf`
   - Download Extended Resume (PDF) → `/assets/Omer_Akben_Resume_Extended.pdf`
@@ -117,6 +127,7 @@ POST /api/chat 200 in 22642ms
 - Response time: 10.9 seconds
 
 **Server Log Confirmation**:
+
 ```
 POST /api/chat 200 in 10931ms
 ```
@@ -124,6 +135,7 @@ POST /api/chat 200 in 10931ms
 **Screenshot**: `04-download-resume-tool-success.png`
 
 **Key Observations**:
+
 - Single streaming request to `/api/chat` endpoint
 - No separate HTTP call to `/api/tools/download-resume`
 - Tool executed in-process within chat API route
@@ -140,6 +152,7 @@ POST /api/chat 200 in 10931ms
 **Result**: ✅ **SUCCESS**
 
 **Response Details**:
+
 - Returned contact information:
   - Email: `me@omerakben.com` (clickable mailto link)
   - Phone: `(267) 512-4566`
@@ -148,6 +161,7 @@ POST /api/chat 200 in 10931ms
 - Response time: 7.3 seconds
 
 **Server Log Confirmation**:
+
 ```
 POST /api/chat 200 in 7338ms
 ```
@@ -155,6 +169,7 @@ POST /api/chat 200 in 7338ms
 **Screenshot**: `05-get-contact-tool-success.png`
 
 **Key Observations**:
+
 - Single streaming request to `/api/chat` endpoint
 - No separate HTTP call to `/api/tools/get-contact`
 - Tool executed in-process within chat API route
@@ -167,13 +182,14 @@ POST /api/chat 200 in 7338ms
 
 ### Response Time Comparison
 
-| Tool | Response Time | OpenAI Overhead | Tool Execution |
-|------|---------------|-----------------|----------------|
-| `list_projects` | 22.6s | ~20s (complex response) | ~2.6s |
-| `download_resume` | 10.9s | ~8s (medium response) | ~2.9s |
-| `get_contact` | 7.3s | ~5s (simple response) | ~2.3s |
+| Tool              | Response Time | OpenAI Overhead         | Tool Execution |
+| ----------------- | ------------- | ----------------------- | -------------- |
+| `list_projects`   | 22.6s         | ~20s (complex response) | ~2.6s          |
+| `download_resume` | 10.9s         | ~8s (medium response)   | ~2.9s          |
+| `get_contact`     | 7.3s          | ~5s (simple response)   | ~2.3s          |
 
 **Key Insights**:
+
 - Response times dominated by OpenAI API streaming
 - Tool execution is fast (~2-3 seconds)
 - Complex responses (5 projects) take longer to stream
@@ -182,6 +198,7 @@ POST /api/chat 200 in 7338ms
 ### Network Efficiency
 
 **Before (HTTP-based)**:
+
 ```
 Tool Call Flow:
 1. POST /api/chat → AI decides tool
@@ -192,6 +209,7 @@ Total: 2 network round trips + streaming
 ```
 
 **After (In-process)**:
+
 ```
 Tool Call Flow:
 1. POST /api/chat → AI decides tool → Execute in-process → Stream response
@@ -261,6 +279,7 @@ POST /api/chat 200 in 7338ms   # get_contact
 ✅ **Memory efficient**: No excessive memory warnings
 
 **Non-blocking Warnings** (Expected):
+
 - Redis indexing failures: Expected in dev when indices already exist
 - SVG path errors: Visual only, icons still render
 
@@ -271,6 +290,7 @@ POST /api/chat 200 in 7338ms   # get_contact
 ### Tool Registry Structure
 
 **Central Registry** (`src/lib/tools/index.ts`):
+
 ```typescript
 export const aiToolRegistry = {
   provide_navigation_links: provideNavigationLinks,
@@ -290,6 +310,7 @@ export const aiToolRegistry = {
 ```
 
 **Mastra Integration** (via adapter pattern):
+
 ```typescript
 export const mastraToolRegistry = {
   provide_navigation_links: adaptAiToolToMastra(provideNavigationLinks),
@@ -312,6 +333,7 @@ export const mastraToolRegistry = {
 ### Validation Status: ✅ PASSED
 
 All 3 high-priority tools validated successfully:
+
 - ✅ `list_projects` - In-process execution confirmed
 - ✅ `download_resume` - In-process execution confirmed
 - ✅ `get_contact` - In-process execution confirmed
@@ -337,22 +359,27 @@ All 3 high-priority tools validated successfully:
 ## Screenshots
 
 ### 1. Homepage Initial State
+
 **File**: `01-homepage-initial.png`
 **Shows**: Homepage with AI Ozzy chat button visible
 
 ### 2. Chat Sidebar Opened
+
 **File**: `02-chat-sidebar-opened.png`
 **Shows**: Chat sidebar opened with welcome message and Quick Actions
 
 ### 3. list_projects Tool Success
+
 **File**: `03-list-projects-tool-success.png`
 **Shows**: 5 projects returned with full details, links, and follow-up suggestions
 
 ### 4. download_resume Tool Success
+
 **File**: `04-download-resume-tool-success.png`
 **Shows**: PDF download links with proper formatting
 
 ### 5. get_contact Tool Success
+
 **File**: `05-get-contact-tool-success.png`
 **Shows**: Contact information with clickable email link and follow-up suggestions
 

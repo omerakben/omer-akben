@@ -1,3 +1,11 @@
+---
+title: "Accessibility Guide"
+description: "WCAG 2.1 Level AA compliance guide: keyboard navigation, focus indicators, screen reader support, 8-mode brightness system, and automated E2E testing"
+date: 2025-11-02
+status: stable
+tags: [accessibility, wcag, a11y, compliance, testing]
+---
+
 # Accessibility Guide
 
 This document outlines the accessibility features and compliance measures implemented in omerakben.com.
@@ -328,6 +336,44 @@ const prefersReducedMotion = useReducedMotion();
 - [ ] Test with VoiceOver on iOS
 - [ ] Test with TalkBack on Android
 - [ ] Verify touch target sizes
+
+### Automated Accessibility Testing
+
+**Status:** ✅ **8/8 routes passing WCAG 2A compliance** (via Playwright + axe-core)
+
+**Implementation:**
+
+- **Test Suite**: `e2e/a11y.spec.ts` using Playwright and axe-core
+- **Coverage**: All primary routes tested for WCAG 2A violations
+- **CI/CD Integration**: Accessibility tests run on every push as part of 6 quality gates
+- **Command**: `npm run test:e2e` to run all E2E tests including accessibility
+
+**Routes Tested:**
+
+1. ✅ `/` - Homepage with hero, featured projects, and AI assistant
+2. ✅ `/projects` - Project showcase with filtering
+3. ✅ `/skills` - Technical skills visualization
+4. ✅ `/journey` - Career timeline
+5. ✅ `/credentials` - Education and certifications
+6. ✅ `/contact` - Contact information
+7. ✅ `/recruiter` - Recruiter-focused hub
+8. ✅ `/chat` - AI assistant chat interface
+
+**Testing Methodology:**
+
+- Waits for full React hydration before axe scan (SSR → client-side)
+- Validates against WCAG 2.1 Level A and AA rules
+- Detects critical, serious, moderate, and minor violations
+- Fails CI/CD pipeline if any violations detected
+
+**Accessibility Standards Enforced:**
+
+- Color contrast ratios (WCAG 2A)
+- ARIA landmark usage
+- Semantic HTML structure
+- Keyboard navigation patterns
+- Focus management
+- Screen reader compatibility
 
 ## Known Limitations
 

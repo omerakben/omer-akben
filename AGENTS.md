@@ -93,9 +93,16 @@ npm run test:e2e      # Must pass all E2E tests
 
 ### 6. Data Integrity
 
-- ✅ **Single source of truth:** `src/data/facts.ts` for personal info
+- ✅ **Single source of truth:** `src/data/facts.ts` for personal info, **including work authorization**
 - ❌ **NEVER fabricate data** - use only what exists in data files
 - ❌ **NEVER assume personal details** - verify in `facts.ts` first
+
+**Work Authorization** (added 2025-11-02):
+
+- Located in `facts.professional.workAuthorization` object
+- Status: "U.S. Permanent Resident (Green Card)" / "Lawful Permanent Resident (LPR)"
+- When asked by recruiters: "No employer sponsorship required" + "No employment restrictions"
+- AI agent uses official U.S. immigration terminology (see `agent-knowledge-base.ts`)
 
 ### 7. Next.js Hydration Safety
 
@@ -233,11 +240,13 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 ### Critical Tool Implementation Details
 
 **AI SDK v5 Tool Rendering:**
+
 - Tool invocations in `message.parts` array, NOT `toolInvocations` property
 - Filter by `part.type === "tool-{toolName}"` and check `part.result` exists
 - Structure: `{ type: "tool-{name}", toolCallId: "...", result: {...} }`
 
 **Knowledge Base:**
+
 - Single source: `lib/agent-knowledge-base.ts`
 - Curated context for AI responses
 - Updated via data files, never hardcoded
@@ -249,36 +258,43 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 ### 1. 8-Mode Brightness System (CRITICAL)
 
 **Implementation:**
+
 - Modes: -3 (darkest) → 0 (baseline) → +3 (brightest) + auto
 - `data-brightness` attribute on `<html>` element
 - CSS custom properties in `globals.css`
 - State: `lib/brightness-context.tsx`
 
 **Mandatory Usage:**
+
 - ✅ **ALWAYS:** `bg-surf-{0,1,2}`, `text-text-{1,2,3}`, `bg-brand-primary`, `border-border-line`
 - ❌ **NEVER:** Hardcoded colors like `#00FFC6` or `bg-[#00FFC6]`
 
 **Testing Requirement:**
+
 - MUST test all 8 modes for every UI change
 - Toggle in DevTools: modify `data-brightness` on `<html>`
 
 ### 2. Sidebar Assistant (Ozzy AI)
 
 **State Management:**
+
 - Context: `lib/chat-sidebar-context.tsx`
 - Persistence: `lib/thread-memory.ts` (localStorage)
 - States: `isOpen`, `isPinned`, `width` (320-800px), `threadId`
 
 **Layout Integration:**
+
 - Single constraint source: `LayoutContainer` in `app/layout.tsx`
 - Applies `marginRight` when sidebar is pinned
 - Navbar/footer naturally constrained
 
 **Hydration Safety:**
+
 - Uses `isMounted` pattern to prevent mismatches
 - localStorage access only after client-side mount
 
 **Features:**
+
 - Pinned/unpinned modes with persistence
 - Resizable width (320-800px)
 - Follow-up question suggestions (`FollowupChips.tsx`)
@@ -290,22 +306,26 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 **Achievement:** 90% bundle reduction (2.33MB → 236KB)
 
 **Implementation:**
+
 - Icon manifest: `src/lib/icon-manifest.ts` (42 curated icons)
 - Generation script: `scripts/generate-icons.js` (runs during build)
 - Usage: `import { getIcon } from '@/lib/icon-manifest'` then `getIcon('react')`
 
 **Enforcement:**
+
 - ❌ **NEVER:** `import * as Icons from 'simple-icons'`
 - ✅ **ALWAYS:** Use manifest for tree-shaking
 
 ### 4. Data Architecture
 
 **Source of Truth:**
+
 - `data/facts.ts` - Personal information (skills, experience, education)
 - `data/projects.ts` - Project catalog with helper functions
 - `config/assistantFaq.ts` - FAQ and intent libraries
 
 **Export Pattern:**
+
 - Typed objects + helper functions
 - TypeScript interfaces for type safety
 - Validation via Zod schemas where needed
@@ -313,16 +333,19 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 ### 5. Memory Systems
 
 **Episodic Memory:**
+
 - Implementation: `lib/mastra/memory/episodic.ts`
 - Storage: Upstash Vector (1536-dim OpenAI embeddings)
 - KNN search for conversation history retrieval
 - Client: `lib/redis/vector-client.ts` (singleton pattern)
 
 **Semantic Memory:**
+
 - User facts stored as JSON in Redis
 - Thread state persistence in `lib/thread-memory.ts`
 
 **Vector Search:**
+
 - Dual-path routing in `lib/redis/vector-search.ts`
 - Projects → Redis FT.SEARCH (`project_embeddings_idx`)
 - Episodic → Upstash Vector (conversation history)
@@ -330,16 +353,19 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 ### 6. Rate Limiting (Production-Ready)
 
 **Implementation:**
+
 - Redis-backed via Upstash (`@upstash/ratelimit`)
 - Configuration: `src/lib/rate-limit.ts`
 - Middleware: `src/middleware.ts` (applied before request processing)
 
 **Tiers:**
+
 - Chat API (`/api/chat`): 30 requests/min
 - Tools API (`/api/tools/*`): 60 requests/min
 - Generic API (`/api/*`): 100 requests/min
 
 **Graceful Degradation:**
+
 - Falls back to in-memory rate limiting if Redis unavailable
 
 ### 7. Contact Collection System (Production-Ready)
@@ -349,17 +375,20 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 **Implementation:** `src/lib/tools/implementations/collect-contact.ts`
 
 **Components:**
+
 - **Email Service:** Resend API with React Email templates (`lib/email/templates/ZoomLinkEmail.tsx`)
 - **Rate Limiting:** 5 requests per IP per 24 hours (increased from 1 for recruiter team sharing)
 - **Storage:** Redis-backed contact persistence with 7-day TTL
 - **Validation:** Email format validation, disposable email blocking, PII redaction
 
 **Trigger Conditions:**
+
 1. **Explicit Request:** User asks "send me the link", "email me", "schedule a call"
 2. **Engagement Score ≥60:** Based on message count, topics discussed, projects viewed
 3. **High-Value User:** Recruiter/hiring manager + 3+ messages + multiple topics
 
 **Email Flow:**
+
 ```
 User shows interest → Ozzy asks permission → User provides contact →
 Validate email → Save to Redis (7-day TTL) → Send via Resend →
@@ -367,6 +396,7 @@ Return Zoom link immediately → Continue conversation
 ```
 
 **Email Template Features:**
+
 - Professional branding with Omer's contact info
 - Direct Calendly/Zoom meeting link
 - Resume download links (Original + Extended PDF formats)
@@ -374,6 +404,7 @@ Return Zoom link immediately → Continue conversation
 - Reply-to address configured
 
 **Environment Variables Required:**
+
 ```bash
 RESEND_API_KEY=re_...                              # Email service
 OMER_ZOOM_LINK=https://calendly.com/.../30min     # Meeting link
@@ -381,6 +412,7 @@ OMER_EMAIL=me@omerakben.com                        # Reply-to address
 ```
 
 **Security Features:**
+
 - Server-side only (no client exposure of API keys)
 - Email validation with format checking
 - Rate limiting prevents spam (5 per IP per 24h)
@@ -388,6 +420,7 @@ OMER_EMAIL=me@omerakben.com                        # Reply-to address
 - 7-day contact data retention
 
 **Rationale for 5/24h Limit:**
+
 - Original: 1 request per 24 hours per IP (too restrictive)
 - Updated: 5 requests per 24 hours per IP
 - Reasoning: Allows recruiting teams at same company (shared IP) to each use the feature
@@ -402,6 +435,7 @@ OMER_EMAIL=me@omerakben.com                        # Reply-to address
 **Configuration:** `tsconfig.json` with zero-tolerance error policy
 
 **Enabled Checks:**
+
 - ✅ `strict: true` - All strict checks
 - ✅ `noImplicitAny: true` - No implicit any types
 - ✅ `strictNullChecks: true` - Explicit null/undefined handling
@@ -410,6 +444,7 @@ OMER_EMAIL=me@omerakben.com                        # Reply-to address
 - ✅ `noFallthroughCasesInSwitch: true` - Switch completeness
 
 **Type Assertion Pattern for Tests:**
+
 ```typescript
 // ✅ CORRECT - Explicit type assertion
 if (isSuccessResponse(json)) {
@@ -428,16 +463,19 @@ if (isSuccessResponse(json)) {
 ### ESLint (Zero Errors Policy)
 
 **Configuration:**
+
 - TypeScript ESLint rules enabled
 - React/React Hooks rules enforced
 - Next.js specific rules active
 - `scripts/` directory excluded (build scripts exempt)
 
 **Current Status:**
+
 - Errors: **0** (enforced in CI/CD)
 - Warnings: **21** (acceptable, not blocking)
 
 **Acceptable Warnings:**
+
 - Unused test utilities (e.g., `vi` import for type checking)
 - Unused destructured variables in tests (e.g., `_` placeholder)
 
@@ -446,11 +484,13 @@ if (isSuccessResponse(json)) {
 **531 Tests Across 27 Files** (100% pass rate required)
 
 **Distribution:**
+
 - API Routes: 12 files, 268 tests
 - Components: 8 files, 155 tests
 - Integration: 7 files, 108 tests
 
 **Test Types:**
+
 - Unit: Vitest + React Testing Library (`src/**/*.test.{ts,tsx}`)
 - E2E: Playwright (`e2e/*.spec.ts`) including WCAG 2A compliance
 - Watch mode: `npm test -- --watch`
@@ -458,6 +498,7 @@ if (isSuccessResponse(json)) {
 - Single file: `npm test -- filename.test.tsx`
 
 **E2E Critical Pattern - Wait for Hydration:**
+
 ```typescript
 await page.goto(url, { waitUntil: "networkidle" });
 await page.waitForSelector(".animate-spin", { state: "detached", timeout: 10000 });
@@ -469,10 +510,12 @@ Without these waits, E2E tests run on intermediate DOM state before React hydrat
 ### Bundle Size Budget
 
 **Enforced via `size-limit`:**
+
 - Homepage: 7.73 KB / 40 KB limit ✅
 - Skills page: 6.31 KB / 40 KB limit ✅
 
 **Achievements:**
+
 - 90% bundle reduction (2.33MB → 236KB) via icon optimization
 - 102KB shared chunks in production build
 
@@ -481,6 +524,7 @@ Without these waits, E2E tests run on intermediate DOM state before React hydrat
 **Status:** 8/8 routes passing (achieved 2025-10-21)
 
 **E2E Tests:** `e2e/a11y.spec.ts` scans all key routes:
+
 - `/` (homepage)
 - `/projects` (project catalog)
 - `/skills` (skills showcase)
@@ -491,6 +535,7 @@ Without these waits, E2E tests run on intermediate DOM state before React hydrat
 - `/chat` (AI assistant)
 
 **Requirements:**
+
 - Zero critical violations from axe-core
 - Proper heading hierarchy
 - Color contrast AA compliance (all 8 brightness modes)
@@ -709,12 +754,14 @@ To add a new AI agent tool:
    - Prevented AI Ozzy from offering unavailable DOCX format
 
 **Testing Approach:**
+
 - Manual validation via Playwright for real browser testing
 - Verified email template rendering and link accessibility
 - Tested AI agent responses to ensure no DOCX mentions
 - All 6 quality gates passed (lint, tsc, test, build, size, e2e)
 
 **Security Considerations:**
+
 - Server-side API key management (Resend)
 - Rate limiting via Redis (Upstash)
 - Email validation and sanitization
@@ -726,42 +773,49 @@ To add a new AI agent tool:
 ### Lessons Learned
 
 **1. Rate Limiting Strategy**
+
 - **Learning:** Initial rate limits may be too conservative for real-world usage patterns
 - **Solution:** Consider business context (recruiting teams share IPs) when setting limits
 - **Balance:** 5 requests per 24h prevents spam while supporting legitimate collaboration
 - **Implementation:** Simple numeric change in `Ratelimit.slidingWindow()` configuration
 
 **2. Email Template Design**
+
 - **Learning:** Include all relevant resources (resume links) directly in email
 - **Benefit:** Reduces friction - recipients get everything they need in one message
 - **Implementation:** Direct Google Drive links with descriptive labels
 - **User Experience:** Recipients can download resumes without additional navigation
 
 **3. AI Knowledge Base Consistency**
+
 - **Learning:** AI agent knowledge base must be single source of truth
 - **Problem:** Multiple schema files caused inconsistent AI responses about resume formats
 - **Solution:** Updated ALL schema locations (3 files) + knowledge base documentation
 - **Prevention:** Document which formats exist and explicitly state unavailable formats
 
 **4. Manual Testing for AI Behavior**
+
 - **Learning:** Unit tests validate API logic, but can't verify AI agent responses
 - **Tool:** Playwright for real browser testing of AI conversations
 - **Validation:** Manually tested that AI Ozzy no longer mentions DOCX format
 - **Coverage:** Tested edge cases like "do you have Word format?" queries
 
 **5. Documentation Completeness**
+
 - **Learning:** Implementation notes should capture rationale, not just changes
 - **Important:** Document WHY decisions were made (e.g., rate limit increase from 1→5)
 - **Benefit:** Future developers understand trade-offs and business context
 - **Practice:** Update AGENTS.md and CLAUDE.md after significant implementations
 
 **6. Environment Variable Management**
+
 - **Learning:** New features often require new environment variables
 - **Checklist:** Update `.env.example`, document in AGENTS.md/CLAUDE.md, configure in CI/CD
 - **Security:** Never expose secrets in client-side code or commit to version control
 - **Verification:** Test that production deployment has all required env vars
 
 **7. Quality Gate Enforcement**
+
 - **Learning:** All 6 quality gates must pass before merge (no exceptions)
 - **Gates:** TypeScript (0 errors), ESLint (0 errors), Tests (531/531), Build, Size, E2E
 - **Benefit:** Catches regressions early, maintains zero technical debt
@@ -794,6 +848,7 @@ To add a new AI agent tool:
    - File: `src/lib/agent-knowledge-base.ts`
 
 **Bug Fix:**
+
 - Fixed template literal syntax error (backticks inside template literal)
 - Changed: Located at `/status`, this page shows: → Located at /status, this page shows:
 - Resolved chat API 500 error (ReferenceError: status is not defined)

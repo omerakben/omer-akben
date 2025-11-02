@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   // Enable React strict mode for better error detection
   reactStrictMode: true,
 
+  // Configure page extensions
+  pageExtensions: ["js", "jsx", "ts", "tsx"],
+
   // Ensure Next.js uses the correct workspace root for monorepo setups
   outputFileTracingRoot: path.resolve(__dirname),
 

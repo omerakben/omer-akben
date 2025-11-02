@@ -1,3 +1,11 @@
+---
+title: "Performance Testing Checklist"
+description: "Performance validation workflow: static analysis, production build profiling, bundle analysis, and UI interaction performance testing with Framer Motion"
+date: 2025-11-02
+status: stable
+tags: [performance, testing, profiling, bundle-analysis, framer-motion]
+---
+
 # Performance Testing Checklist
 
 This project uses Next.js 15 with the App Router and client-side interactions powered by Framer Motion. To confirm that UI refinements remain performant, run the following checks locally before shipping changes:
