@@ -16,6 +16,11 @@ test.describe("Brightness Control Slider System", () => {
   const modes = ["-3", "-2", "-1", "0", "+1", "+2", "+3"] as const;
 
   test.beforeEach(async ({ page }) => {
+    // Dismiss WIP modal and banner before tests (simulates returning visitor)
+    await page.addInitScript(() => {
+      localStorage.setItem("wip_modal_dismissed", "true");
+      localStorage.setItem("wip_banner_dismissed", "true");
+    });
     await page.goto("/");
     // Wait for brightness control to be ready
     await page.waitForSelector('[data-testid="brightness-track"]', {

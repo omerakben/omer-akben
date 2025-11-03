@@ -206,7 +206,7 @@ export function ChatSidebar() {
   // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages.length]); // Use messages.length to prevent infinite loop
 
   // Handle resize drag
   useEffect(() => {
@@ -284,7 +284,7 @@ export function ChatSidebar() {
     if (messages.length > 0) {
       setShowMessages(true);
     }
-  }, [messages]);
+  }, [messages.length]); // Use messages.length to prevent infinite loop
 
   // Generate dynamic follow-ups after each assistant message
   useEffect(() => {
@@ -346,7 +346,7 @@ export function ChatSidebar() {
     // and its current value is only needed for deduplication logic in getFollowups.
     // Including it would cause infinite re-renders since we modify it on every run.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages, isLoading]);
+  }, [messages.length, isLoading]); // Use messages.length to prevent infinite loop
 
   return (
     <AnimatePresence>
@@ -572,13 +572,23 @@ export function ChatSidebar() {
                               components={{
                                 a: ({ href, children }) => {
                                   // Detect internal vs external links securely
-                                  const INTERNAL_HOSTNAMES = ["omerakben.com", "www.omerakben.com"];
-                                  let isInternal = href?.startsWith("/") || href?.startsWith("#");
+                                  const INTERNAL_HOSTNAMES = [
+                                    "omerakben.com",
+                                    "www.omerakben.com",
+                                  ];
+                                  let isInternal =
+                                    href?.startsWith("/") ||
+                                    href?.startsWith("#");
 
                                   if (!isInternal && href) {
                                     try {
-                                      const url = new URL(href, "https://omerakben.com");
-                                      isInternal = INTERNAL_HOSTNAMES.includes(url.hostname);
+                                      const url = new URL(
+                                        href,
+                                        "https://omerakben.com"
+                                      );
+                                      isInternal = INTERNAL_HOSTNAMES.includes(
+                                        url.hostname
+                                      );
                                     } catch {
                                       // If URL parsing fails, treat as external
                                       isInternal = false;
