@@ -1,3 +1,11 @@
+---
+title: "Production Runbook"
+description: "Incident response playbook: monitoring, common incidents (rate limits, OpenAI outages, Redis failures), rollback procedures, and operational workflows"
+date: 2025-11-02
+status: stable
+tags: [operations, runbook, incident-response, monitoring, troubleshooting]
+---
+
 # Production Runbook
 
 Operational guide for responding to common incidents across the portfolio assistant stack.

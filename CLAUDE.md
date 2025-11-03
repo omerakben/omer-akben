@@ -164,9 +164,18 @@ npx tsc --noEmit                                 # TypeScript check
 
 **2. Data Architecture**
 
-- `data/facts.ts` - Single source of truth for personal info
+- `data/facts.ts` - Single source of truth for personal info, **including work authorization**
 - `data/projects.ts` - Project catalog with helper functions
 - All data files export typed objects + helper functions
+
+**Work Authorization Data** (added 2025-11-02):
+
+- Located in `facts.professional.workAuthorization` object
+- Official status: "U.S. Permanent Resident (Green Card)"
+- Official title: "Lawful Permanent Resident (LPR)"
+- Key facts: No employer sponsorship required, no employment restrictions
+- Ozzy AI uses official U.S. immigration terminology when answering recruiter questions
+- Sample conversations in `agent-knowledge-base.ts` cover common recruiter scenarios
 
 **3. Archive Directory** ⚠️ **Important**
 
@@ -706,12 +715,14 @@ ANALYZE=true  # Enable bundle analyzer
    - Prevented AI Ozzy from offering unavailable DOCX format
 
 **Testing Approach:**
+
 - Manual validation via Playwright for real browser testing
 - Verified email template rendering and link accessibility
 - Tested AI agent responses to ensure no DOCX mentions
 - All 6 quality gates passed (lint, tsc, test, build, size, e2e)
 
 **Security Considerations:**
+
 - Server-side API key management (Resend)
 - Rate limiting via Redis (Upstash)
 - Email validation and sanitization
@@ -723,6 +734,7 @@ ANALYZE=true  # Enable bundle analyzer
 ### Lessons Learned
 
 **1. Rate Limiting Strategy**
+
 - **Learning:** Initial rate limits may be too conservative for real-world usage patterns
 - **Problem:** 1 per 24h blocked recruiting teams at same company (shared IP)
 - **Solution:** Consider business context when setting limits
@@ -731,6 +743,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **User Feedback:** Request came from recognizing recruiter use case (showing to colleagues)
 
 **2. Email Template Design**
+
 - **Learning:** Include all relevant resources (resume links) directly in email
 - **Benefit:** Reduces friction - recipients get everything they need in one message
 - **Implementation:** Direct Google Drive links with descriptive labels in email body
@@ -738,6 +751,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **Professional Touch:** Maintains branding and provides clear call-to-action
 
 **3. AI Knowledge Base Consistency**
+
 - **Learning:** AI agent knowledge base must be single source of truth
 - **Problem:** Multiple schema files caused inconsistent AI responses about resume formats
 - **Solution:** Updated ALL schema locations (3 files) + knowledge base documentation
@@ -745,6 +759,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **Testing:** Manual validation required to verify AI behavior changes
 
 **4. Manual Testing for AI Behavior**
+
 - **Learning:** Unit tests validate API logic, but can't verify AI agent responses
 - **Tool:** Playwright for real browser testing of AI conversations
 - **Validation:** Manually tested that AI Ozzy no longer mentions DOCX format
@@ -752,6 +767,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **Approach:** Interactive testing catches behavioral issues unit tests miss
 
 **5. Documentation Completeness**
+
 - **Learning:** Implementation notes should capture rationale, not just changes
 - **Important:** Document WHY decisions were made (e.g., rate limit increase from 1→5)
 - **Benefit:** Future developers understand trade-offs and business context
@@ -759,6 +775,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **Context Preservation:** Helps onboarding and troubleshooting
 
 **6. Environment Variable Management**
+
 - **Learning:** New features often require new environment variables
 - **Checklist:** Update `.env.example`, document in AGENTS.md/CLAUDE.md, configure in CI/CD
 - **Security:** Never expose secrets in client-side code or commit to version control
@@ -766,6 +783,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **For Contact Collection:** Required RESEND_API_KEY, OMER_EMAIL, OMER_ZOOM_LINK
 
 **7. Quality Gate Enforcement**
+
 - **Learning:** All 6 quality gates must pass before merge (no exceptions)
 - **Gates:** TypeScript (0 errors), ESLint (0 errors), Tests (531/531), Build, Size, E2E
 - **Benefit:** Catches regressions early, maintains zero technical debt
@@ -773,6 +791,7 @@ ANALYZE=true  # Enable bundle analyzer
 - **Result:** Production-ready code, no shortcuts
 
 **8. Iterative Development Based on User Needs**
+
 - **Learning:** Real-world usage reveals constraints not caught in initial design
 - **Example:** Rate limit of 1 seemed reasonable initially, but blocked legitimate use case
 - **Response:** Quick iteration to adjust limit based on user feedback
@@ -814,6 +833,7 @@ ANALYZE=true  # Enable bundle analyzer
 **Bug Fix:**
 
 **Template Literal Syntax Error** - Fixed chat API 500 error
+
 - **Problem:** Line 187 used backticks inside template literal: Located at `/status`, this page shows:
 - **Impact:** JavaScript parser treated `status` as undefined variable, breaking chat API
 - **Solution:** Removed backticks: Located at /status, this page shows:
@@ -830,11 +850,13 @@ ANALYZE=true  # Enable bundle analyzer
 ```
 
 **Visual Verification:**
+
 - Tested AI disclaimer rendering in chat sidebar ✅
 - Verified Ozzy's conversational responses about site status ✅
 - Confirmed /status page knowledge in agent responses ✅
 
 **Deployment:**
+
 - Commit: d5b2faf
 - Branch: pre-deployment
 - Status: CI/CD pipelines running (Quality Gates + Auto-Merge)
@@ -842,22 +864,77 @@ ANALYZE=true  # Enable bundle analyzer
 **Lessons Learned:**
 
 ### 1. Template Literal Nesting
+
 - **Problem:** Using backticks inside template literals breaks JavaScript parsing
 - **Detection:** Runtime error only - no TypeScript/ESLint warnings
 - **Solution:** Use grep to search for nested backticks, replace with plain text
 - **Prevention:** Be cautious with path references inside template literals
 
 ### 2. AI Agent System Prompts
+
 - **Scale:** Single file contains entire AI personality (~46K tokens)
 - **Impact:** Small changes have large behavioral effects
 - **Testing:** Manual validation required - unit tests can't verify AI responses
 - **Iteration:** Conversational tone guidelines shaped through real interactions
 
 ### 3. User Trust Elements
+
 - **Research:** Studied ChatGPT, Claude, Perplexity disclaimer patterns
 - **Placement:** Always visible, low visual weight, clear message
 - **Balance:** Honest about limitations without undermining confidence
 - **Result:** Industry-standard transparency builds user trust
+
+---
+
+### Work Authorization (Green Card/LPR) Knowledge Base
+
+**Date:** November 2, 2025
+
+**Overview:** Added professional work authorization information to Ozzy AI's knowledge base using official U.S. immigration terminology.
+
+**Key Implementation:**
+
+1. **Data Structure in `facts.ts`**
+   - Added `workAuthorization` object to `professional` section
+   - Properties: status, officialTitle, sponsorshipRequired, employmentRestrictions, eligibleEmployers, proofDocument, summary
+   - Official terminology: "Lawful Permanent Resident (LPR)" / "U.S. Permanent Resident (Green Card)"
+
+2. **AI Knowledge Base Updates**
+   - Added Work Authorization section to CORE IDENTITY (lines 137-144)
+   - Added conversation guidelines (rule #7, lines 534-542)
+   - Added 4 sample conversations for common recruiter questions (lines 865-889)
+   - Always states: "No employer sponsorship required" + "No employment restrictions"
+
+3. **Research Foundation**
+   - Used Perplexity Ask to research official U.S. immigration terminology
+   - Based on Department of Labor and USCIS official language
+   - Ensures professional representation for recruiter interactions
+
+**Quality Gate Results:**
+
+```bash
+✅ TypeScript:     0 errors
+✅ ESLint:         0 errors
+✅ Unit Tests:     667/667 passing
+✅ Build:          Success
+```
+
+**Lessons Learned:**
+
+1. **Official Terminology Matters**
+   - Using "Lawful Permanent Resident (LPR)" shows professionalism
+   - Explicitly stating "no sponsorship required" addresses recruiter's primary concern
+   - Differentiating from temporary work authorization (H-1B, EAD, OPT) prevents confusion
+
+2. **Sample Conversations Are Critical**
+   - AI agents need concrete examples for consistent responses
+   - Covering 4 common recruiter questions ensures comprehensive coverage
+   - Response format: status → no sponsorship → no restrictions → proof document
+
+3. **Single Source of Truth Architecture**
+   - Work authorization data in `facts.ts` flows to AI knowledge base
+   - Ensures consistency across all AI agent responses
+   - Easy to update in one location if status changes
 
 ---
 
@@ -866,6 +943,7 @@ ANALYZE=true  # Enable bundle analyzer
 For future AI agent tool implementations:
 
 **Planning Phase:**
+
 - [ ] Define clear tool purpose and triggers
 - [ ] Design Zod schemas for input/output validation
 - [ ] Consider rate limiting requirements
@@ -873,6 +951,7 @@ For future AI agent tool implementations:
 - [ ] Document environment variables needed
 
 **Implementation Phase:**
+
 - [ ] Create API route handler (`src/app/api/tools/[name]/route.ts`)
 - [ ] Implement tool schema in `lib/agent-tools/schemas.ts`
 - [ ] Add Mastra tool in `lib/mastra/tools.ts` (if needed)
@@ -880,6 +959,7 @@ For future AI agent tool implementations:
 - [ ] Configure rate limiting in `lib/rate-limit.ts`
 
 **Testing Phase:**
+
 - [ ] Write unit tests for API route
 - [ ] Test Zod schema validation (valid + invalid inputs)
 - [ ] Manual testing via Playwright for AI behavior
@@ -887,6 +967,7 @@ For future AI agent tool implementations:
 - [ ] Test all 6 quality gates pass
 
 **Documentation Phase:**
+
 - [ ] Update AGENTS.md with tool details
 - [ ] Update CLAUDE.md with implementation notes
 - [ ] Document environment variables in `.env.example`
@@ -894,9 +975,9 @@ For future AI agent tool implementations:
 - [ ] Update README.md if needed
 
 **Deployment Phase:**
+
 - [ ] Configure environment variables in Vercel
 - [ ] Configure secrets in GitHub Actions
 - [ ] Create PR with comprehensive description
 - [ ] Verify CI/CD passes all gates
 - [ ] Monitor production deployment
-

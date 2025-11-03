@@ -1,3 +1,11 @@
+---
+title: "Security Headers Playbook"
+description: "Production security headers: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy configuration and validation"
+date: 2025-11-02
+status: stable
+tags: [security, headers, csp, hsts, production, validation]
+---
+
 # Security Headers Playbook
 
 This document captures the production security headers configured in `next.config.ts` and how to validate them before launch.

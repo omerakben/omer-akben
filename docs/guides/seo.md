@@ -1,3 +1,11 @@
+---
+title: "SEO Implementation Guide"
+description: "Comprehensive SEO strategy: page metadata, Open Graph, Twitter Cards, JSON-LD structured data, sitemap, and robots.txt configuration"
+date: 2025-11-02
+status: stable
+tags: [seo, metadata, structured-data, open-graph, sitemap]
+---
+
 # SEO Implementation Guide
 
 This document describes the SEO and metadata implementation for omerakben.com.
@@ -97,6 +105,7 @@ import { getPersonSchema } from "@/lib/structured-data";
 - Contact information
 - Social profiles (LinkedIn, GitHub, Twitter)
 - Skills and expertise
+- Work authorization (U.S. Permanent Resident / Green Card status)
 - Education (Nashville Software School)
 
 #### 2. WebSite Schema (Homepage)

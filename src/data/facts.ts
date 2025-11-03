@@ -41,6 +41,16 @@ export const facts = {
         "Test Automation Architect",
       ],
     },
+    workAuthorization: {
+      status: "U.S. Permanent Resident (Green Card)",
+      officialTitle: "Lawful Permanent Resident (LPR)",
+      sponsorshipRequired: false,
+      employmentRestrictions: "None",
+      eligibleEmployers: "Any U.S. employer (government, private, nonprofit)",
+      proofDocument: "Permanent Resident Card (Form I-551)",
+      summary:
+        "Authorized to work in the United States for any employer without sponsorship",
+    },
   },
 
   skills: {
