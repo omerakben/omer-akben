@@ -55,6 +55,28 @@ export const contactCollectionRateLimit = redis
     })
   : null;
 
+// Text editor rate limit: 10 requests per minute
+// Moderate limit for AI-powered text editing operations
+export const textEditorRateLimit = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(10, "1 m"),
+      analytics: true,
+      prefix: "ratelimit:text-editor",
+    })
+  : null;
+
+// Contact form rate limit: 5 requests per 24 hours per IP
+// Prevents spam while allowing legitimate contact attempts
+export const contactFormRateLimit = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, "24 h"),
+      analytics: true,
+      prefix: "ratelimit:contact-form",
+    })
+  : null;
+
 /**
  * Check if an IP address has exceeded the contact collection rate limit
  */

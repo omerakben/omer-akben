@@ -1,5 +1,6 @@
 "use client";
 
+import { AIEditorModal } from "@/components/contact/ai-editor-modal";
 import {
   CalendarContactCard,
   EmailContactCard,
@@ -19,6 +20,16 @@ import { toast } from "sonner";
 // Note: Metadata export not supported in Client Components
 // SEO handled by root layout
 
+// Validation limits (matching API schema)
+const VALIDATION_LIMITS = {
+  name: { min: 1, max: 100 },
+  subject: { min: 1, max: 200 },
+  message: { min: 10, max: 5000 },
+} as const;
+
+// Email regex pattern
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -27,18 +38,90 @@ export default function ContactPage() {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [touched, setTouched] = useState({
+    name: false,
+    email: false,
+    subject: false,
+    message: false,
+  });
+
+  // Validation helper functions
+  const validateField = (field: keyof typeof formData, value: string) => {
+    if (field === "email") {
+      if (!value) return "Email is required";
+      if (!EMAIL_REGEX.test(value)) return "Invalid email address";
+      return null;
+    }
+
+    if (field === "name") {
+      if (!value || value.length < VALIDATION_LIMITS.name.min)
+        return "Name is required";
+      if (value.length > VALIDATION_LIMITS.name.max)
+        return `Name too long (max ${VALIDATION_LIMITS.name.max} characters)`;
+      return null;
+    }
+
+    if (field === "subject") {
+      if (!value || value.length < VALIDATION_LIMITS.subject.min)
+        return "Subject is required";
+      if (value.length > VALIDATION_LIMITS.subject.max)
+        return `Subject too long (max ${VALIDATION_LIMITS.subject.max} characters)`;
+      return null;
+    }
+
+    if (field === "message") {
+      if (!value || value.length < VALIDATION_LIMITS.message.min)
+        return `Message must be at least ${VALIDATION_LIMITS.message.min} characters`;
+      if (value.length > VALIDATION_LIMITS.message.max)
+        return `Message too long (max ${VALIDATION_LIMITS.message.max} characters)`;
+      return null;
+    }
+
+    return null;
+  };
+
+  const isFormValid = () => {
+    return (
+      !validateField("name", formData.name) &&
+      !validateField("email", formData.email) &&
+      !validateField("subject", formData.subject) &&
+      !validateField("message", formData.message)
+    );
+  };
+
+  const handleFieldBlur = (field: keyof typeof formData) => {
+    setTouched({ ...touched, [field]: true });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    toast.success("Message sent successfully! I'll get back to you soon.");
+      const data = await response.json();
 
-    setFormData({ name: "", email: "", subject: "", message: "" });
-    setIsSubmitting(false);
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      toast.success("Message sent successfully! I'll get back to you soon.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setTouched({ name: false, email: false, subject: false, message: false });
+    } catch (error) {
+      console.error("Contact Form Error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to send message"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -52,9 +135,9 @@ export default function ContactPage() {
           className="mb-16"
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-start">
           {/* Contact Form */}
-          <Card>
+          <Card className="flex flex-col h-full">
             <CardHeader>
               <CardTitle>Send a Message</CardTitle>
               <p className="text-text-2 text-sm">
@@ -62,15 +145,29 @@ export default function ContactPage() {
                 possible.
               </p>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+            <CardContent className="flex-1 flex flex-col">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col h-full space-y-4"
+              >
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-text-1 mb-2"
-                  >
-                    Name
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-text-1"
+                    >
+                      Name
+                    </label>
+                    <span
+                      className={`text-xs ${
+                        formData.name.length > VALIDATION_LIMITS.name.max
+                          ? "text-red-500"
+                          : "text-text-3"
+                      }`}
+                    >
+                      {formData.name.length}/{VALIDATION_LIMITS.name.max}
+                    </span>
+                  </div>
                   <Input
                     id="name"
                     placeholder="Your name"
@@ -78,8 +175,19 @@ export default function ContactPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
+                    onBlur={() => handleFieldBlur("name")}
+                    className={
+                      touched.name && validateField("name", formData.name)
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
                     required
                   />
+                  {touched.name && validateField("name", formData.name) && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {validateField("name", formData.name)}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -97,17 +205,39 @@ export default function ContactPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
+                    onBlur={() => handleFieldBlur("email")}
+                    className={
+                      touched.email && validateField("email", formData.email)
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
                     required
                   />
+                  {touched.email && validateField("email", formData.email) && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {validateField("email", formData.email)}
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-sm font-medium text-text-1 mb-2"
-                  >
-                    Subject
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label
+                      htmlFor="subject"
+                      className="block text-sm font-medium text-text-1"
+                    >
+                      Subject
+                    </label>
+                    <span
+                      className={`text-xs ${
+                        formData.subject.length > VALIDATION_LIMITS.subject.max
+                          ? "text-red-500"
+                          : "text-text-3"
+                      }`}
+                    >
+                      {formData.subject.length}/{VALIDATION_LIMITS.subject.max}
+                    </span>
+                  </div>
                   <Input
                     id="subject"
                     placeholder="What's this about?"
@@ -115,33 +245,74 @@ export default function ContactPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, subject: e.target.value })
                     }
+                    onBlur={() => handleFieldBlur("subject")}
+                    className={
+                      touched.subject &&
+                      validateField("subject", formData.subject)
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
                     required
                   />
+                  {touched.subject &&
+                    validateField("subject", formData.subject) && (
+                      <p className="text-xs text-red-500 mt-1">
+                        {validateField("subject", formData.subject)}
+                      </p>
+                    )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-text-1 mb-2"
-                  >
-                    Message
-                  </label>
-                  <div className="relative">
+                <div className="flex-1 flex flex-col">
+                  <div className="flex items-center justify-between mb-2">
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium text-text-1"
+                    >
+                      Message
+                    </label>
+                    <span
+                      className={`text-xs ${
+                        formData.message.length < VALIDATION_LIMITS.message.min
+                          ? "text-text-3"
+                          : formData.message.length >
+                              VALIDATION_LIMITS.message.max
+                            ? "text-red-500"
+                            : "text-text-3"
+                      }`}
+                    >
+                      {formData.message.length}/{VALIDATION_LIMITS.message.max}
+                    </span>
+                  </div>
+                  <div className="relative flex-1 flex flex-col">
                     <Textarea
                       id="message"
                       placeholder="Tell me more..."
-                      rows={6}
+                      className={`flex-1 resize-none min-h-[300px] pr-28 leading-7 ${
+                        touched.message &&
+                        validateField("message", formData.message)
+                          ? "border-red-500 focus-visible:ring-red-500"
+                          : ""
+                      }`}
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
+                      onBlur={() => handleFieldBlur("message")}
                       required
                     />
+                    {touched.message &&
+                      validateField("message", formData.message) && (
+                        <p className="text-xs text-red-500 mt-1">
+                          {validateField("message", formData.message)}
+                        </p>
+                      )}
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="default"
                       size="sm"
-                      className="absolute bottom-2 right-2 text-brand-primary"
+                      className="absolute bottom-3 right-3 rounded-full bg-gradient-to-r from-brand-primary to-accent-primary hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-brand-primary/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      onClick={() => setIsEditorOpen(true)}
+                      disabled={!formData.message.trim() || isSubmitting}
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
                       AI Editor
@@ -153,13 +324,24 @@ export default function ContactPage() {
                   type="submit"
                   size="lg"
                   className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isFormValid()}
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </CardContent>
           </Card>
+
+          {/* AI Editor Modal */}
+          <AIEditorModal
+            isOpen={isEditorOpen}
+            onClose={() => setIsEditorOpen(false)}
+            originalText={formData.message}
+            onApply={(editedText) => {
+              setFormData({ ...formData, message: editedText });
+              setIsEditorOpen(false);
+            }}
+          />
 
           {/* Sidebar */}
           <div className="space-y-6">
