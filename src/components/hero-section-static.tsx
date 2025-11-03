@@ -1,6 +1,6 @@
 "use client";
 
-import { RobotIllustration } from "@/components/robot-illustration";
+import { RobotAnimation } from "@/components/robot-animation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -186,12 +186,12 @@ export function HeroSectionStatic() {
               aria-hidden="true"
               className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60 robot-glow-effect"
             />
-            {/* Robot with breathe animation */}
+            {/* Robot Lottie Animation */}
             <div
               className="hero-robot-breathe motion-reduce:animate-none"
               title="Talk to my AI twin, Ozzy"
             >
-              <RobotIllustration />
+              <RobotAnimation className="w-full max-w-md mx-auto" />
             </div>
           </div>
         </div>

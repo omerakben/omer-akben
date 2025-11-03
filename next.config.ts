@@ -76,11 +76,12 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // TODO: migrate away from 'unsafe-inline' allowances using nonces or hashes.
-              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+              // Note: 'wasm-unsafe-eval' is required for Lottie animations (WebAssembly)
+              "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com wss://localhost:* ws://localhost:*",
+              "connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com https://lottie.host https://unpkg.com https://cdn.jsdelivr.net wss://localhost:* ws://localhost:*",
               "frame-ancestors 'none'",
             ].join("; "),
           },
@@ -103,6 +104,20 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      // Serve WASM files with correct MIME type
+      {
+        source: "/assets/:path*.wasm",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/wasm",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },

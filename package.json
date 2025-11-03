@@ -43,6 +43,7 @@
     "@ai-sdk/openai": "^2.0.52",
     "@ai-sdk/react": "^2.0.76",
     "@langchain/langgraph-checkpoint-redis": "^1.0.0",
+    "@lottiefiles/dotlottie-react": "0.17.6",
     "@mastra/core": "^0.21.1",
     "@mastra/memory": "^0.15.7",
     "@radix-ui/react-avatar": "^1.1.10",
