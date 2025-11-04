@@ -1,4 +1,4 @@
-import { downloadResumeInputSchema } from "@/lib/agent-tools/schemas";
+import { downloadResumeInputSchema } from "@/lib/tools/zod-schemas";
 import { logError } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 

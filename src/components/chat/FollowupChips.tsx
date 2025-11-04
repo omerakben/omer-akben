@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
+import { memo } from "react";
 
 interface FollowupChipsProps {
   /**
@@ -26,8 +27,10 @@ interface FollowupChipsProps {
  * - Framer Motion entrance animation
  * - Full keyboard navigation support
  * - ARIA compliant for screen readers
+ *
+ * Memoized to prevent unnecessary re-renders when follow-ups haven't changed
  */
-export function FollowupChips({
+export const FollowupChips = memo(function FollowupChips({
   followups,
   onSend,
   className = "",
@@ -97,4 +100,12 @@ export function FollowupChips({
       </div>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if followups content or className changes
+  // Note: onSend is excluded from comparison as it should be stable via useCallback in parent
+  return (
+    prevProps.className === nextProps.className &&
+    prevProps.followups.length === nextProps.followups.length &&
+    prevProps.followups.every((q, i) => q === nextProps.followups[i])
+  );
+});

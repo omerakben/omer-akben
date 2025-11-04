@@ -1,4 +1,4 @@
-import { profilePerformanceInputSchema } from "@/lib/agent-tools/schemas";
+import { profilePerformanceInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

@@ -43,7 +43,7 @@ This section lists all npm packages used in the `/lib` folder with their version
 
 | Package | Version | Used In                  | Purpose                                               |
 | ------- | ------- | ------------------------ | ----------------------------------------------------- |
-| **zod** | ^4.1.12 | `agent-tools/schemas.ts` | Runtime schema validation for all tool inputs/outputs |
+| **zod** | ^4.1.12 | `tools/zod-schemas.ts` | Runtime schema validation for all tool inputs/outputs |
 
 ### Email Service
 
@@ -1040,7 +1040,7 @@ describe('downloadResumeInputSchema', () => {
 
 ```typescript
 // In API route (e.g., /api/tools/list-projects/route.ts)
-import { listProjectsInputSchema } from '@/lib/agent-tools/schemas';
+import { listProjectsInputSchema } from '@/lib/tools/zod-schemas';
 
 export async function POST(req: Request) {
   const body = await req.json();

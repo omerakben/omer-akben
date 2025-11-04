@@ -1,4 +1,4 @@
-import { navigatePageInputSchema } from "@/lib/agent-tools/schemas";
+import { navigatePageInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 const ALLOWED_DOMAINS = ["omerakben.com", "localhost"];

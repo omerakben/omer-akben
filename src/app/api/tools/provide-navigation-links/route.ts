@@ -1,4 +1,4 @@
-import { provideNavigationLinksInputSchema } from "@/lib/agent-tools/schemas";
+import { provideNavigationLinksInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
