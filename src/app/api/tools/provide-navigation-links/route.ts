@@ -16,8 +16,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Parse the links array from JSON string
-    const links = JSON.parse(linksParam);
+    // Parse the links array from JSON string with error handling
+    let links;
+    try {
+      links = JSON.parse(linksParam);
+    } catch (parseError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid JSON in links parameter",
+        },
+        { status: 400 }
+      );
+    }
+
     const { links: validatedLinks } = provideNavigationLinksInputSchema.parse({
       links,
     });

@@ -92,8 +92,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Contact email sent:", data?.id);
-
     return NextResponse.json({
       success: true,
       message: "Email sent successfully",

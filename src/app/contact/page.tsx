@@ -161,7 +161,7 @@ export default function ContactPage() {
                     <span
                       className={`text-xs ${
                         formData.name.length > VALIDATION_LIMITS.name.max
-                          ? "text-red-500"
+                          ? "text-destructive"
                           : "text-text-3"
                       }`}
                     >
@@ -184,7 +184,7 @@ export default function ContactPage() {
                     required
                   />
                   {touched.name && validateField("name", formData.name) && (
-                    <p className="text-xs text-red-500 mt-1">
+                    <p className="text-xs text-destructive mt-1">
                       {validateField("name", formData.name)}
                     </p>
                   )}
@@ -214,7 +214,7 @@ export default function ContactPage() {
                     required
                   />
                   {touched.email && validateField("email", formData.email) && (
-                    <p className="text-xs text-red-500 mt-1">
+                    <p className="text-xs text-destructive mt-1">
                       {validateField("email", formData.email)}
                     </p>
                   )}
@@ -231,7 +231,7 @@ export default function ContactPage() {
                     <span
                       className={`text-xs ${
                         formData.subject.length > VALIDATION_LIMITS.subject.max
-                          ? "text-red-500"
+                          ? "text-destructive"
                           : "text-text-3"
                       }`}
                     >
@@ -256,7 +256,7 @@ export default function ContactPage() {
                   />
                   {touched.subject &&
                     validateField("subject", formData.subject) && (
-                      <p className="text-xs text-red-500 mt-1">
+                      <p className="text-xs text-destructive mt-1">
                         {validateField("subject", formData.subject)}
                       </p>
                     )}
@@ -276,7 +276,7 @@ export default function ContactPage() {
                           ? "text-text-3"
                           : formData.message.length >
                               VALIDATION_LIMITS.message.max
-                            ? "text-red-500"
+                            ? "text-destructive"
                             : "text-text-3"
                       }`}
                     >
@@ -302,7 +302,7 @@ export default function ContactPage() {
                     />
                     {touched.message &&
                       validateField("message", formData.message) && (
-                        <p className="text-xs text-red-500 mt-1">
+                        <p className="text-xs text-destructive mt-1">
                           {validateField("message", formData.message)}
                         </p>
                       )}

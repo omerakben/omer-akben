@@ -1,10 +1,19 @@
 import { logError } from "@/lib/log";
+import { toolsRateLimit } from "@/lib/rate-limit";
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 // Allow up to 10 seconds for generation
 export const maxDuration = 10;
+
+// Request validation schema
+const followupRequestSchema = z.object({
+  userMessage: z.string().min(1, "userMessage is required"),
+  assistantMessage: z.string().min(1, "assistantMessage is required"),
+  recentlyShown: z.array(z.string()).optional().default([]),
+});
 
 const SYSTEM_PROMPT = `You are a follow-up question generator for a portfolio assistant conversation.
 
@@ -26,30 +35,42 @@ Example: ["What was the biggest technical challenge?", "How did you measure succ
 
 export async function POST(req: Request) {
   try {
+    // Check rate limit
+    if (toolsRateLimit) {
+      const ip =
+        req.headers.get("x-forwarded-for") ||
+        req.headers.get("x-real-ip") ||
+        "anonymous";
+      const result = await toolsRateLimit.limit(ip);
+
+      if (!result.success) {
+        return NextResponse.json(
+          { error: "Too many requests. Please try again later." },
+          {
+            status: 429,
+            headers: {
+              "X-RateLimit-Limit": result.limit.toString(),
+              "X-RateLimit-Remaining": result.remaining.toString(),
+              "Retry-After": "60",
+            },
+          }
+        );
+      }
+    }
+
     const body = await req.json();
-    const { userMessage, assistantMessage, recentlyShown = [] } = body;
 
-    // Validate input
-    if (!userMessage || typeof userMessage !== "string") {
+    // Validate input with Zod schema
+    const parsed = followupRequestSchema.safeParse(body);
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0];
       return NextResponse.json(
-        { error: "userMessage is required and must be a string" },
+        { error: firstError?.message || "Invalid request" },
         { status: 400 }
       );
     }
 
-    if (!assistantMessage || typeof assistantMessage !== "string") {
-      return NextResponse.json(
-        { error: "assistantMessage is required and must be a string" },
-        { status: 400 }
-      );
-    }
-
-    if (!Array.isArray(recentlyShown)) {
-      return NextResponse.json(
-        { error: "recentlyShown must be an array" },
-        { status: 400 }
-      );
-    }
+    const { userMessage, assistantMessage, recentlyShown } = parsed.data;
 
     // Construct prompt
     const prompt = `User asked: "${userMessage}"
@@ -112,7 +133,8 @@ Generate 2 follow-up questions as a JSON array:`;
     }
 
     return NextResponse.json({
-      suggestions,
+      success: true,
+      data: { suggestions },
     });
   } catch (error) {
     logError("suggest-followups:POST", error);
