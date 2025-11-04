@@ -417,7 +417,7 @@ export function ChatSidebar() {
                     setCurrentFollowups([]);
                     setRecentlyShownFollowups([]);
                   }}
-                  className="h-8 w-8 p-0"
+                  className="h-11 w-11 p-2"
                   title="New Chat"
                   aria-label="Start new chat"
                 >
@@ -434,7 +434,7 @@ export function ChatSidebar() {
                       setCurrentFollowups([]);
                       setRecentlyShownFollowups([]);
                     }}
-                    className="h-8 w-8 p-0"
+                    className="h-11 w-11 p-2"
                     title="Clear Conversation"
                     aria-label="Clear conversation"
                   >
@@ -445,7 +445,7 @@ export function ChatSidebar() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setPinned(!isPinned)}
-                  className="h-8 w-8 p-0"
+                  className="h-11 w-11 p-2"
                   title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
                   aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
                   aria-pressed={isPinned}
@@ -461,7 +461,7 @@ export function ChatSidebar() {
                     variant="ghost"
                     size="sm"
                     onClick={closeSidebar}
-                    className="h-8 w-8 p-0"
+                    className="h-11 w-11 p-2"
                     aria-label="Close sidebar"
                   >
                     <X aria-hidden="true" className="w-4 h-4" />
@@ -819,11 +819,15 @@ export function ChatSidebar() {
                 onSubmit={handleSubmit}
                 className="space-y-2"
               >
+                <label htmlFor="chat-sidebar-input" className="sr-only">
+                  Message Ozzy AI Assistant
+                </label>
                 <div className="flex gap-2 items-end">
                   <textarea
                     ref={textareaRef}
                     id="chat-sidebar-input"
                     value={input}
+                    aria-label="Message Ozzy AI Assistant"
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
                       // Submit on Enter, new line on Shift+Enter
