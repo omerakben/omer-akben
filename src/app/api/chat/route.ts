@@ -8,15 +8,39 @@ import { z } from "zod";
 
 export const maxDuration = 30;
 
-const messageSchema = z
-  .object({
-    id: z.string(),
-    role: z.enum(["user", "assistant", "system", "tool"]),
-    parts: z.array(z.any()).optional(),
-    content: z.any().optional(),
-    metadata: z.any().optional(),
-  })
-  .passthrough();
+// Define specific schemas for message parts
+const textPartSchema = z.object({
+  type: z.literal("text"),
+  text: z.string(),
+});
+
+const toolCallPartSchema = z.object({
+  type: z.literal("tool-call"),
+  toolCallId: z.string(),
+  toolName: z.string(),
+  args: z.record(z.string(), z.unknown()),
+});
+
+const toolResultPartSchema = z.object({
+  type: z.literal("tool-result"),
+  toolCallId: z.string(),
+  toolName: z.string(),
+  result: z.unknown(),
+});
+
+const messagePartSchema = z.union([
+  textPartSchema,
+  toolCallPartSchema,
+  toolResultPartSchema,
+]);
+
+const messageSchema = z.object({
+  id: z.string(),
+  role: z.enum(["user", "assistant", "system", "tool"]),
+  parts: z.array(messagePartSchema).optional(),
+  content: z.union([z.string(), z.array(messagePartSchema)]).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
 
 const requestSchema = z.object({
   chatId: z.string(),
