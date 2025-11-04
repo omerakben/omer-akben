@@ -1,5 +1,5 @@
 # Test Coverage Analysis Report
-## /home/user/omer-akben Portfolio Project
+## omerakben.com Portfolio Project
 
 **Analysis Date:** November 4, 2025
 **Test Framework:** Vitest (unit) + Playwright (E2E)
@@ -14,7 +14,7 @@
 
 - **Unit Tests:** 667 passing (excellent API route coverage, weak component coverage)
 - **E2E Tests:** 66 passing, 13 skipped (real API limitations)
-- **Overall Coverage:** ~25% estimated (strong in critical paths, weak in UI components)
+- **Overall Coverage:** ~37% estimated (strong in critical paths, weak in UI components)
 
 **Key Strengths:**
 - Excellent API route test coverage (14 tools fully tested)
@@ -170,7 +170,7 @@
 | `downloads.spec.ts` | 5 | 5 | 0 | ✅ Multi-format |
 | `mobile.spec.ts` | 11 | 10 | 1 | ⚠️ Timing issue |
 | `navigation.spec.ts` | 8 | 8 | 0 | ✅ Core routes |
-| `wip-gate.spec.ts` | 8 | 10 | 4 | ⚠️ Modal blocking |
+| `wip-gate.spec.ts` | 8 | 6 | 2 | ⚠️ Modal blocking |
 
 ### 2.3 Skipped Test Rationale Analysis
 
@@ -188,7 +188,7 @@
 **Mobile (1 skipped):**
 - CTA button visibility timing issue
 
-**WIP Gate (4 skipped):**
+**WIP Gate (2 skipped):**
 - Modal backdrop interference with pointer events
 - Navigation timing issues
 - Feature still under development
