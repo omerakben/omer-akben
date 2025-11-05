@@ -4,8 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid build-time errors when env vars aren't available
+function getResendClient() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 // Request validation schema
 const contactSchema = z.object({
@@ -70,6 +72,7 @@ export async function POST(req: NextRequest) {
     const { name, email, subject, message } = validatedData;
 
     // Send email via Resend
+    const resend = getResendClient();
     const { data, error } = await resend.emails.send({
       from: "Omer Akben Portfolio <contact@omerakben.com>",
       to: process.env.OMER_EMAIL || "me@omerakben.com",
