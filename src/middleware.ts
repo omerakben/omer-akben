@@ -78,7 +78,7 @@ export async function middleware(request: NextRequest) {
     `script-src 'self' 'nonce-${nonce}' https://va.vercel-scripts.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
     isDevelopment
       ? "style-src 'self' 'unsafe-inline'" // Dev: Allow Turbopack HMR
-      : `style-src 'self' 'nonce-${nonce}'`, // Prod: Strict nonce-only
+      : `style-src 'self' 'nonce-${nonce}' 'unsafe-hashes'`, // Prod: Nonce-based + inline style attributes
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
     `connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com ${isDevelopment ? "wss://localhost:* ws://localhost:*" : ""}`.trim(),
