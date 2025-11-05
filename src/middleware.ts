@@ -81,7 +81,7 @@ export async function middleware(request: NextRequest) {
       : `style-src 'self' 'nonce-${nonce}'`, // Prod: Strict nonce-only
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    "connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com wss://localhost:* ws://localhost:*",
+    `connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com ${isDevelopment ? "wss://localhost:* ws://localhost:*" : ""}`.trim(),
     "frame-ancestors 'none'",
   ].join("; ");
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { headers } from "next/headers";
 import type { ReactNode } from "react";
 
 import { AppShell } from "@/components/app-shell";
@@ -15,15 +14,11 @@ const inter = Inter({
 
 export const metadata: Metadata = createMetadata({});
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  // Get nonce for CSP (though layout.tsx doesn't currently use inline scripts/styles)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const nonce = (await headers()).get("x-nonce") || "";
-
   return (
     <html lang="en" className={inter.variable}>
       <head>
