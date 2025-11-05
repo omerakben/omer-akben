@@ -1,6 +1,6 @@
 "use client";
 
-import { BrandLogo } from "@/components/brand-logo";
+import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +52,11 @@ export function AppHeader() {
               LOGO_SIZE.className
             )}
           >
-            <BrandLogo priority />
+            <AnimatedBlobContainer
+              size={64}
+              disableCenterDimming={true}
+              className="rounded-full"
+            />
           </Link>
 
           {/* Desktop navigation + controls */}

@@ -1,7 +1,8 @@
 "use client";
 
-import { RobotIllustration } from "@/components/robot-illustration";
+import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Button } from "@/components/ui/button";
+import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,8 @@ import {
 import Link from "next/link";
 
 export function HeroSectionStatic() {
+  const { openSidebar } = useChatSidebar();
+
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Background gradient accent - Dual radial gradients for depth */}
@@ -179,19 +182,24 @@ export function HeroSectionStatic() {
             </div>
           </div>
 
-          {/* Right Column - Robot Illustration */}
+          {/* Right Column - Animated Shader Blob */}
           <div className="hidden lg:block relative hero-fade-in-right">
-            {/* Glow effect behind robot */}
+            {/* Glow effect behind blob */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60 robot-glow-effect"
+              className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-60
+                         bg-gradient-to-br from-brand-primary/30 to-accent-primary/30"
             />
-            {/* Robot with breathe animation */}
+            {/* Shader blob with breathe animation */}
             <div
-              className="hero-robot-breathe motion-reduce:animate-none"
+              className="shader-blob-breathe motion-reduce:animate-none"
               title="Talk to my AI twin, Ozzy"
             >
-              <RobotIllustration />
+              <AnimatedBlobContainer
+                onClick={openSidebar}
+                size={300}
+                disableCenterDimming={false}
+              />
             </div>
           </div>
         </div>

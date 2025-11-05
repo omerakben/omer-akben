@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "seed:assets": "node scripts/seed-assets.mjs"
+    "seed:assets": "node scripts/seed-assets.mjs",
+    "generate:favicons": "tsx scripts/generate-shader-favicons.ts"
   },
   "size-limit": [
     {
