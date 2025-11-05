@@ -18,6 +18,9 @@ Google Drive: <https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo
 
 ### AWS Certificate
 
+File: Omer-Akben-NSS-Cloud-Certificate.pdf
+Google Drive: <https://drive.google.com/file/d/1GRq8onka6Ap2dHZrTJoa6Ktsksgd4-tO/view?usp=sharing>
+
 File: Omer-Akben-AWS-Certificate.pdf
 Google Drive: <https://drive.google.com/file/d/1wosKaBVPTEsShVnQQWpi28eB40XEHtOD/view?usp=sharing>
 

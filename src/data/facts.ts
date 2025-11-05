@@ -192,6 +192,16 @@ export const facts = {
 
   certifications: [
     {
+      name: "NSS Cloud Deployment Certificate",
+      issuer: "Nashville Software School",
+      year: "2025",
+    },
+    {
+      name: "Introduction to Cloud Computing",
+      issuer: "IBM via Coursera",
+      year: "2024",
+    },
+    {
       name: "AWS Cloud Practitioner Essentials",
       issuer: "Amazon Web Services",
       year: "2022",

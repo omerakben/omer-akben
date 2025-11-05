@@ -42,6 +42,16 @@ const CERTIFICATE_MAP: Record<CertificateType, CertificateDescriptor> = {
     issuer: "Nashville Software School",
     year: "2025",
   },
+  "nss-cloud": {
+    filename: "Omer-Akben-NSS-Cloud-Certificate.pdf",
+    size: 131_100,
+    format: "pdf",
+    googleDriveUrl:
+      "https://drive.google.com/file/d/1GRq8onka6Ap2dHZrTJoa6Ktsksgd4-tO/view?usp=sharing",
+    certificateName: "NSS Cloud Deployment Certificate",
+    issuer: "Nashville Software School",
+    year: "2025",
+  },
 };
 
 export const downloadCertificate = tool<

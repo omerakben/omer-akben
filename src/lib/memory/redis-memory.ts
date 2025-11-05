@@ -1,4 +1,4 @@
-import { getCheckpointer } from "@/lib/mastra/memory/checkpointer";
+import { getRedisClient } from "@/lib/redis/client";
 import {
   RedisEpisodicMemory,
   type EpisodicMemoryResult,
@@ -7,48 +7,42 @@ import {
   RedisSemanticMemory,
   type SemanticMemoryPayload,
 } from "@/lib/mastra/memory/semantic";
-import type {
-  ChannelVersions,
-  CheckpointMetadata,
-} from "@langchain/langgraph-checkpoint";
 import type { UIMessage } from "ai";
+
+const STM_TTL = 86400; // 24 hours in seconds
 
 export class RedisMemoryManager {
   private readonly episodic = new RedisEpisodicMemory();
   private readonly semantic = new RedisSemanticMemory();
+  private readonly redis = getRedisClient();
 
+  /**
+   * Save short-term memory (conversation history) to Redis
+   * Uses simple key-value storage with 24h TTL
+   */
   async saveSTM(threadId: string, messages: UIMessage[]): Promise<void> {
-    const metadata: CheckpointMetadata = {
-      source: "input",
-      step: messages.length,
-      parents: {},
-    };
-    const versions: ChannelVersions = {};
-    const checkpoint = {
-      v: 4,
-      id: `${Date.now()}`,
-      ts: new Date().toISOString(),
-      channel_values: { messages },
-      channel_versions: {},
-      versions_seen: {},
-    };
-
-    await getCheckpointer().put(
-      { configurable: { thread_id: threadId } },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      checkpoint as any,
-      metadata,
-      versions
-    );
+    const key = `stm:${threadId}`;
+    await this.redis.set(key, JSON.stringify(messages), { ex: STM_TTL });
   }
 
+  /**
+   * Load short-term memory (conversation history) from Redis
+   * Returns empty array if thread doesn't exist or has expired
+   */
   async loadSTM(threadId: string): Promise<UIMessage[]> {
-    const checkpoint = await getCheckpointer().get({
-      configurable: { thread_id: threadId },
-    });
-    return (
-      (checkpoint?.channel_values?.messages as UIMessage[] | undefined) ?? []
-    );
+    const key = `stm:${threadId}`;
+    const stored = await this.redis.get(key);
+
+    if (!stored || typeof stored !== "string") {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   }
 
   async saveLTM(threadId: string, messages: UIMessage[]): Promise<void> {

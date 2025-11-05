@@ -460,7 +460,7 @@ if (isSuccessResponse(json)) {
 
 **Current Status:** 0 errors (enforced in CI/CD)
 
-### ESLint (Zero Errors Policy)
+### ESLint (Zero Errors, Zero Warnings Policy)
 
 **Configuration:**
 
@@ -469,15 +469,14 @@ if (isSuccessResponse(json)) {
 - Next.js specific rules active
 - `scripts/` directory excluded (build scripts exempt)
 
-**Current Status:**
+**Current Status (Production):**
 
 - Errors: **0** (enforced in CI/CD)
-- Warnings: **21** (acceptable, not blocking)
+- Warnings: **0** (production standard - no warnings allowed)
 
-**Acceptable Warnings:**
+**Production Standard:**
 
-- Unused test utilities (e.g., `vi` import for type checking)
-- Unused destructured variables in tests (e.g., `_` placeholder)
+As of 2025-11-05, the production deployment requires **0 ESLint warnings**. All unused variables, imports, and other warnings must be fixed before merging to `pre-deployment` branch.
 
 ### Test Coverage
 
@@ -696,7 +695,7 @@ To add a new AI agent tool:
 
 ```bash
 ✅ TypeScript:     0 errors (npx tsc --noEmit)
-✅ ESLint:         0 errors, 21 warnings (npm run lint)
+✅ ESLint:         0 errors, 0 warnings (npm run lint)
 ✅ Unit Tests:     531/531 passing (npm test)
 ✅ Build:          Success (npm run build)
 ✅ Bundle Size:    Within limits (npm run size)

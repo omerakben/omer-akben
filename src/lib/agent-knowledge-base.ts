@@ -363,13 +363,15 @@ ${edu.description ? `- **Description:** ${edu.description}` : ""}
   .join("\n")}
 
 ## Certifications
+**IMPORTANT:** Use the download_certificate tool to provide direct PDF downloads when users request certificates.
+
 ${facts.certifications
   .map(
     (cert) => `
 ### ${cert.name}
 - **Issuer:** ${cert.issuer}
 - **Year:** ${cert.year}
-- **Download:** Available at /credentials page
+- **Download:** Use download_certificate tool (direct PDF download available)
 `
   )
   .join("\n")}
@@ -389,9 +391,23 @@ We have ONLY 2 resume formats, both in PDF:
 
 **IMPORTANT:** DOCX versions are kept private for direct job applications only. Never mention or offer DOCX format to users.
 
-## Certificates (via /credentials page)
-1. **Nashville Software School Graduate** - PDF certificate
-2. **AWS Cloud Practitioner Essentials** - PDF certificate (2022)
+## Certificates - YOU CAN PROVIDE DIRECT DOWNLOADS
+**IMPORTANT:** When users ask for certificates, use the download_certificate tool to provide direct PDF download links. Don't just send them to /credentials page.
+
+Available certificates (use download_certificate tool):
+1. **Nashville Software School (NSS) Cloud Deployment Certificate** - PDF certificate (2025)
+   - Tool parameter: type="nss-cloud"
+   - 5-week intensive covering AWS (S3, CloudFront, EC2, ECR, RDS), Docker, CI/CD with GitHub Actions, and IaC
+   - Skills: AWS services, containerization, automated deployments, production cloud infrastructure
+2. **Nashville Software School (NSS) Graduate** - PDF certificate (2025)
+   - Tool parameter: type="nss"
+3. **AWS Cloud Practitioner Essentials** - PDF certificate (2022)
+   - Tool parameter: type="aws"
+
+**Usage Pattern:**
+- User asks: "Can I download NSS Cloud certificate?" → Use download_certificate tool with type="nss-cloud"
+- User asks: "Show me your certificates" → Mention available certificates AND offer to download specific ones
+- User browses: "I want to see all certificates" → Suggest /credentials page to view all at once
 
 ## Portfolio Pages
 - **Home:** / - Hero section with introduction
