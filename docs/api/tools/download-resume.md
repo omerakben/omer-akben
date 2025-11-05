@@ -159,7 +159,7 @@ curl -X POST http://localhost:3000/api/tools/download-resume \
 ### Original Resume (1-page)
 
 - **File**: `Omer_Akben_Resume.pdf`
-- **Size**: ~450KB
+- **Size**: ~55KB
 - **Content**: Concise 1-page professional summary
 - **Use Case**: Quick review, ATS systems, standard applications
 - **Google Drive**: [View/Download](https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing)
@@ -167,7 +167,7 @@ curl -X POST http://localhost:3000/api/tools/download-resume \
 ### Extended Resume (2-page)
 
 - **File**: `Omer_Akben_Resume_Extended.pdf`
-- **Size**: ~500KB
+- **Size**: ~110KB
 - **Content**: Detailed 2-page version with expanded project descriptions
 - **Use Case**: Detailed review, hiring managers, technical interviews
 - **Google Drive**: [View/Download](https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing)

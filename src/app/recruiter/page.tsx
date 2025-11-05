@@ -371,7 +371,7 @@ export default function RecruiterPage() {
                       <FileText className="h-5 w-5 text-brand-primary" />
                       <h3 className="font-medium text-text-1">Resume (PDF)</h3>
                     </div>
-                    <p className="text-xs text-text-2">PDF • ~450KB</p>
+                    <p className="text-xs text-text-2">PDF • ~55KB</p>
                     <div className="space-y-1.5">
                       <Button
                         asChild
@@ -398,7 +398,7 @@ export default function RecruiterPage() {
                         Extended Resume (PDF)
                       </h3>
                     </div>
-                    <p className="text-xs text-text-2">PDF • ~500KB</p>
+                    <p className="text-xs text-text-2">PDF • ~110KB</p>
                     <div className="space-y-1.5">
                       <Button
                         asChild
@@ -554,34 +554,36 @@ export default function RecruiterPage() {
 
             {/* Secondary CTAs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="w-full justify-start hover:border-brand-primary/50 hover:bg-brand-primary/5"
-              >
-                <a
-                  href="https://linkedin.com/in/omerakben"
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <div className="p-1 rounded-xl bg-gradient-to-r from-brand-primary to-accent-primary">
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full justify-start bg-surf-0 hover:bg-surf-1 text-text-1"
                 >
-                  <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2]" />
-                  <span className="font-medium">LinkedIn</span>
-                  <ExternalLink className="ml-auto h-4 w-4 opacity-50" />
-                </a>
-              </Button>
+                  <a
+                    href="https://linkedin.com/in/omerakben"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2]" />
+                    <span className="font-semibold">LinkedIn</span>
+                    <ExternalLink className="ml-auto h-4 w-4 opacity-70" />
+                  </a>
+                </Button>
+              </div>
 
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="w-full justify-start hover:border-accent-primary/50 hover:bg-accent-primary/5"
-              >
-                <Link href="/contact">
-                  <Mail className="mr-2 h-5 w-5 text-accent-primary" />
-                  <span className="font-medium">Contact Form</span>
-                </Link>
-              </Button>
+              <div className="p-1 rounded-xl bg-gradient-to-r from-brand-primary to-accent-primary">
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full justify-start bg-surf-0 hover:bg-surf-1 text-text-1"
+                >
+                  <Link href="/contact">
+                    <Mail className="mr-2 h-5 w-5 text-accent-primary" />
+                    <span className="font-semibold">Contact Form</span>
+                  </Link>
+                </Button>
+              </div>
             </div>
 
             {/* Response Time Badge */}

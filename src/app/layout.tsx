@@ -21,6 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        {/* Resource hints for performance optimization */}
+        <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
+        <link rel="preconnect" href="https://va.vercel-scripts.com" />
+      </head>
       <body className="antialiased">
         <AppShell>{children}</AppShell>
       </body>

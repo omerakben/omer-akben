@@ -9,6 +9,8 @@ function getRateLimitKey(request: NextRequest): string {
 }
 
 export async function middleware(request: NextRequest) {
+  // Generate cryptographic nonce for CSP
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   // Only apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const ip = getRateLimitKey(request);
@@ -54,13 +56,43 @@ export async function middleware(request: NextRequest) {
       );
       response.headers.set("X-RateLimit-Reset", result.reset.toString());
 
+      // Add nonce header for CSP
+      response.headers.set("x-nonce", nonce);
+
       return response;
     }
   }
 
-  return NextResponse.next();
+  // Add nonce header and CSP to all responses
+  const response = NextResponse.next();
+  response.headers.set("x-nonce", nonce);
+
+  // Detect development mode
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  // Set Content Security Policy with nonce (replaces next.config.ts CSP)
+  // In development: Allow unsafe-inline for Turbopack HMR style injection
+  // In production: Use strict nonce-based CSP for better security
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' https://va.vercel-scripts.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
+    isDevelopment
+      ? "style-src 'self' 'unsafe-inline'" // Dev: Allow Turbopack HMR
+      : `style-src 'self' 'nonce-${nonce}'`, // Prod: Strict nonce-only
+    "img-src 'self' data: https: blob:",
+    "font-src 'self' data:",
+    `connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com ${isDevelopment ? "wss://localhost:* ws://localhost:*" : ""}`.trim(),
+    "frame-ancestors 'none'",
+  ].join("; ");
+
+  response.headers.set("Content-Security-Policy", csp);
+
+  return response;
 }
 
 export const config = {
-  matcher: "/api/:path*",
+  matcher: [
+    // Apply to all routes for nonce generation
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
 };
