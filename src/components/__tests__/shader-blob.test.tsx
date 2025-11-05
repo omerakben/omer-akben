@@ -84,6 +84,17 @@ beforeEach(() => {
     takeRecords: vi.fn(),
   })) as unknown as typeof MutationObserver;
 
+  // Mock IntersectionObserver
+  global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+    takeRecords: vi.fn(),
+    root: null,
+    rootMargin: '',
+    thresholds: [],
+  })) as unknown as typeof IntersectionObserver;
+
   // Mock requestAnimationFrame - don't call callback immediately to prevent infinite loop
   global.requestAnimationFrame = vi.fn(() => 1) as unknown as typeof requestAnimationFrame;
 

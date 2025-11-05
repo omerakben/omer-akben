@@ -17,7 +17,7 @@ const FEATURED_PROJECTS_FIRST_ROW_COUNT = 3;
 const FEATURED_PROJECTS_SECOND_ROW_COUNT = 2;
 const FEATURED_PROJECTS_GROUP_SIZE = 5;
 
-export default function HomePage() {
+export default async function HomePage() {
   const featuredProjects = getFeaturedProjects().sort((a, b) => {
     // Sort by displayOrder if present (lower numbers first)
     if (a.displayOrder !== undefined && b.displayOrder === undefined) return -1;

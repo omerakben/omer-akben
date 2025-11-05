@@ -148,6 +148,7 @@ export function ShaderBlob({
   const startTimeRef = useRef<number>(Date.now());
   const [isHovered, setIsHovered] = useState(false);
   const reducedMotion = useRef(false);
+  const isPausedRef = useRef(false);
 
   // Track mouse position
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -171,6 +172,21 @@ export function ShaderBlob({
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     reducedMotion.current = mediaQuery.matches;
+
+    // Setup Intersection Observer to pause when off-screen
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isPausedRef.current = !entry.isIntersecting;
+      },
+      { threshold: 0.1 } // Pause when <10% visible
+    );
+    intersectionObserver.observe(canvas);
+
+    // Setup Page Visibility API to pause when tab inactive
+    const handleVisibilityChange = () => {
+      isPausedRef.current = document.hidden;
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     const gl = canvas.getContext('webgl');
     if (!gl) {
@@ -223,7 +239,14 @@ export function ShaderBlob({
     const render = () => {
       if (!gl || !programInfoRef.current) return;
 
-      const currentTime = reducedMotion.current ? 0 : (Date.now() - startTimeRef.current) / 1000;
+      // Skip rendering if paused (off-screen or tab inactive) or reduced motion
+      if (isPausedRef.current || reducedMotion.current) {
+        // Continue RAF loop to detect resume, but skip expensive rendering
+        animationRef.current = requestAnimationFrame(render);
+        return;
+      }
+
+      const currentTime = (Date.now() - startTimeRef.current) / 1000;
       const mousePos = mousePositionRef.current;
 
       // Clear and setup
@@ -280,6 +303,8 @@ export function ShaderBlob({
     // Cleanup
     return () => {
       cancelAnimationFrame(animationRef.current);
+      intersectionObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       observer.disconnect();
       if (gl && shaderProgram) {
         gl.deleteProgram(shaderProgram);

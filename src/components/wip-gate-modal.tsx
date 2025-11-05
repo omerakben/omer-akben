@@ -17,17 +17,30 @@ export function WIPGateModal() {
   const pathname = usePathname();
   const { isModalDismissed, dismissModal, isMounted } = useWIP();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasDelayPassed, setHasDelayPassed] = useState(false);
+
+  // Delay modal appearance to prevent blocking LCP detection
+  // Hero section renders first, then modal appears 100ms later
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const timer = setTimeout(() => {
+      setHasDelayPassed(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [isMounted]);
 
   // Only show modal on homepage and if not dismissed
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || !hasDelayPassed) return;
 
     // Only show on homepage (/)
     const isHomepage = pathname === "/";
     const shouldShow = isHomepage && !isModalDismissed;
 
     setIsOpen(shouldShow);
-  }, [pathname, isModalDismissed, isMounted]);
+  }, [pathname, isModalDismissed, isMounted, hasDelayPassed]);
 
   const handleAcknowledge = () => {
     dismissModal();

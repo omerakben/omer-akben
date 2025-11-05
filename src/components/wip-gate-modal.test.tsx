@@ -61,7 +61,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Welcome! Site Under Active Development/i)).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.queryByText(/Welcome! Site Under Active Development/i)).not.toBeInTheDocument();
@@ -87,7 +87,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.queryByText(/Welcome! Site Under Active Development/i)).not.toBeInTheDocument();
@@ -100,7 +100,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.queryByText(/Welcome! Site Under Active Development/i)).not.toBeInTheDocument();
@@ -113,7 +113,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.queryByText(/Welcome! Site Under Active Development/i)).not.toBeInTheDocument();
@@ -128,7 +128,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Welcome! Site Under Active Development/i)).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Thanks for visiting!/i)).toBeInTheDocument();
@@ -155,7 +155,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Some features are still works-in-progress/i)).toBeInTheDocument();
@@ -168,7 +168,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Found a bug or have feedback?/i)).toBeInTheDocument();
@@ -181,7 +181,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       const emailLink = screen.getByRole("link", { name: /let me know/i });
@@ -198,7 +198,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       const button = screen.getByRole("button", { name: /got it, let me explore/i });
@@ -212,7 +212,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       const button = screen.getByRole("button", { name: /got it, let me explore/i });
@@ -231,7 +231,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       const button = screen.getByRole("button", { name: /got it, let me explore/i });
@@ -258,7 +258,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       // Modal renders, check for content presence
@@ -272,7 +272,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       // Modal renders with description content
@@ -286,7 +286,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       // Modal renders with description text
@@ -302,7 +302,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       // Modal renders with button in footer
@@ -316,7 +316,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       const button = screen.getByRole("button", { name: /got it, let me explore/i });
@@ -333,7 +333,7 @@ describe("WIPGateModal", () => {
       const { rerender } = render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Welcome!/i)).toBeInTheDocument();
@@ -359,7 +359,7 @@ describe("WIPGateModal", () => {
       const { rerender } = render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       expect(screen.getByText(/Welcome!/i)).toBeInTheDocument();
@@ -386,7 +386,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       const emailLink = screen.getByRole("link", { name: /let me know/i });
@@ -401,7 +401,7 @@ describe("WIPGateModal", () => {
       render(<WIPGateModal />);
 
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 150));
       });
 
       // Modal renders with email link (which has text-text-2 styling)

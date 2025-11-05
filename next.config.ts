@@ -71,19 +71,7 @@ const nextConfig: NextConfig = {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains; preload",
           },
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              // TODO: migrate away from 'unsafe-inline' allowances using nonces or hashes.
-              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https: blob:",
-              "font-src 'self' data:",
-              "connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com wss://localhost:* ws://localhost:*",
-              "frame-ancestors 'none'",
-            ].join("; "),
-          },
+          // Note: CSP is now set dynamically in middleware.ts with nonce support
         ],
       },
       // Cache static assets aggressively
