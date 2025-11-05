@@ -46,11 +46,12 @@ describe("GlobalChatButton", () => {
       expect(button).toBeInTheDocument();
     });
 
-    it("should render Bot icon", () => {
+    it("should render shader blob icon", () => {
       renderWithContext();
       const button = screen.getByRole("button");
-      const icon = button.querySelector("svg");
-      expect(icon).toBeInTheDocument();
+      // In JSDOM (no WebGL), AnimatedBlobContainer renders ShaderBlobFallback
+      const blobContainer = button.querySelector("div.rounded-full");
+      expect(blobContainer).toBeInTheDocument();
     });
 
     it("should have correct positioning classes", () => {

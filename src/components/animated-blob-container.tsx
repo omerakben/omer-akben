@@ -24,6 +24,8 @@ interface AnimatedBlobContainerProps {
   className?: string;
   /** Disable center dimming effect (WebGL only) */
   disableCenterDimming?: boolean;
+  /** When true, renders as decorative icon without button semantics */
+  asIcon?: boolean;
 }
 
 export function AnimatedBlobContainer({
@@ -31,6 +33,7 @@ export function AnimatedBlobContainer({
   onClick,
   className,
   disableCenterDimming = false,
+  asIcon = false,
 }: AnimatedBlobContainerProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [hasWebGL, setHasWebGL] = useState(false);
@@ -58,12 +61,14 @@ export function AnimatedBlobContainer({
       onClick={onClick}
       className={className}
       disableCenterDimming={disableCenterDimming}
+      asIcon={asIcon}
     />
   ) : (
     <ShaderBlobFallback
       size={size}
       onClick={onClick}
       className={className}
+      asIcon={asIcon}
     />
   );
 }

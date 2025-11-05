@@ -16,12 +16,15 @@ interface ShaderBlobFallbackProps {
   onClick?: () => void;
   /** Additional CSS classes */
   className?: string;
+  /** When true, renders as decorative icon without button semantics */
+  asIcon?: boolean;
 }
 
 export function ShaderBlobFallback({
   size = 300,
   onClick,
   className,
+  asIcon = false,
 }: ShaderBlobFallbackProps) {
   return (
     <div
@@ -31,10 +34,10 @@ export function ShaderBlobFallback({
         // Gradient using design tokens (brand-primary → accent-primary)
         'bg-gradient-to-br from-brand-primary via-brand-primary/80 to-accent-primary',
         // Interactive styles
-        'cursor-pointer transition-transform duration-300',
-        'hover:scale-105 active:scale-95',
+        !asIcon && 'cursor-pointer transition-transform duration-300',
+        !asIcon && 'hover:scale-105 active:scale-95',
         // Accessibility
-        'focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+        !asIcon && 'focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
         className
       )}
       style={{
@@ -42,15 +45,19 @@ export function ShaderBlobFallback({
         height: size,
       }}
       onClick={onClick}
-      role="button"
-      tabIndex={0}
-      aria-label="Open Ozzy AI Assistant"
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick?.();
-        }
-      }}
+      {...(!asIcon && {
+        role: 'button',
+        tabIndex: 0,
+        'aria-label': 'Open Ozzy AI Assistant',
+      })}
+      {...(!asIcon && {
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick?.();
+          }
+        },
+      })}
     >
       {/* Inner glow effect */}
       <div className="absolute inset-4 rounded-full bg-gradient-to-br from-accent-primary/40 to-transparent blur-xl" />

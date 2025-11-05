@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
@@ -10,7 +11,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
   ArrowRight,
-  Bot,
   Briefcase,
   ExternalLink,
   FileText,
@@ -400,9 +400,11 @@ export function ChatSidebar() {
             {/* Header */}
             <div className="flex h-16 items-center justify-between px-4 border-b border-border-line bg-surf-0">
               <div className="flex items-center gap-2">
-                <Bot
-                  aria-hidden="true"
-                  className="w-5 h-5 text-brand-primary"
+                <AnimatedBlobContainer
+                  size={20}
+                  className="rounded-full"
+                  disableCenterDimming={true}
+                  asIcon={true}
                 />
                 <span className="font-semibold text-text-1">AI Ozzy</span>
               </div>
@@ -553,9 +555,11 @@ export function ChatSidebar() {
                           {message.role === "assistant" && (
                             <div className="flex-shrink-0">
                               <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                                <Bot
-                                  aria-hidden="true"
-                                  className="w-4 h-4 text-brand-primary"
+                                <AnimatedBlobContainer
+                                  size={16}
+                                  className="rounded-full"
+                                  disableCenterDimming={true}
+                                  asIcon={true}
                                 />
                               </div>
                             </div>
@@ -792,9 +796,11 @@ export function ChatSidebar() {
                     <div className="flex gap-3 justify-start">
                       <div className="flex-shrink-0">
                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                          <Bot
-                            aria-hidden="true"
-                            className="w-4 h-4 text-brand-primary"
+                          <AnimatedBlobContainer
+                            size={16}
+                            className="rounded-full"
+                            disableCenterDimming={true}
+                            asIcon={true}
                           />
                         </div>
                       </div>

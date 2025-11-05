@@ -28,6 +28,8 @@ interface ShaderBlobProps {
   className?: string;
   /** Disable center dimming effect */
   disableCenterDimming?: boolean;
+  /** When true, renders as decorative icon without button semantics */
+  asIcon?: boolean;
 }
 
 // Vertex shader - standard fullscreen quad
@@ -127,6 +129,7 @@ export function ShaderBlob({
   onClick,
   className,
   disableCenterDimming = false,
+  asIcon = false,
 }: ShaderBlobProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
@@ -286,8 +289,8 @@ export function ShaderBlob({
       ref={canvasRef}
       className={cn(
         'rounded-full transition-transform duration-300',
-        'cursor-pointer',
-        'focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+        !asIcon && 'cursor-pointer',
+        !asIcon && 'focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
         className
       )}
       style={{
@@ -300,15 +303,19 @@ export function ShaderBlob({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
-      role="button"
-      tabIndex={0}
-      aria-label="Open Ozzy AI Assistant"
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick?.();
-        }
-      }}
+      {...(!asIcon && {
+        role: 'button',
+        tabIndex: 0,
+        'aria-label': 'Open Ozzy AI Assistant',
+      })}
+      {...(!asIcon && {
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick?.();
+          }
+        },
+      })}
     />
   );
 }
