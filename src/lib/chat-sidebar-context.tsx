@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -180,23 +181,40 @@ export function ChatSidebarProvider({
     [persistThreadId]
   );
 
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const contextValue = useMemo(
+    () => ({
+      isOpen,
+      isPinned,
+      width,
+      threadId,
+      openSidebar,
+      closeSidebar,
+      toggleSidebar,
+      setPinned,
+      setWidth,
+      newChat,
+      clearConversation,
+      setThreadId,
+    }),
+    [
+      isOpen,
+      isPinned,
+      width,
+      threadId,
+      openSidebar,
+      closeSidebar,
+      toggleSidebar,
+      setPinned,
+      setWidth,
+      newChat,
+      clearConversation,
+      setThreadId,
+    ]
+  );
+
   return (
-    <ChatSidebarContext.Provider
-      value={{
-        isOpen,
-        isPinned,
-        width,
-        threadId,
-        openSidebar,
-        closeSidebar,
-        toggleSidebar,
-        setPinned,
-        setWidth,
-        newChat,
-        clearConversation,
-        setThreadId,
-      }}
-    >
+    <ChatSidebarContext.Provider value={contextValue}>
       {children}
     </ChatSidebarContext.Provider>
   );

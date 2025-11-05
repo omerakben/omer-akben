@@ -1,4 +1,4 @@
-import { triggerWorkflowInputSchema } from "@/lib/agent-tools/schemas";
+import { triggerWorkflowInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

@@ -6,7 +6,7 @@ import {
   scrollToSectionInputSchema,
   searchProjectsSemanticSchema,
   triggerWorkflowInputSchema,
-} from "@/lib/agent-tools/schemas";
+} from "@/lib/tools/zod-schemas";
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 

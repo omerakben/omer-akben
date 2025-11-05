@@ -1,4 +1,4 @@
-import { searchProjectsSemanticSchema } from "@/lib/agent-tools/schemas";
+import { searchProjectsSemanticSchema } from "@/lib/tools/zod-schemas";
 import { logError } from "@/lib/log";
 import { searchProjectsBySimilarity } from "@/lib/redis/embeddings";
 import { NextResponse } from "next/server";

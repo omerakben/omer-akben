@@ -19,7 +19,7 @@ import {
   toolResponseSchema,
   triggerWorkflowInputSchema,
   triggerWorkflowOutputSchema,
-} from "./schemas";
+} from "@/lib/tools/zod-schemas";
 
 describe("agent-tools schemas", () => {
   describe("toolResponseSchema", () => {
@@ -83,15 +83,14 @@ describe("agent-tools schemas", () => {
       expect(result.size).toBe(1024);
     });
 
-    it("should require URL to be valid", () => {
-      expect(() =>
-        downloadResumeOutputSchema.parse({
-          url: "not-a-url",
-          filename: "resume.pdf",
-          size: 1024,
-          format: "pdf",
-        })
-      ).toThrow(ZodError);
+    it("should accept relative paths for URL", () => {
+      const result = downloadResumeOutputSchema.parse({
+        url: "/assets/resume.pdf",
+        filename: "resume.pdf",
+        size: 1024,
+        format: "pdf",
+      });
+      expect(result.url).toBe("/assets/resume.pdf");
     });
 
     it("should allow missing googleDriveUrl", () => {

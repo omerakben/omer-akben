@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { Code2, ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 
 export interface ProjectCardProps {
   title: string;
@@ -27,7 +28,7 @@ export interface ProjectCardProps {
   index?: number;
 }
 
-export function ProjectCard({
+export const ProjectCard = memo(function ProjectCard({
   title,
   description,
   image,
@@ -144,4 +145,18 @@ export function ProjectCard({
       </Card>
     </motion.div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if relevant props change
+  return (
+    prevProps.title === nextProps.title &&
+    prevProps.description === nextProps.description &&
+    prevProps.image === nextProps.image &&
+    prevProps.slug === nextProps.slug &&
+    prevProps.demoUrl === nextProps.demoUrl &&
+    prevProps.githubUrl === nextProps.githubUrl &&
+    prevProps.status === nextProps.status &&
+    prevProps.index === nextProps.index &&
+    prevProps.technologies.length === nextProps.technologies.length &&
+    prevProps.technologies.every((tech, i) => tech === nextProps.technologies[i])
+  );
+});

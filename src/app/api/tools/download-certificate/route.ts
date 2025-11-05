@@ -1,4 +1,4 @@
-import { downloadCertificateInputSchema } from "@/lib/agent-tools/schemas";
+import { downloadCertificateInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 // Certificate mapping for all certificate types

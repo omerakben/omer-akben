@@ -1,5 +1,5 @@
 import { getProjectBySlug } from "@/data/projects";
-import { openProjectInputSchema } from "@/lib/agent-tools/schemas";
+import { openProjectInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
