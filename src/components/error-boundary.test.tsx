@@ -19,8 +19,8 @@ describe("ErrorBoundary", () => {
   });
 
   afterEach(() => {
-    process.env.NODE_ENV = originalEnv;
-    window.location = originalLocation;
+    (process.env as { NODE_ENV?: string }).NODE_ENV = originalEnv;
+    (window as { location: Location }).location = originalLocation;
   });
 
   describe("Rendering", () => {
@@ -153,7 +153,7 @@ describe("ErrorBoundary", () => {
     });
 
     it("should show error message in development mode", () => {
-      process.env.NODE_ENV = "development";
+      (process.env as { NODE_ENV?: string }).NODE_ENV = "development";
 
       render(
         <ErrorBoundary>
@@ -165,7 +165,7 @@ describe("ErrorBoundary", () => {
     });
 
     it("should hide error details in production mode", () => {
-      process.env.NODE_ENV = "production";
+      (process.env as { NODE_ENV?: string }).NODE_ENV = "production";
 
       render(
         <ErrorBoundary>
@@ -180,7 +180,7 @@ describe("ErrorBoundary", () => {
     });
 
     it("should show generic message in production", () => {
-      process.env.NODE_ENV = "production";
+      (process.env as { NODE_ENV?: string }).NODE_ENV = "production";
 
       render(
         <ErrorBoundary>
@@ -217,8 +217,8 @@ describe("ErrorBoundary", () => {
     });
 
     it("should reload page when reload button clicked", () => {
-      delete (window as { location?: Location }).location;
-      window.location = { ...originalLocation, reload: vi.fn() } as Location;
+      delete (window as { location?: unknown }).location;
+      (window as { location: Location }).location = { ...originalLocation, reload: vi.fn() } as Location;
 
       render(
         <ErrorBoundary>
@@ -233,8 +233,8 @@ describe("ErrorBoundary", () => {
     });
 
     it("should reset error state when reload button clicked", () => {
-      delete (window as { location?: Location }).location;
-      window.location = { ...originalLocation, reload: vi.fn() } as Location;
+      delete (window as { location?: unknown }).location;
+      (window as { location: Location }).location = { ...originalLocation, reload: vi.fn() } as Location;
 
       render(
         <ErrorBoundary>

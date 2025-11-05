@@ -15,6 +15,13 @@ vi.mock("@/lib/redis/vector-search", () => ({
   knnSearch: knnSearchMock,
 }));
 
+// Mock the OpenAI cache to prevent Redis connection attempts
+vi.mock("@/lib/cache/openai-cache", () => ({
+  getCachedEmbedding: vi.fn().mockResolvedValue(null),
+  setCachedEmbedding: vi.fn().mockResolvedValue(undefined),
+  recordCacheMiss: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock("openai", () => ({
   __esModule: true,
   default: vi.fn().mockImplementation(() => ({

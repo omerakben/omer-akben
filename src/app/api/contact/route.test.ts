@@ -22,7 +22,7 @@ vi.mock("resend", () => {
 
 // Mock rate limit
 vi.mock("@/lib/rate-limit", async () => {
-  const actual = await vi.importActual("@/lib/rate-limit");
+  const actual = await vi.importActual<typeof import("@/lib/rate-limit")>("@/lib/rate-limit");
   return {
     ...actual,
     contactFormRateLimit: {
@@ -67,11 +67,12 @@ describe("POST /api/contact", () => {
   describe("Successful Submissions", () => {
     it("should send email successfully with valid data", async () => {
       // Mock rate limit success
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       // Mock Resend success
@@ -90,11 +91,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should call Resend with correct parameters", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       mockEmailsSend.mockResolvedValueOnce({
@@ -110,18 +112,19 @@ describe("POST /api/contact", () => {
         to: "test@omerakben.com",
         replyTo: "john@example.com",
         subject: "Contact Form: Project Inquiry",
-        react: expect.anything(),
+        react: expect.any(Object),
       });
     });
 
     it("should use environment variable for recipient email", async () => {
       process.env.OMER_EMAIL = "custom@email.com";
 
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       mockEmailsSend.mockResolvedValueOnce({
@@ -143,11 +146,12 @@ describe("POST /api/contact", () => {
   describe("Rate Limiting", () => {
     it("should return 429 when rate limit exceeded", async () => {
       const resetTime = Date.now() + 86400000;
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: false,
         limit: 5,
         remaining: 0,
         reset: resetTime,
+        pending: Promise.resolve(),
       });
 
       const request = createMockRequest(validContactData);
@@ -161,11 +165,12 @@ describe("POST /api/contact", () => {
 
     it("should include rate limit headers when limit exceeded", async () => {
       const resetTime = Date.now() + 86400000;
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: false,
         limit: 5,
         remaining: 0,
         reset: resetTime,
+        pending: Promise.resolve(),
       });
 
       const request = createMockRequest(validContactData);
@@ -180,11 +185,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should extract IP from x-forwarded-for header", async () => {
-      const limitSpy = vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      const limitSpy = vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       mockEmailsSend.mockResolvedValueOnce({
@@ -201,11 +207,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should extract IP from x-real-ip header if x-forwarded-for not present", async () => {
-      const limitSpy = vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      const limitSpy = vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       mockEmailsSend.mockResolvedValueOnce({
@@ -222,11 +229,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should use 'anonymous' if no IP headers present", async () => {
-      const limitSpy = vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      const limitSpy = vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       mockEmailsSend.mockResolvedValueOnce({
@@ -243,11 +251,12 @@ describe("POST /api/contact", () => {
 
   describe("Validation Errors", () => {
     it("should return 400 for missing name", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = { ...validContactData, name: "" };
@@ -261,11 +270,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should return 400 for invalid email", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = { ...validContactData, email: "invalid-email" };
@@ -279,11 +289,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should return 400 for missing subject", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = { ...validContactData, subject: "" };
@@ -297,11 +308,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should return 400 for message too short", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = { ...validContactData, message: "Short" };
@@ -315,11 +327,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should return 400 for message too long", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = {
@@ -336,11 +349,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should return 400 for name too long", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = {
@@ -357,11 +371,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should return 400 for subject too long", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const invalidData = {
@@ -380,11 +395,12 @@ describe("POST /api/contact", () => {
 
   describe("Resend API Errors", () => {
     it("should return 500 when Resend fails", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       mockEmailsSend.mockResolvedValueOnce({
@@ -412,11 +428,12 @@ describe("POST /api/contact", () => {
     });
 
     it("should log Resend errors to console", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockResolvedValueOnce({
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockResolvedValueOnce({
         success: true,
         limit: 5,
         remaining: 4,
         reset: Date.now() + 86400000,
+        pending: Promise.resolve(),
       });
 
       const resendError = { message: "API error", name: "ResendError" };
@@ -440,7 +457,7 @@ describe("POST /api/contact", () => {
 
   describe("Unexpected Errors", () => {
     it("should return 500 for unexpected errors", async () => {
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockRejectedValueOnce(
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockRejectedValueOnce(
         new Error("Unexpected error")
       );
 
@@ -461,7 +478,7 @@ describe("POST /api/contact", () => {
 
     it("should log unexpected errors to console", async () => {
       const testError = new Error("Test unexpected error");
-      vi.mocked(rateLimit.contactFormRateLimit.limit).mockRejectedValueOnce(
+      vi.mocked(rateLimit.contactFormRateLimit!.limit).mockRejectedValueOnce(
         testError
       );
 

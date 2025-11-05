@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { EmailActionButton } from "./EmailActionButton";
 import { facts } from "@/data/facts";
 
@@ -8,12 +8,12 @@ describe("EmailActionButton", () => {
 
   beforeEach(() => {
     // Mock window.location
-    delete (window as { location?: Location }).location;
-    window.location = { ...originalLocation, href: "" } as Location;
+    delete (window as { location?: unknown }).location;
+    (window as { location: Location }).location = { ...originalLocation, href: "" } as Location;
   });
 
   afterEach(() => {
-    window.location = originalLocation;
+    (window as { location: Location }).location = originalLocation;
   });
 
   describe("Rendering", () => {
