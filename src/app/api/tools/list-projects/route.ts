@@ -1,5 +1,5 @@
 import { projects } from "@/data/projects";
-import { listProjectsInputSchema } from "@/lib/agent-tools/schemas";
+import { listProjectsInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 // Support both GET (with query params) and POST (with JSON body)

@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -71,16 +72,20 @@ export function WIPProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const contextValue = useMemo(
+    () => ({
+      isModalDismissed,
+      isBannerDismissed,
+      dismissModal,
+      dismissBanner,
+      isMounted,
+    }),
+    [isModalDismissed, isBannerDismissed, dismissModal, dismissBanner, isMounted]
+  );
+
   return (
-    <WIPContext.Provider
-      value={{
-        isModalDismissed,
-        isBannerDismissed,
-        dismissModal,
-        dismissBanner,
-        isMounted,
-      }}
-    >
+    <WIPContext.Provider value={contextValue}>
       {children}
     </WIPContext.Provider>
   );
