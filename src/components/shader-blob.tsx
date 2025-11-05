@@ -5,8 +5,14 @@
  * Integrates with 8-mode brightness system via CSS custom properties.
  * Colors dynamically update based on --brand-primary and --accent-primary tokens.
  *
- * Based on "Ether" by nimitz (https://www.shadertoy.com/view/MsjSW3)
- * License: CC BY-NC-SA 3.0
+ * Fragment shader based on "Ether" by nimitz (https://www.shadertoy.com/view/MsjSW3)
+ * Shader code: CC BY-NC-SA 3.0 (https://creativecommons.org/licenses/by-nc-sa/3.0/)
+ * Component code: MIT License (remainder of this file)
+ *
+ * This means:
+ * - The FRAGMENT_SHADER string (lines 48-125) is licensed under CC BY-NC-SA 3.0
+ * - The React component and integration code is licensed under MIT
+ * - Any derivative shader work must also be CC BY-NC-SA 3.0 (ShareAlike requirement)
  */
 
 'use client';

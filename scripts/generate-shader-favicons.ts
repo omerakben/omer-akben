@@ -15,8 +15,9 @@ import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import pngToIco from 'png-to-ico';
 
-const DEV_SERVER_URL = 'http://localhost:3001';
+const DEV_SERVER_URL = process.env.DEV_SERVER_URL || 'http://localhost:3001';
 const OUTPUT_DIR = join(process.cwd(), 'public');
 
 // Favicon size configurations
@@ -108,14 +109,11 @@ async function generateFaviconIco(
     )
   );
 
-  // For now, just use 32x32 as the ico file
-  // (Sharp doesn't natively support multi-size ICO creation)
-  await sharp(screenshot)
-    .resize(32, 32, { fit: 'cover', position: 'center' })
-    .toFormat('png')
-    .toFile(outputPath);
+  // Generate true multi-size ICO file using png-to-ico
+  const icoBuffer = await pngToIco(buffers);
+  writeFileSync(outputPath, icoBuffer);
 
-  console.log(`✓ Generated ${outputPath.split('/').pop()} (multi-size)`);
+  console.log(`✓ Generated ${outputPath.split('/').pop()} (multi-size ICO: 16x16, 32x32, 48x48)`);
 }
 
 async function generateManifest(theme: 'light' | 'dark', outputPath: string) {

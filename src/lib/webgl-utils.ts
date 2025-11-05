@@ -18,10 +18,21 @@ export function hexToRgb(hex: string): [number, number, number] {
   // Remove # if present
   const cleanHex = hex.replace(/^#/, '');
 
+  // Validate hex format (3 or 6 characters)
+  if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(cleanHex)) {
+    console.warn(`Invalid hex color format: ${hex}. Using fallback.`);
+    return [0.063, 0.725, 0.506]; // Fallback to emerald green
+  }
+
+  // Handle 3-character shorthand (e.g., #abc -> #aabbcc)
+  const fullHex = cleanHex.length === 3
+    ? cleanHex.split('').map(c => c + c).join('')
+    : cleanHex;
+
   // Parse RGB components
-  const r = parseInt(cleanHex.slice(0, 2), 16) / 255;
-  const g = parseInt(cleanHex.slice(2, 4), 16) / 255;
-  const b = parseInt(cleanHex.slice(4, 6), 16) / 255;
+  const r = parseInt(fullHex.slice(0, 2), 16) / 255;
+  const g = parseInt(fullHex.slice(2, 4), 16) / 255;
+  const b = parseInt(fullHex.slice(4, 6), 16) / 255;
 
   return [r, g, b];
 }
@@ -121,14 +132,28 @@ export function createShaderProgram(
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
 
-  if (!vertexShader || !fragmentShader) return null;
+  if (!vertexShader || !fragmentShader) {
+    // Clean up any successfully created shader before returning
+    if (vertexShader) gl.deleteShader(vertexShader);
+    if (fragmentShader) gl.deleteShader(fragmentShader);
+    return null;
+  }
 
   const program = gl.createProgram();
-  if (!program) return null;
+  if (!program) {
+    // Clean up shaders if program creation fails
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
+    return null;
+  }
 
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
+
+  // Shaders can be deleted after linking - they remain attached to the program
+  gl.deleteShader(vertexShader);
+  gl.deleteShader(fragmentShader);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     console.error('Program linking error:', gl.getProgramInfoLog(program));

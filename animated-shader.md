@@ -238,7 +238,7 @@ void main() {
 ### Fragment Shader (Ether Effect)
 
 **Technique:** Ray marching with metaball-like distance field
-**Credits:** Based on "Ether" by nimitz (https://www.shadertoy.com/view/MsjSW3)
+**Credits:** Based on "Ether" by nimitz (<https://www.shadertoy.com/view/MsjSW3>)
 **License:** CC BY-NC-SA 3.0
 
 **Key Features:**
@@ -361,7 +361,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Symptoms:** Blob not visible, console error "WebGL not supported"
 
 **Solutions:**
-1. Check browser WebGL support: https://get.webgl.org/
+1. Check browser WebGL support: <https://get.webgl.org/>
 2. Verify browser hardware acceleration enabled
 3. Update graphics drivers
 4. Fallback should render automatically (CSS gradient)
@@ -408,7 +408,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 
 ## File Structure
 
-```
+```plaintext
 src/
 ├── components/
 │   ├── shader-blob.tsx                    # Main WebGL component
@@ -487,7 +487,7 @@ scripts/
 
 ## License
 
-- **Ether Shader:** CC BY-NC-SA 3.0 (nimitz - https://www.shadertoy.com/view/MsjSW3)
+- **Ether Shader:** CC BY-NC-SA 3.0 (nimitz - <https://www.shadertoy.com/view/MsjSW3>)
 - **Component Implementation:** Part of Omer Akben Portfolio (MIT License)
 
 ## Credits

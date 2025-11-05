@@ -96,16 +96,16 @@ test.describe('Navbar Shader Blob', () => {
     // Navigate to projects page
     await page.goto('/projects', { waitUntil: 'networkidle' });
 
-    // Tab to navbar logo link
-    await page.keyboard.press('Tab');
-    await page.keyboard.press('Tab'); // May need multiple tabs depending on page structure
+    // Focus the navbar logo link directly instead of using Tab
+    const logoLink = page.locator('header a[href="/"]');
+    await logoLink.focus();
 
     // Press Enter to navigate
     await page.keyboard.press('Enter');
 
-    // Should navigate to homepage
-    await page.waitForTimeout(1000);
-    expect(page.url()).toContain('/');
+    // Wait for navigation to homepage
+    await page.waitForURL('/', { timeout: 5000 });
+    expect(page.url()).toMatch(/\/$/);
   });
 
   test('navbar blob renders in mobile navbar', async ({ page }) => {
