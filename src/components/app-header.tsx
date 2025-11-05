@@ -1,6 +1,6 @@
 "use client";
 
-import { BrandLogo } from "@/components/brand-logo";
+import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { BrightnessControl } from "@/components/brightness-control";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,8 +51,14 @@ export function AppHeader() {
               "flex items-center justify-center hover:opacity-90 transition-opacity lg:-ml-6 xl:-ml-10",
               LOGO_SIZE.className
             )}
+            aria-label="Home"
           >
-            <BrandLogo priority />
+            <AnimatedBlobContainer
+              size={64}
+              disableCenterDimming={true}
+              className="rounded-full"
+              asIcon={true}
+            />
           </Link>
 
           {/* Desktop navigation + controls */}

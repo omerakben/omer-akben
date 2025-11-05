@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import { Bot } from "lucide-react";
+import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { useEffect } from "react";
 
 export function GlobalChatButton() {
@@ -35,7 +35,12 @@ export function GlobalChatButton() {
       className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-brand-primary hover:bg-brand-primary/90 z-40"
       aria-label="Open AI Ozzy chat (cmd/ctrl+K)"
     >
-      <Bot className="w-6 h-6" />
+      <AnimatedBlobContainer
+        size={24}
+        className="rounded-full"
+        disableCenterDimming={true}
+        asIcon={true}
+      />
     </Button>
   );
 }

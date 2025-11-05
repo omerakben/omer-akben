@@ -969,6 +969,23 @@ html {
     animation: hero-robot-breathe 6s ease-in-out infinite;
   }
 
+  /* Shader blob breathing animation (matches robot breathing cycle) */
+  @keyframes shader-blob-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.95;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 1;
+    }
+  }
+
+  .shader-blob-breathe {
+    animation: shader-blob-breathe 6s ease-in-out infinite;
+  }
+
   /* Scroll indicator animations */
   @keyframes hero-scroll-bounce {
     0%,
@@ -1008,6 +1025,7 @@ html {
     .hero-slide-up-delay-3,
     .hero-fade-in-right,
     .hero-robot-breathe,
+    .shader-blob-breathe,
     .hero-scroll-dot,
     .hero-scroll-indicator {
       animation: none;

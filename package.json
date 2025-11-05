@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "seed:assets": "node scripts/seed-assets.mjs"
+    "seed:assets": "node scripts/seed-assets.mjs",
+    "generate:favicons": "tsx scripts/generate-shader-favicons.ts"
   },
   "size-limit": [
     {
@@ -93,8 +94,10 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "jsdom": "^27.0.0",
+    "png-to-ico": "^2.1.8",
     "size-limit": "^11.2.0",
     "tailwindcss": "^4",
+    "tsx": "^4.7.0",
     "typescript": "^5",
     "vitest": "^3.2.4"
   }
