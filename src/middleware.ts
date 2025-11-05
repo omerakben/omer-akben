@@ -72,16 +72,18 @@ export async function middleware(request: NextRequest) {
 
   // Set Content Security Policy with nonce (replaces next.config.ts CSP)
   // In development: Allow unsafe-inline for Turbopack HMR style injection
-  // In production: Nonce-based for <style> tags + 'unsafe-inline' for inline style attributes
+  // In production: Allow unsafe-inline for style attributes (no nonce)
   // SECURITY TRADE-OFF: 'unsafe-inline' required for third-party libraries (Framer Motion, Radix UI)
   // that inject inline styles for animations/positioning. Script-src remains strict (nonce-only)
   // preventing code execution. Attack surface: CSS injection possible, but no JS execution.
+  // CSP Spec: When nonce is present in style-src, 'unsafe-inline' is IGNORED per CSP Level 3.
+  // Solution: Remove nonce from style-src to allow inline style attributes while keeping script-src strict.
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' https://va.vercel-scripts.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
     isDevelopment
       ? "style-src 'self' 'unsafe-inline'" // Dev: Allow Turbopack HMR
-      : `style-src 'self' 'nonce-${nonce}' 'unsafe-inline'`, // Prod: Nonce for <style> tags + unsafe-inline for attributes
+      : "style-src 'self' 'unsafe-inline'", // Prod: Allow inline styles (nonce removed - see comment above)
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
     `connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com ${isDevelopment ? "wss://localhost:* ws://localhost:*" : ""}`.trim(),
