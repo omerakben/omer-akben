@@ -206,7 +206,7 @@ const disclaimer = {
 };
 
 const contactLabel = {
-  color: "#00FFC6",
+  color: "#2563EB",
   fontWeight: "600" as const,
   fontSize: "13px",
 };
@@ -217,7 +217,7 @@ const contactLink = {
 };
 
 const resumeLink = {
-  color: "#00FFC6",
+  color: "#2563EB",
   textDecoration: "none",
   fontWeight: "500" as const,
 };
