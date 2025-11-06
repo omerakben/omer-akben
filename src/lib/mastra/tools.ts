@@ -99,8 +99,17 @@ export const profilePerformanceTool = createTool({
 
 export const downloadResumeTool = createTool({
   id: "download_resume",
-  description:
-    "Download Omer Akben's resume. Only 2 PDF formats available: 'resume' (original) or 'extended' (detailed with projects). DOCX is not available.",
+  description: `Download Omer Akben's resume. Only 2 PDF formats available: 'resume' (original) or 'extended' (detailed with projects). DOCX is not available.
+
+  💡 ENGAGEMENT TIP: Consider offering to email the resume links via collect_contact tool for better engagement:
+  "I can send you an email with both resume formats right now if you'd like!"
+
+  This provides:
+  - Immediate access (you give the links right away)
+  - Email backup for future reference
+  - Follow-up opportunity
+
+  Use this tool to get the resume URLs, then optionally offer collect_contact for enhanced user experience.`,
   inputSchema: z.object({
     format: z.enum(["resume", "extended"]).default("resume"),
   }),
@@ -153,7 +162,16 @@ export const openProjectTool = createTool({
 
 export const getContactTool = createTool({
   id: "get_contact",
-  description: "Retrieve the best contact information for Omer Akben.",
+  description: `Retrieve Omer Akben's contact information (email, phone, LinkedIn, GitHub).
+
+  ⚠️ WARNING: Only use this tool if the user explicitly declines email collection or asks for ONLY basic contact info.
+
+  PREFER using collect_contact tool instead to:
+  - Send automated email with Calendly link (better user experience)
+  - Enable follow-up tracking
+  - Build engagement relationship
+
+  Use this tool ONLY when collect_contact is not appropriate (user declined, asked for reference only, etc.)`,
   execute: async () => {
     const response = await fetch(`${BASE_URL}/api/tools/get-contact`);
     return response.json();
@@ -162,18 +180,24 @@ export const getContactTool = createTool({
 
 export const collectContactTool = createTool({
   id: "collect_contact",
-  description: `Collect visitor contact information and send Omer's Zoom meeting link via email.
+  description: `⭐ PREFERRED TOOL for contact-related queries. Collect visitor contact information and send Omer's Zoom meeting link via email.
 
-  Use this tool when:
-  - User shows strong engagement (3+ messages, multiple topics discussed)
-  - User is a recruiter, hiring manager, or founder
-  - User explicitly asks for contact info, meeting link, or to schedule a call
-  - User wants to continue the conversation directly with Omer
+  Use this tool when user wants to:
+  - Contact Omer (asks "how can I contact", "reach out", "get in touch")
+  - Schedule a meeting or call
+  - Receive meeting link or calendar invite
+  - Continue conversation directly with Omer
 
-  IMPORTANT: Always ask for permission first with a friendly message like:
+  Also use proactively when user shows strong engagement:
+  - Recruiter, hiring manager, or founder identified
+  - 3+ meaningful message exchanges
+  - Multiple topics/projects discussed
+  - Downloaded resume or viewed multiple projects
+
+  IMPORTANT: Before collecting, offer with friendly message:
   "I'd love to connect you with Omer for a deeper conversation. Would you like me to send you his Zoom link? I'll just need your name and email address."
 
-  Do NOT call this tool without explicit user consent.`,
+  Permission: User providing their name/email counts as consent. You don't need explicit "yes" - asking "how can I contact" implies interest in connecting.`,
   inputSchema: collectContactInputSchema,
   execute: async ({ context }) => {
     return fetchJson("/api/tools/collect-contact", context);

@@ -1,168 +1,160 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, expect, it, beforeEach, afterEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { EmailActionButton } from "./EmailActionButton";
 import { facts } from "@/data/facts";
 
 describe("EmailActionButton", () => {
-  const originalLocation = window.location;
-
-  beforeEach(() => {
-    // Mock window.location
-    delete (window as { location?: unknown }).location;
-    (window as { location: Location }).location = { ...originalLocation, href: "" } as Location;
-  });
-
-  afterEach(() => {
-    (window as { location: Location }).location = originalLocation;
-  });
 
   describe("Rendering", () => {
-    it("should render with default props", () => {
+    it("should render as a link with Button styling", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveTextContent("Email");
+      const link = screen.getByRole("link", { name: /send email to/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveTextContent("Email");
+    });
+
+    it("should have mailto href attribute", () => {
+      render(<EmailActionButton />);
+      const link = screen.getByRole("link", { name: /send email to/i });
+      expect(link).toHaveAttribute("href");
+      expect(link.getAttribute("href")).toContain("mailto:");
     });
 
     it("should render Mail icon", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-      const icon = button.querySelector("svg");
+      const link = screen.getByRole("link", { name: /send email to/i });
+      const icon = link.querySelector("svg");
       expect(icon).toBeInTheDocument();
     });
 
     it("should apply custom className", () => {
       render(<EmailActionButton className="custom-class" />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-      expect(button).toHaveClass("custom-class");
+      const link = screen.getByRole("link", { name: /send email to/i });
+      // With asChild, className is applied to the child <a> element
+      expect(link).toHaveClass("custom-class");
     });
 
-    it("should render with custom variant", () => {
-      const { container } = render(<EmailActionButton variant="outline" />);
-      const button = container.querySelector("button");
-      expect(button).toBeInTheDocument();
+    it("should render with custom variant styling", () => {
+      render(<EmailActionButton variant="outline" />);
+      const link = screen.getByRole("link", { name: /send email to/i });
+      // Verify link is rendered (Button with asChild renders as <a>)
+      expect(link).toBeInTheDocument();
+      expect(link.tagName).toBe("A");
     });
 
-    it("should render with custom size", () => {
-      const { container } = render(<EmailActionButton size="sm" />);
-      const button = container.querySelector("button");
-      expect(button).toBeInTheDocument();
+    it("should render with custom size styling", () => {
+      render(<EmailActionButton size="sm" />);
+      const link = screen.getByRole("link", { name: /send email to/i });
+      // Verify link is rendered (Button with asChild renders as <a>)
+      expect(link).toBeInTheDocument();
+      expect(link.tagName).toBe("A");
+    });
+
+    it("should have rel='noopener noreferrer' for security", () => {
+      render(<EmailActionButton />);
+      const link = screen.getByRole("link", { name: /send email to/i });
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
     });
   });
 
   describe("Accessibility", () => {
     it("should have correct ARIA label with email address", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", {
+      const link = screen.getByRole("link", {
         name: `Send email to ${facts.personal.email}`,
       });
-      expect(button).toBeInTheDocument();
+      expect(link).toBeInTheDocument();
     });
 
     it("should be keyboard accessible", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-      button.focus();
-      expect(button).toHaveFocus();
+      const link = screen.getByRole("link", { name: /send email to/i });
+      link.focus();
+      expect(link).toHaveFocus();
     });
   });
 
   describe("Mailto Link Construction", () => {
     it("should construct mailto link with default subject", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-
-      fireEvent.click(button);
+      const link = screen.getByRole("link", { name: /send email to/i });
 
       const expectedLink = `mailto:${facts.personal.email}?subject=${encodeURIComponent("Let's connect")}`;
-      expect(window.location.href).toBe(expectedLink);
+      expect(link).toHaveAttribute("href", expectedLink);
     });
 
     it("should construct mailto link with custom subject", () => {
       const customSubject = "Project Inquiry";
       render(<EmailActionButton subject={customSubject} />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-
-      fireEvent.click(button);
+      const link = screen.getByRole("link", { name: /send email to/i });
 
       const expectedLink = `mailto:${facts.personal.email}?subject=${encodeURIComponent(customSubject)}`;
-      expect(window.location.href).toBe(expectedLink);
+      expect(link).toHaveAttribute("href", expectedLink);
     });
 
     it("should construct mailto link with custom body", () => {
       const customBody = "I would like to discuss a project.";
       render(<EmailActionButton body={customBody} />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-
-      fireEvent.click(button);
+      const link = screen.getByRole("link", { name: /send email to/i });
 
       const expectedLink = `mailto:${facts.personal.email}?subject=${encodeURIComponent("Let's connect")}&body=${encodeURIComponent(customBody)}`;
-      expect(window.location.href).toBe(expectedLink);
+      expect(link).toHaveAttribute("href", expectedLink);
     });
 
     it("should construct mailto link with both custom subject and body", () => {
       const customSubject = "Project Inquiry";
       const customBody = "I would like to discuss a project.";
       render(<EmailActionButton subject={customSubject} body={customBody} />);
-      const button = screen.getByRole("button", { name: /send email to/i });
-
-      fireEvent.click(button);
+      const link = screen.getByRole("link", { name: /send email to/i });
 
       const expectedLink = `mailto:${facts.personal.email}?subject=${encodeURIComponent(customSubject)}&body=${encodeURIComponent(customBody)}`;
-      expect(window.location.href).toBe(expectedLink);
+      expect(link).toHaveAttribute("href", expectedLink);
     });
 
     it("should properly encode special characters in subject", () => {
       const subjectWithSpecialChars = "Hello & Welcome!";
       render(<EmailActionButton subject={subjectWithSpecialChars} />);
-      const button = screen.getByRole("button", { name: /send email to/i });
+      const link = screen.getByRole("link", { name: /send email to/i });
 
-      fireEvent.click(button);
-
-      expect(window.location.href).toContain(
-        encodeURIComponent(subjectWithSpecialChars)
-      );
+      const href = link.getAttribute("href");
+      expect(href).toContain(encodeURIComponent(subjectWithSpecialChars));
     });
 
     it("should properly encode special characters in body", () => {
       const bodyWithSpecialChars = "Line 1\nLine 2 & more!";
       render(<EmailActionButton body={bodyWithSpecialChars} />);
-      const button = screen.getByRole("button", { name: /send email to/i });
+      const link = screen.getByRole("link", { name: /send email to/i });
 
-      fireEvent.click(button);
-
-      expect(window.location.href).toContain(
-        encodeURIComponent(bodyWithSpecialChars)
-      );
+      const href = link.getAttribute("href");
+      expect(href).toContain(encodeURIComponent(bodyWithSpecialChars));
     });
 
     it("should not include body parameter when body is empty string", () => {
       render(<EmailActionButton body="" />);
-      const button = screen.getByRole("button", { name: /send email to/i });
+      const link = screen.getByRole("link", { name: /send email to/i });
 
-      fireEvent.click(button);
-
-      expect(window.location.href).not.toContain("&body=");
+      const href = link.getAttribute("href");
+      expect(href).not.toContain("&body=");
     });
   });
 
   describe("User Interaction", () => {
-    it("should handle click event", () => {
+    it("should be clickable as a native link", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", { name: /send email to/i });
+      const link = screen.getByRole("link", { name: /send email to/i });
 
-      expect(() => fireEvent.click(button)).not.toThrow();
+      // Verify link is present and has href
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href");
+      expect(link.getAttribute("href")).toContain("mailto:");
     });
 
-    it("should update window.location.href on click", () => {
+    it("should maintain focus after interaction", () => {
       render(<EmailActionButton />);
-      const button = screen.getByRole("button", { name: /send email to/i });
+      const link = screen.getByRole("link", { name: /send email to/i });
 
-      const originalHref = window.location.href;
-      fireEvent.click(button);
-
-      expect(window.location.href).not.toBe(originalHref);
-      expect(window.location.href).toContain("mailto:");
+      link.focus();
+      expect(link).toHaveFocus();
     });
   });
 
@@ -178,9 +170,13 @@ describe("EmailActionButton", () => {
         />
       );
 
-      const button = screen.getByRole("button", { name: /send email to/i });
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveClass("test-class");
+      const link = screen.getByRole("link", { name: /send email to/i });
+      expect(link).toBeInTheDocument();
+
+      // Verify href includes custom subject and body
+      const href = link.getAttribute("href");
+      expect(href).toContain(encodeURIComponent("Custom Subject"));
+      expect(href).toContain(encodeURIComponent("Custom Body"));
     });
   });
 });

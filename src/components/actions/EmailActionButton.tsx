@@ -51,21 +51,21 @@ export function EmailActionButton({
     body ? `&body=${encodeURIComponent(body)}` : ""
   }`;
 
-  const handleClick = () => {
-    // Open email client
-    window.location.href = mailtoLink;
-  };
-
   return (
     <Button
       variant={variant}
       size={size}
-      onClick={handleClick}
+      asChild
       className={`gap-2 ${className}`}
-      aria-label={`Send email to ${email}`}
     >
-      <Mail className="w-4 h-4" />
-      <span>Email</span>
+      <a
+        href={mailtoLink}
+        aria-label={`Send email to ${email}`}
+        rel="noopener noreferrer"
+      >
+        <Mail className="w-4 h-4" />
+        <span>Email</span>
+      </a>
     </Button>
   );
 }
