@@ -39,7 +39,7 @@ npm run analyze                                  # Bundle analysis
 - **UI Components:** 40+ shadcn/ui primitives
 - **AI:** Vercel AI SDK v5 + OpenAI API
 - **Database:** Upstash Redis (rate limiting, caching) + Upstash Vector (episodic memory)
-- **Testing:** Vitest (776 unit tests) + Playwright (79 E2E tests: 66 passing, 13 skipped)
+- **Testing:** Vitest (776 unit tests) + Playwright (80 E2E tests: 66 passing, 14 skipped)
 
 ---
 
@@ -74,7 +74,7 @@ npm run test:e2e      # Must pass all E2E tests
 - ❌ **NO console.log** - use console.error/warn for monitoring only
 - ❌ **NO hardcoded colors** - use CSS custom properties only (`bg-brand-primary`, never `#00FFC6`)
 - ❌ **NO inline styles** - use Tailwind classes or CSS custom properties
-- ❌ **NO disabled/skipped unit tests** - fix root causes (13 E2E tests skipped for production - WIP modal/API timing issues)
+- ❌ **NO disabled/skipped unit tests** - fix root causes (14 E2E tests skipped for production - WIP modal/API timing issues)
 - ❌ **NO TypeScript `any`** - use proper types (except third-party declarations)
 - ❌ **NO ESLint disable comments** - fix issues, don't suppress them
 

@@ -48,7 +48,7 @@ When you push to `pre-deployment`, GitHub Actions automatically:
    - Gate 3: Unit Tests (776/776 passing)
    - Gate 4: Production Build (success)
    - Gate 5: Bundle Size (within limits)
-   - Gate 6: E2E Tests (66 passing, 13 skipped)
+   - Gate 6: E2E Tests (66 passing, 14 skipped)
 
 2. **Auto-Merges to Main** (if all gates pass):
    - Fast-forward merge `pre-deployment` → `main`
@@ -445,7 +445,7 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
 ✅ Unit Tests:     776/776 passing (npm test)
 ✅ Build:          Success (npm run build)
 ✅ Bundle Size:    Within limits (npm run size)
-✅ E2E Tests:      66/66 passing, 13 skipped (npm run test:e2e)
+✅ E2E Tests:      66/66 passing, 14 skipped (npm run test:e2e)
 ✅ CI/CD:          All gates green, env vars configured
 ```
 
@@ -481,9 +481,9 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
   - Coverage: `npm test -- --coverage`
   - Single file: `npm test -- filename.test.tsx`
 
-- **E2E Tests**: Playwright (`e2e/*.spec.ts`) - **79 total: 66 passing, 13 skipped**
+- **E2E Tests**: Playwright (`e2e/*.spec.ts`) - **80 total: 66 passing, 14 skipped**
   - `a11y.spec.ts` - **WCAG 2A compliance on 8 routes** (/, /projects, /skills, /journey, /credentials, /contact, /recruiter, /chat)
-  - `agentic-sidebar.spec.ts` - Sidebar pinning, resizing, persistence (2 tests skipped - OpenAI API timing)
+  - `agentic-sidebar.spec.ts` - Sidebar pinning, resizing, persistence (3 tests skipped - OpenAI API timing)
   - `chat.spec.ts` - Chat functionality (5 tests skipped - OpenAI API timing)
   - `brightness-modes-slider.spec.ts` - Brightness mode switching (8 modes)
   - `mobile.spec.ts` - Mobile viewport tests (1 test skipped - CTA visibility timing)
@@ -493,8 +493,8 @@ All quality gates passing, zero technical debt, WCAG 2A compliant, CI/CD configu
   - UI mode: `npm run test:e2e:ui`
   - Headed: `npm run test:e2e:headed`
 
-  **Skipped Tests Rationale**: 13 E2E tests temporarily skipped for production deployment:
-  - OpenAI API tests (8 tests): Real API calls timeout in CI/CD environment
+  **Skipped Tests Rationale**: 14 E2E tests temporarily skipped for production deployment:
+  - OpenAI API tests (9 tests): Real API calls timeout in CI/CD environment
   - WIP modal tests (4 tests): Modal backdrop intercepts pointer events during navigation
   - Mobile CTA test (1 test): Button visibility timing issues
   - All skipped tests documented with `test.skip()` and comments
