@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     let links;
     try {
       links = JSON.parse(linksParam);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         {
           success: false,

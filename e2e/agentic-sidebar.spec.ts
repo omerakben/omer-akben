@@ -568,11 +568,6 @@ test.describe("Agentic Sidebar - Accessibility", () => {
     await chatButton.click();
     await page.waitForTimeout(500);
 
-    // Get initial focused element
-    const initialFocus = await page.evaluate(() => {
-      return document.activeElement?.tagName;
-    });
-
     // Tab through elements
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press("Tab");

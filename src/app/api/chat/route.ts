@@ -1,6 +1,5 @@
 import { logError } from "@/lib/log";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
-import { loadThreadMessages } from "@/lib/mastra/memory/checkpointer";
 import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
 import type { UIMessage } from "ai";
@@ -66,7 +65,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const messages = await loadThreadMessages(chatId);
+    const messages = await memoryManager.loadSTM(chatId);
     return ensureJsonResponse({ messages });
   } catch (error) {
     logError("chat:GET", error);
@@ -93,7 +92,7 @@ export async function POST(req: Request) {
   const { chatId, message, userId } = parsed.data;
 
   try {
-    const history = await loadThreadMessages(chatId);
+    const history = await memoryManager.loadSTM(chatId);
     const userMessage = normalizeToUIMessage(message);
     const messages: UIMessage[] = [...history, userMessage];
     const query = extractMessageText(userMessage);

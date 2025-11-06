@@ -121,6 +121,37 @@ export const credentials: Credential[] = [
 
   // Certifications - Cloud & Infrastructure
   {
+    id: "nss-cloud-deployment",
+    title: "NSS Cloud Deployment Certificate",
+    institution: "Nashville Software School",
+    institutionUrl: "https://nashvillesoftwareschool.com/",
+    date: "2025",
+    description:
+      "5-week intensive cloud deployment program covering AWS services (S3, CloudFront, EC2, ECR, RDS), Docker containerization, CI/CD pipelines with GitHub Actions, and infrastructure as code practices for production cloud deployments.",
+    type: "certification",
+    category: "cloud",
+    status: "completed",
+    certificateUrl: "/assets/Omer-Akben-NSS-Cloud-Certificate.pdf",
+    skills: [
+      "AWS S3",
+      "CloudFront",
+      "AWS EC2",
+      "AWS ECR",
+      "AWS RDS",
+      "AWS CLI",
+      "Docker",
+      "CI/CD",
+      "GitHub Actions",
+      "Infrastructure as Code",
+    ],
+    highlights: [
+      "Deployed front-end apps to S3 with CloudFront CDN distribution",
+      "Built CI/CD pipelines using GitHub Actions for automated deployments",
+      "Containerized back-end APIs with Docker and deployed to EC2 instances",
+      "Configured RDS databases and integrated with production applications",
+    ],
+  },
+  {
     id: "ibm-cloud-computing",
     title: "Introduction to Cloud Computing",
     institution: "IBM via Coursera",

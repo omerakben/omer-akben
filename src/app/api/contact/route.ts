@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 
     // Send email via Resend
     const resend = getResendClient();
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "Omer Akben Portfolio <contact@omerakben.com>",
       to: process.env.OMER_EMAIL || "me@omerakben.com",
       replyTo: email,

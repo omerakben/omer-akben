@@ -1,14 +1,10 @@
 import type { UIMessage } from "ai";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const loadThreadMessagesMock = vi.fn();
+const loadSTMMock = vi.fn();
 const routeMock = vi.fn();
 const saveSTMMock = vi.fn();
 const saveLTMMock = vi.fn();
-
-vi.mock("@/lib/mastra/memory/checkpointer", () => ({
-  loadThreadMessages: loadThreadMessagesMock,
-}));
 
 vi.mock("@/lib/mastra/agents/coordinator", () => ({
   coordinatorAgent: {
@@ -18,6 +14,7 @@ vi.mock("@/lib/mastra/agents/coordinator", () => ({
 
 vi.mock("@/lib/memory/redis-memory", () => ({
   RedisMemoryManager: vi.fn(() => ({
+    loadSTM: loadSTMMock,
     saveSTM: saveSTMMock,
     saveLTM: saveLTMMock,
   })),
@@ -25,7 +22,7 @@ vi.mock("@/lib/memory/redis-memory", () => ({
 
 describe("chat route", () => {
   beforeEach(() => {
-    loadThreadMessagesMock.mockResolvedValue([]);
+    loadSTMMock.mockResolvedValue([]);
     routeMock.mockReset();
     routeMock.mockImplementation(async () => ({
       toUIMessageStreamResponse: ({
@@ -62,7 +59,7 @@ describe("chat route", () => {
           parts: [{ type: "text", text: "Hello" }],
         },
       ];
-      loadThreadMessagesMock.mockResolvedValueOnce(messages);
+      loadSTMMock.mockResolvedValueOnce(messages);
       const routeModule = await import("./route");
       const response = await routeModule.GET(
         new Request("http://localhost/api/chat?chatId=test")
@@ -92,7 +89,7 @@ describe("chat route", () => {
 
     it("routes through coordinator and persists memory", async () => {
       const routeModule = await import("./route");
-      loadThreadMessagesMock.mockResolvedValueOnce([
+      loadSTMMock.mockResolvedValueOnce([
         {
           id: "prev",
           role: "assistant",

@@ -314,24 +314,22 @@ if (isSuccessResponse(json)) {
 
 ### ESLint Rules
 
-**Zero Errors Policy** - ESLint configured with:
+**Zero Errors, Zero Warnings Policy** - ESLint configured with production standards:
 
 - ✅ TypeScript ESLint rules enabled
 - ✅ React/React Hooks rules enforced
 - ✅ Next.js specific rules active
-- ✅ 0 errors, minimal warnings (<25)
+- ✅ 0 errors, 0 warnings (production standard)
 - ✅ `scripts/` directory excluded (build scripts exempt)
 
-**Current Status:**
+**Current Status (Production):**
 
 - Errors: **0** (enforced in CI)
-- Warnings: **20** (unused variables in tests - acceptable, not blocking)
+- Warnings: **0** (production standard - no warnings allowed)
 
-**Acceptable Warnings:**
+**Production Standard:**
 
-- Unused test utilities (e.g., `vi` import for type checking)
-- Unused destructured variables in tests (e.g., `_` placeholder)
-- Performance monitoring variables in tests
+As of 2025-11-05, the production deployment requires **0 ESLint warnings**. All unused variables, imports, and other warnings must be fixed before merging to `pre-deployment` branch.
 
 ### Test Coverage
 

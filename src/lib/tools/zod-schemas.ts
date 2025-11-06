@@ -158,9 +158,9 @@ export const getContactResponseSchema = createToolResponseSchema(
 
 export const downloadCertificateInputSchema = z.object({
   type: z
-    .enum(["aws", "nss"])
+    .enum(["aws", "nss", "nss-cloud"])
     .describe(
-      "Certificate type: aws (AWS Cloud Practitioner Essentials) or nss (Nashville Software School)"
+      "Certificate type: aws (AWS Cloud Practitioner Essentials), nss (Nashville Software School Graduate), or nss-cloud (NSS Cloud Deployment Certificate)"
     ),
 });
 

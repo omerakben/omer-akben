@@ -465,6 +465,43 @@ export default function RecruiterPage() {
 
                   <div className="p-3 border border-border-line rounded-lg bg-surf-1">
                     <p className="text-sm font-medium text-text-1 mb-2">
+                      NSS Cloud Deployment Certificate (2025)
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="flex-1 bg-gradient-to-r from-brand-primary to-accent-primary"
+                      >
+                        <a
+                          href="/assets/Omer-Akben-NSS-Cloud-Certificate.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Show Certificate
+                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        title="Download PDF"
+                      >
+                        <a
+                          href="/assets/Omer-Akben-NSS-Cloud-Certificate.pdf"
+                          download="Omer_Akben_NSS_Cloud_Certificate.pdf"
+                          aria-label="Download NSS Cloud Deployment Certificate PDF"
+                        >
+                          <Download className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="p-3 border border-border-line rounded-lg bg-surf-1">
+                    <p className="text-sm font-medium text-text-1 mb-2">
                       AWS Cloud Practitioner Essentials (2022)
                     </p>
                     <div className="flex gap-2">
