@@ -1,17 +1,15 @@
 /**
- * Dynamic follow-up generator with A/B testing
+ * Dynamic follow-up generator with model fallback
  *
  * Generates context-aware follow-up questions using LLM with:
- * - A/B testing: 50/50 split between XAI Grok-2-1212 and GPT-4o-mini
+ * - Model Strategy: Grok-4-Fast-Non-Reasoning (primary), GPT-4o-mini (fallback)
  * - Conversation history analysis
  * - Entity extraction (person type, topic, confidence)
  * - Project slug validation against data/projects.ts
  * - Routing state tracking for conversation flow
  */
 
-import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { xai } from "@ai-sdk/xai";
+import { generateWithFallback } from "@/lib/ai/model-fallback";
 import {
   FollowupResponse,
   FollowupResponseType,
@@ -274,27 +272,21 @@ export async function generateDynamicFollowups(
       },
     });
 
-    // A/B testing: 50/50 split between Grok-4-fast and GPT-4o-mini
-    const USE_GROK = Math.random() < 0.5;
-    const model = USE_GROK
-      ? xai("grok-2-1212")
-      : openai("gpt-4o-mini");
-
-    const modelName = USE_GROK ? "grok-2-1212" : "gpt-4o-mini";
+    // Primary/Fallback: Grok-4-Fast-Non-Reasoning (primary), GPT-4o-mini (fallback)
     const startTime = Date.now();
 
-    console.log(`[DynamicGenerator] Using model: ${modelName}`);
+    console.log(`[DynamicGenerator] Generating follow-ups with primary model: grok-4-fast-non-reasoning`);
 
-    // Generate follow-ups with selected model
-    const result = await generateText({
-      model,
+    // Generate follow-ups with primary/fallback pattern
+    const result = await generateWithFallback({
+      variant: "non-reasoning",
       system: buildFollowupSystemPrompt(semanticMemory, extractedEntities),
       messages: recentMessages,
       temperature: 0.5,
     });
 
     const duration = Date.now() - startTime;
-    console.log(`[DynamicGenerator] ${modelName} generation time: ${duration}ms`);
+    console.log(`[DynamicGenerator] Follow-up generation completed in ${duration}ms`);
 
     // Parse JSON response
     const parsed = JSON.parse(result.text);
