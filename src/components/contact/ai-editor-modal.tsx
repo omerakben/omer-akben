@@ -162,7 +162,7 @@ export function AIEditorModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto scrollbar-modal-gradient">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-brand-primary" />
@@ -260,7 +260,7 @@ export function AIEditorModal({
               {/* Original Text */}
               <div className="space-y-1">
                 <p className="text-xs font-medium text-text-3">Original</p>
-                <div className="p-3 rounded-lg bg-surf-1 border border-border-line max-h-24 overflow-y-auto">
+                <div className="p-3 rounded-lg bg-surf-1 border border-border-line max-h-24 overflow-y-auto scrollbar-modal-gradient">
                   <p className="text-sm text-text-2 whitespace-pre-wrap">
                     {originalText}
                   </p>

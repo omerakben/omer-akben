@@ -540,6 +540,10 @@ Required environment variables for development and production:
 # OpenAI API (Required)
 OPENAI_API_KEY=sk-...
 
+# XAI API (Optional - for Grok-4-fast models)
+# Get your API key from: https://console.x.ai/
+XAI_API_KEY=xai-...
+
 # Redis Rate Limiting (Required for Production)
 UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-token

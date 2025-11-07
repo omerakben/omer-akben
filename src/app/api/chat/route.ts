@@ -2,6 +2,7 @@ import { logError } from "@/lib/log";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
 import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
+import { generateAndCacheFollowups } from "@/lib/followups/generate-and-cache";
 import type { UIMessage } from "ai";
 import { z } from "zod";
 
@@ -114,11 +115,16 @@ export async function POST(req: Request) {
         const effectiveUserId = userId ?? "anonymous";
 
         try {
-          // Persist conversation memory and extract user facts in parallel
+          // Persist conversation memory, extract facts, and generate follow-ups in parallel
           await Promise.all([
             memoryManager.saveSTM(chatId, finalMessages),
             memoryManager.saveLTM(chatId, finalMessages),
             extractAndSaveFacts(effectiveUserId, finalMessages),
+            generateAndCacheFollowups({
+              threadId: chatId,
+              userId: effectiveUserId,
+              messages: finalMessages,
+            }),
           ]);
         } catch (error) {
           logError("chat:onFinish", error);

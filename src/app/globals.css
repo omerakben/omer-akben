@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "../lib/tailwind-scrollbar-plugin";
 
 :root {
   --font-size: 16px;
@@ -867,30 +868,6 @@ html {
     backdrop-filter: blur(12px);
   }
 
-  /* Custom scrollbar for chat messages */
-  .chat-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .chat-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .chat-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--border-line);
-    border-radius: 3px;
-  }
-
-  .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--text-3);
-  }
-
-  /* Firefox scrollbar */
-  .chat-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-line) transparent;
-  }
-
   /* Smooth scroll behavior for chat */
   .chat-scroll-smooth {
     scroll-behavior: smooth;
@@ -1041,31 +1018,5 @@ html {
 
   .animate-delay-400 {
     animation-delay: 0.4s;
-  }
-
-  /* Custom scrollbar for chat input */
-  .chat-input-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .chat-input-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-  }
-
-  .chat-input-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--border-line);
-    border-radius: 10px;
-    transition: background 0.2s ease;
-  }
-
-  .chat-input-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--text-3);
-  }
-
-  /* Firefox scrollbar */
-  .chat-input-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-line) transparent;
   }
 }

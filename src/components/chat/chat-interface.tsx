@@ -165,7 +165,7 @@ export function ChatInterface({
       {/* Messages Container */}
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto px-6 py-8 chat-scrollbar chat-scroll-smooth"
+        className="flex-1 overflow-y-auto px-6 py-8 scrollbar-vertical-gradient chat-scroll-smooth"
       >
         <div className="space-y-6">
           {/* Empty State with conditional header */}
