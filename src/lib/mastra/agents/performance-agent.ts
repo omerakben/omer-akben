@@ -1,4 +1,5 @@
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -31,7 +32,7 @@ class PerformanceAgent extends BasePortfolioAgent<"performance"> {
       name: "performance",
       description:
         "Offers Core Web Vital profiling and optimization suggestions for the portfolio site.",
-      model: "openai/gpt-4o-mini",
+      model: MASTRA_PRIMARY_REASONING,
       instructions: {
         role: "system",
         content: FULL_SYSTEM_PROMPT,

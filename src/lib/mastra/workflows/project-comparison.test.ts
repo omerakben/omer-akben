@@ -7,17 +7,12 @@ import {
   projectComparisonWorkflow,
 } from "./project-comparison";
 
-// Mock the AI SDK
-vi.mock("ai", () => ({
-  generateText: vi.fn(),
+// Mock the model fallback utility
+vi.mock("@/lib/ai/model-fallback", () => ({
+  generateWithFallback: vi.fn(),
 }));
 
-// Mock OpenAI
-vi.mock("@ai-sdk/openai", () => ({
-  openai: vi.fn(() => "mocked-model"),
-}));
-
-import { generateText } from "ai";
+import { generateWithFallback } from "@/lib/ai/model-fallback";
 
 describe("project-comparison workflow", () => {
   beforeEach(() => {
@@ -146,7 +141,7 @@ describe("project-comparison workflow", () => {
     };
 
     beforeEach(() => {
-      (generateText as Mock).mockResolvedValue({
+      (generateWithFallback as Mock).mockResolvedValue({
         text: "Mocked AI response",
       });
     });
@@ -175,14 +170,14 @@ describe("project-comparison workflow", () => {
       expect(events.filter((e) => e.type === "complete")).toHaveLength(1);
     });
 
-    it("should call generateText 3 times (one per step)", async () => {
+    it("should call generateWithFallback 3 times (one per step)", async () => {
       const generator = projectComparisonWorkflow.execute(mockContext);
 
       for await (const event of generator) {
         void event;
       }
 
-      expect(generateText).toHaveBeenCalledTimes(3);
+      expect(generateWithFallback).toHaveBeenCalledTimes(3);
     });
 
     it("should extract AI category from query", async () => {
@@ -271,7 +266,7 @@ describe("project-comparison workflow", () => {
     });
 
     it("should handle errors gracefully", async () => {
-      (generateText as Mock).mockRejectedValueOnce(new Error("API error"));
+      (generateWithFallback as Mock).mockRejectedValueOnce(new Error("API error"));
 
       const generator = projectComparisonWorkflow.execute(mockContext);
 

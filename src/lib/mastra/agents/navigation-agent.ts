@@ -1,4 +1,5 @@
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -33,7 +34,7 @@ class NavigationAgent extends BasePortfolioAgent<"navigation"> {
       name: "navigation",
       description:
         "Assists users in navigating pages, sections, and summaries across the portfolio.",
-      model: "openai/gpt-4o-mini",
+      model: MASTRA_PRIMARY_REASONING,
       instructions: {
         role: "system",
         content: FULL_SYSTEM_PROMPT,

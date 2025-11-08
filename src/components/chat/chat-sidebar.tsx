@@ -4,7 +4,7 @@ import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import { getFollowups } from "@/lib/followups";
+import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
@@ -71,10 +71,7 @@ export function ChatSidebar() {
   const [error, setError] = useState<string | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string>("");
   const [isResizing, setIsResizing] = useState(false);
-  const [currentFollowups, setCurrentFollowups] = useState<string[]>([]);
-  const [recentlyShownFollowups, setRecentlyShownFollowups] = useState<
-    string[]
-  >([]);
+  const [currentFollowups, setCurrentFollowups] = useState<FollowupSuggestionType[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -259,7 +256,6 @@ export function ChatSidebar() {
         setMessages(history);
         setShowMessages(history.length > 0);
         setCurrentFollowups([]);
-        setRecentlyShownFollowups([]);
       } catch (error) {
         if ((error as Error).name === "AbortError") {
           return;
@@ -271,7 +267,6 @@ export function ChatSidebar() {
     setMessages([]);
     setShowMessages(false);
     setCurrentFollowups([]);
-    setRecentlyShownFollowups([]);
     fetchHistory();
 
     return () => {
@@ -321,15 +316,33 @@ export function ChatSidebar() {
       }
 
       try {
-        const followups = await getFollowups(
-          userText,
-          assistantText,
-          recentlyShownFollowups
-        );
-        setCurrentFollowups(followups);
+        // Call API endpoint to get structured follow-ups
+        const response = await fetch("/api/suggest-followups", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [
+              { role: "user", content: userText },
+              { role: "assistant", content: assistantText },
+            ],
+          }),
+        });
 
-        // Track these as recently shown
-        setRecentlyShownFollowups((prev) => [...prev, ...followups].slice(-10)); // Keep last 10
+        if (!response.ok) {
+          console.warn("[ChatSidebar] Follow-up API failed, clearing suggestions");
+          setCurrentFollowups([]);
+          return;
+        }
+
+        const data = await response.json();
+
+        // Extract structured follow-ups from response
+        if (data.suggested_followups && Array.isArray(data.suggested_followups)) {
+          setCurrentFollowups(data.suggested_followups);
+        } else {
+          console.warn("[ChatSidebar] Invalid follow-up response format");
+          setCurrentFollowups([]);
+        }
       } catch (error) {
         console.error("[ChatSidebar] Failed to generate followups:", error);
         setCurrentFollowups([]);
@@ -340,11 +353,6 @@ export function ChatSidebar() {
     if (!isLoading) {
       generateFollowupsAsync();
     }
-
-    // Note: recentlyShownFollowups intentionally omitted from deps
-    // It's updated within this effect via setRecentlyShownFollowups((prev) => ...)
-    // and its current value is only needed for deduplication logic in getFollowups.
-    // Including it would cause infinite re-renders since we modify it on every run.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages.length, isLoading]); // Use messages.length to prevent infinite loop
 
@@ -417,7 +425,6 @@ export function ChatSidebar() {
                     setMessages([]);
                     setShowMessages(false);
                     setCurrentFollowups([]);
-                    setRecentlyShownFollowups([]);
                   }}
                   className="h-11 w-11 p-2"
                   title="New Chat"
@@ -434,7 +441,6 @@ export function ChatSidebar() {
                       setMessages([]);
                       setShowMessages(false);
                       setCurrentFollowups([]);
-                      setRecentlyShownFollowups([]);
                     }}
                     className="h-11 w-11 p-2"
                     title="Clear Conversation"
@@ -505,7 +511,7 @@ export function ChatSidebar() {
             )}
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto scrollbar-vertical-gradient chat-scroll-smooth">
               {!showMessages ? (
                 <>
                   {/* Welcome Message */}
@@ -845,7 +851,7 @@ export function ChatSidebar() {
                       }
                     }}
                     placeholder="Ask anything about me..."
-                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px] chat-input-scrollbar"
+                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px] scrollbar-vertical-gradient"
                     disabled={isLoading}
                     rows={1}
                     maxLength={MAX_INPUT_LENGTH}

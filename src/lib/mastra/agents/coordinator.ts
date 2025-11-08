@@ -1,3 +1,4 @@
+import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -108,7 +109,7 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
       name: "coordinator",
       description:
         "Routes chat queries to the correct specialist agent and orchestrates responses.",
-      model: "openai/gpt-4o-mini",
+      model: MASTRA_PRIMARY_REASONING,
       instructions: {
         role: "system",
         content: BASE_PROMPT,

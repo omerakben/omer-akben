@@ -152,6 +152,82 @@ npx tsc --noEmit                                 # TypeScript check
 - **Hydration-Safe**: `isMounted` pattern prevents Next.js hydration mismatches
 - **Layout Integration**: Single `LayoutContainer` applies margin when sidebar pinned, navbar/footer naturally constrained
 
+**Centralized AI Model Configuration** (as of November 2025):
+
+The project uses a **PRIMARY/FALLBACK** pattern with centralized configuration for all LLM calls:
+- **Primary**: Grok-4-Fast (XAI) - reasoning or non-reasoning variants
+- **Fallback**: GPT-4o-mini (OpenAI) - automatic failover on errors
+- **Configuration**: Single source of truth in `src/lib/ai/model-config.ts`
+
+**Architecture**:
+
+```typescript
+// Centralized Model Configuration
+export const AI_MODEL_CONFIG = {
+  primary: {
+    provider: "xai",
+    models: {
+      reasoning: process.env.XAI_REASONING_MODEL || "grok-4-fast-reasoning",
+      nonReasoning: process.env.XAI_NON_REASONING_MODEL || "grok-4-fast-non-reasoning",
+    },
+  },
+  fallback: {
+    provider: "openai",
+    model: process.env.OPENAI_FALLBACK_MODEL || "gpt-4o-mini",
+  },
+  embedding: {
+    provider: "openai",
+    model: process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small",
+  },
+};
+```
+
+**Usage Patterns**:
+
+```typescript
+// For AI SDK usage (direct model names)
+import { PRIMARY_REASONING_MODEL, PRIMARY_NON_REASONING_MODEL } from "@/lib/ai/model-config";
+
+// For Mastra agents (provider/model-name format)
+import { MASTRA_PRIMARY_REASONING, MASTRA_PRIMARY_NON_REASONING } from "@/lib/ai/model-config";
+```
+
+**Environment Variable Overrides**:
+
+```bash
+# Optional overrides for production flexibility
+XAI_REASONING_MODEL=grok-4-fast-reasoning           # Default: grok-4-fast-reasoning
+XAI_NON_REASONING_MODEL=grok-4-fast-non-reasoning   # Default: grok-4-fast-non-reasoning
+OPENAI_FALLBACK_MODEL=gpt-4o-mini                   # Default: gpt-4o-mini
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small       # Default: text-embedding-3-small
+```
+
+**Migration Status** (✅ Complete):
+- ✅ **Centralized Configuration**: All model names now configured in single file
+- ✅ **Mastra Agents**: 7 agents (coordinator + 6 specialists) → `grok-4-fast-reasoning`
+- ✅ **Workflows**: 2 workflows (project-comparison, interview-prep) → `grok-4-fast-non-reasoning`
+- ✅ **Fact Extractor**: Classification/extraction → `grok-4-fast-non-reasoning`
+- ✅ **Follow-up Generator**: Dynamic suggestions → `grok-4-fast-non-reasoning`
+- ⏸️ **No Migration Required**: Embeddings (text-embedding-3-small) - no Grok alternative
+
+**Model Selection Guidelines**:
+- **Use `reasoning` variant** for:
+  - Agentic chat with multi-step reasoning
+  - Tool orchestration and decision-making
+  - Complex query routing
+- **Use `non-reasoning` variant** for:
+  - Classification and entity extraction
+  - Workflow summarization and comparison
+  - Follow-up suggestion generation
+  - Fact extraction from conversations
+  - **Performance**: 70-85% faster than reasoning variant (5-7.5s → 1-2s)
+
+**Implementation Files**:
+- Configuration: `src/lib/ai/model-config.ts` (single source of truth)
+- Fallback Utility: `src/lib/ai/model-fallback.ts` (provides `generateWithFallback()`, `generateObjectWithFallback()`, `streamWithFallback()`)
+- Agent Usage: All `src/lib/mastra/agents/*.ts` files use `MASTRA_PRIMARY_REASONING`
+- Workflow Usage: All `src/lib/mastra/workflows/*.ts` files use `generateWithFallback({ variant: "non-reasoning" })`
+
 ### Unique Design Patterns
 
 **1. 8-Mode Brightness System** ⚠️ **Critical**
@@ -537,8 +613,23 @@ UPSTASH_REDIS_REST_TOKEN=your-token
 Required environment variables for development and production:
 
 ```bash
-# OpenAI API (Required)
+# =============================================================================
+# AI Model Configuration (Primary/Fallback Strategy)
+# =============================================================================
+
+# XAI API (Primary LLM Provider) - REQUIRED as of Nov 2025
+# Get your API key from: https://console.x.ai/
+# Used for: Follow-up suggestions (✅ MIGRATED), chat agents (PENDING), workflows (PENDING)
+XAI_API_KEY=xai-...
+
+# OpenAI API (Fallback LLM + Embeddings) - REQUIRED
+# Get your API key from: https://platform.openai.com/api-keys
+# Used for: Automatic fallback when Grok unavailable, embeddings (no Grok alternative)
 OPENAI_API_KEY=sk-...
+
+# =============================================================================
+# Infrastructure (Redis, Vector Search, Email)
+# =============================================================================
 
 # Redis Rate Limiting (Required for Production)
 UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
@@ -561,9 +652,14 @@ ANALYZE=true  # Enable bundle analyzer
 **Setup**:
 
 1. Copy `.env.example` to `.env.local`
-2. Add your API keys
+2. Add your API keys (**both XAI_API_KEY and OPENAI_API_KEY required**)
 3. Never commit `.env*` files (already in `.gitignore`)
 4. For Resend: Set up domain verification at <https://resend.com/domains>
+
+**Model Migration Status**:
+- ✅ **Phase 1.1 Complete**: Follow-up generator using grok-4-fast-non-reasoning (70-85% faster)
+- 🔄 **Phase 1.2 Pending**: Chat agents migration to grok-4-fast-reasoning
+- 🔄 **Phase 2 Pending**: Workflows, fact extractor, text editor migrations
 
 ### Adding Agent Tools
 

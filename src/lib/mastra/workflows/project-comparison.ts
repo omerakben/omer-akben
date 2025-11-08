@@ -1,7 +1,6 @@
 import { projects, type Project } from "@/data/projects";
 import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { openai } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { generateWithFallback } from "@/lib/ai/model-fallback";
 import type { WorkflowDefinition, WorkflowEvent } from "./types";
 
 /**
@@ -256,8 +255,8 @@ Provide a brief summary (2-3 paragraphs) of:
 
 Keep the response concise and focused on patterns.`;
 
-  const result = await generateText({
-    model: openai("gpt-4o-mini"),
+  const result = await generateWithFallback({
+    variant: "non-reasoning",
     prompt,
   });
 
@@ -308,8 +307,8 @@ Provide a detailed feature comparison (3-4 paragraphs):
 
 Format as clear, scannable comparison with bold headers.`;
 
-  const result = await generateText({
-    model: openai("gpt-4o-mini"),
+  const result = await generateWithFallback({
+    variant: "non-reasoning",
     prompt,
   });
 
@@ -350,8 +349,8 @@ Provide a clear recommendation (3-4 paragraphs):
 Be specific about technical merits, production readiness, and practical applications.
 Format with bold headers and clear structure.`;
 
-  const result = await generateText({
-    model: openai("gpt-4o-mini"),
+  const result = await generateWithFallback({
+    variant: "non-reasoning",
     prompt,
   });
 

@@ -51,7 +51,7 @@ export const downloadResumeOutputSchema = z.object({
   url: z.string(), // Accepts relative paths like /assets/file.pdf
   filename: z.string(),
   size: z.number(),
-  format: z.string().describe("File format (PDF only - DOCX not available)"),
+  format: z.string().describe("File format (PDF)"),
   googleDriveUrl: z
     .string()
     .url()

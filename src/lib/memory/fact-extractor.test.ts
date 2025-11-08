@@ -7,19 +7,15 @@ import type { UIMessage } from "ai";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ExtractedFacts } from "./types";
 
-const generateTextMock = vi.fn();
+const generateWithFallbackMock = vi.fn();
 const mergeSemanticMemoryMock = vi.fn();
 const getCachedCompletionMock = vi.fn();
 const setCachedCompletionMock = vi.fn();
 const recordCacheHitMock = vi.fn();
 const recordCacheMissMock = vi.fn();
 
-vi.mock("ai", () => ({
-  generateText: generateTextMock,
-}));
-
-vi.mock("@ai-sdk/openai", () => ({
-  openai: vi.fn(() => "gpt-4o-mini"),
+vi.mock("@/lib/ai/model-fallback", () => ({
+  generateWithFallback: generateWithFallbackMock,
 }));
 
 vi.mock("@/lib/memory/semantic-memory", () => ({
@@ -35,7 +31,7 @@ vi.mock("@/lib/cache/openai-cache", () => ({
 
 describe("fact-extractor", () => {
   beforeEach(() => {
-    generateTextMock.mockReset();
+    generateWithFallbackMock.mockReset();
     mergeSemanticMemoryMock.mockReset();
     getCachedCompletionMock.mockReset();
     setCachedCompletionMock.mockReset();
@@ -79,7 +75,7 @@ describe("fact-extractor", () => {
         confidence: 0.85,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(validFacts),
       });
 
@@ -111,9 +107,9 @@ describe("fact-extractor", () => {
       const result = await extractFacts(messages);
 
       expect(result).toEqual(validFacts);
-      expect(generateTextMock).toHaveBeenCalledWith(
+      expect(generateWithFallbackMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          model: "gpt-4o-mini",
+          variant: "non-reasoning",
           temperature: 0.3,
         })
       );
@@ -125,7 +121,7 @@ describe("fact-extractor", () => {
         confidence: 0.5, // Below 0.7 threshold
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(lowConfidenceFacts),
       });
 
@@ -149,7 +145,7 @@ describe("fact-extractor", () => {
     });
 
     it("should handle invalid JSON response", async () => {
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: "Not valid JSON",
       });
 
@@ -173,7 +169,7 @@ describe("fact-extractor", () => {
     });
 
     it("should handle OpenAI API errors", async () => {
-      generateTextMock.mockRejectedValueOnce(new Error("OpenAI API error"));
+      generateWithFallbackMock.mockRejectedValueOnce(new Error("OpenAI API error"));
 
       const { extractFacts } = await import("./fact-extractor");
 
@@ -200,7 +196,7 @@ describe("fact-extractor", () => {
         confidence: 0.8,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(invalidRole),
       });
 
@@ -230,7 +226,7 @@ describe("fact-extractor", () => {
         confidence: 0.8,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(invalidLevel),
       });
 
@@ -260,7 +256,7 @@ describe("fact-extractor", () => {
         confidence: 0.8,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(invalidArrays),
       });
 
@@ -289,7 +285,7 @@ describe("fact-extractor", () => {
         confidence: 1.5, // Should be 0-1
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(invalidConfidence),
       });
 
@@ -319,7 +315,7 @@ describe("fact-extractor", () => {
         // No confidence field
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(noConfidence),
       });
 
@@ -348,7 +344,7 @@ describe("fact-extractor", () => {
         confidence: 0.8,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(validFacts),
       });
 
@@ -364,7 +360,7 @@ describe("fact-extractor", () => {
       await extractFacts(manyMessages);
 
       // Check that prompt was called with context from last 10 messages
-      const callArgs = generateTextMock.mock.calls[0][0];
+      const callArgs = generateWithFallbackMock.mock.calls[0][0];
       const prompt = callArgs.prompt as string;
 
       // Should include Message 5 (index 5 is the 6th message, so last 10 would be indices 5-14)
@@ -394,12 +390,12 @@ describe("fact-extractor", () => {
       await expect(
         extractAndSaveFacts("anonymous", messages)
       ).resolves.not.toThrow();
-      expect(generateTextMock).not.toHaveBeenCalled();
+      expect(generateWithFallbackMock).not.toHaveBeenCalled();
       expect(mergeSemanticMemoryMock).not.toHaveBeenCalled();
     });
 
     it("should skip if extraction returns null", async () => {
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify({ confidence: 0.5 }), // Low confidence
       });
 
@@ -420,7 +416,7 @@ describe("fact-extractor", () => {
 
       await extractAndSaveFacts("user-123", messages);
 
-      expect(generateTextMock).toHaveBeenCalled();
+      expect(generateWithFallbackMock).toHaveBeenCalled();
       expect(mergeSemanticMemoryMock).not.toHaveBeenCalled();
     });
 
@@ -431,7 +427,7 @@ describe("fact-extractor", () => {
         confidence: 0.85,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(validFacts),
       });
 
@@ -456,7 +452,7 @@ describe("fact-extractor", () => {
 
       await extractAndSaveFacts("user-123", messages);
 
-      expect(generateTextMock).toHaveBeenCalled();
+      expect(generateWithFallbackMock).toHaveBeenCalled();
       expect(mergeSemanticMemoryMock).toHaveBeenCalledWith(
         "user-123",
         validFacts
@@ -469,7 +465,7 @@ describe("fact-extractor", () => {
         confidence: 0.85,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(validFacts),
       });
 
@@ -502,7 +498,7 @@ describe("fact-extractor", () => {
         confidence: 0.8,
       };
 
-      generateTextMock.mockResolvedValueOnce({
+      generateWithFallbackMock.mockResolvedValueOnce({
         text: JSON.stringify(validFacts),
       });
 
@@ -528,7 +524,7 @@ describe("fact-extractor", () => {
 
       await extractAndSaveFacts("user-123", messages);
 
-      expect(generateTextMock).toHaveBeenCalled();
+      expect(generateWithFallbackMock).toHaveBeenCalled();
     });
   });
 });

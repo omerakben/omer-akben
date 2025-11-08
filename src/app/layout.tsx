@@ -33,7 +33,7 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
         <link rel="preconnect" href="https://va.vercel-scripts.com" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased scrollbar-horizontal-gradient">
         <AppShell>{children}</AppShell>
       </body>
     </html>

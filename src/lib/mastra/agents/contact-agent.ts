@@ -1,4 +1,5 @@
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -61,7 +62,7 @@ class ContactAgent extends BasePortfolioAgent<"contact"> {
       name: "contact",
       description:
         "Guides visitors to the best contact channels and follow-up actions.",
-      model: "openai/gpt-4o-mini",
+      model: MASTRA_PRIMARY_REASONING,
       instructions: {
         role: "system",
         content: FULL_SYSTEM_PROMPT,
