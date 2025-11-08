@@ -1,9 +1,11 @@
 /**
  * Fact Extraction Module
  *
- * Extracts user facts from conversations using OpenAI gpt-4o-mini with
- * structured JSON output. Identifies role, interests, experience level,
- * and other semantic context for personalization.
+ * Extracts user facts from conversations using Grok-4-Fast-Non-Reasoning (primary)
+ * with automatic GPT-4o-mini fallback. Uses structured JSON output to identify role,
+ * interests, experience level, and other semantic context for personalization.
+ *
+ * Model Strategy: Non-reasoning variant (classification/extraction task, not multi-step reasoning)
  */
 
 import {
@@ -12,14 +14,14 @@ import {
   recordCacheMiss,
   setCachedCompletion,
 } from "@/lib/cache/openai-cache";
+import { generateWithFallback } from "@/lib/ai/model-fallback";
+import { PRIMARY_NON_REASONING_MODEL } from "@/lib/ai/model-config";
 import type {
   ExperienceLevel,
   ExtractedFacts,
   UserRole,
 } from "@/lib/memory/types";
-import { openai } from "@ai-sdk/openai";
 import type { UIMessage } from "ai";
-import { generateText } from "ai";
 
 /**
  * Extracts text content from a UIMessage
@@ -197,7 +199,7 @@ Extract facts as JSON:`;
 
     // Check cache for completion
     const cachedCompletion = await getCachedCompletion(
-      "gpt-4o-mini",
+      PRIMARY_NON_REASONING_MODEL,
       FACT_EXTRACTION_SYSTEM_PROMPT,
       prompt,
       0.3
@@ -210,9 +212,9 @@ Extract facts as JSON:`;
       responseText = cachedCompletion;
       await recordCacheHit("completion");
     } else {
-      // Cache miss - generate completion
-      const result = await generateText({
-        model: openai("gpt-4o-mini"),
+      // Cache miss - generate completion with primary/fallback pattern
+      const result = await generateWithFallback({
+        variant: "non-reasoning",
         system: FACT_EXTRACTION_SYSTEM_PROMPT,
         prompt,
         temperature: 0.3, // Low temperature for consistent, focused extraction
@@ -222,7 +224,7 @@ Extract facts as JSON:`;
 
       // Store in cache for future extractions
       await setCachedCompletion(
-        "gpt-4o-mini",
+        PRIMARY_NON_REASONING_MODEL,
         FACT_EXTRACTION_SYSTEM_PROMPT,
         prompt,
         0.3,

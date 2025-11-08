@@ -100,9 +100,6 @@ export async function generateAndCacheFollowups({
     // Cache if generation successful
     if (followups) {
       followupCache.set(threadId, followups);
-      console.log(
-        `[FollowupCache] Cached ${followups.suggested_followups.length} follow-ups for thread ${threadId}`
-      );
     } else {
       console.warn(
         "[FollowupCache] Generation returned null, nothing to cache"

@@ -1,4 +1,5 @@
 import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -34,7 +35,7 @@ class ProjectAgent extends BasePortfolioAgent<"project"> {
       name: "project",
       description:
         "Helps users explore Omer's portfolio projects and recommend relevant work.",
-      model: "openai/gpt-4o-mini",
+      model: MASTRA_PRIMARY_REASONING,
       instructions: {
         role: "system",
         content: FULL_SYSTEM_PROMPT,

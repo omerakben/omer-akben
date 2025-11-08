@@ -25,8 +25,6 @@ export async function executeFollowupAction(
   router?: { push: (url: string) => void }
 ): Promise<boolean> {
   try {
-    console.log("[ActionMapper] Executing action:", { action, args });
-
     switch (action) {
       case "download_resume": {
         const format = (args?.format as string) || "resume";
@@ -68,13 +66,11 @@ export async function executeFollowupAction(
       case "collect_contact": {
         // Contact collection is conversational - Ozzy asks for info in chat
         // No direct action needed, just send the follow-up message
-        console.log("[ActionMapper] collect_contact is conversational action");
         return false;
       }
 
       case "none": {
         // No action needed, just send message
-        console.log("[ActionMapper] No action required");
         return false;
       }
 
@@ -113,7 +109,6 @@ async function executeDownloadResume(format: string): Promise<void> {
     if (data.success && data.data?.url) {
       // Open download URL in new tab
       window.open(data.data.url, "_blank");
-      console.log("[ActionMapper] Resume download initiated:", format);
     } else {
       throw new Error(data.error || "Download URL not available");
     }
@@ -135,11 +130,9 @@ function executeOpenProject(
   if (router) {
     // Use Next.js router for client-side navigation
     router.push(projectUrl);
-    console.log("[ActionMapper] Navigating to project:", projectUrl);
   } else {
     // Fallback to window.location
     window.location.href = projectUrl;
-    console.log("[ActionMapper] Redirecting to project:", projectUrl);
   }
 }
 
@@ -157,10 +150,8 @@ async function executeListProjects(
 
   if (router) {
     router.push(projectsUrl);
-    console.log("[ActionMapper] Navigating to projects list:", projectsUrl);
   } else {
     window.location.href = projectsUrl;
-    console.log("[ActionMapper] Redirecting to projects list:", projectsUrl);
   }
 }
 
@@ -176,10 +167,8 @@ async function executeSearchProjects(
 
   if (router) {
     router.push(searchUrl);
-    console.log("[ActionMapper] Navigating to project search:", searchUrl);
   } else {
     window.location.href = searchUrl;
-    console.log("[ActionMapper] Redirecting to project search:", searchUrl);
   }
 }
 
@@ -191,7 +180,6 @@ async function executeProvideNav(
 ): Promise<void> {
   // This action is typically conversational - Ozzy provides nav links in chat
   // Could optionally navigate to home page or show nav menu
-  console.log("[ActionMapper] Navigation action - typically conversational");
 
   // Optional: Navigate to home page
   if (router) {

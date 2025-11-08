@@ -1,8 +1,7 @@
 import { facts } from "@/data/facts";
 import { getFeaturedProjects, type Project } from "@/data/projects";
 import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
-import { openai } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { generateWithFallback } from "@/lib/ai/model-fallback";
 import type { WorkflowDefinition, WorkflowEvent } from "./types";
 
 /**
@@ -177,8 +176,8 @@ Analyze this resume and provide:
 
 Keep the response concise (3-4 paragraphs).`;
 
-  const result = await generateText({
-    model: openai("gpt-4o-mini"),
+  const result = await generateWithFallback({
+    variant: "non-reasoning",
     prompt,
   });
 
@@ -221,8 +220,8 @@ Provide a skills assessment:
 
 Keep the response concise (3-4 paragraphs).`;
 
-  const result = await generateText({
-    model: openai("gpt-4o-mini"),
+  const result = await generateWithFallback({
+    variant: "non-reasoning",
     prompt,
   });
 
@@ -260,8 +259,8 @@ For each question, provide:
 
 Format as a numbered list with clear structure.`;
 
-  const result = await generateText({
-    model: openai("gpt-4o-mini"),
+  const result = await generateWithFallback({
+    variant: "non-reasoning",
     prompt,
   });
 

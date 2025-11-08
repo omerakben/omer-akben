@@ -99,7 +99,7 @@ export const profilePerformanceTool = createTool({
 
 export const downloadResumeTool = createTool({
   id: "download_resume",
-  description: `Download Omer Akben's resume. Only 2 PDF formats available: 'resume' (original) or 'extended' (detailed with projects). DOCX is not available.
+  description: `Download Omer Akben's resume. 2 PDF formats available: 'resume' (original) or 'extended' (detailed with projects).
 
   💡 ENGAGEMENT TIP: Consider offering to email the resume links via collect_contact tool for better engagement:
   "I can send you an email with both resume formats right now if you'd like!"

@@ -5,6 +5,8 @@
  * - Primary: Grok-4-Fast (xAI) - reasoning or non-reasoning variants
  * - Fallback: GPT-4o-mini (OpenAI) - automatic failover on errors
  *
+ * Model names are centralized in model-config.ts for easy updates.
+ *
  * Usage:
  * ```typescript
  * const result = await generateWithFallback({
@@ -20,23 +22,24 @@ import { xai } from "@ai-sdk/xai";
 import { openai } from "@ai-sdk/openai";
 import type { CoreMessage } from "ai";
 import type { z } from "zod";
-
-export type ModelVariant = "reasoning" | "non-reasoning";
+import {
+  getModelByVariant,
+  FALLBACK_MODEL,
+  type ModelVariant,
+} from "./model-config";
 
 /**
  * Get primary model based on variant
  */
 function getPrimaryModel(variant: ModelVariant) {
-  return variant === "reasoning"
-    ? xai("grok-4-fast-reasoning")
-    : xai("grok-4-fast-non-reasoning");
+  return xai(getModelByVariant(variant));
 }
 
 /**
- * Get fallback model (always gpt-4o-mini)
+ * Get fallback model from centralized config
  */
 function getFallbackModel() {
-  return openai("gpt-4o-mini");
+  return openai(FALLBACK_MODEL);
 }
 
 /**
@@ -55,16 +58,11 @@ export async function generateWithFallback(options: {
   const fallbackModel = getFallbackModel();
 
   try {
-    const startTime = Date.now();
-
     const result = await generateText({
       model: primaryModel,
       ...generateOptions,
       temperature,
     });
-
-    const duration = Date.now() - startTime;
-    console.log(`[ModelFallback] Primary (grok-4-fast-${variant}) succeeded in ${duration}ms`);
 
     return result;
   } catch (primaryError) {
@@ -74,17 +72,12 @@ export async function generateWithFallback(options: {
       onFallback(primaryError as Error);
     }
 
-    const startTime = Date.now();
-
     try {
       const result = await generateText({
         model: fallbackModel,
         ...generateOptions,
         temperature,
       });
-
-      const duration = Date.now() - startTime;
-      console.log(`[ModelFallback] Fallback (gpt-4o-mini) succeeded in ${duration}ms`);
 
       return result;
     } catch (fallbackError) {
@@ -114,17 +107,12 @@ export async function generateObjectWithFallback<T>(options: {
   const fallbackModel = getFallbackModel();
 
   try {
-    const startTime = Date.now();
-
     const result = await generateObject({
       model: primaryModel,
       schema,
       ...generateOptions,
       temperature,
     });
-
-    const duration = Date.now() - startTime;
-    console.log(`[ModelFallback] Primary (grok-4-fast-${variant}) generateObject succeeded in ${duration}ms`);
 
     return result;
   } catch (primaryError) {
@@ -134,8 +122,6 @@ export async function generateObjectWithFallback<T>(options: {
       onFallback(primaryError as Error);
     }
 
-    const startTime = Date.now();
-
     try {
       const result = await generateObject({
         model: fallbackModel,
@@ -143,9 +129,6 @@ export async function generateObjectWithFallback<T>(options: {
         ...generateOptions,
         temperature,
       });
-
-      const duration = Date.now() - startTime;
-      console.log(`[ModelFallback] Fallback (gpt-4o-mini) generateObject succeeded in ${duration}ms`);
 
       return result;
     } catch (fallbackError) {
@@ -174,15 +157,11 @@ export async function streamWithFallback(options: {
   const fallbackModel = getFallbackModel();
 
   try {
-    const startTime = Date.now();
-
     const result = streamText({
       model: primaryModel,
       ...streamOptions,
       temperature,
     });
-
-    console.log(`[ModelFallback] Primary (grok-4-fast-${variant}) streaming started at ${startTime}ms`);
 
     return result;
   } catch (primaryError) {
@@ -192,16 +171,12 @@ export async function streamWithFallback(options: {
       onFallback(primaryError as Error);
     }
 
-    const startTime = Date.now();
-
     try {
       const result = streamText({
         model: fallbackModel,
         ...streamOptions,
         temperature,
       });
-
-      console.log(`[ModelFallback] Fallback (gpt-4o-mini) streaming started at ${startTime}ms`);
 
       return result;
     } catch (fallbackError) {
@@ -234,7 +209,8 @@ export interface LLMMetric {
 /**
  * Log LLM metrics for monitoring and analytics
  */
-export function logLLMMetric(metric: LLMMetric): void {
-  console.log("[LLMMetrics]", JSON.stringify(metric));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function logLLMMetric(_metric: LLMMetric): void {
   // Optional: Send to analytics service like PostHog, Mixpanel, etc.
+  // Metrics can be sent to monitoring service here if needed
 }

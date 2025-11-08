@@ -19,7 +19,6 @@ import {
 import { projects, getProjectBySlug } from "@/data/projects";
 import type { SemanticMemory } from "@/lib/memory/types";
 import { extractEntities, validateExtractedEntities } from "./entity-extractor";
-import { determineNextState, suggestConversationFlow } from "./routing-state-machine";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -261,22 +260,9 @@ export async function generateDynamicFollowups(
     const recentMessages = messages.slice(-4);
 
     // Extract entities programmatically for hints
-    const { entities: extractedEntities, signals } = extractEntities(recentMessages);
-
-    console.log("[DynamicGenerator] Extracted entities:", {
-      entities: extractedEntities,
-      signals: {
-        personType: signals.personTypeSignals.length,
-        topic: signals.topicSignals.length,
-        project: signals.projectSignals.length,
-      },
-    });
+    const { entities: extractedEntities } = extractEntities(recentMessages);
 
     // Primary/Fallback: Grok-4-Fast-Non-Reasoning (primary), GPT-4o-mini (fallback)
-    const startTime = Date.now();
-
-    console.log(`[DynamicGenerator] Generating follow-ups with primary model: grok-4-fast-non-reasoning`);
-
     // Generate follow-ups with primary/fallback pattern
     const result = await generateWithFallback({
       variant: "non-reasoning",
@@ -284,9 +270,6 @@ export async function generateDynamicFollowups(
       messages: recentMessages,
       temperature: 0.5,
     });
-
-    const duration = Date.now() - startTime;
-    console.log(`[DynamicGenerator] Follow-up generation completed in ${duration}ms`);
 
     // Parse JSON response
     const parsed = JSON.parse(result.text);
@@ -336,46 +319,6 @@ export async function generateDynamicFollowups(
     const entityValidation = validateExtractedEntities(validated.entities);
     if (!entityValidation.valid) {
       console.warn("[DynamicGenerator] Entity validation warnings:", entityValidation.errors);
-    }
-
-    // Compare LLM entities with programmatic extraction
-    const entityMatch = {
-      personType: validated.entities.person_type === extractedEntities.person_type,
-      topic: validated.entities.topic === extractedEntities.topic,
-      project: validated.entities.project === extractedEntities.project,
-    };
-
-    console.log("[DynamicGenerator] Entity comparison (LLM vs Programmatic):", {
-      llm: {
-        personType: validated.entities.person_type,
-        topic: validated.entities.topic,
-        project: validated.entities.project || "none",
-      },
-      programmatic: {
-        personType: extractedEntities.person_type,
-        topic: extractedEntities.topic,
-        project: extractedEntities.project || "none",
-      },
-      match: entityMatch,
-    });
-
-    // Enhance routing state using state machine
-    const enhancedRouting = determineNextState(validated.entities);
-    const flowSuggestion = suggestConversationFlow(enhancedRouting.next_state);
-
-    console.log("[DynamicGenerator] Routing state:", {
-      original: validated.routing,
-      enhanced: enhancedRouting,
-      flow: flowSuggestion,
-    });
-
-    // If LLM routing state differs from state machine suggestion, log it
-    if (validated.routing.next_state !== enhancedRouting.next_state) {
-      console.log("[DynamicGenerator] LLM routing differs from state machine:", {
-        llm: validated.routing.next_state,
-        stateMachine: enhancedRouting.next_state,
-        reason: "Using LLM routing (more context-aware)",
-      });
     }
 
     return validated;

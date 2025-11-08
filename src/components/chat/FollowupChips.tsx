@@ -78,7 +78,6 @@ export const FollowupChips = memo(function FollowupChips({
           actionExecuted &&
           !["collect_contact", "provide_nav"].includes(suggestion.action)
         ) {
-          console.log("[FollowupChips] Action executed, skipping message send");
           return;
         }
       } catch (error) {
