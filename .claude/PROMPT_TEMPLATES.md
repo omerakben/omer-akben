@@ -46,7 +46,7 @@
 
 ### 1. Feature Development Template
 
-```
+```typescript
 #PLAN#
 
 PROJECT: omer-akben Portfolio
@@ -96,16 +96,16 @@ Please provide a comprehensive implementation plan with:
 4. Testing strategy
 5. Quality gate considerations
 6. Risk assessment
-```
+```typescript
 
-**When to Use:**
+### When to Use
 
 - New feature development
 - Major component additions
 - New AI agent tools
 - Complex UI implementations
 
-**Agent Recommendations:**
+### Agent Recommendations
 
 - UI work: `ui-ux-developer` + `brightness-system-skill`
 - API work: `ai-sdk-specialist` + `aI-agent-implementation-skill`
@@ -115,7 +115,7 @@ Please provide a comprehensive implementation plan with:
 
 ### 2. Bug Fix & Investigation Template
 
-```
+```typescript
 #RESEARCH#
 
 PROJECT: omer-akben Portfolio
@@ -141,11 +141,11 @@ ENVIRONMENT:
 - Test output: [if test failure]
 
 ERROR MESSAGES:
-```
+```typescript
 
 [Paste any error messages, stack traces, or logs]
 
-```
+```typescript
 
 INITIAL INVESTIGATION:
 Search and analyze:
@@ -166,16 +166,16 @@ After research phase, switch to:
 - 50%: Fix implemented + local tests pass
 - 75%: All quality gates pass
 - 100%: PR ready + documentation updated
-```
+```typescript
 
-**When to Use:**
+### When to Use
 
 - Unexpected errors
 - Test failures
 - Production issues
 - Performance regressions
 
-**Agent Recommendations:**
+### Agent Recommendations
 
 - Hydration errors: `nextjs-architect` + `hydration-safety-skill`
 - Test failures: `test-engineer` + `testing-and-quality-gates-skill`
@@ -186,7 +186,7 @@ After research phase, switch to:
 
 ### 3. UI/UX Enhancement Template
 
-```
+```typescript
 #PLAN#
 
 PROJECT: omer-akben Portfolio
@@ -239,9 +239,9 @@ Please provide:
 3. Brightness mode implementation plan
 4. Testing approach for all modes
 5. Accessibility considerations
-```
+```typescript
 
-**When to Use:**
+### When to Use
 
 - Styling improvements
 - Component refinements
@@ -253,7 +253,7 @@ Please provide:
 
 ### 4. API & Backend Logic Template
 
-```
+```typescript
 #PLAN#
 
 PROJECT: omer-akben Portfolio
@@ -287,17 +287,17 @@ SECURITY REQUIREMENTS:
 - [ ] Environment variables for secrets
 
 DATA FLOW:
-```
+```typescript
 
 Chat UI → AI SDK → Tool call → Zod validation → Handler → Redis/DB → JSON response
 
-```
+```typescript
 
 CHECKPOINT STRUCTURE:
 - 25%: Schema defined + validation working - PAUSE
 - 50%: Core logic implemented + error handling - PAUSE
 - 75%: Integration complete + unit tests - PAUSE
-- 100%: E2E tests + rate limiting verified
+- 100%: E2E tests + rate-limiting verified
 
 DOCUMENTATION PERMISSION:
 Create API documentation?
@@ -309,9 +309,9 @@ Please provide:
 3. Error handling strategy
 4. Testing plan (unit + integration)
 5. Rate limiting configuration
-```
+```typescript
 
-**When to Use:**
+### When to Use
 
 - New AI agent tools
 - API route creation
@@ -323,7 +323,7 @@ Please provide:
 
 ### 5. Testing Implementation Template
 
-```
+```typescript
 #ACTION#
 
 PROJECT: omer-akben Portfolio
@@ -349,7 +349,7 @@ await page.goto("/", { waitUntil: "networkidle" });
 await page.waitForSelector('[data-testid="ready"]');
 await page.waitForTimeout(500); // Stabilization
 // Now safe to interact
-```
+```typescript
 
 TEST SCENARIOS:
 
@@ -369,7 +369,7 @@ QUALITY GATE EXECUTION:
 
 ```bash
 npm run lint && npx tsc --noEmit && npm test && npm run build && npm run size && npm run test:e2e
-```
+```typescript
 
 Proceed with minimal interruption. Pause only at checkpoints for:
 
@@ -377,9 +377,9 @@ Proceed with minimal interruption. Pause only at checkpoints for:
 2. Any blockers
 3. Next phase approval
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - New feature requires tests
 - Test coverage gaps
 - Flaky test fixes
@@ -391,7 +391,7 @@ Proceed with minimal interruption. Pause only at checkpoints for:
 
 ### 6. Performance Optimization Template
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -445,9 +445,9 @@ TARGET IMPROVEMENTS:
 - Load time: [target improvement]
 - Memory: [target reduction]
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Slow page loads
 - Large bundle sizes
 - Memory leaks
@@ -456,7 +456,7 @@ TARGET IMPROVEMENTS:
 
 ### 7. Bundle Size Reduction Template
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -469,7 +469,7 @@ CURRENT STATE:
 
 ```bash
 npm run size
-```
+```typescript
 
 [Paste current bundle analysis]
 
@@ -513,9 +513,9 @@ After analysis, switch to:
 - 75%: Fine-tuning + tree-shaking - Final size
 - 100%: Quality gates pass + under budget
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Bundle exceeds limits
 - New heavy dependencies
 - Icon optimization needed
@@ -525,7 +525,7 @@ After analysis, switch to:
 
 ### 8. Memory System Optimization Template
 
-```
+```typescript
 
 # PLAN #
 
@@ -575,9 +575,9 @@ Please provide:
 4. Testing strategy
 5. Rollback plan
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Slow memory retrieval
 - Poor search relevance
 - High storage costs
@@ -589,7 +589,7 @@ Please provide:
 
 ### 9. Technical Research Template
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -658,9 +658,9 @@ RESEARCH FORMAT:
 
 NO planning or implementation steps - pure research only.
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - New technology evaluation
 - Framework selection
 - Architecture decisions
@@ -670,7 +670,7 @@ NO planning or implementation steps - pure research only.
 
 ### 10. Library/Framework Investigation Template
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -725,9 +725,9 @@ May I create this evaluation document?
 NO implementation or recommendations - research only.
 Present findings objectively for decision-making.
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Dependency selection
 - Framework migration
 - Tool evaluation
@@ -737,7 +737,7 @@ Present findings objectively for decision-making.
 
 ### 11. Competitive Analysis Template
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -807,9 +807,9 @@ May I create this analysis document?
 
 NO recommendations or action items - pure analysis.
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Feature inspiration
 - UX benchmarking
 - Technical approaches
@@ -821,7 +821,7 @@ NO recommendations or action items - pure analysis.
 
 ### 12. Deployment & CI/CD Template
 
-```
+```typescript
 
 # PLAN #
 
@@ -839,9 +839,9 @@ DEPLOYMENT TYPE:
 
 CURRENT WORKFLOW:
 
-```
+```typescript
 feature/* → pre-deployment → (CI/CD gates) → main → Vercel
-```
+```typescript
 
 BRANCH STRATEGY:
 
@@ -852,7 +852,7 @@ git checkout -b feature/[name]
 # ... work ...
 # Create PR to pre-deployment
 # Auto-merge to main after gates pass
-```
+```typescript
 
 QUALITY GATES (ALL MUST PASS):
 
@@ -863,7 +863,7 @@ npm test             # ✅ 776/776 passing
 npm run build        # ✅ Success
 npm run size         # ✅ Within limits
 npm run test:e2e     # ✅ 66 passing
-```
+```typescript
 
 ENVIRONMENT VARIABLES:
 Verify all required for deployment:
@@ -896,9 +896,9 @@ Please provide:
 3. Rollback procedure
 4. Post-deployment verification
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Feature releases
 - Hotfix deployments
 - CI/CD updates
@@ -908,7 +908,7 @@ Please provide:
 
 ### 13. Security Audit Template
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -956,7 +956,7 @@ Dependencies:
 ```bash
 npm audit
 npm outdated
-```
+```typescript
 
 RESEARCH SOURCES:
 
@@ -978,9 +978,9 @@ Present findings with severity levels:
 - MEDIUM: Schedule for upcoming sprint
 - LOW: Technical debt
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Pre-release audits
 - After dependency updates
 - Periodic security reviews
@@ -990,7 +990,7 @@ Present findings with severity levels:
 
 ### 14. Quality Gate Debugging Template
 
-```
+```typescript
 
 # ACTION #
 
@@ -1010,9 +1010,9 @@ FAILING GATE:
 
 ERROR OUTPUT:
 
-```
+```typescript
 [Paste complete error output]
-```
+```typescript
 
 QUICK DIAGNOSIS:
 Run failing command with verbose output:
@@ -1032,7 +1032,7 @@ npm run build -- --debug
 
 # E2E
 npm run test:e2e -- --reporter=list
-```
+```typescript
 
 CHECKPOINT STRUCTURE:
 
@@ -1082,9 +1082,9 @@ E2E Tests:
 Execute with minimal interruption.
 Pause only at checkpoints for approval to continue.
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - CI/CD failures
 - Pre-commit gate failures
 - Test debugging
@@ -1096,7 +1096,7 @@ Pause only at checkpoints for approval to continue.
 
 ### 15. Technical Documentation Template
 
-```
+```typescript
 
 # PLAN #
 
@@ -1174,9 +1174,9 @@ Please provide:
 3. Example structure
 4. Review checkpoints
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - New feature documentation
 - Process documentation
 - Onboarding materials
@@ -1186,7 +1186,7 @@ Please provide:
 
 ### 16. Skill Creation Template
 
-```
+```typescript
 
 # PLAN #
 
@@ -1208,13 +1208,13 @@ TARGET USERS:
 
 SKILL STRUCTURE:
 
-```
+```typescript
 .claude/skills/[skill-name]-skill/
 ├── SKILL.md           # Main documentation
 ├── examples/          # Code examples
 ├── patterns/          # Common patterns
 └── anti-patterns/     # What to avoid
-```
+```typescript
 
 SKILL.MD OUTLINE:
 
@@ -1267,9 +1267,9 @@ Please provide:
 3. Integration strategy
 4. Testing approach
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Documenting new patterns
 - Codifying best practices
 - Creating reusable knowledge
@@ -1279,7 +1279,7 @@ Please provide:
 
 ### 17. Agent Enhancement Template
 
-```
+```typescript
 
 # PLAN #
 
@@ -1313,7 +1313,7 @@ CAPABILITY IMPROVEMENTS:
 
 AGENT FILE STRUCTURE:
 
-```
+```typescript
 .claude/agents/[agent-name].md
 
 Structure:
@@ -1324,7 +1324,7 @@ Structure:
 - Workflows
 - Quality Standards
 - Common Pitfalls
-```
+```typescript
 
 CHECKPOINT STRUCTURE:
 
@@ -1355,9 +1355,9 @@ Please provide:
 3. Testing approach
 4. Integration considerations
 
-```
+```typescript
 
-**When to Use:**
+### When to Use
 - Agent improvements
 - New skill integration
 - Capability expansion
@@ -1369,64 +1369,64 @@ Please provide:
 
 ### By Task Type
 
-**Building New Features:**
+### Building New Features
 1. Feature Development (#1)
 2. UI/UX Enhancement (#3) - if UI-heavy
 3. API & Backend Logic (#4) - if API-heavy
 4. Testing Implementation (#5) - for test coverage
 
-**Fixing Issues:**
+### Fixing Issues
 1. Bug Fix & Investigation (#2)
 2. Quality Gate Debugging (#14)
 3. Performance Optimization (#6) - if performance issue
 
-**Researching:**
+### Researching
 1. Technical Research (#9) - general investigation
 2. Library/Framework Investigation (#10) - specific tools
 3. Competitive Analysis (#11) - market research
 
-**Optimizing:**
+### Optimizing
 1. Performance Optimization (#6)
 2. Bundle Size Reduction (#7)
 3. Memory System Optimization (#8)
 
-**Deploying:**
+### Deploying
 1. Deployment & CI/CD (#12)
 2. Security Audit (#13)
 
-**Documenting:**
+### Documenting
 1. Technical Documentation (#15)
 2. Skill Creation (#16)
 3. Agent Enhancement (#17)
 
 ### By Agent
 
-**ui-ux-developer:**
+### ui-ux-developer
 - Template #3 (UI/UX Enhancement)
 - Template #1 (Feature Development)
 
-**nextjs-architect:**
+### nextjs-architect
 - Template #1 (Feature Development)
 - Template #2 (Bug Fix)
 
-**ai-sdk-specialist:**
+### ai-sdk-specialist
 - Template #4 (API & Backend Logic)
 - Template #1 (Feature Development)
 
-**test-engineer:**
+### test-engineer
 - Template #5 (Testing Implementation)
 - Template #14 (Quality Gate Debugging)
 
-**deployment-engineer:**
+### deployment-engineer
 - Template #12 (Deployment & CI/CD)
 - Template #13 (Security Audit)
 
-**mastra-optimization-researcher:**
+### mastra-optimization-researcher
 - Template #6 (Performance Optimization)
 - Template #7 (Bundle Size Reduction)
 - Template #8 (Memory System Optimization)
 
-**xai-integration-optimizer:**
+### xai-integration-optimizer
 - Template #4 (API & Backend Logic)
 - Template #6 (Performance Optimization)
 
@@ -1436,7 +1436,7 @@ Please provide:
 
 ### Template Customization
 
-**Always Include:**
+### Always Include
 - Project context
 - Specific agent and skills
 - Clear objective and requirements
@@ -1444,7 +1444,7 @@ Please provide:
 - Success criteria
 - Documentation permission (if creating docs)
 
-**Never Skip:**
+### Never Skip
 - Quality gate requirements
 - Brightness mode testing (for UI work)
 - Hydration safety (for browser APIs)
@@ -1453,21 +1453,21 @@ Please provide:
 
 ### Mode Selection
 
-**Use #PLAN# when:**
+### Use #PLAN# when
 - Starting complex features
 - Need comprehensive analysis
 - Multiple approaches possible
 - High-risk changes
 - Documentation needed
 
-**Use #ACTION# when:**
+### Use #ACTION# when
 - Implementation is clear
 - Bug fix with known solution
 - Time-sensitive work
 - Following established pattern
 - Minimal decision-making needed
 
-**Use #RESEARCH# when:**
+### Use #RESEARCH# when
 - Information gathering only
 - No implementation yet
 - Evaluating options
@@ -1476,7 +1476,7 @@ Please provide:
 
 ### Checkpoint Protocol
 
-**At Every Checkpoint:**
+### At Every Checkpoint
 1. PAUSE execution completely
 2. SUMMARIZE what was completed
 3. LIST any changes made
@@ -1484,7 +1484,7 @@ Please provide:
 5. OUTLINE next phase
 6. WAIT for explicit approval
 
-**Checkpoint Frequency:**
+### Checkpoint Frequency
 - 25% intervals minimum
 - After each major component
 - Before quality gate runs
@@ -1492,17 +1492,17 @@ Please provide:
 
 ### Documentation Requests
 
-**Always Ask Permission:**
-```
+### Always Ask Permission
+```typescript
 
 May I create the following documents?
 
 - [ ] ProjectName_Type_2025-11-08.gdoc
 - [ ] ProjectName_Tracker_2025-11-08.gsheet
 
-```
+```typescript
 
-**Document Types:**
+### Document Types
 - Plan: Strategic planning docs
 - Tracker: Progress tracking sheets
 - Research: Research findings
@@ -1515,7 +1515,7 @@ May I create the following documents?
 
 ### Example 1: New UI Feature
 
-```
+```typescript
 
 # PLAN #
 
@@ -1538,16 +1538,16 @@ REQUIREMENTS:
 
 [... rest of template ...]
 
-```
+```typescript
 
 ### Example 2: API Bug Fix
 
-```
+```typescript
 
 # RESEARCH #
 
 PROJECT: omer-akben Portfolio
-BUG: collect_contact rate limiting not working
+BUG: collect_contact rate-limiting not working
 SEVERITY: Critical
 AGENT: ai-sdk-specialist
 
@@ -1559,11 +1559,11 @@ Should enforce 5 requests per IP per 24 hours via Redis
 
 [... rest of template ...]
 
-```
+```typescript
 
 ### Example 3: Performance Research
 
-```
+```typescript
 
 # RESEARCH #
 
@@ -1576,7 +1576,7 @@ How can we improve episodic memory search latency from 500ms to <200ms?
 
 [... rest of template ...]
 
-```
+```typescript
 
 ---
 

@@ -16,47 +16,47 @@ Access standardized prompt templates for consistent project work across all task
 
 ### By Task Type
 
-**Development:**
+### Development
 
-```
+```typescript
 1. Feature Development       - New features, components, tools
 2. Bug Fix & Investigation   - Debug and fix issues
 3. UI/UX Enhancement        - Styling and component work
 4. API & Backend Logic      - Server-side development
 5. Testing Implementation   - Test coverage
-```
+```typescript
 
-**Optimization:**
+### Optimization
 
-```
+```typescript
 6. Performance Optimization      - Speed improvements
 7. Bundle Size Reduction        - Size optimization
 8. Memory System Optimization   - Memory tuning
-```
+```typescript
 
-**Research:**
+### Research
 
-```
+```typescript
 9. Technical Research            - General investigation
 10. Library Investigation        - Tool evaluation
 11. Competitive Analysis         - Market research
-```
+```typescript
 
-**Infrastructure:**
+### Infrastructure
 
-```
+```typescript
 12. Deployment & CI/CD          - Releases and configuration
 13. Security Audit              - Security review
 14. Quality Gate Debugging      - CI/CD troubleshooting
-```
+```typescript
 
-**Documentation:**
+### Documentation
 
-```
+```typescript
 15. Technical Documentation     - Guides and references
 16. Skill Creation             - Pattern documentation
 17. Agent Enhancement          - Agent improvements
-```
+```typescript
 
 ---
 
@@ -87,9 +87,9 @@ Access standardized prompt templates for consistent project work across all task
 
 ### Example 1: Use Feature Development Template
 
-```
+```typescript
 I need template #1 for adding a new email notification feature
-```
+```typescript
 
 Response includes:
 
@@ -104,9 +104,9 @@ Response includes:
 
 ### Example 2: Use Bug Fix Template
 
-```
+```typescript
 I need template #2 for fixing a hydration error on the contact form
-```
+```typescript
 
 Response includes:
 
@@ -121,9 +121,9 @@ Response includes:
 
 ### Example 3: Use Research Template
 
-```
-I need template #9 to research rate limiting strategies for API routes
-```
+```typescript
+I need template #9 to research rate-limiting strategies for API routes
+```typescript
 
 Response includes:
 
@@ -137,7 +137,7 @@ Response includes:
 
 ## Template Files
 
-**Full Templates:**
+### Full Templates
 `.claude/PROMPT_TEMPLATES.md`
 
 - Complete templates with all sections
@@ -145,7 +145,7 @@ Response includes:
 - Checkpoint protocols
 - Documentation standards
 
-**Quick Reference:**
+### Quick Reference
 `.claude/PROMPT_TEMPLATES_QUICK.md`
 
 - Fast template selection
@@ -193,38 +193,38 @@ Use for pure information gathering:
 
 ## Agent Recommendations by Template
 
-**ui-ux-developer:**
+### ui-ux-developer
 
 - Template #3 (UI/UX Enhancement)
 - Template #1 (Feature Development - UI)
 
-**nextjs-architect:**
+### nextjs-architect
 
 - Template #1 (Feature Development)
 - Template #2 (Bug Fix)
 
-**ai-sdk-specialist:**
+### ai-sdk-specialist
 
 - Template #4 (API & Backend Logic)
 - Template #1 (Feature Development - AI)
 
-**test-engineer:**
+### test-engineer
 
 - Template #5 (Testing Implementation)
 - Template #14 (Quality Gate Debugging)
 
-**deployment-engineer:**
+### deployment-engineer
 
 - Template #12 (Deployment & CI/CD)
 - Template #13 (Security Audit)
 
-**mastra-optimization-researcher:**
+### mastra-optimization-researcher
 
 - Template #6 (Performance Optimization)
 - Template #7 (Bundle Size Reduction)
 - Template #8 (Memory System Optimization)
 
-**xai-integration-optimizer:**
+### xai-integration-optimizer
 
 - Template #4 (API & Backend - LLM)
 - Template #6 (Performance - Models)
@@ -235,7 +235,7 @@ Use for pure information gathering:
 
 ### Starter #1: Feature Development (#PLAN#)
 
-```
+```typescript
 #PLAN#
 
 PROJECT: omer-akben Portfolio
@@ -259,11 +259,11 @@ CHECKPOINT STRUCTURE:
 
 DOCUMENTATION PERMISSION:
 May I create tracking documents?
-```
+```typescript
 
 ### Starter #2: Bug Fix (#RESEARCH# → #ACTION#)
 
-```
+```typescript
 #RESEARCH#
 
 PROJECT: omer-akben Portfolio
@@ -279,11 +279,11 @@ ERROR MESSAGES:
 [Paste errors]
 
 After research, switch to #ACTION# with checkpoints
-```
+```typescript
 
 ### Starter #3: Research (#RESEARCH#)
 
-```
+```typescript
 #RESEARCH#
 
 PROJECT: omer-akben Portfolio
@@ -298,7 +298,7 @@ SEARCH STRATEGY:
 3. Google Drive: [Internal docs]
 
 May I create research document?
-```
+```typescript
 
 ---
 

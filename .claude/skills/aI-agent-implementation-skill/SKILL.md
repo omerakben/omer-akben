@@ -13,7 +13,7 @@ Use this checklist for every new AI agent tool:
 
 - [ ] Define clear tool purpose and triggers
 - [ ] Design Zod schemas for input/output validation
-- [ ] Consider rate limiting requirements
+- [ ] Consider rate-limiting requirements
 - [ ] Plan security measures (validation, sanitization, PII)
 - [ ] Document environment variables needed
 
@@ -23,14 +23,14 @@ Use this checklist for every new AI agent tool:
 - [ ] Implement tool schema in `lib/agent-tools/schemas.ts`
 - [ ] Add Mastra tool in `lib/mastra/tools.ts` (if needed)
 - [ ] Update AI knowledge base (`lib/agent-knowledge-base.ts`)
-- [ ] Configure rate limiting in `lib/rate-limit.ts`
+- [ ] Configure rate-limiting in `lib/rate-limit.ts`
 
 ### Testing Phase
 
 - [ ] Write unit tests for API route
 - [ ] Test Zod schema validation (valid + invalid inputs)
 - [ ] Manual testing via Playwright for AI behavior
-- [ ] Verify rate limiting works correctly
+- [ ] Verify rate-limiting works correctly
 - [ ] Test all 6 quality gates pass
 
 ### Documentation Phase
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-```
+```typescript
 
 ### 2. Define Tool Schema
 
@@ -126,7 +126,7 @@ export const toolNameResponseSchema = z.object({
   data: z.unknown(),
   message: z.string().optional(),
 });
-```
+```typescript
 
 ### 3. Add to Mastra Tools (if needed)
 
@@ -162,7 +162,7 @@ export const toolName = createTool({
     return await response.json();
   },
 });
-```
+```typescript
 
 ### 4. Update Knowledge Base
 
@@ -176,21 +176,21 @@ export const AGENT_KNOWLEDGE_BASE = `
 
 **Purpose:** Clear description of what the tool does
 
-**When to use:**
+### When to use
 - Trigger condition 1
 - Trigger condition 2
 - Trigger condition 3
 
-**Parameters:**
+### Parameters
 - param1 (required): Description
 - param2 (optional): Description
 
-**Example usage:**
+### Example usage
 "Can you [action]?" → Use tool_name
 
 **Rate limits:** X requests per Y timeframe (if applicable)
 `;
-```
+```typescript
 
 ### 5. Configure Rate Limiting (if needed)
 
@@ -215,7 +215,7 @@ export const toolNameRateLimit = new Ratelimit({
   ),
   prefix: "ratelimit:tool_name",
 });
-```
+```typescript
 
 ## Testing Pattern
 
@@ -269,7 +269,7 @@ describe("Tool API Route", () => {
     });
   });
 });
-```
+```typescript
 
 ### E2E Tests
 
@@ -296,7 +296,7 @@ test.describe("Tool Name Integration", () => {
     await expect(page.getByText("Expected result")).toBeVisible();
   });
 });
-```
+```typescript
 
 ## Security Best Practices
 
@@ -343,7 +343,7 @@ await resend.emails.send({
   subject: "Subject",
   html: templateContent,
 });
-```
+```typescript
 
 ### Database Query Tool
 
@@ -355,7 +355,7 @@ const results = await vectorClient.query({
   topK: 5,
   includeMetadata: true,
 });
-```
+```typescript
 
 ### External API Tool
 
@@ -374,7 +374,7 @@ if (!response.ok) {
 }
 
 const result = await response.json();
-```
+```typescript
 
 ## Error Handling
 
@@ -393,7 +393,7 @@ try {
     message: "Please try again or contact support",
   }, { status: 500 });
 }
-```
+```typescript
 
 ### Error Categories
 
@@ -424,7 +424,7 @@ try {
  *   "param2": 42
  * }
  */
-```
+```typescript
 
 ### AGENTS.md Documentation
 
@@ -433,19 +433,19 @@ try {
 
 **Purpose:** Clear description
 
-**Triggers:**
+### Triggers
 - User asks to [action]
 - User mentions [keyword]
 
-**Implementation:**
+### Implementation
 - API Route: `/api/tools/tool-name`
 - Schema: `toolNameSchema` in `lib/agent-tools/schemas.ts`
 - Rate Limit: X requests per Y timeframe
 
-**Example conversation:**
+### Example conversation
 User: "Can you [action]?"
 Ozzy: [Uses tool_name to perform action] "Done! [Result description]"
-```
+```typescript
 
 ## Deployment Considerations
 
@@ -485,7 +485,7 @@ const limit = 100; // Use config file
 
 // No error handling
 const result = await action(); // What if it fails?
-```
+```typescript
 
 ### ✅ Do This Instead
 
@@ -508,11 +508,11 @@ export async function POST(request: NextRequest) {
     return handleError(error);
   }
 }
-```
+```typescript
 
 ## Success Metrics
 
-**After implementing a new tool:**
+### After implementing a new tool
 
 - [ ] Tool successfully triggered by AI agent
 - [ ] All edge cases handled gracefully

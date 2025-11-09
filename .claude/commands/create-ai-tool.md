@@ -8,7 +8,7 @@ export const myToolSchema = z.object({
   param1: z.string().min(1).max(100),
   param2: z.number().optional(),
 });
-```
+```typescript
 
 **Step 2: Create API Route**
 Create `src/app/api/tools/my-tool/route.ts` with:
@@ -38,14 +38,14 @@ Create `src/app/api/tools/my-tool/__tests__/route.test.ts`:
 - Test input validation
 - Test success cases
 - Test error cases
-- Test rate limiting (if applicable)
+- Test rate-limiting (if applicable)
 
 **Step 6: Manual Testing**
 Test tool via chat interface:
 
 - Send message that triggers tool
 - Verify tool response
-- Check rate limiting
+- Check rate-limiting
 - Test error scenarios
 
 **Step 7: Documentation**
@@ -60,7 +60,7 @@ Run all quality gates:
 
 ```bash
 npm run lint && npx tsc --noEmit && npm test && npm run build && npm run size
-```
+```typescript
 
 Checklist:
 

@@ -241,7 +241,7 @@ export function createWorkflowAISDKStream(
 
         console.error("[StreamingBridge] Workflow text stream completed");
 
-        // Send finish chunk (messages undefined to let onFinish use original messages)
+        // Send finish chunk (let downstream handle messages from original context)
         controller.enqueue({
           runId: context.threadId,
           from: ChunkFrom.WORKFLOW,
@@ -260,9 +260,9 @@ export function createWorkflowAISDKStream(
               },
             },
             metadata: {},
-            messages: undefined, // Explicitly undefined to prevent empty array issues
-          },
-        } as ChunkType);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any, // Type cast to bypass strict payload typing
+        });
 
         console.error("[StreamingBridge] Enqueued finish chunk");
         controller.close();

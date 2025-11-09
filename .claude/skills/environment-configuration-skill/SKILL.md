@@ -20,7 +20,7 @@ cp .env.example .env
 
 # Run development server
 npm run dev
-```
+```typescript
 
 ## Required Environment Variables
 
@@ -36,48 +36,48 @@ XAI_NON_REASONING_MODEL=grok-4-fast-non-reasoning
 OPENAI_API_KEY=your-openai-api-key
 OPENAI_FALLBACK_MODEL=gpt-4o-mini
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-```
+```typescript
 
 ### Email Service (Resend)
 
 ```bash
 RESEND_API_KEY=your-resend-api-key
 RESEND_FROM_EMAIL=noreply@omerakben.com
-```
+```typescript
 
 ### Rate Limiting & Caching (Upstash Redis)
 
 ```bash
 UPSTASH_REDIS_REST_URL=https://your-redis-url.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-redis-token
-```
+```typescript
 
 ### Episodic Memory (Upstash Vector)
 
 ```bash
 UPSTASH_VECTOR_REST_URL=https://your-vector-url.upstash.io
 UPSTASH_VECTOR_REST_TOKEN=your-vector-token
-```
+```typescript
 
 ### Analytics (PostHog)
 
 ```bash
 NEXT_PUBLIC_POSTHOG_KEY=your-posthog-key
 NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
-```
+```typescript
 
 ### Error Tracking (Sentry)
 
 ```bash
 SENTRY_AUTH_TOKEN=your-sentry-auth-token
 NEXT_PUBLIC_SENTRY_DSN=your-sentry-dsn
-```
+```typescript
 
 ### Cron Security (Vercel)
 
 ```bash
 CRON_SECRET=your-random-secret-key
-```
+```typescript
 
 ## Service Setup Guides
 
@@ -164,7 +164,7 @@ requiredEnvVars.forEach((varName) => {
     throw new Error(`Missing required environment variable: ${varName}`);
   }
 });
-```
+```typescript
 
 ### Test Environment Setup
 
@@ -181,7 +181,7 @@ curl $UPSTASH_REDIS_REST_URL/ping \
 
 # Test email sending
 npm run test:email
-```
+```typescript
 
 ## Configuration Patterns
 
@@ -207,9 +207,9 @@ export const AI_MODEL_CONFIG = {
     model: process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small",
   },
 };
-```
+```typescript
 
-**Usage:**
+### Usage
 
 ```typescript
 import { PRIMARY_REASONING_MODEL } from "@/lib/ai/model-config";
@@ -218,7 +218,7 @@ const result = await generateWithFallback({
   model: PRIMARY_REASONING_MODEL,
   messages: [{ role: "user", content: prompt }],
 });
-```
+```typescript
 
 ### Rate Limiting Configuration
 
@@ -235,7 +235,7 @@ export const rateLimits = {
     window: 3600,       // per hour
   },
 };
-```
+```typescript
 
 ### Feature Flags
 
@@ -246,7 +246,7 @@ export const features = {
   analytics: !!process.env.NEXT_PUBLIC_POSTHOG_KEY,
   errorTracking: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
 };
-```
+```typescript
 
 ## Security Best Practices
 
@@ -270,7 +270,7 @@ export async function POST(request: Request) {
 const response = await fetch("/api/external", {
   headers: { "X-API-Key": process.env.XAI_API_KEY }, // Exposed!
 });
-```
+```typescript
 
 ### Input Validation
 
@@ -284,7 +284,7 @@ const inputSchema = z.object({
 
 // Validate all inputs
 const validated = inputSchema.parse(input);
-```
+```typescript
 
 ### Rate Limiting
 
@@ -295,7 +295,7 @@ const result = await ratelimit.limit(ip);
 if (!result.success) {
   return new Response("Rate limit exceeded", { status: 429 });
 }
-```
+```typescript
 
 ## Vercel Deployment Configuration
 
@@ -319,7 +319,7 @@ if (!result.success) {
     }
   ]
 }
-```
+```typescript
 
 **Security:** Endpoint validates `CRON_SECRET` header
 
@@ -347,7 +347,7 @@ NODE_ENV=development npm run dev
 
 # Check environment variables
 node -e "console.log(process.env.XAI_API_KEY ? 'XAI_API_KEY set' : 'XAI_API_KEY missing')"
-```
+```typescript
 
 ## Local Development Setup
 
@@ -364,7 +364,7 @@ npm run dev
 
 # In another terminal, run tests
 npm test -- --watch
-```
+```typescript
 
 ## Production Checklist
 

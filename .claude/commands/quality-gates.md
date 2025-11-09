@@ -11,7 +11,7 @@ Execute in sequence:
 
 ```bash
 npm run lint && npx tsc --noEmit && npm test && npm run build && npm run size && npm run test:e2e
-```
+```typescript
 
 If any gate fails, stop and fix before proceeding.
 

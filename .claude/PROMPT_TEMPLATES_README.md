@@ -34,7 +34,7 @@ The Prompt Templates System provides **17 standardized templates** that integrat
 - Usage examples
 - Quick start starters
 
-**17 Templates Organized by Category:**
+### 17 Templates Organized by Category
 
 - Development (5)
 - Optimization (3)
@@ -77,21 +77,21 @@ The Prompt Templates System provides **17 standardized templates** that integrat
 
 ### Method 2: Using the Command
 
-```
+```typescript
 I need template #[number] for [task description]
-```
+```typescript
 
-**Examples:**
+### Examples
 
-```
+```typescript
 I need template #1 for adding a new chat tool feature
 I need template #2 for fixing a hydration bug
-I need template #9 to research rate limiting strategies
-```
+I need template #9 to research rate-limiting strategies
+```typescript
 
 ### Method 3: By Scenario
 
-**Check the Common Scenarios Table:**
+### Check the Common Scenarios Table
 
 | Scenario               | Template | Mode       |
 | ---------------------- | -------- | ---------- |
@@ -134,7 +134,7 @@ I need template #9 to research rate limiting strategies
 - **Mode:** #PLAN#
 - **Agent:** ai-sdk-specialist
 - **Use For:** Server tools, API routes, integrations, database ops
-- **Includes:** Security requirements, Zod schemas, rate limiting
+- **Includes:** Security requirements, Zod schemas, rate-limiting
 
 **#5 Testing Implementation**
 
@@ -243,14 +243,14 @@ Every template includes:
 
 ### Header Section
 
-```
+```typescript
 #[MODE]#
 
 PROJECT: omer-akben Portfolio
 [TYPE]: [Name]
 AGENT: [Agent selection]
 SKILLS: [Skill selection]
-```
+```typescript
 
 ### Requirements Section
 
@@ -261,20 +261,20 @@ SKILLS: [Skill selection]
 
 ### Checkpoint Structure
 
-```
+```typescript
 - 25%: [Milestone] - PAUSE for review
 - 50%: [Milestone] - PAUSE for review
 - 75%: [Milestone] - PAUSE for review
 - 100%: Final verification
-```
+```typescript
 
 ### Documentation Permission
 
-```
+```typescript
 May I create the following documents?
 - [ ] ProjectName_Type_2025-11-08.gdoc
 - [ ] ProjectName_Tracker_2025-11-08.gsheet
-```
+```typescript
 
 ### Detailed Guidance
 
@@ -290,14 +290,14 @@ May I create the following documents?
 
 ### Adapting Templates
 
-**Always Customize:**
+### Always Customize
 
 1. Project-specific requirements
 2. Checkpoint milestones (match task complexity)
 3. Success criteria (specific to feature)
 4. Documentation needs
 
-**Never Remove:**
+### Never Remove
 
 1. Quality gate requirements
 2. Import standards (@/ only)
@@ -307,19 +307,19 @@ May I create the following documents?
 
 ### Adding Project-Specific Elements
 
-**For UI Work:**
+### For UI Work
 
 - Always include brightness mode testing (all 8 modes)
 - Add hydration safety considerations
 - Include accessibility requirements (WCAG 2A)
 
-**For API Work:**
+### For API Work
 
-- Always include rate limiting requirements
+- Always include rate-limiting requirements
 - Add security checklist
 - Include error handling strategy
 
-**For Optimization Work:**
+### For Optimization Work
 
 - Always include baseline metrics
 - Add target improvements
@@ -342,7 +342,7 @@ Templates designed for #PLAN# mode:
 - Skill Creation (#16)
 - Agent Enhancement (#17)
 
-**Characteristics:**
+### Characteristics
 
 - Extensive exploration
 - Multiple approaches considered
@@ -356,7 +356,7 @@ Templates designed for #ACTION# mode:
 - Testing Implementation (#5)
 - Quality Gate Debugging (#14)
 
-**Characteristics:**
+### Characteristics
 
 - Minimal interruption
 - Execute between milestones
@@ -375,7 +375,7 @@ Templates designed for #RESEARCH# mode:
 - Competitive Analysis (#11)
 - Security Audit (#13)
 
-**Characteristics:**
+### Characteristics
 
 - Pure information gathering
 - No implementation steps
@@ -392,47 +392,47 @@ Some templates use **mode transitions** for phased work:
 
 **Bug Fix & Investigation (#2)**
 
-```
+```typescript
 Phase 1: #RESEARCH# - Identify root cause
 ↓
 Phase 2: #ACTION# - Implement fix
-```
+```typescript
 
 **Performance Optimization (#6)**
 
-```
+```typescript
 Phase 1: #RESEARCH# - Analyze bottlenecks
 ↓
 Phase 2: #ACTION# - Apply optimizations
-```
+```typescript
 
 **Bundle Size Reduction (#7)**
 
-```
+```typescript
 Phase 1: #RESEARCH# - Identify issues
 ↓
 Phase 2: #ACTION# - Optimize bundle
-```
+```typescript
 
 ### When to Transition
 
-**Transition from RESEARCH to ACTION when:**
+### Transition from RESEARCH to ACTION when
 
 1. Root cause identified
 2. Solution approach validated
 3. Implementation path clear
 4. Risks assessed
 
-**Indicate transition:**
+### Indicate transition
 
-```
+```typescript
 After research phase, switch to:
 #ACTION# to implement with checkpoints:
 - 25%: [Implementation milestone]
 - 50%: [Implementation milestone]
 - 75%: [Implementation milestone]
 - 100%: Quality gates
-```
+```typescript
 
 ---
 
@@ -440,22 +440,22 @@ After research phase, switch to:
 
 ### Permission Requests
 
-**Always ask before creating:**
+### Always ask before creating
 
-```
+```typescript
 DOCUMENTATION PERMISSION:
 May I create the following documents?
 - [ ] FeatureName_Plan_2025-11-08.gdoc
 - [ ] FeatureName_Tracker_2025-11-08.gsheet
-```
+```typescript
 
 ### Naming Convention
 
-```
+```typescript
 ProjectName_DocumentType_YYYY-MM-DD
-```
+```typescript
 
-**Document Types:**
+### Document Types
 
 - **Plan** - Strategic planning documents
 - **Tracker** - Progress tracking spreadsheets
@@ -470,14 +470,14 @@ ProjectName_DocumentType_YYYY-MM-DD
 
 ### When Documents Are Needed
 
-**Always create for:**
+### Always create for
 
 - Complex features (Plan + Tracker)
 - Research tasks (Research document)
 - Evaluations (Evaluation document)
 - Audits (Audit document)
 
-**Optional for:**
+### Optional for
 
 - Simple bug fixes
 - Small enhancements
@@ -491,14 +491,14 @@ ProjectName_DocumentType_YYYY-MM-DD
 
 All templates enforce:
 
-**Import Standards:**
+### Import Standards
 
 - ✅ Use @/ imports only
 - ❌ Never use relative imports (../../)
 - ❌ Never use archive imports (/archive/)
 - ❌ Never use wildcard icon imports
 
-**Quality Gates:**
+### Quality Gates
 
 ```bash
 ✅ ESLint:     npm run lint
@@ -507,9 +507,9 @@ All templates enforce:
 ✅ Build:      npm run build
 ✅ Bundle:     npm run size
 ✅ E2E Tests:  npm run test:e2e
-```
+```typescript
 
-**Zero Technical Debt:**
+### Zero Technical Debt
 
 - ❌ NO TODO comments
 - ❌ NO console.log
@@ -518,13 +518,13 @@ All templates enforce:
 - ❌ NO disabled tests
 - ❌ NO TypeScript `any`
 
-**Server-Side Security:**
+### Server-Side Security
 
 - ✅ All API calls server-side
 - ✅ Environment variables server-side only
 - ❌ Never expose secrets
 
-**Design System:**
+### Design System
 
 - ✅ Test all 8 brightness modes
 - ✅ Use CSS custom properties
@@ -659,13 +659,13 @@ All templates enforce:
 
 ## 💬 Feedback & Support
 
-**Template Issues:**
+### Template Issues
 
 - Check troubleshooting section
 - Review related documentation
 - Consult agent-specific guidance
 
-**Template Enhancements:**
+### Template Enhancements
 
 - Use Template #17 (Agent Enhancement) for improvements
 - Document suggested changes

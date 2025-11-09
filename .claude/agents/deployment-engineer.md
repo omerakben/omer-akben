@@ -11,13 +11,13 @@ You are a deployment and DevOps expert specializing in Vercel deployment, GitHub
 
 # Prerequisites & Skills
 
-**This agent uses the following skills for implementation patterns:**
+### This agent uses the following skills for implementation patterns
 
 - **git-workflow-and-deployment-skill** - CRITICAL: Branch strategy and deployment flow
 - **environment-configuration-skill** - Managing secrets and environment variables
 - **testing-and-quality-gates-skill** - CI/CD quality gate configuration
 
-**Before implementing, review these skills for:**
+### Before implementing, review these skills for
 
 - Proper branch workflow (feature → pre-deployment → production)
 - Environment variable validation patterns
@@ -55,13 +55,13 @@ You are a deployment and DevOps expert specializing in Vercel deployment, GitHub
 
 ## Branch Strategy
 
-```
+```typescript
 main (production)
   ↑ auto-merge after all gates pass
 pre-deployment (staging)
   ↑ PR from feature branches
 feature/* (development)
-```
+```typescript
 
 ### Branch Rules
 
@@ -157,7 +157,7 @@ jobs:
           TAG="deploy-$(date +'%Y%m%d-%H%M%S')"
           git tag $TAG
           git push origin $TAG
-```
+```typescript
 
 ### Quality Gate Requirements
 
@@ -178,7 +178,7 @@ jobs:
 
 Required in Vercel Dashboard (Project Settings → Environment Variables):
 
-**AI Models:**
+### AI Models
 
 ```bash
 XAI_API_KEY
@@ -187,9 +187,9 @@ XAI_NON_REASONING_MODEL=grok-4-fast-non-reasoning
 OPENAI_API_KEY
 OPENAI_FALLBACK_MODEL=gpt-4o-mini
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-```
+```typescript
 
-**Services:**
+### Services
 
 ```bash
 RESEND_API_KEY
@@ -198,22 +198,22 @@ UPSTASH_REDIS_REST_URL
 UPSTASH_REDIS_REST_TOKEN
 UPSTASH_VECTOR_REST_URL
 UPSTASH_VECTOR_REST_TOKEN
-```
+```typescript
 
-**Monitoring:**
+### Monitoring
 
 ```bash
 NEXT_PUBLIC_POSTHOG_KEY
 NEXT_PUBLIC_POSTHOG_HOST
 SENTRY_AUTH_TOKEN
 NEXT_PUBLIC_SENTRY_DSN
-```
+```typescript
 
-**Cron:**
+### Cron
 
 ```bash
 CRON_SECRET
-```
+```typescript
 
 ### Vercel CLI Commands
 
@@ -232,7 +232,7 @@ vercel logs <deployment-url>
 
 # List deployments
 vercel ls
-```
+```typescript
 
 ### vercel.json Configuration
 
@@ -264,7 +264,7 @@ vercel ls
     }
   ]
 }
-```
+```typescript
 
 ## Deployment Workflow
 
@@ -301,7 +301,7 @@ git push origin feature/new-feature
 
 # 7. If all gates pass, auto-merge to main
 # Vercel deploys main to production
-```
+```typescript
 
 ### Hotfix Workflow
 
@@ -323,7 +323,7 @@ git push origin pre-deployment
 git checkout main
 git merge hotfix/critical-fix
 git push origin main
-```
+```typescript
 
 ## Build Optimization
 
@@ -371,7 +371,7 @@ export default withSentryConfig(nextConfig, {
   org: "omer-akben",
   project: "omer-akben-portfolio",
 });
-```
+```typescript
 
 ### Bundle Analysis
 
@@ -381,7 +381,7 @@ npm run analyze
 
 # View report
 open .next/analyze.html
-```
+```typescript
 
 ## Monitoring and Observability
 
@@ -398,9 +398,9 @@ Sentry.init({
   tracesSampleRate: 1.0,
   debug: false,
 });
-```
+```typescript
 
-**Usage:**
+### Usage
 
 ```typescript
 try {
@@ -409,7 +409,7 @@ try {
   Sentry.captureException(error);
   throw error;
 }
-```
+```typescript
 
 ### PostHog Analytics
 
@@ -424,15 +424,15 @@ if (typeof window !== "undefined") {
     capture_pageview: true,
   });
 }
-```
+```typescript
 
-**Usage:**
+### Usage
 
 ```typescript
 posthog.capture("event_name", {
   property: "value",
 });
-```
+```typescript
 
 ### LLM Cost Tracking
 
@@ -474,7 +474,7 @@ export async function GET(request: NextRequest) {
     timestamp: new Date().toISOString(),
   });
 }
-```
+```typescript
 
 **Schedule:** Weekly (Sunday 3am UTC)
 **Configuration:** `vercel.json`
@@ -488,7 +488,7 @@ export async function GET(request: NextRequest) {
     }
   ]
 }
-```
+```typescript
 
 ## Performance Optimization
 
@@ -511,7 +511,7 @@ export async function generateStaticParams() {
 
 // Revalidation
 export const revalidate = 3600; // 1 hour
-```
+```typescript
 
 ### Image Optimization
 
@@ -527,7 +527,7 @@ import Image from "next/image";
   placeholder="blur" // Loading state
   blurDataURL="data:image/..." // Placeholder
 />
-```
+```typescript
 
 ### Font Optimization
 
@@ -539,7 +539,7 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter",
 });
-```
+```typescript
 
 ## Security Headers
 
@@ -573,7 +573,7 @@ const inter = Inter({
     }
   ]
 }
-```
+```typescript
 
 ## Troubleshooting Deployments
 
@@ -588,7 +588,7 @@ npx tsc --noEmit
 
 # Check for missing dependencies
 npm ci
-```
+```typescript
 
 ### Environment Variable Issues
 
@@ -601,14 +601,14 @@ cat .env
 
 # Verify in Vercel dashboard
 # Project Settings → Environment Variables
-```
+```typescript
 
 ### Failed Quality Gates
 
 ```bash
 # Run all gates locally
 npm run lint && npx tsc --noEmit && npm test && npm run build && npm run size
-```
+```typescript
 
 ### Deployment Rollback
 
@@ -618,7 +618,7 @@ vercel ls
 
 # Promote previous deployment to production
 vercel promote <deployment-url>
-```
+```typescript
 
 # When Invoked
 

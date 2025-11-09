@@ -1,6 +1,6 @@
 ---
 name: redis-integration
-description: Redis and Upstash Vector integration patterns for rate limiting, vector search, embeddings, and memory systems. Use when implementing caching, rate limiting, or semantic search features.
+description: Redis and Upstash Vector integration patterns for rate-limiting, vector search, embeddings, and memory systems. Use when implementing caching, rate-limiting, or semantic search features.
 ---
 
 # Redis Integration Skill
@@ -16,7 +16,7 @@ This project uses **dual Redis systems** for different purposes:
 
 ### System Selection
 
-```
+```typescript
 Project Embeddings (1,536 dimensions)
 ├─> Redis FT.SEARCH (Redis Stack)
 │   └─> Index: project_embeddings_idx
@@ -28,17 +28,17 @@ Episodic Memory (OpenAI embeddings)
     └─> No index name needed
     └─> Storage: Native vector format
     └─> Use Case: Conversation history search
-```
+```typescript
 
 **Why Two Systems?**
 
-- **Redis FT.SEARCH**: Already used for rate limiting, good for structured data with metadata
+- **Redis FT.SEARCH**: Already used for rate-limiting, good for structured data with metadata
 - **Upstash Vector**: Purpose-built for vector operations, simpler API for pure vector search
 - **No migration needed**: Each system serves its purpose optimally
 
 ## Core Files Reference
 
-```
+```typescript
 src/lib/redis/
 ├── client.ts              # Redis client with FT.SEARCH extensions
 ├── vector-client.ts       # Upstash Vector client singleton
@@ -52,7 +52,7 @@ src/lib/
     ├── redis-memory.ts    # Memory manager (STM/LTM)
     ├── semantic-memory.ts # Facts/preferences storage
     └── types.ts           # Memory type definitions
-```
+```typescript
 
 ## 1. Redis Client with FT.SEARCH Extensions
 
@@ -75,7 +75,7 @@ const redis = getRedisClient();
 await redis.ft.create(indexName, schema, options);
 await redis.ft.search(indexName, query, options);
 await redis.call("FT.INFO", indexName);
-```
+```typescript
 
 ### Key Features
 
@@ -92,7 +92,7 @@ export function getRedisClient(): RedisStackClient {
   cachedClient = extendWithStackCommands(baseClient, url, token);
   return cachedClient;
 }
-```
+```typescript
 
 **2. FT.SEARCH Support**
 
@@ -123,14 +123,14 @@ const results = await redis.ft.search(
     LIMIT: { from: 0, size: 5 },
   }
 );
-```
+```typescript
 
 **3. Environment Variables Required**
 
 ```env
 UPSTASH_REDIS_REST_URL=https://your-instance.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-token-here
-```
+```typescript
 
 ## 2. Upstash Vector Client
 
@@ -164,14 +164,14 @@ const results = await vectorClient.query({
   topK: 5,
   includeMetadata: true,
 });
-```
+```typescript
 
 ### Environment Variables Required
 
 ```env
 UPSTASH_VECTOR_REST_URL=https://your-vector-instance.upstash.io
 UPSTASH_VECTOR_REST_TOKEN=your-vector-token-here
-```
+```typescript
 
 ## 3. Dual-Path Vector Search Router
 
@@ -181,7 +181,7 @@ UPSTASH_VECTOR_REST_TOKEN=your-vector-token-here
 
 ### Pattern: Intelligent Search Routing
 
-**Routes searches to appropriate backend:**
+### Routes searches to appropriate backend
 
 ```typescript
 import { knnSearch } from "@/lib/redis/vector-search";
@@ -201,7 +201,7 @@ const memoryResults = await knnSearch(
   3,
   ["threadId", "role", "content"]
 );
-```
+```typescript
 
 ### Routing Logic
 
@@ -220,9 +220,9 @@ export async function knnSearch(
   // Route to Upstash Vector for episodic memory
   return knnSearchVector(vector, limit, returnFields);
 }
-```
+```typescript
 
-**Benefits:**
+### Benefits
 
 - ✅ Single API for all vector searches
 - ✅ Automatic backend selection
@@ -237,7 +237,7 @@ export async function knnSearch(
 
 ### Pattern: Sliding Window Rate Limits
 
-**Multiple rate limiters for different endpoints:**
+### Multiple rate limiters for different endpoints
 
 ```typescript
 import {
@@ -260,7 +260,7 @@ export async function POST(request: Request) {
 
   // Process request...
 }
-```
+```typescript
 
 ### Rate Limit Configurations
 
@@ -290,8 +290,8 @@ export const chatRateLimit = redis
       redis,
       limiter: Ratelimit.slidingWindow(30, "1 m"),
     })
-  : null;  // ← No rate limiting in dev without credentials
-```
+  : null;  // ← No rate-limiting in dev without credentials
+```typescript
 
 ### Usage Pattern
 
@@ -310,7 +310,7 @@ if (chatRateLimit) {
     );
   }
 }
-```
+```typescript
 
 ## 5. Project Embeddings & Semantic Search
 
@@ -320,4 +320,85 @@ if (chatRateLimit) {
 
 ### Pattern: Generate + Store + Search
 
-**Complete workflow for project semantic search:**
+### Complete workflow for project semantic search
+
+```typescript
+import { generateProjectEmbedding, searchProjects } from "@/lib/redis/embeddings";
+
+// ✅ Generate embedding for a project
+const embedding = await generateProjectEmbedding(project);
+
+// ✅ Search for similar projects
+const results = await searchProjects(queryEmbedding, topK = 5);
+```typescript
+
+### Implementation Details
+
+**1. Generate Embeddings**
+
+```typescript
+export async function generateProjectEmbedding(project: Project): Promise<number[]> {
+  const text = `${project.title} ${project.description} ${project.tags.join(" ")}`;
+  
+  const embedding = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: text,
+    dimensions: 1536,
+  });
+  
+  return embedding.data[0].embedding;
+}
+```typescript
+
+**2. Store in Redis with Vector Index**
+
+```typescript
+export async function storeProjectEmbedding(project: Project): Promise<void> {
+  const redis = getRedisClient();
+  const embedding = await generateProjectEmbedding(project);
+  
+  // Store as HASH with VECTOR field for FT.SEARCH
+  await redis.hset(`project:embedding:${project.slug}`, {
+    slug: project.slug,
+    title: project.title,
+    embedding: Buffer.from(new Float32Array(embedding)),
+  });
+}
+```typescript
+
+**3. Semantic Search**
+
+```typescript
+export async function searchProjects(
+  queryEmbedding: number[],
+  topK: number = 5
+): Promise<Project[]> {
+  const redis = getRedisClient();
+  
+  // KNN search via FT.SEARCH
+  const results = await redis.ft.search(
+    "project_embeddings_idx",
+    "*=>[KNN 5 @embedding $BLOB AS vector_score]",
+    {
+      PARAMS: ["BLOB", Buffer.from(new Float32Array(queryEmbedding))],
+      RETURN: ["slug", "title", "vector_score"],
+      LIMIT: { from: 0, size: topK },
+    }
+  );
+  
+  return results.documents.map(doc => ({
+    slug: doc.slug,
+    similarity: parseFloat(doc.vector_score),
+  }));
+}
+```typescript
+
+## Summary & Decision Matrix
+
+| System | Use Case | Backend | Pros | Cons |
+|--------|----------|---------|------|------|
+| **Redis FT.SEARCH** | Project embeddings | Redis Stack | Structured + vector search, metadata support | More complex setup |
+| **Upstash Vector** | Episodic memory | Vector DB | Purpose-built, simple API | Pure vectors only |
+| **Ratelimit** | API protection | Redis | Sliding window, flexible | Requires redis |
+
+**Decision: Use both systems** - Each solves a specific problem optimally without overcomplicating the other.

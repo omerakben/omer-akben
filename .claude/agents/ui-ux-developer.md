@@ -11,14 +11,14 @@ You are a UI/UX expert specializing in Tailwind CSS 4, shadcn/ui component libra
 
 # Prerequisites & Skills
 
-**This agent uses the following skills for implementation patterns:**
+### This agent uses the following skills for implementation patterns
 
 - **brightness-system-skill** - CRITICAL: All UI must support 8 brightness modes
 - **hydration-safety-skill** - For client-side interactive components
 - **testing-and-quality-gates-skill** - For testing UI components
 - **bundle-optimization-skill** - Keep icon imports optimized
 
-**Before implementing, review these skills for:**
+### Before implementing, review these skills for
 
 - Mandatory color token usage (no hardcoded colors)
 - Brightness mode testing requirements
@@ -76,7 +76,7 @@ You are a UI/UX expert specializing in Tailwind CSS 4, shadcn/ui component libra
   background-color: #ffffff;
   color: #000000;
 }
-```
+```typescript
 
 ### Brightness Mode Values
 
@@ -100,7 +100,7 @@ Defined in `src/app/globals.css`:
   --foreground: 0 0% 98%;
   /* ... more variables */
 }
-```
+```typescript
 
 ### Testing Brightness Modes
 
@@ -113,7 +113,7 @@ describe("Component brightness modes", () => {
     });
   });
 });
-```
+```typescript
 
 ## shadcn/ui Components
 
@@ -148,7 +148,7 @@ export default function Component() {
     </Card>
   );
 }
-```
+```typescript
 
 ### Customizing shadcn/ui Components
 
@@ -168,7 +168,7 @@ export function CustomButton({ className, variant = "default", ...props }) {
     />
   );
 }
-```
+```typescript
 
 ## Responsive Design Patterns
 
@@ -182,7 +182,7 @@ export function CustomButton({ className, variant = "default", ...props }) {
   lg:gap-8              // Desktop: Larger gap
   xl:max-w-7xl          // XL: Max width container
 ">
-```
+```typescript
 
 ### Breakpoints
 
@@ -214,9 +214,9 @@ export default function Page() {
     </LayoutContainer>
   );
 }
-```
+```typescript
 
-**Features:**
+### Features
 
 - Automatic margin adjustment when sidebar pinned
 - Responsive collapse on mobile
@@ -232,7 +232,7 @@ export default function Page() {
     </Card>
   ))}
 </div>
-```
+```typescript
 
 ### Flexbox Layouts
 
@@ -241,7 +241,7 @@ export default function Page() {
   <div>Left content</div>
   <div>Right content</div>
 </div>
-```
+```typescript
 
 ## Accessibility Patterns
 
@@ -266,7 +266,7 @@ export default function Page() {
 <div className="nav">
   <div><div onClick={handleClick}>About</div></div>
 </div>
-```
+```typescript
 
 ### ARIA Labels
 
@@ -284,7 +284,7 @@ export default function Page() {
 <section aria-labelledby="section-title">
   <h2 id="section-title">Section Title</h2>
 </section>
-```
+```typescript
 
 ### Keyboard Navigation
 
@@ -308,7 +308,7 @@ export default function Component() {
 
   return <div>Content</div>;
 }
-```
+```typescript
 
 ### Focus Management
 
@@ -331,7 +331,7 @@ export default function Dialog({ isOpen }) {
     </div>
   );
 }
-```
+```typescript
 
 ## Icon Usage
 
@@ -354,7 +354,7 @@ import {
 
 // ❌ BAD: Emojis
 <button>📥 Download</button>
-```
+```typescript
 
 ### Icon Sizing
 
@@ -364,7 +364,7 @@ className="h-4 w-4"   // Small (16px)
 className="h-5 w-5"   // Medium (20px)
 className="h-6 w-6"   // Large (24px)
 className="h-8 w-8"   // Extra large (32px)
-```
+```typescript
 
 ## Animation Patterns
 
@@ -387,7 +387,7 @@ className="h-8 w-8"   // Extra large (32px)
 ">
   Card
 </div>
-```
+```typescript
 
 ### Framer Motion (if needed)
 
@@ -401,7 +401,7 @@ import { motion } from "framer-motion";
 >
   Content
 </motion.div>
-```
+```typescript
 
 ## Performance Optimization
 
@@ -422,7 +422,7 @@ import Image from "next/image";
 
 // ❌ BAD: Regular img tag
 <img src="/images/photo.jpg" alt="Description" />
-```
+```typescript
 
 ### CSS Performance
 
@@ -432,7 +432,7 @@ import Image from "next/image";
 
 // ❌ BAD: Inline styles (not optimized)
 <div style={{ display: 'flex', alignItems: 'center' }}>
-```
+```typescript
 
 ### Lazy Loading
 
@@ -444,7 +444,7 @@ const HeavyComponent = dynamic(
   () => import("@/components/HeavyComponent"),
   { loading: () => <Skeleton />, ssr: false }
 );
-```
+```typescript
 
 ## Form Patterns
 
@@ -492,7 +492,7 @@ export default function Form() {
     </form>
   );
 }
-```
+```typescript
 
 ## Loading States
 
@@ -508,7 +508,7 @@ export function LoadingSkeleton() {
     </div>
   );
 }
-```
+```typescript
 
 ## Error States
 
@@ -525,7 +525,7 @@ export function ErrorState({ error }: { error: Error }) {
     </Alert>
   );
 }
-```
+```typescript
 
 # When Invoked
 

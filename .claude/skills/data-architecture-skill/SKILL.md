@@ -22,13 +22,13 @@ const name = "Omer Akben";
 import { facts } from "@/data/facts";
 const email = facts.contact.email;
 const name = facts.personal.name;
-```
+```typescript
 
 ## Data File Structure
 
 ### Primary Data Files
 
-```
+```typescript
 src/data/
 ├── facts.ts          # Personal info, skills, experience
 ├── projects.ts       # Project catalog with metadata
@@ -36,7 +36,7 @@ src/data/
 
 src/config/
 └── assistantFaq.ts   # FAQ and intent libraries
-```
+```typescript
 
 ## facts.ts Architecture
 
@@ -75,7 +75,7 @@ export const facts = {
     availability: string;
   }
 };
-```
+```typescript
 
 ### Type Definitions
 
@@ -115,7 +115,7 @@ interface WorkAuthorization {
   proofDocument: string;
   summary: string;
 }
-```
+```typescript
 
 ### Work Authorization Data
 
@@ -132,7 +132,7 @@ workAuthorization: {
   proofDocument: "Form I-551 (Permanent Resident Card)",
   summary: "Authorized to work for any U.S. employer without restrictions or sponsorship requirements."
 }
-```
+```typescript
 
 **Usage:** AI agent references this when answering recruiter questions
 
@@ -164,7 +164,7 @@ export interface Project {
 export const projects: Project[] = [
   // Array of all projects
 ];
-```
+```typescript
 
 ### Helper Functions
 
@@ -190,9 +190,9 @@ export function getAllTechnologies(): Technology[] {
   projects.forEach(p => p.technologies.forEach(t => techSet.add(t)));
   return Array.from(techSet);
 }
-```
+```typescript
 
-**Usage Pattern:**
+### Usage Pattern
 
 ```typescript
 import { projects, getFeaturedProjects, getProjectBySlug } from "@/data/projects";
@@ -200,7 +200,7 @@ import { projects, getFeaturedProjects, getProjectBySlug } from "@/data/projects
 // In component
 const featured = getFeaturedProjects();
 const project = getProjectBySlug(params.slug);
-```
+```typescript
 
 ## Type Safety Patterns
 
@@ -216,9 +216,9 @@ export const SKILL_CATEGORIES = [
 
 export type SkillCategory = typeof SKILL_CATEGORIES[number];
 // Type is: 'Frontend' | 'Backend' | 'DevOps' | 'AI/ML'
-```
+```typescript
 
-**Benefits:**
+### Benefits
 
 - Autocomplete in IDE
 - Type checking
@@ -238,7 +238,7 @@ function getUser(id: UserId) { /* ... */ }
 const projectId: ProjectId = 'proj_123' as ProjectId;
 const userId: UserId = 'user_456' as UserId;
 getProject(userId); // ❌ Error!
-```
+```typescript
 
 ### 3. Discriminated Unions
 
@@ -258,7 +258,7 @@ function formatEducation(edu: Education): string {
       return `${edu.name} by ${edu.issuer}`;
   }
 }
-```
+```typescript
 
 ## Zod Validation Integration
 
@@ -277,7 +277,7 @@ export const ContactSchema = z.object({
 });
 
 export type Contact = z.infer<typeof ContactSchema>;
-```
+```typescript
 
 ### Runtime Validation
 
@@ -300,7 +300,7 @@ export async function POST(request: Request) {
   const { name, email, company, message } = result.data;
   // ...
 }
-```
+```typescript
 
 ### Benefits of Zod
 
@@ -337,9 +337,9 @@ ${facts.professional.skills.map(s => `- ${s.name} (${s.level})`).join('\n')}
 Email: ${facts.contact.email}
 LinkedIn: ${facts.contact.linkedin}
 `;
-```
+```typescript
 
-**Benefits:**
+### Benefits
 
 - Single source ensures consistency
 - Updates to facts.ts automatically flow to AI
@@ -364,7 +364,7 @@ export async function POST() {
     }
   });
 }
-```
+```typescript
 
 ## Adding New Data
 
@@ -378,7 +378,7 @@ interface Facts {
   professional: ProfessionalInfo;
   newSection: NewSectionType; // Add new section
 }
-```
+```typescript
 
 ### Step 2: Add Data
 
@@ -390,7 +390,7 @@ export const facts: Facts = {
     field2: 'value2',
   }
 };
-```
+```typescript
 
 ### Step 3: Update AI Knowledge Base
 
@@ -403,7 +403,7 @@ export const agentKnowledgeBase = `
 ${facts.newSection.field1}
 ${facts.newSection.field2}
 `;
-```
+```typescript
 
 ### Step 4: Add Tests
 
@@ -415,7 +415,7 @@ describe('facts.newSection', () => {
     expect(facts.newSection.field2).toBeDefined();
   });
 });
-```
+```typescript
 
 ## Data Validation Patterns
 
@@ -432,7 +432,7 @@ const EmailSchema = z.string()
 // Usage
 const email = EmailSchema.parse('USER@EXAMPLE.COM');
 // Result: 'user@example.com'
-```
+```typescript
 
 ### 2. URL Validation
 
@@ -442,7 +442,7 @@ const UrlSchema = z.string()
   .refine(url => url.startsWith('https://'), {
     message: 'URL must use HTTPS'
   });
-```
+```typescript
 
 ### 3. Date Validation
 
@@ -452,7 +452,7 @@ const DateSchema = z.string()
   .refine(date => !isNaN(Date.parse(date)), {
     message: 'Invalid date'
   });
-```
+```typescript
 
 ### 4. Enum Validation
 
@@ -465,7 +465,7 @@ const SkillLevelSchema = z.enum([
 ]);
 
 type SkillLevel = z.infer<typeof SkillLevelSchema>;
-```
+```typescript
 
 ## Helper Function Patterns
 
@@ -491,7 +491,7 @@ export function getByFilters<T>(
     });
   });
 }
-```
+```typescript
 
 ### 2. Sort Helpers
 
@@ -520,7 +520,7 @@ export function sortBy<T, K extends keyof T>(
     return 0;
   });
 }
-```
+```typescript
 
 ### 3. Transform Helpers
 
@@ -547,7 +547,7 @@ export function toMap<T extends { id: string }>(
     return acc;
   }, {} as Record<string, T>);
 }
-```
+```typescript
 
 ## Testing Data Integrity
 
@@ -578,7 +578,7 @@ describe('facts.ts data integrity', () => {
     expect(typeof workAuthorization.employmentRestrictions).toBe('boolean');
   });
 });
-```
+```typescript
 
 ### Zod Schema Tests
 
@@ -608,7 +608,7 @@ describe('ContactSchema validation', () => {
     expect(result.success).toBe(false);
   });
 });
-```
+```typescript
 
 ## Common Mistakes
 
@@ -626,7 +626,7 @@ import { facts } from '@/data/facts';
 function Header() {
   return <h1>{facts.personal.name} - {facts.personal.title}</h1>;
 }
-```
+```typescript
 
 ### Mistake 2: Inconsistent Data Format
 
@@ -642,7 +642,7 @@ function Header() {
   startDate: '2024-01-01',
   endDate: '2024-01-31',
 }
-```
+```typescript
 
 ### Mistake 3: No Validation
 
@@ -656,7 +656,7 @@ const result = UserSchema.safeParse(JSON.parse(request.body));
 if (result.success) {
   saveUser(result.data);
 }
-```
+```typescript
 
 ## Data Update Checklist
 
@@ -693,7 +693,7 @@ if (result.success) {
 export function getFiltered<T>(items: T[], predicate: (item: T) => boolean): T[] {
   return items.filter(predicate);
 }
-```
+```typescript
 
 ## Related Files
 

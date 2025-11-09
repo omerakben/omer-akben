@@ -37,7 +37,7 @@ The omer-akben project uses a **specialized agent architecture** where each agen
 
 ### Agent + Skills Model
 
-```
+```typescript
 Agent (Strategic Layer)
 ├── Understands project context
 ├── Makes architectural decisions
@@ -47,7 +47,7 @@ Agent (Strategic Layer)
     ├── Shares common solutions
     ├── Documents best practices
     └── Reduces duplication
-```
+```typescript
 
 ---
 
@@ -97,10 +97,10 @@ Expert in Next.js 15, React 19, App Router, server components, and TypeScript. T
 
 #### Example Invocation
 
-```
+```typescript
 User: "Add a new blog page with SSR data fetching"
 → Use nextjs-architect
-```
+```typescript
 
 ---
 
@@ -148,10 +148,10 @@ Expert in Tailwind CSS 4, shadcn/ui, responsive design, accessibility, and 8-bri
 
 #### Example Invocation
 
-```
+```typescript
 User: "Make the sidebar responsive and add dark mode support"
 → Use ui-ux-developer
-```
+```typescript
 
 ---
 
@@ -198,10 +198,10 @@ Expert in Vercel deployment, CI/CD pipelines, GitHub Actions, and production inf
 
 #### Example Invocation
 
-```
+```typescript
 User: "Deploy failed on the build step"
 → Use deployment-engineer
-```
+```typescript
 
 ---
 
@@ -213,7 +213,7 @@ User: "Deploy failed on the build step"
 
 #### Purpose
 
-Expert in Vitest unit testing and Playwright E2E testing. Ensures the portfolio maintains high quality with 776+ unit tests and 66 E2E tests passing consistently.
+Expert in Vitest unit testing and Playwright E2E testing. Ensures the portfolio maintains high-quality with 776+ unit tests and 66 E2E tests passing consistently.
 
 #### Core Expertise
 
@@ -248,10 +248,10 @@ Expert in Vitest unit testing and Playwright E2E testing. Ensures the portfolio 
 
 #### Example Invocation
 
-```
+```typescript
 User: "Unit tests are failing after I added a new feature"
 → Use test-engineer
-```
+```typescript
 
 ---
 
@@ -294,15 +294,15 @@ Expert in Vercel AI SDK v5, Mastra framework, LLM integrations, and AI agent too
 
 - `aI-agent-implementation-skill` - CRITICAL: Mastra patterns
 - `environment-configuration-skill` - API key management
-- `redis-integration-skill` - Caching and rate limiting
+- `redis-integration-skill` - Caching and rate-limiting
 - `testing-and-quality-gates-skill` - Testing AI tools
 
 #### Example Invocation
 
-```
+```typescript
 User: "Create a new tool for the AI agent that fetches project details"
 → Use ai-sdk-specialist
-```
+```typescript
 
 ---
 
@@ -350,10 +350,10 @@ Researches official Mastra.ai documentation and optimizes Mastra-based agent arc
 
 #### Example Invocation
 
-```
+```typescript
 User: "Review our Mastra agent setup and suggest improvements"
 → Use mastra-optimization-researcher
-```
+```typescript
 
 ---
 
@@ -399,10 +399,10 @@ Optimizes xAI (Grok) integration in the codebase. Focuses on Mastra framework im
 
 #### Example Invocation
 
-```
+```typescript
 User: "Should we migrate more OpenAI calls to xAI?"
 → Use xai-integration-optimizer
-```
+```typescript
 
 ---
 
@@ -412,7 +412,7 @@ User: "Should we migrate more OpenAI calls to xAI?"
 
 Use this flowchart to select the right agent:
 
-```
+```typescript
 Is it about...
 
 ┌─ Next.js routing, components, SSR?
@@ -437,40 +437,40 @@ Is it about...
 │
 └─ Not sure?
    → Start with nextjs-architect (full-stack default)
-```
+```typescript
 
 ### Common Scenarios
 
 #### Scenario: New Feature Development
 
-```
+```typescript
 1. Architecture planning → nextjs-architect
 2. UI implementation → ui-ux-developer
 3. Testing → test-engineer
 4. Deployment → deployment-engineer
-```
+```typescript
 
 #### Scenario: Bug Fix
 
-```
+```typescript
 1. Identify domain:
    - Routing/SSR issue? → nextjs-architect
    - Styling issue? → ui-ux-developer
    - Test failure? → test-engineer
    - Deploy failure? → deployment-engineer
    - AI tool issue? → ai-sdk-specialist
-```
+```typescript
 
 #### Scenario: Optimization
 
-```
+```typescript
 1. What to optimize?
    - Mastra architecture? → mastra-optimization-researcher
    - xAI integration? → xai-integration-optimizer
    - Next.js performance? → nextjs-architect
    - UI performance? → ui-ux-developer
    - CI/CD pipeline? → deployment-engineer
-```
+```typescript
 
 ### Selection Matrix
 
@@ -495,7 +495,7 @@ One agent completes their work, then explicitly hands off to the next agent.
 
 **Example: New Blog Feature**
 
-```
+```typescript
 1. nextjs-architect
    - Creates app/blog/page.tsx with SSR
    - Implements data fetching
@@ -522,7 +522,7 @@ One agent completes their work, then explicitly hands off to the next agent.
    - Deploys to production
    - Monitors post-deployment
    - Status: ✅ Deployed
-```
+```typescript
 
 ### Pattern 2: Parallel Collaboration
 
@@ -530,7 +530,7 @@ Multiple agents work on different aspects simultaneously.
 
 **Example: AI Chat Feature**
 
-```
+```typescript
 Parallel Work:
 
 ┌─ ai-sdk-specialist
@@ -551,7 +551,7 @@ Parallel Work:
 Convergence:
 → nextjs-architect integrates all pieces
 → deployment-engineer deploys
-```
+```typescript
 
 ### Pattern 3: Iterative Refinement
 
@@ -559,7 +559,7 @@ Agent completes initial work, then refines based on feedback.
 
 **Example: Performance Optimization**
 
-```
+```typescript
 Round 1:
 xai-integration-optimizer
 - Analyzes current xAI usage
@@ -579,11 +579,11 @@ Review: Performance improved 70%
 Round 3:
 ai-sdk-specialist
 - Implements caching
-- Adds rate limiting
+- Adds rate-limiting
 - Optimizes streaming
 
 Final: ✅ Performance meets targets
-```
+```typescript
 
 ### Pattern 4: Consultation
 
@@ -591,7 +591,7 @@ One agent consults another for specific expertise.
 
 **Example: Component with AI Feature**
 
-```
+```typescript
 Primary: ui-ux-developer (building component)
 
 Consultation 1: nextjs-architect
@@ -607,7 +607,7 @@ Q: "How to test hydration with AI streaming?"
 A: "Wait for data-testid='hydrated' before assertions"
 
 Result: Component complete with all expertise integrated
-```
+```typescript
 
 ---
 
@@ -647,7 +647,7 @@ When an agent completes their work:
 **Agent:** [next-agent-name]
 **Reason:** [why this agent]
 **Context:** [what they need to know]
-```
+```typescript
 
 ### Handoff Examples
 
@@ -686,7 +686,7 @@ When an agent completes their work:
 **Agent:** ui-ux-developer
 **Reason:** Form needs styling and responsive design
 **Context:** The form structure is complete with proper semantic HTML. Focus on styling, animations, and accessibility.
-```
+```typescript
 
 #### Example 2: UI to Testing
 
@@ -724,7 +724,7 @@ When an agent completes their work:
 **Agent:** test-engineer
 **Reason:** Need comprehensive test coverage
 **Context:** Form is complete and styled. Focus on user flow testing, including validation, submission, and error handling.
-```
+```typescript
 
 #### Example 3: Testing to Deployment
 
@@ -761,7 +761,7 @@ When an agent completes their work:
 **Agent:** deployment-engineer
 **Reason:** Ready for production deployment
 **Context:** All tests passing, quality gates should pass. Contact form feature is complete and ready for users.
-```
+```typescript
 
 ---
 
@@ -911,7 +911,7 @@ Agents don't directly talk to each other, but they:
 
 ### Communication Flow
 
-```
+```typescript
 User Request
      ↓
 Agent Selection (based on domain)
@@ -925,7 +925,7 @@ Agent Completes (or hands off)
 Clear Handoff Summary
      ↓
 Next Agent Continues
-```
+```typescript
 
 ---
 
@@ -935,7 +935,7 @@ Next Agent Continues
 
 For complex features requiring multiple domains, nextjs-architect can act as coordinator:
 
-```
+```typescript
 User: "Build a complete blog system with AI-powered summaries"
 
 Coordinator: nextjs-architect
@@ -944,28 +944,28 @@ Coordinator: nextjs-architect
 ├─ Phase 3: ui-ux-developer (UI components)
 ├─ Phase 4: test-engineer (comprehensive tests)
 └─ Phase 5: deployment-engineer (deploy)
-```
+```typescript
 
 ### Consultation Pattern
 
 Any agent can pause to consult another agent's skill:
 
-```
+```typescript
 Agent: ui-ux-developer (working on component)
 Pause: "Need to check hydration pattern"
 Consult: Read hydration-safety-skill
 Resume: Continue with proper pattern
-```
+```typescript
 
 ### Iterative Refinement
 
 Some tasks benefit from multiple passes:
 
-```
+```typescript
 Pass 1: Initial implementation
 Pass 2: Optimization (research agent)
 Pass 3: Final polish
-```
+```typescript
 
 ---
 
@@ -1001,7 +1001,7 @@ git push origin pre-deployment
 
 # View logs
 vercel logs
-```
+```typescript
 
 ---
 

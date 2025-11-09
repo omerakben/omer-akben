@@ -22,7 +22,7 @@ function Component() {
   const user = localStorage.getItem("user"); // localStorage not available on server
   return <div>Welcome {user}</div>;
 }
-```
+```typescript
 
 **Error:** "Text content does not match server-rendered HTML"
 
@@ -52,7 +52,7 @@ function Component() {
   const user = localStorage.getItem("user");
   return <div>Welcome {user}</div>;
 }
-```
+```typescript
 
 ### How It Works
 
@@ -95,7 +95,7 @@ function Component() {
 
   return <div id={id}>Content</div>;
 }
-```
+```typescript
 
 ### 3. Date/Time
 
@@ -121,7 +121,7 @@ function Clock() {
   if (!time) return <div>--:--:--</div>; // Placeholder
   return <div>{time}</div>;
 }
-```
+```typescript
 
 ## Implementation Patterns
 
@@ -140,7 +140,7 @@ function Component() {
 
   return <div>{/* Browser-dependent content */}</div>;
 }
-```
+```typescript
 
 **Use when:** Component doesn't need to show during SSR
 
@@ -161,7 +161,7 @@ function Component() {
 
   return <div>{/* Actual content */}</div>;
 }
-```
+```typescript
 
 **Use when:** Need loading state visible during SSR
 
@@ -179,7 +179,7 @@ function Component() {
 
   return <div>{data}</div>;
 }
-```
+```typescript
 
 **Use when:** Can show default value during SSR
 
@@ -209,7 +209,7 @@ export function ChatSidebar() {
     </div>
   );
 }
-```
+```typescript
 
 ### Global Chat Button
 
@@ -232,7 +232,7 @@ export function GlobalChatButton() {
 
   return <button>Open Chat</button>;
 }
-```
+```typescript
 
 **Note:** All hooks must be called before conditional returns!
 
@@ -261,7 +261,7 @@ describe("Hydrated Component", () => {
     expect(screen.getByTestId("hydrated-content")).toBeInTheDocument();
   });
 });
-```
+```typescript
 
 ### E2E Tests (Playwright)
 
@@ -289,7 +289,7 @@ test("should handle hydration correctly", async ({ page }) => {
   // Now safe to interact
   await page.click('[data-testid="interactive-element"]');
 });
-```
+```typescript
 
 ### Why E2E Waits Are Critical
 
@@ -309,7 +309,7 @@ test("correct timing", async ({ page }) => {
   await page.waitForTimeout(500); // DOM stabilization
   await page.click("button"); // Now safe!
 });
-```
+```typescript
 
 ## Debugging Hydration Errors
 
@@ -343,7 +343,7 @@ return (
     Content
   </div>
 );
-```
+```typescript
 
 5. **Check localStorage/sessionStorage Access** - Most common cause
 
@@ -374,7 +374,7 @@ function Component() {
 
   if (!isOpen || !isMounted) return null; // After all hooks
 }
-```
+```typescript
 
 ## Common Mistakes
 
@@ -386,7 +386,7 @@ function Component() {
   if (typeof window === "undefined") return null;
   return <div>{localStorage.getItem("key")}</div>;
 }
-```
+```typescript
 
 **Problem:** First client render still won't match server
 
@@ -400,7 +400,7 @@ function Component() {
   const [mounted, setMounted] = useState(false);
   // ...
 }
-```
+```typescript
 
 **Problem:** Server components can't use hooks
 
@@ -416,7 +416,7 @@ useLayoutEffect(() => {
 useEffect(() => {
   setIsMounted(true);
 }, []);
-```
+```typescript
 
 ## Checklist for Hydration-Safe Components
 
@@ -444,7 +444,7 @@ await page.waitForTimeout(500);
 
 // Debug in browser
 // Check: document.documentElement.dataset.reactHydrated
-```
+```typescript
 
 ## Related Files
 

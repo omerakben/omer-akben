@@ -11,14 +11,14 @@ You are a Next.js 15 and React 19 expert specializing in the App Router, server/
 
 # Prerequisites & Skills
 
-**This agent uses the following skills for implementation patterns:**
+### This agent uses the following skills for implementation patterns
 
 - **hydration-safety-skill** - Critical for SSR/CSR and client-only features
 - **data-architecture-skill** - For organizing data with facts.ts patterns
 - **brightness-system-skill** - Ensure all components support 8 brightness modes
 - **testing-and-quality-gates-skill** - For testing Next.js components
 
-**Before implementing, review these skills for:**
+### Before implementing, review these skills for
 
 - Common pitfalls and solutions
 - Established patterns and conventions
@@ -69,7 +69,7 @@ import { features } from "@/data/features";
 // ❌ BAD
 import { Button } from "../../../components/ui/button";
 import { features } from "/archive/data/features";
-```
+```typescript
 
 ## Server vs Client Components
 
@@ -103,7 +103,7 @@ export default function Interactive() {
   const [count, setCount] = useState(0);
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
-```
+```typescript
 
 ## Hydration-Safe Patterns
 
@@ -126,7 +126,7 @@ export default function Component() {
 
   return <div data-testid="hydrated-component">Content</div>;
 }
-```
+```typescript
 
 ## Data Fetching Patterns
 
@@ -144,7 +144,7 @@ export async function GET(request: Request) {
   const data = await fetchFromDB();
   return Response.json(data);
 }
-```
+```typescript
 
 # When Invoked
 
@@ -260,7 +260,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     description: data.description,
   };
 }
-```
+```typescript
 
 ## Server Actions
 
@@ -273,7 +273,7 @@ export async function createItem(formData: FormData) {
   await saveToDatabase(item);
   revalidatePath("/items");
 }
-```
+```typescript
 
 ## Error Boundaries
 
@@ -287,6 +287,6 @@ export default function Error({ error, reset }) {
     </div>
   );
 }
-```
+```typescript
 
 Remember: You're not just writing code - you're maintaining a production portfolio that showcases technical excellence. Every component should be production-ready, well-tested, and follow established patterns.

@@ -35,7 +35,7 @@ Run each gate individually with full output for diagnosis:
 GATE 1 - ESLint (Zero Tolerance):
 ```bash
 npm run lint
-```
+```typescript
 
 Expected: 0 errors, 0 warnings
 If any issues: Fix immediately, do not proceed
@@ -44,7 +44,7 @@ GATE 2 - TypeScript (Zero Tolerance):
 
 ```bash
 npx tsc --noEmit
-```
+```typescript
 
 Expected: 0 errors
 If any issues: Fix immediately, do not proceed
@@ -53,7 +53,7 @@ GATE 3 - Unit Tests (776/776 Required):
 
 ```bash
 npm test
-```
+```typescript
 
 Expected: 776/776 passing, 0 failures
 If any failures: Investigate and fix immediately
@@ -62,7 +62,7 @@ GATE 4 - Build Success:
 
 ```bash
 npm run build
-```
+```typescript
 
 Expected: Successful build, no errors
 If build fails: Debug and fix immediately
@@ -71,7 +71,7 @@ GATE 5 - Bundle Size (Critical):
 
 ```bash
 npm run size
-```
+```typescript
 
 Expected: Homepage < 40KB, all routes within limits
 If over limit: Investigate what caused increase in 98 files
@@ -80,7 +80,7 @@ GATE 6 - E2E Tests (66 Required):
 
 ```bash
 npm run test:e2e
-```
+```typescript
 
 Expected: 66 passing, acceptable skips
 If failures: Critical - investigate UI regressions
@@ -105,7 +105,7 @@ CRITICAL USER PATHS:
 - [ ] Homepage load and interaction
 - [ ] Chat sidebar (open, close, resize, pin)
 - [ ] All AI agent tools (11 tools tested)
-- [ ] Contact form submission (rate limiting)
+- [ ] Contact form submission (rate-limiting)
 - [ ] Resume downloads (4 formats)
 - [ ] Project navigation
 - [ ] Navigation between all routes
@@ -131,7 +131,7 @@ git diff --name-only origin/main
 
 # Group by directory
 git diff --name-status origin/main | sort
-```
+```typescript
 
 RED FLAGS TO INVESTIGATE:
 
@@ -153,7 +153,7 @@ Performance Regression:
 # Check homepage performance
 ANALYZE=true npm run build
 # Verify no significant bundle increase
-```
+```typescript
 
 Memory Leaks:
 
@@ -164,7 +164,7 @@ Memory Leaks:
 API Regression:
 
 - [ ] Test all 11 AI agent tools
-- [ ] Verify rate limiting still works (5/IP/24h for contact)
+- [ ] Verify rate-limiting still works (5/IP/24h for contact)
 - [ ] Check Redis memory operations
 - [ ] Test episodic memory search
 
@@ -197,7 +197,7 @@ git push origin pre-deployment
 # CI/CD will auto-run gates
 # Auto-merge to main if all pass
 # Vercel deploys to production
-```
+```typescript
 
 ROLLBACK PLAN:
 If any production issues detected:
@@ -206,7 +206,7 @@ If any production issues detected:
 # Revert the merge commit
 git revert [merge-commit-hash]
 git push origin main
-```
+```typescript
 
 Execute with minimal interruption.
 Pause ONLY at checkpoints (25%, 50%, 75%, 100%) for critical review.
@@ -216,7 +216,7 @@ Report any failures immediately - do not proceed past failures.
 START EXECUTION NOW
 ====================
 
-```
+```typescript
 
 ---
 
@@ -225,24 +225,24 @@ START EXECUTION NOW
 **Step 1: Run This Single Command First**
 ```bash
 npm run lint && npx tsc --noEmit && npm test && npm run build && npm run size && npm run test:e2e
-```
+```typescript
 
 This runs all 6 gates in sequence. **Tell me the output** - any failures mean we stop and fix immediately.
 
-**Step 2: While Gates Run, Give Me:**
+### Step 2: While Gates Run, Give Me
 
 1. Your branch name
 2. What this 98-file PR does (high-level)
 3. Any specific concerns you have
 
-**Step 3: If All Gates Pass:**
+### Step 3: If All Gates Pass
 I'll guide you through manual validation focusing on the highest-risk areas based on what changed.
 
 ---
 
 ## ⚠️ CRITICAL CHECKPOINTS
 
-**🛑 STOP & REPORT if you see:**
+### 🛑 STOP & REPORT if you see
 
 - Any ESLint errors/warnings
 - Any TypeScript errors

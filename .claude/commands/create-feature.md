@@ -5,13 +5,13 @@ Create a new feature branch following the project's git workflow:
 ```bash
 git checkout pre-deployment
 git pull origin pre-deployment
-```
+```typescript
 
 2. Create feature branch:
 
 ```bash
 git checkout -b feature/[feature-name]
-```
+```typescript
 
 3. Remind developer to:
 
@@ -28,7 +28,7 @@ npm run lint && npx tsc --noEmit && npm test && npm run build && npm run size
 git add .
 git commit -m "feat: description of feature"
 git push origin feature/[feature-name]
-```
+```typescript
 
 5. Create PR to pre-deployment branch
 6. Wait for CI/CD quality gates to pass

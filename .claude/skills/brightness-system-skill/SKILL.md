@@ -13,7 +13,7 @@ The omer-akben portfolio implements an 8-mode brightness system that must be tes
 
 **Modes:** `-3` (darkest) → `0` (baseline) → `+3` (brightest) + `auto`
 
-**Implementation:**
+### Implementation
 
 - `data-brightness` attribute on `<html>` element
 - CSS custom properties in `globals.css`
@@ -42,7 +42,7 @@ bg-brand-secondary  /* Secondary brand color */
 
 /* Borders */
 border-border-line  /* Border color */
-```
+```typescript
 
 ❌ **NEVER USE:**
 
@@ -66,7 +66,7 @@ border-border-line  /* Border color */
     Click me
   </button>
 </div>
-```
+```typescript
 
 ## Implementation Patterns
 
@@ -94,7 +94,7 @@ function BrightnessControl() {
     </select>
   );
 }
-```
+```typescript
 
 ### Brightness Context Provider
 
@@ -107,7 +107,7 @@ interface BrightnessContextType {
   brightness: BrightnessMode;
   setBrightness: (mode: BrightnessMode) => void;
 }
-```
+```typescript
 
 ### HTML Attribute
 
@@ -117,7 +117,7 @@ The brightness mode is set on the root HTML element:
 <html data-brightness="0">
   <!-- content -->
 </html>
-```
+```typescript
 
 CSS custom properties respond to this attribute:
 
@@ -131,7 +131,7 @@ CSS custom properties respond to this attribute:
   --color-surf-0: #f5f5f5;
   --color-text-1: #0a0a0a;
 }
-```
+```typescript
 
 ## Testing Requirements
 
@@ -173,7 +173,7 @@ describe("Component brightness modes", () => {
     });
   });
 });
-```
+```typescript
 
 ### E2E Test Pattern
 
@@ -200,7 +200,7 @@ test.describe("Brightness modes", () => {
     });
   });
 });
-```
+```typescript
 
 ## Common Issues & Solutions
 
@@ -208,7 +208,7 @@ test.describe("Brightness modes", () => {
 
 **Symptoms:** Colors don't change with brightness mode
 
-**Solution:**
+### Solution
 
 1. Search codebase for hex colors: `#[0-9a-fA-F]{3,6}`
 2. Replace with CSS custom properties
@@ -218,7 +218,7 @@ test.describe("Brightness modes", () => {
 
 **Symptoms:** Text hard to read in certain modes
 
-**Solution:**
+### Solution
 
 1. Review color token values in `globals.css`
 2. Adjust contrast ratios (minimum 4.5:1 for normal text)
@@ -228,7 +228,7 @@ test.describe("Brightness modes", () => {
 
 **Symptoms:** Component colors stay the same
 
-**Solution:**
+### Solution
 
 1. Verify component uses CSS custom properties
 2. Check if component has inline styles (remove them)
@@ -260,7 +260,7 @@ Complete list of available tokens in `src/app/globals.css`:
 --color-error: /* Error state */
 --color-success: /* Success state */
 --color-warning: /* Warning state */
-```
+```typescript
 
 ## Checklist for New Components
 
@@ -292,7 +292,7 @@ When `brightness="auto"`:
     /* Use light mode tokens */
   }
 }
-```
+```typescript
 
 ## Performance Considerations
 
@@ -319,4 +319,4 @@ document.documentElement.setAttribute("data-brightness", "3")
 # Check component uses correct tokens
 // Should see: bg-surf-1, text-text-1, border-border-line
 // Should NOT see: bg-[#xxx], text-white, border-gray-800
-```
+```typescript

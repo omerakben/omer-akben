@@ -14,7 +14,7 @@ npm test                                      # Run all unit tests
 npm test -- --watch                           # TDD mode (watch for changes)
 npm test -- global-chat-button.test.tsx      # Run specific test file
 npm run test:ui                              # Visual test UI
-```
+```typescript
 
 ### E2E Tests (Playwright)
 
@@ -23,7 +23,7 @@ npm run test:e2e                             # Run all E2E tests
 npm run test:e2e -- agentic-sidebar.spec.ts # Run specific E2E test
 npm run test:e2e -- --headed                 # Run with browser visible
 npm run test:e2e -- --debug                  # Debug mode with inspector
-```
+```typescript
 
 ### Quality Gates
 
@@ -32,7 +32,7 @@ npm run lint           # ESLint check
 npx tsc --noEmit      # TypeScript check
 npm run build         # Production build
 npm run size          # Bundle size analysis
-```
+```typescript
 
 ## Testing Protocols
 
@@ -40,14 +40,14 @@ npm run size          # Bundle size analysis
 
 **Location:** Tests colocated with components (e.g., `component.test.tsx`)
 
-**Patterns:**
+### Patterns
 
 - Use `describe` blocks for component grouping
 - Test user interactions with `userEvent` from `@testing-library/user-event`
 - Mock Next.js hooks and router with `jest.mock`
 - Test accessibility with `screen.getByRole`, `getByLabelText`
 
-**Example Pattern:**
+### Example Pattern
 
 ```typescript
 import { render, screen } from "@testing-library/react";
@@ -71,20 +71,20 @@ describe("ComponentName", () => {
     expect(mockFunction).toHaveBeenCalled();
   });
 });
-```
+```typescript
 
 ### E2E Test Structure (Playwright)
 
 **Location:** `e2e/*.spec.ts`
 
-**Critical Patterns:**
+### Critical Patterns
 
 - **Wait for hydration** - Use `page.waitForSelector` for dynamic content
 - **Network monitoring** - Use `page.waitForResponse` for API calls
 - **Viewport testing** - Test at multiple screen sizes
 - **Accessibility** - Use `page.getByRole`, `page.getByLabel`
 
-**Example Pattern:**
+### Example Pattern
 
 ```typescript
 import { test, expect } from "@playwright/test";
@@ -103,13 +103,13 @@ test.describe("Feature Name", () => {
     await expect(page.getByRole("dialog")).toBeVisible();
   });
 });
-```
+```typescript
 
 ### Hydration Testing for Next.js SSR
 
 **Critical Rule:** E2E tests must wait for client-side hydration before interactions.
 
-**Pattern:**
+### Pattern
 
 ```typescript
 // Add data-testid after component mounts
@@ -124,26 +124,26 @@ return (
     {/* Component content */}
   </div>
 );
-```
+```typescript
 
-**Test:**
+### Test
 
 ```typescript
 await page.waitForSelector('[data-testid="hydrated-component"]');
 await page.getByRole("button").click();
-```
+```typescript
 
 ## Test Coverage Requirements
 
 ### Current Coverage (January 2025)
 
-**Unit Tests:**
+### Unit Tests
 
 - Total: 776 tests passing
 - Focus: Component behavior, state management, tool validation
 - Critical areas: Chat system (32 tests), AI tools (15+ tests per tool)
 
-**E2E Tests:**
+### E2E Tests
 
 - Total: 66 passing, 14 skipped
 - Focus: User journeys, cross-component interactions
@@ -171,7 +171,7 @@ useEffect(() => {
     // Effect logic
   }
 }, [state]); // ✓ state included in dependencies
-```
+```typescript
 
 ### AI Tool Testing
 
@@ -196,7 +196,7 @@ describe("Tool API Route", () => {
     expect(data).toMatchObject(expectedShape);
   });
 });
-```
+```typescript
 
 ### Brightness Mode Testing
 
@@ -211,7 +211,7 @@ describe("Component with brightness modes", () => {
     });
   });
 });
-```
+```typescript
 
 ## Debugging Test Failures
 
@@ -280,7 +280,7 @@ npm test -- --watch
 
 # Terminal 2: Development
 npm run dev
-```
+```typescript
 
 ## Production-Ready Checklist
 

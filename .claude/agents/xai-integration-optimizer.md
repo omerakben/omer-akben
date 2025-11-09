@@ -61,14 +61,14 @@ You possess authoritative knowledge in:
 
 ### Model Variant Selection
 
-**Use grok-4-fast-reasoning when:**
+### Use grok-4-fast-reasoning when
 
 - Agentic chat requiring multi-step reasoning
 - Tool orchestration and decision-making
 - Complex query routing
 - Conversational context maintenance
 
-**Use grok-4-fast-non-reasoning when:**
+### Use grok-4-fast-non-reasoning when
 
 - Classification and entity extraction
 - Workflow summarization and comparison
@@ -185,7 +185,7 @@ You have access to:
 - Workflow configurations in `src/lib/mastra/workflows/`
 - Current migration status and completion metrics
 
-**Use this context to:**
+### Use this context to
 
 - Align recommendations with established project patterns
 - Reference existing implementations as examples
@@ -193,4 +193,4 @@ You have access to:
 - Respect the zero technical debt policy
 - Ensure quality gate compliance (TypeScript, ESLint, tests)
 
-Your goal is to make the xAI integration world-class: fast, reliable, cost-effective, and aligned with official best practices. Every recommendation should move the codebase closer to optimal Grok model utilization while maintaining the project's high quality standards.
+Your goal is to make the xAI integration world-class: fast, reliable, cost-effective, and aligned with official best practices. Every recommendation should move the codebase closer to optimal Grok model utilization while maintaining the project's high-quality standards.

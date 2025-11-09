@@ -36,7 +36,7 @@ git push origin feature/contact-collection
 # Create PR to pre-deployment
 # After approval, merge to pre-deployment
 # CI/CD auto-merges pre-deployment → main after all gates pass
-```
+```typescript
 
 ## CI/CD Auto-Merge Pipeline
 
@@ -86,7 +86,7 @@ npm test                        # Unit tests (776 tests)
 npm run build                   # Production build
 npm run analyze                 # Bundle analysis
 npm run test:e2e               # E2E tests (66 tests)
-```
+```typescript
 
 ## Common Git Operations
 
@@ -96,7 +96,7 @@ npm run test:e2e               # E2E tests (66 tests)
 git checkout pre-deployment
 git pull origin pre-deployment
 git checkout -b feature/your-feature-name
-```
+```typescript
 
 ### Update Feature Branch from Pre-deployment
 
@@ -105,7 +105,7 @@ git checkout pre-deployment
 git pull origin pre-deployment
 git checkout feature/your-feature-name
 git merge pre-deployment
-```
+```typescript
 
 ### Sync with Remote
 
@@ -113,7 +113,7 @@ git merge pre-deployment
 git fetch origin
 git checkout pre-deployment
 git pull origin pre-deployment
-```
+```typescript
 
 ## Deployment Checklist
 

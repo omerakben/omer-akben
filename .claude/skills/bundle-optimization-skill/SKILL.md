@@ -23,13 +23,13 @@ import * as Icons from 'simple-icons';
 
 // This single line imports 2,000+ icons even if you only use 5
 const reactIcon = Icons.siReact;
-```
+```typescript
 
 ### The Solution: Icon Manifest
 
 **Location:** `src/lib/icon-manifest.ts`
 
-**How it works:**
+### How it works
 
 1. Curate list of needed icons (42 in this project)
 2. Build script generates manifest with only those icons
@@ -41,7 +41,7 @@ import { getIcon } from '@/lib/icon-manifest';
 
 const reactIcon = getIcon('react');
 // Bundle only includes 42 icons instead of 2,000+
-```
+```typescript
 
 ### Implementation
 
@@ -54,7 +54,7 @@ const reactIcon = getIcon('react');
 // Reads curated icon list
 // Generates optimized manifest
 // Only includes icons actually used in project
-```
+```typescript
 
 **2. Icon Manifest**
 
@@ -77,7 +77,7 @@ const iconManifest = {
 };
 
 export const getIcon = (name: string) => iconManifest[name];
-```
+```typescript
 
 **3. Package.json Build Hook**
 
@@ -88,7 +88,7 @@ export const getIcon = (name: string) => iconManifest[name];
     "build": "next build"
   }
 }
-```
+```typescript
 
 ### Usage Pattern
 
@@ -105,7 +105,7 @@ function SkillIcon({ name }: { name: string }) {
     <div dangerouslySetInnerHTML={{ __html: icon.svg }} />
   );
 }
-```
+```typescript
 
 ### Adding New Icons
 
@@ -126,7 +126,7 @@ import { Camera, Settings } from 'lucide-react';
 // ❌ WRONG - Imports everything
 import * as Components from '@/components';
 import * as Icons from 'lucide-react';
-```
+```typescript
 
 ### 2. Lucide Icons Configuration
 
@@ -139,7 +139,7 @@ modularizeImports: {
     skipDefaultConversion: true,
   },
 }
-```
+```typescript
 
 **Effect:** Each Lucide icon imports only its file, not entire library
 
@@ -154,7 +154,7 @@ const HeavyChart = dynamic(() => import('@/components/heavy-chart'), {
 
 // Use in component
 <HeavyChart data={data} />
-```
+```typescript
 
 ### 4. Code Splitting by Route
 
@@ -170,7 +170,7 @@ const HeavyFeature = dynamic(() => import('@/components/heavy-feature'));
 export default function Page() {
   return <HeavyFeature />;
 }
-```
+```typescript
 
 ## Bundle Analysis Workflow
 
@@ -182,7 +182,7 @@ npm install --save-dev @next/bundle-analyzer
 
 # Run analysis
 ANALYZE=true npm run build
-```
+```typescript
 
 ### Step 2: Review Results
 
@@ -195,7 +195,7 @@ Analyzer opens in browser showing:
 
 ### Step 3: Identify Issues
 
-**Look for:**
+### Look for
 
 - Large chunks (>500KB)
 - Duplicate libraries (same lib in multiple chunks)
@@ -204,7 +204,7 @@ Analyzer opens in browser showing:
 
 ### Step 4: Optimize
 
-**Common fixes:**
+### Common fixes
 
 1. Convert wildcard imports to named imports
 2. Add dynamic imports for heavy components
@@ -230,7 +230,7 @@ Analyzer opens in browser showing:
     }
   ]
 }
-```
+```typescript
 
 ### Running Size Checks
 
@@ -241,7 +241,7 @@ npm run size
 # Output shows:
 # ✓ Homepage: 7.73 KB / 40 KB (within limit)
 # ✓ Skills: 6.31 KB / 40 KB (within limit)
-```
+```typescript
 
 ### CI/CD Integration
 
@@ -250,7 +250,7 @@ Size limits run in GitHub Actions quality gates:
 ```yaml
 - name: Check bundle size
   run: npm run size
-```
+```typescript
 
 **Failure:** Blocks PR if any bundle exceeds limit
 
@@ -270,9 +270,9 @@ import Image from 'next/image';
   priority={false} // Lazy load by default
   quality={85}
 />
-```
+```typescript
 
-**Benefits:**
+### Benefits
 
 - Automatic WebP/AVIF conversion
 - Lazy loading by default
@@ -298,9 +298,9 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-```
+```typescript
 
-**Benefits:**
+### Benefits
 
 - Self-hosted fonts (no external requests)
 - Automatic font optimization
@@ -322,11 +322,11 @@ import Script from 'next/script';
   src="https://critical.example.com/script.js"
   strategy="beforeInteractive"
 />
-```
+```typescript
 
 ### 4. CSS Optimization
 
-**Tailwind Configuration:**
+### Tailwind Configuration
 
 ```javascript
 // tailwind.config.js
@@ -336,7 +336,7 @@ module.exports = {
   ],
   // Purges unused CSS in production
 };
-```
+```typescript
 
 **Result:** Only CSS actually used is included in bundle
 
@@ -344,25 +344,25 @@ module.exports = {
 
 ### Current Metrics (Production)
 
-```
+```typescript
 Homepage:     7.73 KB / 40 KB (19% of limit) ✅
 Skills Page:  6.31 KB / 40 KB (16% of limit) ✅
 Shared:       102 KB (routes share this)
-```
+```typescript
 
 ### Bundle Size History
 
-**Before Optimization (October 2024):**
+### Before Optimization (October 2024)
 
 - Homepage: 2.33 MB (with wildcard icon import)
 - Skills Page: 2.35 MB
 
-**After Icon Manifest (October 2024):**
+### After Icon Manifest (October 2024)
 
 - Homepage: 236 KB (90% reduction)
 - Skills Page: 193 KB
 
-**After Additional Optimizations (November 2024):**
+### After Additional Optimizations (November 2024)
 
 - Homepage: 7.73 KB
 - Skills Page: 6.31 KB
@@ -380,7 +380,7 @@ npm run size > after.txt
 
 # Compare
 diff before.txt after.txt
-```
+```typescript
 
 ## Common Optimization Mistakes
 
@@ -393,7 +393,7 @@ const Text = dynamic(() => import('./text'));
 const Icon = dynamic(() => import('./icon'));
 
 // Network overhead > bundle savings
-```
+```typescript
 
 **Fix:** Only split genuinely large components (>50KB)
 
@@ -404,7 +404,7 @@ const Icon = dynamic(() => import('./icon'));
 import { faker } from '@faker-js/faker';
 
 const mockData = faker.name.firstName();
-```
+```typescript
 
 **Fix:** Use conditional imports or environment checks
 
@@ -413,7 +413,7 @@ const mockData = faker.name.firstName();
 const mockData = process.env.NODE_ENV === 'development'
   ? await import('@faker-js/faker').then(m => m.faker.name.firstName())
   : 'John';
-```
+```typescript
 
 ### Mistake 3: Duplicate Dependencies
 
@@ -426,7 +426,7 @@ npm ls react
 # ├── react@19.0.0
 # └── some-lib
 #     └── react@18.0.0  # ❌ Duplicate!
-```
+```typescript
 
 **Fix:** Update dependencies to use same version
 
@@ -441,7 +441,7 @@ npm ls react
 
 ### Adding New Features
 
-**Before adding dependency:**
+### Before adding dependency
 
 1. Check package size on Bundlephobia
 2. Consider alternatives
@@ -457,7 +457,7 @@ npm install <package-name>
 
 # Verify size impact
 npm run size
-```
+```typescript
 
 ## Optimization Checklist
 
@@ -492,7 +492,7 @@ npm run build && npm run start
 
 # Generate icon manifest
 node scripts/generate-icons.js
-```
+```typescript
 
 ## Related Files
 

@@ -9,7 +9,7 @@
 
 ### What do you want to do?
 
-```
+```typescript
 ┌─────────────────────────────────────────────────────────────┐
 │  Building Something New?                                     │
 ├─────────────────────────────────────────────────────────────┤
@@ -57,7 +57,7 @@
 │  → Skill Creation (#16)              New patterns           │
 │  → Agent Enhancement (#17)           Agent improvements     │
 └─────────────────────────────────────────────────────────────┘
-```
+```typescript
 
 ---
 
@@ -164,7 +164,7 @@
 
 ### Starter: Feature Development
 
-```
+```typescript
 #PLAN#
 
 PROJECT: omer-akben Portfolio
@@ -191,11 +191,11 @@ DOCUMENTATION PERMISSION:
 May I create tracking documents?
 - [ ] FeatureName_Plan_2025-11-08.gdoc
 - [ ] FeatureName_Tracker_2025-11-08.gsheet
-```
+```typescript
 
 ### Starter: Bug Fix
 
-```
+```typescript
 #RESEARCH#
 
 PROJECT: omer-akben Portfolio
@@ -214,22 +214,22 @@ REPRODUCTION STEPS:
 2. [Step 2]
 
 ERROR MESSAGES:
-```
+```typescript
 
 [Paste errors]
 
-```
+```typescript
 
 After research, switch to #ACTION# with checkpoints:
 - 25%: Root cause + solution
 - 50%: Fix implemented
 - 75%: Quality gates pass
 - 100%: PR ready
-```
+```typescript
 
 ### Starter: Research
 
-```
+```typescript
 #RESEARCH#
 
 PROJECT: omer-akben Portfolio
@@ -256,7 +256,7 @@ ProjectName_Research_2025-11-08.gdoc
 May I create this research document?
 
 NO planning or implementation - pure research only.
-```
+```typescript
 
 ---
 
@@ -284,14 +284,14 @@ NO planning or implementation - pure research only.
 
 ### Documentation
 
-**Always ask before creating:**
+### Always ask before creating
 
-```
+```typescript
 May I create the following documents?
 - [ ] ProjectName_Type_2025-11-08.gdoc
-```
+```typescript
 
-**Naming convention:**
+### Naming convention
 
 - ProjectName_DocumentType_YYYY-MM-DD
 - Types: Plan, Tracker, Research, Notes, Requirements
