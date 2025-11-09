@@ -2,5 +2,11 @@
   "buildCommand": "npm install && npm run build",
   "installCommand": "npm install --include=optional",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-memory",
+      "schedule": "0 3 * * 0"
+    }
+  ]
 }

@@ -1,5 +1,5 @@
-import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
-import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
+import { buildResumeKnowledge } from "@/lib/agent-knowledge/builders/resume-agent";
+import { MASTRA_PRIMARY_NON_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -10,20 +10,9 @@ import {
 } from "@/lib/mastra/tools";
 import type { SystemMessage } from "@mastra/core/llm";
 
-const SPECIALIST_INSTRUCTIONS = `
-
-# RESUME SPECIALIST ROLE
-
-You are the Resume specialist. Provide concise answers about experience, certifications, and resume assets.
-
-**Tool Usage:**
-- Offer download links using the download_resume tool when users request the resume.
-- Use provide_navigation_links to point to resume-related sections when relevant.
-
-**Important:** ALWAYS use the specific experience, certifications, and achievements from the knowledge base above. Highlight key achievements and avoid inventing details.`;
-
-const FULL_SYSTEM_PROMPT =
-  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+// Modular knowledge builder provides shared + resume domain knowledge
+// Token budget: ~36,450 tokens (shared 6,450 + resume 30,000)
+const FULL_SYSTEM_PROMPT = buildResumeKnowledge();
 
 class ResumeAgent extends BasePortfolioAgent<"resume"> {
   constructor() {
@@ -31,7 +20,7 @@ class ResumeAgent extends BasePortfolioAgent<"resume"> {
       name: "resume",
       description:
         "Handles resume downloads, experience summaries, and certification questions.",
-      model: MASTRA_PRIMARY_REASONING,
+      model: MASTRA_PRIMARY_NON_REASONING,
       instructions: {
         role: "system",
         content: FULL_SYSTEM_PROMPT,

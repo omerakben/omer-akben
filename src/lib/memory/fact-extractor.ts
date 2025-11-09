@@ -218,6 +218,7 @@ Extract facts as JSON:`;
         system: FACT_EXTRACTION_SYSTEM_PROMPT,
         prompt,
         temperature: 0.3, // Low temperature for consistent, focused extraction
+        component: "fact-extractor",
       });
 
       responseText = result.text;

@@ -72,11 +72,13 @@ export const FollowupChips = memo(function FollowupChips({
           router
         );
 
-        // If action was executed and it's not a conversational action,
+        // If action was executed and it's a navigation action,
         // don't send the message (navigation actions handle flow)
         if (
           actionExecuted &&
-          !["collect_contact", "provide_nav"].includes(suggestion.action)
+          ["open_project", "list_projects", "search_projects", "download_resume"].includes(
+            suggestion.action
+          )
         ) {
           return;
         }
@@ -86,8 +88,13 @@ export const FollowupChips = memo(function FollowupChips({
       }
     }
 
-    // Send message to chat
-    onSend(label);
+    // Send message to chat (only for conversational actions or no action)
+    try {
+      onSend(label);
+    } catch (error) {
+      console.error("[FollowupChips] Failed to send message:", error);
+      // Error handling is done by parent component
+    }
   };
 
   const handleKeyDown = (

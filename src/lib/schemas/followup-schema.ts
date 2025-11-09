@@ -118,7 +118,7 @@ export const Routing = z.object({
     .regex(/^[A-Za-z]+>[A-Za-z]+>[A-Za-z]+$/,
       "Routing state must follow format: PersonType>Topic>Stage"),
   reason: z.string()
-    .max(100, "Routing reason must not exceed 100 characters")
+    .max(200, "Routing reason must not exceed 200 characters")
 });
 
 export type RoutingType = z.infer<typeof Routing>;

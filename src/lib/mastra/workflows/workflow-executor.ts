@@ -28,6 +28,8 @@ export function formatWorkflowEvent(event: WorkflowEvent): string {
       return `\n${event.content}\n`;
     case "complete":
       return `\n\n---\n\n${event.summary}`;
+    case "error":
+      return `\n\n⚠️ **Step ${event.step} Error**: ${event.message}\n${event.canContinue ? "Continuing with next step...\n" : ""}\n`;
   }
 }
 

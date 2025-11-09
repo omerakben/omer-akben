@@ -1,5 +1,3 @@
-import { describe, expect, it } from "vitest";
-import { ZodError } from "zod";
 import {
   downloadCertificateInputSchema,
   downloadCertificateOutputSchema,
@@ -20,6 +18,8 @@ import {
   triggerWorkflowInputSchema,
   triggerWorkflowOutputSchema,
 } from "@/lib/tools/zod-schemas";
+import { describe, expect, it } from "vitest";
+import { ZodError } from "zod";
 
 describe("agent-tools schemas", () => {
   describe("toolResponseSchema", () => {
@@ -174,8 +174,8 @@ describe("agent-tools schemas", () => {
       const result = getContactOutputSchema.parse({
         contact: {
           email: "me@omerakben.com",
-          phone: "+1-234-567-8900",
-          location: "Nashville, TN",
+          phone: "+1 (267) 512-4566",
+          location: "Raleigh, NC",
           linkedin: "https://linkedin.com/in/omerakben",
           github: "https://github.com/omerakben",
           twitter: "https://x.com/mrfrkkbn",
@@ -189,7 +189,7 @@ describe("agent-tools schemas", () => {
         getContactOutputSchema.parse({
           contact: {
             email: "invalid-email",
-            location: "Nashville, TN",
+            location: "Raleigh, NC",
             linkedin: "https://linkedin.com/in/user",
             github: "https://github.com/user",
           },
@@ -201,7 +201,7 @@ describe("agent-tools schemas", () => {
       const result = getContactOutputSchema.parse({
         contact: {
           email: "me@omerakben.com",
-          location: "Nashville, TN",
+          location: "Raleigh, NC",
           linkedin: "https://linkedin.com/in/omerakben",
           github: "https://github.com/omerakben",
         },

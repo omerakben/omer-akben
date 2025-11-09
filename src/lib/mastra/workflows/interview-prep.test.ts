@@ -3,6 +3,7 @@ import type { UIMessage } from "ai";
 import type { Mock } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { detectInterviewPrep, interviewPrepWorkflow } from "./interview-prep";
+import type { WorkflowEvent } from "./types";
 
 // Mock the model fallback utility
 vi.mock("@/lib/ai/model-fallback", () => ({
@@ -211,12 +212,18 @@ describe("interview-prep workflow", () => {
       (generateWithFallback as Mock).mockRejectedValueOnce(new Error("API error"));
 
       const generator = interviewPrepWorkflow.execute(mockContext);
+      const events: WorkflowEvent[] = [];
 
-      await expect(async () => {
-        for await (const event of generator) {
-          void event;
-        }
-      }).rejects.toThrow("API error");
+      // Workflow should yield error events instead of throwing
+      for await (const event of generator) {
+        events.push(event);
+      }
+
+      // Should contain an error event with canContinue: true
+      const errorEvent = events.find((e) => e.type === "error");
+      expect(errorEvent).toBeDefined();
+      expect(errorEvent?.canContinue).toBe(true);
+      expect(errorEvent?.message).toBeTruthy();
     });
   });
 });

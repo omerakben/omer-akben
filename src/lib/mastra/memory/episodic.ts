@@ -207,4 +207,112 @@ export class RedisEpisodicMemory {
       }))
       .filter((result) => Boolean(result.threadId));
   }
+
+  /**
+   * Cleanup old episodic memories beyond TTL
+   *
+   * Scans all episodic memory vectors and deletes those older than the specified TTL.
+   * Uses cursor-based pagination to handle large datasets efficiently.
+   *
+   * @param ttlDays - Time-to-live in days (default: 90 days)
+   * @returns Number of vectors deleted
+   *
+   * @example
+   * const memory = new RedisEpisodicMemory();
+   * const deletedCount = await memory.cleanup(90);
+   * console.log(`Deleted ${deletedCount} old memories`);
+   */
+  async cleanup(ttlDays = 90): Promise<number> {
+    const cutoffTime = Date.now() - ttlDays * 24 * 60 * 60 * 1000;
+    const vectorClient = getVectorClient();
+    const idsToDelete: string[] = [];
+
+    try {
+      // Scan all episodic vectors using cursor-based pagination
+      let nextCursor: string | undefined = undefined;
+
+      while (true) {
+        // Fetch batch of vectors with cursor
+        const rangeResponse: unknown = await vectorClient.range({
+          cursor: nextCursor || "",
+          limit: 100,
+          includeMetadata: false,
+          includeVectors: false,
+        });
+
+        // Extract vectors array from response (handle both array and object formats)
+        const vectors = Array.isArray(rangeResponse)
+          ? rangeResponse
+          : ((rangeResponse as Record<string, unknown>).vectors as { id: string }[]) || [];
+
+        // Parse timestamps from vector IDs and filter old ones
+        for (const vector of vectors) {
+          const vectorId = vector.id;
+
+          // Only process episodic memory vectors
+          if (!vectorId.startsWith(EPISODIC_PREFIX)) {
+            continue;
+          }
+
+          try {
+            // Vector ID format: memory:episodic:${threadId}:${timestamp}-${index}
+            // Extract timestamp from the chunkId portion
+            const parts = vectorId.split(":");
+            if (parts.length < 3) continue;
+
+            const chunkId = parts[parts.length - 1]; // ${timestamp}-${index}
+            const timestampStr = chunkId.split("-")[0];
+            const timestamp = parseInt(timestampStr, 10);
+
+            if (isNaN(timestamp)) {
+              console.warn(
+                `[EpisodicMemory] Invalid timestamp in vector ID: ${vectorId}`
+              );
+              continue;
+            }
+
+            // Add to deletion list if older than cutoff
+            if (timestamp < cutoffTime) {
+              idsToDelete.push(vectorId);
+            }
+          } catch (error) {
+            console.error(
+              `[EpisodicMemory] Error parsing vector ID ${vectorId}:`,
+              error
+            );
+          }
+        }
+
+        // Check for next cursor to determine if we should continue
+        const responseObj = rangeResponse as Record<string, unknown>;
+        const cursorValue = (responseObj.nextCursor as string | undefined) ||
+                           (responseObj.cursor as string | undefined);
+
+        if (!cursorValue || cursorValue === "") {
+          break;
+        }
+
+        nextCursor = cursorValue;
+      }
+
+      // Delete old vectors in batches if any found
+      if (idsToDelete.length > 0) {
+        console.log(
+          `[EpisodicMemory] Deleting ${idsToDelete.length} vectors older than ${ttlDays} days`
+        );
+
+        // Delete in batches of 100 to avoid overwhelming the API
+        const BATCH_SIZE = 100;
+        for (let i = 0; i < idsToDelete.length; i += BATCH_SIZE) {
+          const batch = idsToDelete.slice(i, i + BATCH_SIZE);
+          await vectorClient.delete(batch);
+        }
+      }
+
+      return idsToDelete.length;
+    } catch (error) {
+      console.error("[EpisodicMemory] Cleanup failed:", error);
+      throw error;
+    }
+  }
 }

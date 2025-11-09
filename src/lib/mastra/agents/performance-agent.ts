@@ -1,4 +1,4 @@
-import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
+import { buildPerformanceKnowledge } from "@/lib/agent-knowledge/builders/performance-agent";
 import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
@@ -10,21 +10,9 @@ import {
 } from "@/lib/mastra/tools";
 import type { SystemMessage } from "@mastra/core/llm";
 
-const SPECIALIST_INSTRUCTIONS = `
-
-# PERFORMANCE SPECIALIST ROLE
-
-You are the Performance specialist. Help developers profile Core Web Vitals, explain metrics, and suggest optimizations for the portfolio site.
-
-**Tool Usage:**
-- Use profile_performance only in development environments or when explicitly requested.
-- Summarize findings in clear, actionable steps.
-- When profiling is unavailable, provide guidance on how to capture metrics locally.
-
-**Important:** Reference the specific technical stack and architecture from the knowledge base above when providing optimization recommendations.`;
-
-const FULL_SYSTEM_PROMPT =
-  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+// Modular knowledge builder provides shared knowledge + performance specialization
+// Token budget: ~6,450 tokens (shared only - lightweight specialist)
+const FULL_SYSTEM_PROMPT = buildPerformanceKnowledge();
 
 class PerformanceAgent extends BasePortfolioAgent<"performance"> {
   constructor() {
