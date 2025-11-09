@@ -9,7 +9,7 @@
  * - Routing state tracking for conversation flow
  */
 
-import { generateWithFallback } from "@/lib/ai/model-fallback";
+import { generateObjectWithFallback } from "@/lib/ai/model-fallback";
 import {
   FollowupResponse,
   FollowupResponseType,
@@ -263,19 +263,18 @@ export async function generateDynamicFollowups(
     const { entities: extractedEntities } = extractEntities(recentMessages);
 
     // Primary/Fallback: Grok-4-Fast-Non-Reasoning (primary), GPT-4o-mini (fallback)
-    // Generate follow-ups with primary/fallback pattern
-    const result = await generateWithFallback({
+    // Generate follow-ups with structured output (schema-enforced generation)
+    const result = await generateObjectWithFallback({
       variant: "non-reasoning",
+      schema: FollowupResponse,
       system: buildFollowupSystemPrompt(semanticMemory, extractedEntities),
       messages: recentMessages,
       temperature: 0.5,
+      component: "follow-up-generator",
     });
 
-    // Parse JSON response
-    const parsed = JSON.parse(result.text);
-
-    // Validate against Zod schema
-    const validated = FollowupResponse.parse(parsed);
+    // Object is already validated against Zod schema
+    const validated = result.object;
 
     // Validate project slug if mentioned
     if (validated.entities.project) {

@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import type { ReactNode } from "react";
 
 import { AppShell } from "@/components/app-shell";
+import { validateAIConfig } from "@/lib/ai/env-validation";
 import { createMetadata } from "@/lib/metadata";
 import "./globals.css";
 
@@ -20,6 +21,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  // Validate required environment variables on startup
+  validateAIConfig();
+
   // CRITICAL: Reading x-nonce triggers Next.js automatic nonce injection
   // into ALL generated inline styles/scripts. Without this, CSP blocks everything in production.
   // Do not remove - this "unused" variable has essential side effects.

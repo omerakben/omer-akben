@@ -98,8 +98,8 @@ curl -X POST http://localhost:3000/api/tools/get-contact \
   "data": {
     "contact": {
       "email": "me@omerakben.com",
-      "phone": "+1 (615) 555-0123",
-      "location": "Nashville, TN",
+      "phone": "+1 (267) 512-4566",
+      "location": "Raleigh, NC",
       "linkedin": "https://www.linkedin.com/in/omerakben",
       "github": "https://github.com/omerakben",
       "twitter": "https://twitter.com/omerakben"
@@ -118,7 +118,7 @@ curl -X POST http://localhost:3000/api/tools/get-contact \
   "data": {
     "contact": {
       "email": "me@omerakben.com",
-      "location": "Nashville, TN",
+      "location": "Raleigh, NC",
       "linkedin": "https://www.linkedin.com/in/omerakben",
       "github": "https://github.com/omerakben"
     }
@@ -133,7 +133,7 @@ curl -X POST http://localhost:3000/api/tools/get-contact \
 | Field      | Type   | Description                    | Format Example                          |
 | ---------- | ------ | ------------------------------ | --------------------------------------- |
 | `email`    | string | Primary email address          | `me@omerakben.com`                      |
-| `location` | string | Current city and state/country | `Nashville, TN`                         |
+| `location` | string | Current city and state/country | `Raleigh, NC`                           |
 | `linkedin` | string | LinkedIn profile URL           | `https://www.linkedin.com/in/omerakben` |
 | `github`   | string | GitHub profile URL             | `https://github.com/omerakben`          |
 
@@ -141,7 +141,7 @@ curl -X POST http://localhost:3000/api/tools/get-contact \
 
 | Field     | Type   | Description                      | Format Example                  |
 | --------- | ------ | -------------------------------- | ------------------------------- |
-| `phone`   | string | Phone number (optional)          | `+1 (615) 555-0123`             |
+| `phone`   | string | Phone number (optional)          | `+1 (267) 512-4566`             |
 | `twitter` | string | Twitter/X profile URL (optional) | `https://twitter.com/omerakben` |
 
 ## Data Source
@@ -151,7 +151,7 @@ Contact information is sourced from `src/data/facts.ts` (single source of truth)
 ```typescript
 {
   email: "me@omerakben.com",
-  location: "Nashville, TN",
+  location: "Raleigh, NC",
   linkedin: "https://www.linkedin.com/in/omerakben",
   github: "https://github.com/omerakben",
   // Optional fields may be present
@@ -218,7 +218,7 @@ const { data } = await getContact();
 - Email: me@omerakben.com
 - LinkedIn: linkedin.com/in/omerakben
 - GitHub: github.com/omerakben
-- Location: Nashville, TN"
+- Location: Raleigh, NC"
 ```
 
 ### Pattern 3: Email Integration

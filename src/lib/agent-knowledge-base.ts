@@ -8,6 +8,27 @@ import path from "path";
  *
  * This file contains the complete knowledge base that Ozzy (the AI assistant)
  * uses to answer questions about Omer Akben's experience, skills, and projects.
+ *
+ * @deprecated This monolithic knowledge base has been replaced by the modular architecture
+ * in `/src/lib/agent-knowledge/`. All 7 agents now use agent-specific knowledge builders
+ * that combine shared knowledge with domain-specific modules.
+ *
+ * **Migration completed (2025-11-08):**
+ * - Resume Agent → buildResumeKnowledge() (36,450 tokens, 21% reduction)
+ * - Project Agent → buildProjectKnowledge() (14,450 tokens, 69% reduction)
+ * - Skills Agent → buildSkillsKnowledge() (9,450 tokens, 79% reduction)
+ * - Navigation Agent → buildNavigationKnowledge() (6,450 tokens, 86% reduction)
+ * - Contact Agent → buildContactKnowledge() (6,450 tokens, 86% reduction)
+ * - Performance Agent → buildPerformanceKnowledge() (6,450 tokens, 86% reduction)
+ * - Coordinator Agent → buildCoordinatorKnowledge() (47,450 tokens)
+ *
+ * **Overall impact:** 47% token reduction (230K → 121K tokens) across all agents
+ *
+ * This file is retained only for its test suite which validates the knowledge base structure.
+ * Do not use `buildEnhancedSystemPrompt()` for new agents - use modular builders instead.
+ *
+ * @see /src/lib/agent-knowledge/README.md for modular architecture documentation
+ * @see /claudedocs/modular-knowledge-performance.md for performance metrics
  */
 
 /**

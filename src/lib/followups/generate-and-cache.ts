@@ -30,26 +30,50 @@ function convertUIMessageToSimple(message: UIMessage): {
   role: "user" | "assistant" | "system";
   content: string;
 } {
-  // Extract text from parts array
-  const textParts = message.parts
-    .filter(
-      (part): part is { type: "text"; text: string } =>
-        part.type === "text" && "text" in part
-    )
-    .map((part) => part.text.trim())
-    .filter(Boolean);
-
-  const content = textParts.join("\n");
-
-  // Convert role (UIMessage can be "user" | "assistant" | "system" | "tool")
+  // Normalize role early (UIMessage can be "user" | "assistant" | "system" | "tool")
   // Map "tool" role to "assistant" since generator expects user/assistant/system only
   const messageRole = message.role as "user" | "assistant" | "system" | "tool";
   const role: "user" | "assistant" | "system" =
     messageRole === "tool" ? "assistant" : messageRole;
 
+  // STRATEGY 1: Extract text from parts array (normal LLM messages)
+  if (message.parts && message.parts.length > 0) {
+    const textParts = message.parts
+      .filter(
+        (part): part is { type: "text"; text: string } =>
+          part.type === "text" &&
+          "text" in part &&
+          typeof part.text === "string"
+      )
+      .map((part) => part.text.trim())
+      .filter(Boolean);
+
+    if (textParts.length > 0) {
+      return {
+        role,
+        content: textParts.join("\n"),
+      };
+    }
+  }
+
+  // STRATEGY 2: Fallback to .content property (workflow messages, legacy format)
+  // This mirrors the pattern used in extractMessageText() in route.ts
+  if (
+    typeof (message as unknown as { content?: unknown }).content === "string"
+  ) {
+    const content = (
+      (message as unknown as { content?: string }).content ?? ""
+    ).trim();
+    return {
+      role,
+      content,
+    };
+  }
+
+  // STRATEGY 3: Empty content (will be filtered out at line 83)
   return {
     role,
-    content,
+    content: "",
   };
 }
 

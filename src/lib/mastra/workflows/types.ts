@@ -1,4 +1,5 @@
 import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
+import { z } from "zod";
 
 /**
  * Workflow event types for streaming progress and content to the UI
@@ -7,7 +8,61 @@ export type WorkflowEvent =
   | { type: "progress"; step: number; total: number; message: string }
   | { type: "content"; text: string }
   | { type: "agent-result"; content: string }
-  | { type: "complete"; summary: string };
+  | { type: "complete"; summary: string }
+  | { type: "error"; step: number; message: string; canContinue: boolean };
+
+/**
+ * Zod schemas for runtime validation of workflow events
+ */
+const progressEventSchema = z.object({
+  type: z.literal("progress"),
+  step: z.number().int().positive(),
+  total: z.number().int().positive(),
+  message: z.string().min(1),
+});
+
+const contentEventSchema = z.object({
+  type: z.literal("content"),
+  text: z.string(),
+});
+
+const agentResultEventSchema = z.object({
+  type: z.literal("agent-result"),
+  content: z.string().min(1),
+});
+
+const completeEventSchema = z.object({
+  type: z.literal("complete"),
+  summary: z.string().min(1),
+});
+
+const errorEventSchema = z.object({
+  type: z.literal("error"),
+  step: z.number().int().positive(),
+  message: z.string().min(1),
+  canContinue: z.boolean(),
+});
+
+/**
+ * Union schema for all workflow event types
+ */
+export const workflowEventSchema = z.discriminatedUnion("type", [
+  progressEventSchema,
+  contentEventSchema,
+  agentResultEventSchema,
+  completeEventSchema,
+  errorEventSchema,
+]);
+
+/**
+ * Validates a workflow event against the schema
+ * @param event - The event to validate
+ * @returns The validated event
+ * @throws {z.ZodError} If validation fails
+ */
+export function validateWorkflowEvent(event: unknown): WorkflowEvent {
+  return workflowEventSchema.parse(event);
+}
 
 /**
  * Individual workflow step definition

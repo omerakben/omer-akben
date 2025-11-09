@@ -94,7 +94,7 @@ curl -X POST http://localhost:3000/api/tools/extract-summary \
 {
   "success": true,
   "data": {
-    "summary": "Omer Akben is a Full-Stack Developer and AI enthusiast based in Nashville, TN. His portfolio showcases 12+ projects spanning AI/ML, web development, and mobile applications. Notable projects include Ozzy AI Portfolio Assistant (Next.js 15 + Vercel AI SDK + Upstash Vector for episodic memory), OpenAI Cache Middleware (Redis-backed caching layer reducing API costs by 60%), and Patient Safety Portal (healthcare platform with HIPAA-compliant data handling). Technical expertise includes Next.js, React, TypeScript, Python, AWS, and modern AI tools (OpenAI GPT-4, Langchain, Pinecone). Omer holds certifications from AWS Cloud Practitioner Essentials and Nashville Software School. His work emphasizes production-ready code, comprehensive testing (667 unit tests, WCAG 2A compliance), and zero technical debt. Available for full-time opportunities, consulting engagements, and technical interviews. Contact: me@omerakben.com",
+    "summary": "Omer Akben is a Full-Stack Developer and AI enthusiast based in Raleigh, NC. His portfolio showcases 12+ projects spanning AI/ML, web development. Notable projects include Ozzy AI Portfolio Assistant (Next.js 15 + Vercel AI SDK + Upstash Vector for episodic memory), xAI and OpenAI Cache Middleware (Redis-backed caching layer reducing API costs by 60%), and Patient Safety Portal (healthcare platform with HIPAA-compliant data handling). Technical expertise includes Next.js, React, TypeScript, Python, AWS, Azure and modern AI tools (OpenAI, Gemini, Vertex AI, Claude, Langchain, Pinecone). Omer holds certifications from AWS Cloud Practitioner Essentials and Nashville Software School. His work emphasizes production-ready code, comprehensive testing (500+ unit tests, WCAG 2A compliance), and zero technical debt. Available for full-time opportunities, consulting engagements, and technical interviews. Contact: me@omerakben.com",
     "wordCount": 125
   }
 }
@@ -116,7 +116,7 @@ curl -X POST http://localhost:3000/api/tools/extract-summary \
 {
   "success": true,
   "data": {
-    "summary": "Omer Akben is a Full-Stack Developer specializing in AI integration and modern web applications. Portfolio features 12+ projects including AI assistants, healthcare platforms, and developer tools. Tech stack: Next.js, React, TypeScript, Python, AWS. Holds AWS and Nashville Software School certifications. Known for production-ready code with comprehensive testing (667 unit tests). Available for opportunities in Nashville, TN. Contact: me@omerakben.com",
+    "summary": "Omer Akben is a Full-Stack Developer specializing in AI integration and modern web applications. Portfolio features 12+ projects including AI assistants, healthcare platforms, and developer tools. Tech stack: Next.js, React, TypeScript, Python, AWS. Holds AWS and Nashville Software School certifications. Known for production-ready code with comprehensive testing (667 unit tests). Available for opportunities in Raleigh, NC. Contact: me@omerakben.com",
     "wordCount": 65
   }
 }

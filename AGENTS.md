@@ -183,6 +183,34 @@ When you push to `pre-deployment`, GitHub Actions automatically:
 - Email notifications on workflow failure
 - Deployment tags for rollback capability
 
+**LLM Metrics & Observability:**
+
+- **PostHog Analytics** - Real-time LLM performance tracking
+  - Token usage (input/output per request)
+  - Estimated cost per request (model-specific pricing: XAI $2/$10 per 1M tokens, OpenAI $0.15/$0.6)
+  - Success/failure rates with error type classification
+  - Fallback utilization (primary vs fallback model usage)
+  - Latency measurements (ms per request)
+  - Retry attempts per request
+- **Error Classification System** (`src/lib/ai/error-handler.ts`)
+  - 6 error types: rate_limit, timeout, api_error, network_error, validation_error, unknown
+  - Exponential backoff retry (1s → 2s → 4s with jitter)
+  - Intelligent retry logic (only transient errors, never validation/API errors)
+  - Integrated into `generateWithFallback()` and `generateObjectWithFallback()`
+- **Episodic Memory Cleanup** (`/api/cron/cleanup-memory`)
+  - Automated weekly cleanup (Sunday 3am UTC via Vercel cron)
+  - 90-day TTL for episodic memory vectors
+  - Cursor-based pagination (100 vectors per batch)
+  - CRON_SECRET authentication for security
+  - Prevents unbounded vector database growth
+
+**Metrics Files:**
+
+- `src/lib/ai/model-fallback.ts` - LLM metrics logging, cost calculation, PostHog integration
+- `src/lib/ai/error-handler.ts` - Error classification, retry logic, backoff strategy
+- `src/lib/mastra/memory/episodic.ts` - Memory cleanup implementation
+- `src/app/api/cron/cleanup-memory/route.ts` - Vercel cron endpoint
+
 ---
 
 ## 🏗️ Architecture Overview

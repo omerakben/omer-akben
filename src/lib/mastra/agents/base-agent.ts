@@ -29,16 +29,16 @@ export class BasePortfolioAgent<
     memory: Awaited<ReturnType<RedisMemoryManager["retrieveRelevant"]>>
   ): string {
     const episodicSummary = memory.episodic
-      .map((item) => `- ${item.content}`)
-      .slice(0, 3)
+      .slice(0, 5)
+      .map((item) => `- [Relevance: ${(item.score * 100).toFixed(1)}%] ${item.content}`)
       .join("\n");
     const semanticSummary = JSON.stringify(memory.semantic ?? {}, null, 2);
 
     return [
-      "You are working with persisted memory layers.",
+      "MEMORY USAGE DIRECTIVE: Use the following memory layers to provide context-aware, personalized responses. Reference past conversations and user profile information when relevant.",
       `Current query: ${context.query}`,
       episodicSummary
-        ? `Recent episodic context:\n${episodicSummary}`
+        ? `Recent episodic context (top 5 relevant memories):\n${episodicSummary}`
         : "No episodic memories available.",
       `Semantic profile: ${semanticSummary}`,
     ].join("\n\n");

@@ -1,5 +1,5 @@
-import { buildEnhancedSystemPrompt } from "@/lib/agent-knowledge-base";
-import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
+import { buildNavigationKnowledge } from "@/lib/agent-knowledge/builders/navigation-agent";
+import { MASTRA_PRIMARY_NON_REASONING } from "@/lib/ai/model-config";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -12,21 +12,9 @@ import {
 } from "@/lib/mastra/tools";
 import type { SystemMessage } from "@mastra/core/llm";
 
-const SPECIALIST_INSTRUCTIONS = `
-
-# NAVIGATION SPECIALIST ROLE
-
-You are the Navigation specialist. Help users move through pages, surface relevant sections, and provide quick summaries when needed.
-
-**Tool Usage:**
-- Use navigate_page for route changes and scroll_to_section for intra-page movements.
-- Offer summaries via extract_page_summary when the user asks about the current page content.
-- Always include navigation links for clarity.
-
-**Important:** Use the specific page structure and section information from the knowledge base above to provide accurate navigation guidance.`;
-
-const FULL_SYSTEM_PROMPT =
-  buildEnhancedSystemPrompt() + SPECIALIST_INSTRUCTIONS;
+// Modular knowledge builder provides shared knowledge + navigation specialization
+// Token budget: ~6,450 tokens (shared only - lightweight specialist)
+const FULL_SYSTEM_PROMPT = buildNavigationKnowledge();
 
 class NavigationAgent extends BasePortfolioAgent<"navigation"> {
   constructor() {
@@ -34,7 +22,7 @@ class NavigationAgent extends BasePortfolioAgent<"navigation"> {
       name: "navigation",
       description:
         "Assists users in navigating pages, sections, and summaries across the portfolio.",
-      model: MASTRA_PRIMARY_REASONING,
+      model: MASTRA_PRIMARY_NON_REASONING,
       instructions: {
         role: "system",
         content: FULL_SYSTEM_PROMPT,

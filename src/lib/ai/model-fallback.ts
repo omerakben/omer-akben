@@ -27,6 +27,12 @@ import {
   FALLBACK_MODEL,
   type ModelVariant,
 } from "./model-config";
+import { extractJSON } from "./json-extractor";
+import { getPostHogServer } from "@/lib/analytics/posthog-server";
+import {
+  retryWithBackoff,
+  classifyError,
+} from "./error-handler";
 
 /**
  * Get primary model based on variant
@@ -49,24 +55,72 @@ export async function generateWithFallback(options: {
   variant: ModelVariant;
   temperature?: number;
   onFallback?: (error: Error) => void;
+  component?: string;
+  userId?: string;
 } & ({ prompt: string; messages?: never } | { messages: CoreMessage[]; prompt?: never }) & {
   system?: string;
 }) {
-  const { variant, temperature = 0.5, onFallback, ...generateOptions } = options;
+  const { variant, temperature = 0.5, onFallback, component, userId, ...generateOptions } = options;
 
   const primaryModel = getPrimaryModel(variant);
   const fallbackModel = getFallbackModel();
+  const primaryModelName = getModelByVariant(variant);
+
+  const startTime = Date.now();
+  let retryAttempts = 0;
+  let lastErrorType: string | undefined;
 
   try {
-    const result = await generateText({
-      model: primaryModel,
-      ...generateOptions,
-      temperature,
-    });
+    // Wrap primary model call with retry logic
+    const result = await retryWithBackoff(
+      async () => {
+        return await generateText({
+          model: primaryModel,
+          ...generateOptions,
+          temperature,
+        });
+      },
+      undefined, // use default retry config
+      (attempt, classifiedError, delayMs) => {
+        retryAttempts = attempt;
+        lastErrorType = classifiedError.type;
+        console.log(
+          `[ModelFallback] Retrying ${component || 'LLM call'} after ${delayMs}ms ` +
+          `(attempt ${attempt}, error: ${classifiedError.type})`
+        );
+      }
+    );
+
+    // Log metrics for successful primary call
+    if (component && result.usage) {
+      const latencyMs = Date.now() - startTime;
+      logLLMMetric(
+        {
+          timestamp: new Date().toISOString(),
+          component,
+          primaryModel: primaryModelName,
+          fallbackUsed: false,
+          latencyMs,
+          tokenUsage: {
+            input: result.usage.inputTokens || 0,
+            output: result.usage.outputTokens || 0,
+          },
+          success: true,
+          retryAttempts: retryAttempts > 0 ? retryAttempts : undefined,
+          errorType: lastErrorType,
+        },
+        userId
+      );
+    }
 
     return result;
   } catch (primaryError) {
-    console.warn(`[ModelFallback] Primary (grok-4-fast-${variant}) failed, using fallback:`, primaryError);
+    const classifiedPrimaryError = classifyError(primaryError);
+    console.warn(
+      `[ModelFallback] Primary (grok-4-fast-${variant}) failed after ${retryAttempts} retries ` +
+      `(${classifiedPrimaryError.type}), using fallback:`,
+      primaryError
+    );
 
     if (onFallback) {
       onFallback(primaryError as Error);
@@ -79,12 +133,56 @@ export async function generateWithFallback(options: {
         temperature,
       });
 
+      // Log metrics for successful fallback call
+      if (component && result.usage) {
+        const latencyMs = Date.now() - startTime;
+        logLLMMetric(
+          {
+            timestamp: new Date().toISOString(),
+            component,
+            primaryModel: primaryModelName,
+            fallbackUsed: true,
+            latencyMs,
+            tokenUsage: {
+              input: result.usage.inputTokens || 0,
+              output: result.usage.outputTokens || 0,
+            },
+            success: true,
+            retryAttempts: retryAttempts > 0 ? retryAttempts : undefined,
+            errorType: classifiedPrimaryError.type,
+          },
+          userId
+        );
+      }
+
       return result;
     } catch (fallbackError) {
+      const classifiedFallbackError = classifyError(fallbackError);
       console.error(`[ModelFallback] Both models failed:`, {
         primary: primaryError,
         fallback: fallbackError,
       });
+
+      // Log metrics for failed call
+      if (component) {
+        const latencyMs = Date.now() - startTime;
+        logLLMMetric(
+          {
+            timestamp: new Date().toISOString(),
+            component,
+            primaryModel: primaryModelName,
+            fallbackUsed: true,
+            latencyMs,
+            tokenUsage: { input: 0, output: 0 },
+            success: false,
+            error: (fallbackError as Error).message,
+            retryAttempts: retryAttempts > 0 ? retryAttempts : undefined,
+            errorType: classifiedFallbackError.type,
+          },
+          userId
+        );
+      }
+
       throw fallbackError;
     }
   }
@@ -92,37 +190,96 @@ export async function generateWithFallback(options: {
 
 /**
  * Generate structured object with primary/fallback pattern
+ *
+ * Note: XAI Grok models don't support the responseFormat parameter,
+ * so we use generateText() + manual JSON parsing for the primary call.
+ * Falls back to OpenAI's native generateObject() support if parsing fails.
  */
 export async function generateObjectWithFallback<T>(options: {
   variant: ModelVariant;
   temperature?: number;
   onFallback?: (error: Error) => void;
   schema: z.ZodSchema<T>;
+  component?: string;
+  userId?: string;
 } & ({ prompt: string; messages?: never } | { messages: CoreMessage[]; prompt?: never }) & {
   system?: string;
 }) {
-  const { variant, temperature = 0.5, onFallback, schema, ...generateOptions } = options;
+  const { variant, temperature = 0.5, onFallback, schema, component, userId, ...generateOptions } = options;
 
   const primaryModel = getPrimaryModel(variant);
   const fallbackModel = getFallbackModel();
+  const primaryModelName = getModelByVariant(variant);
+
+  const startTime = Date.now();
+  let retryAttempts = 0;
+  let lastErrorType: string | undefined;
 
   try {
-    const result = await generateObject({
-      model: primaryModel,
-      schema,
-      ...generateOptions,
-      temperature,
-    });
+    // XAI Grok doesn't support responseFormat, use generateText + manual parsing
+    // Wrap the entire operation (generate + parse + validate) with retry logic
+    const validated = await retryWithBackoff(
+      async () => {
+        const result = await generateText({
+          model: primaryModel,
+          ...generateOptions,
+          temperature,
+        });
 
-    return result;
+        // Extract JSON (handles markdown code blocks and mixed content)
+        const parsed = extractJSON(result.text);
+        const validatedData = schema.parse(parsed);
+
+        return { validatedData, usage: result.usage };
+      },
+      undefined, // use default retry config
+      (attempt, classifiedError, delayMs) => {
+        retryAttempts = attempt;
+        lastErrorType = classifiedError.type;
+        console.log(
+          `[ModelFallback] Retrying ${component || 'LLM object generation'} after ${delayMs}ms ` +
+          `(attempt ${attempt}, error: ${classifiedError.type})`
+        );
+      }
+    );
+
+    // Log metrics for successful primary call
+    if (component && validated.usage) {
+      const latencyMs = Date.now() - startTime;
+      logLLMMetric(
+        {
+          timestamp: new Date().toISOString(),
+          component,
+          primaryModel: primaryModelName,
+          fallbackUsed: false,
+          latencyMs,
+          tokenUsage: {
+            input: validated.usage.inputTokens || 0,
+            output: validated.usage.outputTokens || 0,
+          },
+          success: true,
+          retryAttempts: retryAttempts > 0 ? retryAttempts : undefined,
+          errorType: lastErrorType,
+        },
+        userId
+      );
+    }
+
+    return { object: validated.validatedData };
   } catch (primaryError) {
-    console.warn(`[ModelFallback] Primary (grok-4-fast-${variant}) generateObject failed, using fallback:`, primaryError);
+    const classifiedPrimaryError = classifyError(primaryError);
+    console.warn(
+      `[ModelFallback] Primary (grok-4-fast-${variant}) generateObject failed after ${retryAttempts} retries ` +
+      `(${classifiedPrimaryError.type}), using fallback:`,
+      primaryError
+    );
 
     if (onFallback) {
       onFallback(primaryError as Error);
     }
 
     try {
+      // OpenAI supports native generateObject with responseFormat
       const result = await generateObject({
         model: fallbackModel,
         schema,
@@ -130,12 +287,56 @@ export async function generateObjectWithFallback<T>(options: {
         temperature,
       });
 
+      // Log metrics for successful fallback call
+      if (component && result.usage) {
+        const latencyMs = Date.now() - startTime;
+        logLLMMetric(
+          {
+            timestamp: new Date().toISOString(),
+            component,
+            primaryModel: primaryModelName,
+            fallbackUsed: true,
+            latencyMs,
+            tokenUsage: {
+              input: result.usage.inputTokens || 0,
+              output: result.usage.outputTokens || 0,
+            },
+            success: true,
+            retryAttempts: retryAttempts > 0 ? retryAttempts : undefined,
+            errorType: classifiedPrimaryError.type,
+          },
+          userId
+        );
+      }
+
       return result;
     } catch (fallbackError) {
+      const classifiedFallbackError = classifyError(fallbackError);
       console.error(`[ModelFallback] Both models failed for generateObject:`, {
         primary: primaryError,
         fallback: fallbackError,
       });
+
+      // Log metrics for failed call
+      if (component) {
+        const latencyMs = Date.now() - startTime;
+        logLLMMetric(
+          {
+            timestamp: new Date().toISOString(),
+            component,
+            primaryModel: primaryModelName,
+            fallbackUsed: true,
+            latencyMs,
+            tokenUsage: { input: 0, output: 0 },
+            success: false,
+            error: (fallbackError as Error).message,
+            retryAttempts: retryAttempts > 0 ? retryAttempts : undefined,
+            errorType: classifiedFallbackError.type,
+          },
+          userId
+        );
+      }
+
       throw fallbackError;
     }
   }
@@ -143,6 +344,15 @@ export async function generateObjectWithFallback<T>(options: {
 
 /**
  * Stream text with primary/fallback pattern
+ *
+ * Note: Streaming metrics are not tracked because token usage is not available
+ * until the stream is consumed. For detailed metrics tracking, use generateWithFallback
+ * or generateObjectWithFallback instead.
+ *
+ * Retry logic is not applicable to streaming because:
+ * - streamText() returns synchronously (errors happen during consumption)
+ * - Partial streams cannot be retried
+ * - For better error handling with retries, use generateWithFallback
  */
 export async function streamWithFallback(options: {
   variant: ModelVariant;
@@ -204,13 +414,69 @@ export interface LLMMetric {
   };
   success: boolean;
   error?: string;
+  retryAttempts?: number;
+  errorType?: string;
+}
+
+/**
+ * Calculate estimated cost based on token usage and model
+ * @param inputTokens - Number of input tokens
+ * @param outputTokens - Number of output tokens
+ * @param model - Model name (e.g., "grok-4-fast-reasoning", "gpt-4o-mini")
+ * @returns Estimated cost in USD
+ */
+function calculateCost(inputTokens: number, outputTokens: number, model: string): number {
+  // Pricing per 1M tokens (as of Nov 2025)
+  const pricing: Record<string, { input: number; output: number }> = {
+    // Grok models (xAI)
+    "grok-4-fast-reasoning": { input: 2, output: 10 },
+    "grok-4-fast-non-reasoning": { input: 2, output: 10 },
+    // OpenAI models
+    "gpt-4o-mini": { input: 0.15, output: 0.6 },
+  };
+
+  const modelPricing = pricing[model] || { input: 0, output: 0 };
+  const inputCost = (inputTokens / 1_000_000) * modelPricing.input;
+  const outputCost = (outputTokens / 1_000_000) * modelPricing.output;
+
+  return inputCost + outputCost;
 }
 
 /**
  * Log LLM metrics for monitoring and analytics
+ * Sends events to PostHog for tracking model performance, costs, and fallback rates
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function logLLMMetric(_metric: LLMMetric): void {
-  // Optional: Send to analytics service like PostHog, Mixpanel, etc.
-  // Metrics can be sent to monitoring service here if needed
+export function logLLMMetric(metric: LLMMetric, userId?: string): void {
+  try {
+    const posthog = getPostHogServer();
+
+    // Calculate cost based on token usage
+    const estimatedCost = calculateCost(
+      metric.tokenUsage.input,
+      metric.tokenUsage.output,
+      metric.primaryModel
+    );
+
+    // Capture event in PostHog
+    posthog.capture({
+      distinctId: userId || 'anonymous',
+      event: 'llm_call',
+      properties: {
+        component: metric.component,
+        primary_model: metric.primaryModel,
+        fallback_used: metric.fallbackUsed,
+        latency_ms: metric.latencyMs,
+        input_tokens: metric.tokenUsage.input,
+        output_tokens: metric.tokenUsage.output,
+        total_tokens: metric.tokenUsage.input + metric.tokenUsage.output,
+        estimated_cost_usd: estimatedCost,
+        success: metric.success,
+        error: metric.error,
+        timestamp: metric.timestamp,
+      },
+    });
+  } catch (error) {
+    // Log errors but don't throw to avoid breaking LLM calls
+    console.error('[PostHog] Failed to log LLM metric:', error);
+  }
 }

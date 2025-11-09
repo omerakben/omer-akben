@@ -97,7 +97,21 @@ export function ChatSidebar() {
       },
     }),
     onError: (error) => {
-      console.error("Chat error:", error);
+      console.error("[ChatSidebar] Chat error:", error);
+
+      // Handle abort errors gracefully (user navigation/refresh)
+      if (error.name === "AbortError") {
+        console.warn("[ChatSidebar] Request aborted - likely navigation or user action");
+        return;
+      }
+
+      // Network errors
+      if (error.message?.includes("fetch")) {
+        setError("Network error. Please check your connection and try again.");
+        return;
+      }
+
+      // Generic error handling
       setError(
         error.message ||
           "Failed to send message. Please check your internet connection."
@@ -150,17 +164,31 @@ export function ChatSidebar() {
   };
 
   const handleSuggestedQuestion = async (question: string) => {
+    if (!question.trim()) {
+      console.warn("[ChatSidebar] Empty question provided");
+      return;
+    }
+
     setShowMessages(true);
     setError(null); // Clear previous errors
+    setLastFailedMessage(""); // Clear previous failed messages
+
     try {
       await sendMessage({
         text: question,
       });
     } catch (err) {
-      console.error("Error sending suggested question:", err);
-      setError("Failed to send message. Please try again.");
+      console.error("[ChatSidebar] Error sending suggested question:", err);
+
+      // Extract meaningful error message
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to send message. Please try again.";
+
+      setError(errorMessage);
       setLastFailedMessage(question); // Save for retry
-      setInput(question); // Show in input
+      setInput(question); // Show in input for manual retry
     }
   };
 

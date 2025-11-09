@@ -109,9 +109,11 @@ export async function POST(req: Request) {
       return ensureJsonResponse({ error: "Coordinator unavailable" }, 500);
     }
 
-    return stream.toUIMessageStreamResponse({
+    const response = stream.toUIMessageStreamResponse({
       onFinish: async ({ messages: final }) => {
-        const finalMessages = final ?? messages;
+        // Use final messages only if they're actually populated (not empty array)
+        // Empty arrays from workflow finish chunks should fall back to original messages
+        const finalMessages = (final && final.length > 0) ? final : messages;
         const effectiveUserId = userId ?? "anonymous";
 
         try {
@@ -131,6 +133,8 @@ export async function POST(req: Request) {
         }
       },
     });
+
+    return response;
   } catch (error) {
     logError("chat:POST", error);
     return ensureJsonResponse({ error: "Failed to process chat request" }, 500);

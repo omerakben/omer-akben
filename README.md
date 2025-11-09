@@ -53,29 +53,34 @@
 ## ✨ Key Features
 
 ### 🤖 Intelligent AI Assistant
+
 - **11 Server-Side Tools** for resume downloads, project exploration, and contact management
 - **Proactive Engagement** - asks permission to collect contact info and send Zoom links after detecting visitor interest
 - **Follow-Up Suggestions** - contextual question chips based on conversation topics
 - **Thread Persistence** - maintains conversation context across sessions
 
 ### 🎨 Innovative Design
+
 - **8-Mode Brightness System** - accessibility feature with brightness levels from -3 (darkest) to +3 (brightest)
 - **Responsive Sidebar** - pin/unpin with width resizing (320-800px) and localStorage persistence
 - **Design System** - 40+ shadcn/ui components with CSS custom properties for theming
 - **Global Chat Access** - floating button on all pages with keyboard shortcuts (Cmd/Ctrl+Shift+N)
 
 ### 📧 Contact Collection System
+
 - **Rate-Limited Email Delivery** - Resend integration with React Email templates
 - **Smart Triggers** - activates on explicit request, engagement score ≥60, or high-value user detection
 - **Professional Templates** - branded emails with meeting links and resume downloads
 - **Security Focused** - email validation, PII redaction, 7-day TTL on stored contacts
 
 ### 🧠 Memory Systems
+
 - **Episodic Memory** - semantic search across conversation history using Upstash Vector (1536-dim OpenAI embeddings)
 - **Thread Memory** - conversation state persistence with localStorage
 - **Vector Search** - dual-path routing for projects (Redis FT.SEARCH) and conversations (Upstash Vector)
 
 ### ⚡ Performance & Quality
+
 - **Bundle Optimization** - 90% reduction via icon manifest (42 curated icons, tree-shaking enabled)
 - **Test Coverage** - 544 tests across 27 files (100% pass rate)
 - **CI/CD Pipeline** - 6 quality gates enforced on every commit
@@ -86,6 +91,7 @@
 ## 🛠 Tech Stack
 
 ### Frontend
+
 - **Next.js 15** - App Router with React Server Components
 - **React 19** - Latest features and optimizations
 - **TypeScript 5** - Strict mode with zero-error policy
@@ -95,6 +101,7 @@
 - **Lucide Icons** - Tree-shaken icon system
 
 ### AI & Backend
+
 - **Vercel AI SDK v5** - Streaming AI responses with tool calling
 - **OpenAI GPT-4** - Language model for conversational AI
 - **Upstash Redis** - Rate limiting and caching
@@ -103,6 +110,7 @@
 - **React Email** - Email template system
 
 ### Development & Testing
+
 - **Vitest** - Unit testing framework (544 tests)
 - **Playwright** - E2E testing and accessibility validation
 - **ESLint** - Code quality and consistency
@@ -117,28 +125,30 @@ Ozzy is an intelligent AI assistant powered by OpenAI's GPT-4 with 11 specialize
 
 ### Available Tools
 
-| Tool | Description | Rate Limit |
-|------|-------------|------------|
-| `download_resume` | Download resume in PDF format | 60/min |
-| `download_certificate` | Download AWS/NSS certifications | 60/min |
-| `list_projects` | Browse portfolio projects with filters | 60/min |
-| `open_project` | Get detailed project information | 60/min |
-| `get_contact` | Retrieve contact information | 60/min |
-| `collect_contact` | Proactive contact collection + email delivery | 5 per IP per 24h |
-| `navigate_page` | Navigate to specific pages | 60/min |
-| `provide_navigation_links` | Get site navigation structure | 60/min |
-| `extract_summary` | Extract concise content summaries | 60/min |
-| `profile_performance` | Performance profiling utilities | 60/min |
-| `trigger_workflow` | Execute predefined workflows | 60/min |
+| Tool                       | Description                                   | Rate Limit       |
+| -------------------------- | --------------------------------------------- | ---------------- |
+| `download_resume`          | Download resume in PDF format                 | 60/min           |
+| `download_certificate`     | Download AWS/NSS certifications               | 60/min           |
+| `list_projects`            | Browse portfolio projects with filters        | 60/min           |
+| `open_project`             | Get detailed project information              | 60/min           |
+| `get_contact`              | Retrieve contact information                  | 60/min           |
+| `collect_contact`          | Proactive contact collection + email delivery | 5 per IP per 24h |
+| `navigate_page`            | Navigate to specific pages                    | 60/min           |
+| `provide_navigation_links` | Get site navigation structure                 | 60/min           |
+| `extract_summary`          | Extract concise content summaries             | 60/min           |
+| `profile_performance`      | Performance profiling utilities               | 60/min           |
+| `trigger_workflow`         | Execute predefined workflows                  | 60/min           |
 
 ### Proactive Engagement
 
 Ozzy intelligently offers to collect contact information when:
+
 1. **Explicit Request** - user asks to schedule a meeting
 2. **Engagement Score ≥60** - based on message count, topics discussed, projects viewed
 3. **High-Value User** - recruiter/hiring manager + 3+ messages + multiple topics explored
 
 Upon permission, Ozzy:
+
 - Collects name, email, company, purpose
 - Validates email format and blocks disposable addresses
 - Sends professional email with Zoom link and resume downloads
@@ -167,22 +177,26 @@ For complete AI architecture details, see [AGENTS.md](AGENTS.md).
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/omerakben/omer-akben.git
    cd omer-akben
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    ```
 
    Add your API keys to `.env.local`:
+
    ```bash
    # Required
    OPENAI_API_KEY=sk-...
@@ -195,9 +209,14 @@ For complete AI architecture details, see [AGENTS.md](AGENTS.md).
    RESEND_API_KEY=re_...
    OMER_EMAIL=me@omerakben.com
    OMER_ZOOM_LINK=https://calendly.com/.../30min
+   CRON_SECRET=your-random-secret-key  # For Vercel cron job authentication
+
+   # Optional - Monitoring
+   SENTRY_AUTH_TOKEN=sntryu_...         # Error tracking and monitoring
    ```
 
 4. **Run development server**
+
    ```bash
    npm run dev
    ```
@@ -232,14 +251,14 @@ npm run analyze      # Analyze bundle composition
 
 ### Technical Achievements
 
-| Achievement | Metric | Status |
-|-------------|--------|--------|
-| Test Coverage | 544/544 passing | ✅ 100% |
-| TypeScript Errors | 0 | ✅ Clean |
-| ESLint Errors | 0 | ✅ Clean |
-| WCAG Compliance | 8/8 routes | ✅ 2A |
-| Bundle Size | 7.66 KB / 40 KB | ✅ 19% |
-| Page Load | < 1s | ✅ Fast |
+| Achievement       | Metric          | Status  |
+| ----------------- | --------------- | ------- |
+| Test Coverage     | 544/544 passing | ✅ 100%  |
+| TypeScript Errors | 0               | ✅ Clean |
+| ESLint Errors     | 0               | ✅ Clean |
+| WCAG Compliance   | 8/8 routes      | ✅ 2A    |
+| Bundle Size       | 7.66 KB / 40 KB | ✅ 19%   |
+| Page Load         | < 1s            | ✅ Fast  |
 
 ### Unique Features
 
@@ -255,21 +274,21 @@ npm run analyze      # Analyze bundle composition
 
 ### Test Distribution
 
-| Category | Files | Tests | Coverage |
-|----------|-------|-------|----------|
-| API Routes | 12 | 268 | Tool validation, error handling |
-| Components | 8 | 155 | UI behavior, interactions |
-| Integration | 7 | 121 | Workflows, memory, follow-ups |
-| **Total** | **27** | **544** | **100% pass rate** |
+| Category    | Files  | Tests   | Coverage                        |
+| ----------- | ------ | ------- | ------------------------------- |
+| API Routes  | 12     | 268     | Tool validation, error handling |
+| Components  | 8      | 155     | UI behavior, interactions       |
+| Integration | 7      | 121     | Workflows, memory, follow-ups   |
+| **Total**   | **27** | **544** | **100% pass rate**              |
 
 ### Bundle Sizes
 
-| Page | Size | Limit | Status |
-|------|------|-------|--------|
-| Homepage | 7.66 KB | 40 KB | ✅ 19% |
-| Skills | 3.55 KB | 10 KB | ✅ 35% |
-| Projects | 7.91 KB | 15 KB | ✅ 53% |
-| Contact | 4.31 KB | 10 KB | ✅ 43% |
+| Page     | Size    | Limit | Status |
+| -------- | ------- | ----- | ------ |
+| Homepage | 7.66 KB | 40 KB | ✅ 19%  |
+| Skills   | 3.55 KB | 10 KB | ✅ 35%  |
+| Projects | 7.91 KB | 15 KB | ✅ 53%  |
+| Contact  | 4.31 KB | 10 KB | ✅ 43%  |
 
 ### Build Performance
 
