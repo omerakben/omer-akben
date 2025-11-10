@@ -2,6 +2,7 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { extractNavigationLinks, getMessageText } from "@/lib/chat/message-utils";
 import type { UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -113,7 +114,6 @@ export function ChatInterface({
 
   const handleRegenerateMessage = () => {
     toast.info("Regenerate feature coming soon");
-    // TODO: Implement regenerate functionality
   };
 
   const handleViewProjects = () => {
@@ -297,10 +297,7 @@ export function ChatInterface({
           <AnimatePresence initial={false}>
             {messages.map((message, index) => {
               // Extract text from message parts
-              const textContent = message.parts
-                .filter((part) => part.type === "text")
-                .map((part) => ("text" in part ? part.text : ""))
-                .join("");
+              const textContent = getMessageText(message);
 
               const isLastAssistantMessage =
                 message.role === "assistant" && index === messages.length - 1;
@@ -348,10 +345,10 @@ export function ChatInterface({
                       <motion.div
                         initial={{ scale: 0.95 }}
                         animate={{ scale: 1 }}
-                        className={`relative rounded-2xl px-5 py-3 text-sm ${
+                        className={`chat-message relative rounded-2xl px-6 py-4 text-sm ${
                           isUser
                             ? "bg-brand-primary/90 text-white glass-message border border-brand-primary/30 shadow-lg"
-                            : "bg-surf-1/80 border border-border-line/30 text-text-1 glass-message shadow-md"
+                            : "bg-surf-1/95 border border-border-line/40 text-text-1 glass-message shadow-sm backdrop-blur-sm"
                         }`}
                       >
                         <ReactMarkdown
@@ -383,8 +380,10 @@ export function ChatInterface({
                                         router.push(href);
                                       }
                                     }}
-                                    className={`underline hover:no-underline cursor-pointer ${
-                                      isUser ? "text-white" : "text-brand-primary"
+                                    className={`font-medium transition-all duration-200 cursor-pointer ${
+                                      isUser
+                                        ? "text-white underline decoration-white/50 hover:decoration-white"
+                                        : "text-brand-primary no-underline hover:underline hover:decoration-brand-primary"
                                     }`}
                                   >
                                     {children}
@@ -398,8 +397,10 @@ export function ChatInterface({
                                   href={href}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`underline hover:no-underline ${
-                                    isUser ? "text-white" : "text-brand-primary"
+                                  className={`font-medium transition-all duration-200 ${
+                                    isUser
+                                        ? "text-white underline decoration-white/50 hover:decoration-white"
+                                        : "text-brand-primary no-underline hover:underline hover:decoration-brand-primary"
                                   }`}
                                 >
                                   {children}
@@ -407,36 +408,38 @@ export function ChatInterface({
                               );
                             },
                             p: ({ children }) => (
-                              <p className="mb-2 last:mb-0">{children}</p>
+                              <p className="mb-4 last:mb-0 leading-[1.7] text-text-1">{children}</p>
                             ),
                             ul: ({ children }) => (
-                              <ul className="list-disc ml-4 mb-2 space-y-1">
+                              <ul className="list-disc ml-6 mb-4 space-y-2.5 marker:text-text-2">
                                 {children}
                               </ul>
                             ),
                             ol: ({ children }) => (
-                              <ol className="list-decimal ml-4 mb-2 space-y-1">
+                              <ol className="list-decimal ml-6 mb-4 space-y-2.5 marker:text-text-2">
                                 {children}
                               </ol>
                             ),
-                            li: ({ children }) => <li>{children}</li>,
+                            li: ({ children }) => (
+                              <li className="pl-2 leading-[1.7] text-text-1">{children}</li>
+                            ),
                             strong: ({ children }) => (
-                              <strong className="font-semibold">
+                              <strong className="font-semibold text-text-1">
                                 {children}
                               </strong>
                             ),
                             h1: ({ children }) => (
-                              <h1 className="text-lg font-bold mb-2">
+                              <h1 className="text-[1.4em] font-bold mb-4 text-text-1 leading-[1.6]">
                                 {children}
                               </h1>
                             ),
                             h2: ({ children }) => (
-                              <h2 className="text-base font-bold mb-2">
+                              <h2 className="text-[1.2em] font-semibold mb-3 text-text-1 leading-[1.6]">
                                 {children}
                               </h2>
                             ),
                             h3: ({ children }) => (
-                              <h3 className="text-sm font-bold mb-1">
+                              <h3 className="text-base font-semibold mb-2 text-text-2 leading-[1.6]">
                                 {children}
                               </h3>
                             ),
@@ -444,90 +447,6 @@ export function ChatInterface({
                         >
                           {textContent}
                         </ReactMarkdown>
-
-                        {/* Navigation Links */}
-                        {!isUser &&
-                          message.parts &&
-                          (() => {
-                            // Filter parts array for tool calls
-                            const toolParts = message.parts.filter(
-                              (
-                                part
-                              ): part is typeof part & {
-                                type: string;
-                                result: unknown;
-                              } =>
-                                "type" in part &&
-                                "result" in part &&
-                                part.type === "tool-provide_navigation_links"
-                            );
-
-                            if (toolParts.length === 0) return null;
-
-                            return (
-                              <div className="mt-3 flex flex-wrap gap-2">
-                                {toolParts.map(
-                                  (toolPart, partIndex: number) => {
-                                    const result = toolPart.result as {
-                                      success: boolean;
-                                      data?: {
-                                        links: Array<{
-                                          label: string;
-                                          href: string;
-                                          type: "internal" | "external";
-                                        }>;
-                                      };
-                                    };
-                                    if (!result.success || !result.data?.links)
-                                      return null;
-
-                                    return result.data.links.map(
-                                      (link, linkIndex) => {
-                                        const Icon = getIconComponent();
-                                        const isExternal =
-                                          link.type === "external";
-
-                                        return (
-                                          <motion.button
-                                            key={`${partIndex}-${linkIndex}`}
-                                            type="button"
-                                            onClick={() => {
-                                              if (isExternal) {
-                                                window.open(
-                                                  link.href,
-                                                  "_blank",
-                                                  "noopener,noreferrer"
-                                                );
-                                              } else {
-                                                router.push(link.href);
-                                              }
-                                            }}
-                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                          >
-                                            <div className="w-4 h-4 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
-                                              <Icon
-                                                aria-hidden="true"
-                                                className="w-3 h-3 text-brand-primary"
-                                              />
-                                            </div>
-                                            <span>{link.label}</span>
-                                            {isExternal && (
-                                              <ExternalLink
-                                                aria-hidden="true"
-                                                className="w-3 h-3"
-                                              />
-                                            )}
-                                          </motion.button>
-                                        );
-                                      }
-                                    );
-                                  }
-                                )}
-                              </div>
-                            );
-                          })()}
 
                         {/* Message Actions */}
                         {!isUser && hoveredMessageId === message.id && (
@@ -568,6 +487,59 @@ export function ChatInterface({
                           </motion.div>
                         )}
                       </motion.div>
+
+                      {/* Navigation Links - Outside bubble for clear separation */}
+                      {!isUser &&
+                        (() => {
+                          const navigationLinks = extractNavigationLinks(message);
+                          if (navigationLinks.length === 0) {
+                            return null;
+                          }
+
+                          return (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {navigationLinks.map((link, linkIndex) => {
+                                const Icon = getIconComponent();
+                                const isExternal = link.type === "external";
+
+                                return (
+                                  <motion.button
+                                    key={`${message.id}-link-${linkIndex}`}
+                                    type="button"
+                                    onClick={() => {
+                                      if (isExternal) {
+                                        window.open(
+                                          link.href,
+                                          "_blank",
+                                          "noopener,noreferrer"
+                                        );
+                                      } else {
+                                        router.push(link.href);
+                                      }
+                                    }}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                  >
+                                    <div className="w-4 h-4 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                      <Icon
+                                        aria-hidden="true"
+                                        className="w-3 h-3 text-brand-primary"
+                                      />
+                                    </div>
+                                    <span>{link.label}</span>
+                                    {isExternal && (
+                                      <ExternalLink
+                                        aria-hidden="true"
+                                        className="w-3 h-3"
+                                      />
+                                    )}
+                                  </motion.button>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
                     </div>
 
                     {/* User Avatar */}
@@ -672,7 +644,7 @@ export function ChatInterface({
               value={input}
               onChange={onInputChange}
               placeholder="Ask me anything..."
-              className="w-full px-5 py-4 pr-14 rounded-2xl glass-input bg-surf-1/80 border border-border-line/50 text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary/50 transition-all shadow-lg"
+              className="w-full px-5 py-4 pr-14 rounded-2xl glass-input bg-surf-0/95 border border-border-line/50 text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary/50 transition-all shadow-lg"
               disabled={isLoading}
             />
             <Button

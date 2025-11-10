@@ -50,6 +50,7 @@ export async function* workflowToTextStream(
   console.error("[StreamingBridge] workflowToTextStream START:", workflow.name);
   const startTime = Date.now();
   const timeoutMs = config.timeoutMs || DEFAULT_STREAMING_CONFIG.timeoutMs!;
+  let lastChunk = ""; // Track last chunk to prevent duplicates
 
   try {
     // Execute workflow and yield formatted text chunks in real-time
@@ -73,8 +74,14 @@ export async function* workflowToTextStream(
         const validatedEvent = validateWorkflowEvent(event);
         const formattedText = workflow.formatEvent(validatedEvent);
 
-        // Yield text chunk immediately (no buffering)
-        yield formattedText;
+        // Prevent duplicate consecutive chunks
+        if (formattedText && formattedText !== lastChunk) {
+          lastChunk = formattedText;
+          // Yield text chunk immediately (no buffering)
+          yield formattedText;
+        } else if (formattedText === lastChunk) {
+          console.warn("[StreamingBridge] Skipped duplicate chunk:", formattedText.substring(0, 50));
+        }
       } catch (validationError) {
         // Log validation error and yield warning to user
         console.error("[StreamingBridge] Invalid workflow event:", validationError);
@@ -86,7 +93,6 @@ export async function* workflowToTextStream(
         // Continue processing other events
       }
     }
-    console.log("[StreamingBridge] Workflow execute() completed");
   } catch (error) {
     // Log error and yield error message to user
     console.error("[StreamingBridge] Workflow execution error:", error);

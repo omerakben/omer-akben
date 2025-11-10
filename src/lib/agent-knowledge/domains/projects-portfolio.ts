@@ -106,9 +106,9 @@ Want to explore all projects? Visit [/projects](/projects) to filter by category
 "I have ${projects.filter((p) => p.category === "ai-ml").length} AI/ML projects demonstrating production experience:
 
 **Featured AI Work:**
-• **Elon AI Agent** - Parallel multi-agent system (3-4x faster with asyncio)
-• **Tuel AI Chatbot Builder** - Full-stack RAG platform with multi-provider support
-• **Genesis Test Copilot** - AI-powered test automation with LangChain + Playwright
+- **Elon AI Agent** - Parallel multi-agent system (3-4x faster with asyncio)
+- **Tuel AI Chatbot Builder** - Full-stack RAG platform with multi-provider support
+- **Genesis Test Copilot** - AI-powered test automation with LangChain + Playwright
 
 All projects use OpenAI API, LangChain/LangGraph, and vector search (pgvector). Visit [/projects](/projects) and filter by AI/ML to see detailed case studies. Which project interests you most?"
 
@@ -118,23 +118,23 @@ All projects use OpenAI API, LangChain/LangGraph, and vector search (pgvector). 
 **Mission:** Eliminate developer context-switching chaos by centralizing scattered artifacts (ENV variables, AI prompts, documentation) into a secure, workspace-isolated command center.
 
 **Tech Stack:**
-• Backend: Django 5 + PostgreSQL (Railway)
-• Frontend: Next.js 15 + React 19 (Vercel)
-• Auth: Firebase (Email/Password + Google OAuth)
-• Testing: 64/64 backend tests passing, Playwright visual testing
+- Backend: Django 5 + PostgreSQL (Railway)
+- Frontend: Next.js 15 + React 19 (Vercel)
+- Auth: Firebase (Email/Password + Google OAuth)
+- Testing: 64/64 backend tests passing, Playwright visual testing
 
 **Key Features:**
-• Polymorphic artifact system (ENV_VAR, PROMPT, DOC_LINK)
-• Multi-environment management (DEV/STAGING/PROD)
-• Masked sensitive values with explicit reveal tracking
-• Immutable audit logs for compliance (HIPAA, SOC 2, GDPR)
-• Rate limiting prevents credential harvesting
-• Mobile-responsive (375px-1512px validated)
+- Polymorphic artifact system (ENV_VAR, PROMPT, DOC_LINK)
+- Multi-environment management (DEV/STAGING/PROD)
+- Masked sensitive values with explicit reveal tracking
+- Immutable audit logs for compliance (HIPAA, SOC 2, GDPR)
+- Rate limiting prevents credential harvesting
+- Mobile-responsive (375px-1512px validated)
 
 **Live Deployments:**
-• Frontend: https://deadline-demo.vercel.app
-• Backend API: https://deadline-production.up.railway.app/api/v1/
-• GitHub: https://github.com/omerakben/deadline
+- Frontend: https://deadline-demo.vercel.app
+- Backend API: https://deadline-production.up.railway.app/api/v1/
+- GitHub: https://github.com/omerakben/deadline
 
 Check out [/projects/capstone-deadline](/projects/capstone-deadline) for the complete case study with architecture diagrams and development process!"
 
@@ -163,24 +163,24 @@ Want to explore more? Visit [/projects](/projects) to see all demos and reposito
 "My projects demonstrate expertise across the modern tech stack:
 
 **Frontend:**
-• React, Next.js 15 (App Router), TypeScript, Tailwind CSS
-• Projects: DEADLINE, Tuel Animation Library, MediTracks
+- React, Next.js 15 (App Router), TypeScript, Tailwind CSS
+- Projects: DEADLINE, Tuel Animation Library, MediTracks
 
 **Backend:**
-• Django 5, FastAPI, PostgreSQL, Redis, Firebase Auth
-• Projects: DEADLINE (Django), Elon AI Agent (FastAPI)
+- Django 5, FastAPI, PostgreSQL, Redis, Firebase Auth
+- Projects: DEADLINE (Django), Elon AI Agent (FastAPI)
 
 **AI/ML:**
-• OpenAI API (GPT-4o, GPT-4o-mini), LangChain, LangGraph, pgvector
-• Projects: Elon AI Agent, Tuel AI Chatbot, Genesis Test Copilot
+- OpenAI API (GPT-4o, GPT-4o-mini), LangChain, LangGraph, pgvector
+- Projects: Elon AI Agent, Tuel AI Chatbot, Genesis Test Copilot
 
 **Testing/QA:**
-• Playwright, Selenium WebDriver, pytest, Vitest
-• Projects: DEADLINE (64/64 tests), TUEL Selenium Framework
+- Playwright, Selenium WebDriver, pytest, Vitest
+- Projects: DEADLINE (64/64 tests), TUEL Selenium Framework
 
 **Cloud & DevOps:**
-• AWS (Lambda, S3, API Gateway), Railway, Vercel, Docker
-• Projects: DEADLINE (Railway + Vercel), MediTracks (AWS)
+- AWS (Lambda, S3, API Gateway), Railway, Vercel, Docker
+- Projects: DEADLINE (Railway + Vercel), MediTracks (AWS)
 
 Visit [/skills](/skills) for the comprehensive skills matrix with all frameworks and tools."
 

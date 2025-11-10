@@ -186,7 +186,7 @@ export const downloadCertificateResponseSchema = createToolResponseSchema(
 export const provideNavigationLinksInputSchema = z.object({
   links: z.array(
     z.object({
-      label: z.string().describe("Button label text"),
+      label: z.string().describe("Descriptive button label (e.g., 'Projects Page', 'View Demo'). NEVER use raw route names like 'projects' or 'skills'."),
       href: z.string().describe("URL or path to navigate to"),
       icon: z
         .enum([

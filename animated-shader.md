@@ -15,6 +15,7 @@ Complete documentation for the animated shader blob (WebGL "Ether" effect) used 
 **File:** `src/components/shader-blob.tsx`
 
 **Features:**
+
 - WebGL ray marching shader (based on "Ether" by nimitz)
 - Dynamic color integration via CSS custom properties
 - Mouse interaction (hover glow effect)
@@ -24,6 +25,7 @@ Complete documentation for the animated shader blob (WebGL "Ether" effect) used 
 - SSR-safe hydration
 
 **Props:**
+
 ```typescript
 interface ShaderBlobProps {
   size?: number;                    // Canvas size in pixels (default: 300)
@@ -34,6 +36,7 @@ interface ShaderBlobProps {
 ```
 
 **Usage:**
+
 ```tsx
 import { ShaderBlob } from '@/components/shader-blob';
 
@@ -49,12 +52,14 @@ import { ShaderBlob } from '@/components/shader-blob';
 **File:** `src/components/shader-blob-fallback.tsx`
 
 **Features:**
+
 - CSS gradient fallback when WebGL unavailable
 - Identical API to ShaderBlob
 - Uses design tokens (bg-brand-primary, bg-accent-primary)
 - Pulsing animation with reduced motion support
 
 **Usage:**
+
 ```tsx
 import { ShaderBlobFallback } from '@/components/shader-blob-fallback';
 
@@ -69,12 +74,14 @@ import { ShaderBlobFallback } from '@/components/shader-blob-fallback';
 **File:** `src/components/animated-blob-container.tsx`
 
 **Features:**
+
 - Smart WebGL detection wrapper
 - SSR-safe (renders placeholder during hydration)
 - Automatic fallback to CSS gradient if WebGL unavailable
 - Props passed through to child component
 
 **Usage (Recommended):**
+
 ```tsx
 import { AnimatedBlobContainer } from '@/components/animated-blob-container';
 
@@ -94,12 +101,14 @@ import { AnimatedBlobContainer } from '@/components/animated-blob-container';
 **File:** `src/components/app-header.tsx`
 
 **Configuration:**
+
 - Size: 64x64px (matches LOGO_SIZE constant)
 - Center dimming: Disabled for flat appearance
 - Shape: Rounded full (perfect circle)
 - Click: Navigates to homepage
 
 **Code:**
+
 ```tsx
 <Link href="/" className="...">
   <AnimatedBlobContainer
@@ -115,12 +124,14 @@ import { AnimatedBlobContainer } from '@/components/animated-blob-container';
 **File:** `src/components/hero-section.tsx`
 
 **Configuration:**
+
 - Size: 300px (desktop), 250px (mobile)
 - Center dimming: Enabled for depth effect
 - Click: Opens Ozzy AI chat sidebar
 - Visibility: Hidden on mobile (<lg breakpoint)
 
 **Code:**
+
 ```tsx
 <AnimatedBlobContainer
   size={300}
@@ -133,10 +144,12 @@ import { AnimatedBlobContainer } from '@/components/animated-blob-container';
 ### Static Favicons
 
 **Generated Files:**
+
 - `public/favicon_light/` - Bright favicons (brightness +2)
 - `public/favicon_dark/` - Dark favicons (brightness -2)
 
 **Sizes:**
+
 - 16x16px (favicon-16x16.png)
 - 32x32px (favicon-32x32.png)
 - 180x180px (apple-touch-icon.png)
@@ -145,16 +158,19 @@ import { AnimatedBlobContainer } from '@/components/animated-blob-container';
 - Multi-size ICO (favicon.ico)
 
 **Generation Script:**
+
 ```bash
 npm run generate:favicons
 ```
 
 **Requirements:**
+
 - Dev server must be running (`npm run dev`)
 - Playwright browser binaries installed
 - Sharp image processing library
 
 **Process:**
+
 1. Launches Playwright browser
 2. Sets brightness mode (+2 for light, -2 for dark)
 3. Captures shader blob canvas screenshot
@@ -167,11 +183,13 @@ npm run generate:favicons
 
 **Problem:** Browsers don't support animated favicons via canvas/WebGL
 **Attempted Solutions:**
+
 - ❌ Data URI with canvas screenshot (blocked by browser security)
 - ❌ Real-time WebGL rendering (not supported in favicon context)
 - ❌ Animated GIF/APNG (performance issues, no WebGL)
 
 **Final Solution:** ✅ Static PNG screenshots of shader blob
+
 - Light theme: Brightness mode +2
 - Dark theme: Brightness mode -2
 - Theme switching via CSS media queries: `(prefers-color-scheme: light|dark)`
@@ -181,6 +199,7 @@ npm run generate:favicons
 ### How It Works
 
 1. **CSS Custom Properties** (src/app/globals.css):
+
    ```css
    [data-brightness="-3"] {
      --brand-primary: #064e3b;  /* Darkest green */
@@ -190,6 +209,7 @@ npm run generate:favicons
    ```
 
 2. **MutationObserver** (ShaderBlob component):
+
    ```typescript
    const observer = new MutationObserver(() => {
      colors = getShaderColors(); // Re-read CSS custom properties
@@ -201,6 +221,7 @@ npm run generate:favicons
    ```
 
 3. **WebGL Uniforms** (shader-blob.tsx):
+
    ```typescript
    gl.uniform3f(uniformLocations.uBrandColor, ...colors.brand);
    gl.uniform3f(uniformLocations.uAccentColor, ...colors.accent);
@@ -209,7 +230,7 @@ npm run generate:favicons
 ### Brightness Modes
 
 | Mode | Label    | Brand Color | Accent Color | Use Case        |
-|------|----------|-------------|--------------|-----------------|
+| ---- | -------- | ----------- | ------------ | --------------- |
 | -3   | Darkest  | #064e3b     | #1e3a8a      | Deep dark mode  |
 | -2   | Darker   | #065f46     | #1e40af      | Dark mode       |
 | -1   | Dark     | #047857     | #2563eb      | Soft dark mode  |
@@ -224,6 +245,7 @@ npm run generate:favicons
 ### Vertex Shader
 
 Standard fullscreen quad setup:
+
 ```glsl
 attribute vec4 aVertexPosition;
 attribute vec2 aTextureCoord;
@@ -242,6 +264,7 @@ void main() {
 **License:** CC BY-NC-SA 3.0
 
 **Key Features:**
+
 - 6-iteration ray marching loop
 - Dynamic rotation matrices for 3D effect
 - Smooth color blending between brand/accent colors
@@ -249,6 +272,7 @@ void main() {
 - Center dimming for depth (optional)
 
 **Uniforms:**
+
 ```glsl
 uniform vec2 iResolution;      // Canvas size
 uniform float iTime;           // Animation time
@@ -284,9 +308,11 @@ uniform bool disableCenterDimming; // Center darkening toggle
 ### Bundle Impact
 
 **Before navbar shader blob:**
+
 - Homepage: ~5 kB
 
 **After navbar shader blob:**
+
 - Homepage: 5.01 kB (within 40 kB limit)
 - No significant bundle size increase (shader code shared)
 
@@ -297,6 +323,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **File:** `src/components/__tests__/shader-blob.test.tsx`
 
 **Coverage:**
+
 - ShaderBlob component (14 tests)
   - WebGL initialization
   - Mouse interaction tracking
@@ -315,9 +342,11 @@ uniform bool disableCenterDimming; // Center darkening toggle
 ### E2E Tests (35 tests total)
 
 #### Hero Blob Tests (19 tests)
+
 **File:** `e2e/shader-blob.spec.ts`
 
 **Test Categories:**
+
 1. Visual rendering (desktop/mobile viewports)
 2. Interactivity (click, keyboard navigation)
 3. Accessibility (ARIA attributes, role, tabindex)
@@ -329,9 +358,11 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Key Locator:** `section canvas[aria-label="Open Ozzy AI Assistant"]`
 
 #### Navbar Blob Tests (16 tests)
+
 **File:** `e2e/navbar-shader-blob.spec.ts`
 
 **Test Categories:**
+
 1. Visual rendering (64x64px verification)
 2. Click navigation to homepage
 3. Concurrent WebGL contexts (navbar + hero)
@@ -345,12 +376,14 @@ uniform bool disableCenterDimming; // Center darkening toggle
 ### Test Strategy
 
 **Playwright Strict Mode:**
+
 - All locators must resolve to exactly 1 element
 - Hero tests scope to `section` parent
 - Navbar tests scope to `header` parent
 - Prevents ambiguity with multiple shader blobs on page
 
 **Hydration Safety:**
+
 - Tests wait for `networkidle` before assertions
 - Accounts for SSR → client-side hydration timing
 
@@ -361,6 +394,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Symptoms:** Blob not visible, console error "WebGL not supported"
 
 **Solutions:**
+
 1. Check browser WebGL support: <https://get.webgl.org/>
 2. Verify browser hardware acceleration enabled
 3. Update graphics drivers
@@ -371,6 +405,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Symptoms:** Blob color doesn't change when brightness mode switches
 
 **Solutions:**
+
 1. Check `data-brightness` attribute on `<html>` element
 2. Verify CSS custom properties defined in globals.css
 3. Check MutationObserver connection in console
@@ -381,6 +416,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Symptoms:** Old favicon or no favicon visible
 
 **Solutions:**
+
 1. Hard refresh browser (Cmd+Shift+R / Ctrl+Shift+F5)
 2. Clear browser cache
 3. Verify files exist in `public/favicon_light/` and `public/favicon_dark/`
@@ -392,6 +428,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Symptoms:** E2E tests fail with "strict mode violation" error
 
 **Solutions:**
+
 1. Scope locators to parent containers (`header`, `section`)
 2. Use `.first()` or `.nth(0)` if truly selecting from multiple
 3. Verify ARIA labels are unique if needed
@@ -401,6 +438,7 @@ uniform bool disableCenterDimming; // Center darkening toggle
 **Symptoms:** Janky animation, low FPS, browser lag
 
 **Solutions:**
+
 1. Check if multiple shader instances running unnecessarily
 2. Verify reduced motion detection working
 3. Test on different browsers (Chrome/Firefox best WebGL support)
@@ -457,6 +495,7 @@ scripts/
 4. **Run E2E tests**: `npm run test:e2e -- shader-blob.spec.ts`
 5. **Regenerate favicons**: `npm run generate:favicons`
 6. **Verify all quality gates**:
+
    ```bash
    npm run lint          # ESLint (0 errors)
    npx tsc --noEmit      # TypeScript (0 errors)
@@ -469,6 +508,7 @@ scripts/
 ### Adding New Brightness Mode
 
 1. **Add mode to globals.css**:
+
    ```css
    [data-brightness="+4"] {
      --brand-primary: #d1fae5;
@@ -477,6 +517,7 @@ scripts/
    ```
 
 2. **Update constants.ts**:
+
    ```typescript
    export const LIGHT_BRIGHTNESS_MODES = ["+1", "+2", "+3", "+4"] as const;
    ```

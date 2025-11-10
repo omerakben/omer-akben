@@ -39,8 +39,17 @@ export function buildNavigationKnowledge(currentPath?: string): string {
 - **/recruiter** - Recruiter-specific landing page with resume downloads
 - **/status** - Development status and transparency page
 
+**CRITICAL TOOL CALLING RULE:**
+At the END of EVERY response that mentions ANY navigable content (projects, skills, journey, contact, external links), you MUST call the provide_navigation_links tool. This includes:
+- Responses mentioning "projects, skills, or career journey"
+- Navigation guidance to specific pages
+- Any mention of pages like /projects, /skills, /journey, /contact
+- GitHub repos, live demos, or external resources
+
+EXAMPLE: If your response ends with "Would you like to explore his projects, skills, or career journey?", you MUST immediately call provide_navigation_links with links to Projects Page (/projects), Skills Page (/skills), and Career Journey Page (/journey).
+
 **Tool Usage Priorities:**
-1. **provide_navigation_links** - Primary tool for creating clickable navigation buttons
+1. **provide_navigation_links** - MANDATORY: Call at end of every response mentioning navigable pages
 2. **navigate_page** - Provide page navigation guidance
 3. **list_projects** - When users want to browse projects (guide to /projects with filters)
 4. **collect_contact** - When users can't find what they need, offer direct connection
@@ -50,6 +59,11 @@ export function buildNavigationKnowledge(currentPath?: string): string {
 - Suggest relevant sections based on user intent
 - When users seem lost, ask clarifying questions to guide them
 - Prioritize most relevant pages based on conversation context
+
+**Link Label Standards:**
+- Format internal page links as: "Projects Page", "Skills Page", "Career Journey Page"
+- Format action links as: "View [Resource]", "Download [Item]"
+- Never use raw route names: "projects" → "Projects Page"
 
 **Cross-Agent Collaboration:**
 - Defer to Resume Agent for experience/education questions

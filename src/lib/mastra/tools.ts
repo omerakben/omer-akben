@@ -24,7 +24,7 @@ const fetchJson = async (path: string, body?: unknown) => {
 export const provideNavigationLinksTool = createTool({
   id: "provide_navigation_links",
   description:
-    "Provide clickable navigation buttons for visitors to easily navigate to pages, projects, or external resources.",
+    "ALWAYS provide clickable navigation buttons when mentioning portfolio pages (/projects, /skills, /journey), specific projects, or external resources (GitHub, LinkedIn). Call this tool EVERY TIME you reference navigable content - it enhances UX with interactive buttons instead of plain text links. Use descriptive labels like 'Projects Page', 'Skills Page', never raw route names like 'projects' or 'skills'.",
   inputSchema: z.object({
     links: z.array(
       z.object({

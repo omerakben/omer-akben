@@ -1,3 +1,4 @@
+import { getMessageText } from "@/lib/chat/message-utils";
 import { logError } from "@/lib/log";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
 import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
@@ -117,6 +118,12 @@ export async function POST(req: Request) {
         const effectiveUserId = userId ?? "anonymous";
 
         try {
+          // Auto-inject navigation links if appropriate
+          const lastMessage = finalMessages[finalMessages.length - 1];
+          if (lastMessage) {
+            injectNavigationLinksIfNeeded(lastMessage);
+          }
+
           // Persist conversation memory, extract facts, and generate follow-ups in parallel
           await Promise.all([
             memoryManager.saveSTM(chatId, finalMessages),
@@ -157,24 +164,156 @@ function normalizeToUIMessage(raw: z.infer<typeof messageSchema>): UIMessage {
   } as UIMessage;
 }
 
-function extractMessageText(message: UIMessage): string {
-  const textParts = message.parts
-    .filter(
-      (part): part is { type: "text"; text: string } =>
-        part.type === "text" && "text" in part
-    )
-    .map((part) => part.text.trim())
-    .filter(Boolean);
+const extractMessageText = getMessageText;
 
-  if (textParts.length > 0) {
-    return textParts.join("\n");
+/**
+ * Detects if the response text mentions navigable content that should include navigation links
+ */
+function shouldProvideNavigationLinks(text: string): boolean {
+  const navigationKeywords = [
+    /\bproject/i,
+    /\bskills?\b/i,
+    /\bportfolio\b/i,
+    /\bjourney\b/i,
+    /\bexperience\b/i,
+    /\bwork\b/i,
+    /\bcareer\b/i,
+    /\bcontact/i,
+    /\bresume\b/i,
+    /\bCV\b/,
+    /\bcertificat/i,
+    /\bexplor/i,
+    /\bcheck out\b/i,
+    /\btake a look\b/i,
+    /\bview\b/i,
+    /\bsee\b/i,
+  ];
+
+  return navigationKeywords.some((pattern) => pattern.test(text));
+}
+
+/**
+ * Generates navigation links based on the response content
+ */
+function generateNavigationLinks(text: string): Array<{
+  label: string;
+  href: string;
+  type: "internal" | "external";
+}> {
+  const links: Array<{
+    label: string;
+    href: string;
+    type: "internal" | "external";
+  }> = [];
+
+  const lowerText = text.toLowerCase();
+
+  // Detect project mentions
+  if (lowerText.includes("project")) {
+    links.push({
+      label: "View Projects",
+      href: "/projects",
+      type: "internal",
+    });
   }
 
+  // Detect skills mentions
+  if (lowerText.includes("skill")) {
+    links.push({
+      label: "View Skills",
+      href: "/skills",
+      type: "internal",
+    });
+  }
+
+  // Detect journey/experience mentions
   if (
-    typeof (message as unknown as { content?: unknown }).content === "string"
+    lowerText.includes("journey") ||
+    lowerText.includes("career") ||
+    lowerText.includes("experience")
   ) {
-    return ((message as unknown as { content?: string }).content ?? "").trim();
+    links.push({
+      label: "Career Journey",
+      href: "/journey",
+      type: "internal",
+    });
   }
 
-  return "";
+  // Detect contact mentions
+  if (lowerText.includes("contact")) {
+    links.push({
+      label: "Contact Me",
+      href: "/contact",
+      type: "internal",
+    });
+  }
+
+  // Detect resume mentions
+  if (lowerText.includes("resume") || lowerText.includes("cv")) {
+    links.push({
+      label: "Download Resume",
+      href: "/resume",
+      type: "internal",
+    });
+  }
+
+  // Remove duplicates by href
+  const uniqueLinks = links.filter(
+    (link, index, self) =>
+      index === self.findIndex((l) => l.href === link.href)
+  );
+
+  return uniqueLinks;
+}
+
+/**
+ * Injects navigation link tool call into assistant message if appropriate
+ */
+function injectNavigationLinksIfNeeded(message: UIMessage): void {
+  if (message.role !== "assistant" || !message.parts) {
+    return;
+  }
+
+  // Check if already has navigation links tool call
+  const hasNavigationLinks = message.parts.some(
+    (part) =>
+      "type" in part &&
+      typeof part.type === "string" &&
+      part.type.includes("provide_navigation_links")
+  );
+
+  if (hasNavigationLinks) {
+    return; // Already has navigation links, don't inject
+  }
+
+  // Extract text content
+  const textContent = message.parts
+    .filter((part) => "type" in part && part.type === "text")
+    .map((part) => ("text" in part ? part.text : ""))
+    .join("");
+
+  // Check if should provide navigation links
+  if (!shouldProvideNavigationLinks(textContent)) {
+    return;
+  }
+
+  // Generate navigation links
+  const links = generateNavigationLinks(textContent);
+
+  if (links.length === 0) {
+    return;
+  }
+
+  // Inject tool result part
+  const toolCallId = `nav-${Date.now()}`;
+  message.parts.push({
+    type: "tool-result",
+    toolCallId,
+    toolName: "provide_navigation_links",
+    result: {
+      success: true,
+      data: { links },
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 }

@@ -93,10 +93,10 @@ export const skillsMatrix = `
 **"What's your strongest technical skill?"**
 "My strongest skill is **Quality Assurance & Test Automation** with 6+ years of SDET experience:
 
-• **Playwright/Selenium expertise:** Built production frameworks for financial services and healthcare
-• **Framework architecture:** Designed reusable test libraries with TypeScript/Python
-• **CI/CD integration:** GitHub Actions, Jenkins, Azure Pipelines
-• **Test strategy:** TDD, BDD, shift-left quality practices
+- **Playwright/Selenium expertise:** Built production frameworks for financial services and healthcare
+- **Framework architecture:** Designed reusable test libraries with TypeScript/Python
+- **CI/CD integration:** GitHub Actions, Jenkins, Azure Pipelines
+- **Test strategy:** TDD, BDD, shift-left quality practices
 
 My SDET foundation means I build testable architectures from day one, enabling teams to ship faster with fewer regressions. Check out [/projects/capstone-deadline](/projects/capstone-deadline) to see 64/64 backend tests and Playwright visual testing in action."
 
@@ -104,14 +104,14 @@ My SDET foundation means I build testable architectures from day one, enabling t
 "Yes! I have extensive **AI/ML engineering experience** with production deployments:
 
 **LLM & Frameworks:**
-• OpenAI API (GPT-4o, GPT-4o-mini), Anthropic Claude API
-• LangChain, LangGraph (agentic workflows)
-• RAG systems with vector search (pgvector)
+- OpenAI API (GPT-4o, GPT-4o-mini), Anthropic Claude API
+- LangChain, LangGraph (agentic workflows)
+- RAG systems with vector search (pgvector)
 
 **Projects Demonstrating AI Expertise:**
-• **Elon AI Agent** - Parallel multi-agent system (3-4x speedup)
-• **Tuel AI Chatbot** - Full-stack RAG platform with multi-provider support
-• **Genesis Test Copilot** - AI-powered test automation
+- **Elon AI Agent** - Parallel multi-agent system (3-4x speedup)
+- **Tuel AI Chatbot** - Full-stack RAG platform with multi-provider support
+- **Genesis Test Copilot** - AI-powered test automation
 
 I build end-to-end AI features with Next.js/TypeScript frontend and FastAPI/Python backend. Visit [/projects](/projects) and filter by AI/ML to see detailed case studies. Which AI capability interests you most?"
 
@@ -119,14 +119,14 @@ I build end-to-end AI features with Next.js/TypeScript frontend and FastAPI/Pyth
 "I specialize in **modern React/Next.js** development with production experience:
 
 **Core Stack:**
-• React 19, Next.js 15 (App Router), TypeScript
-• Tailwind CSS 4, shadcn/ui component library
-• Server-Side Rendering (SSR), Incremental Static Regeneration (ISR)
+- React 19, Next.js 15 (App Router), TypeScript
+- Tailwind CSS 4, shadcn/ui component library
+- Server-Side Rendering (SSR), Incremental Static Regeneration (ISR)
 
 **Projects Showcasing Frontend:**
-• **DEADLINE** - Next.js 15 with A- (92/100) UI/UX grade
-• **Tuel Animation Library** - React animation library with 13 NPM packages
-• **This Portfolio** - Next.js 15 with 8 brightness modes, AI chatbot
+- **DEADLINE** - Next.js 15 with A- (92/100) UI/UX grade
+- **Tuel Animation Library** - React animation library with 13 NPM packages
+- **This Portfolio** - Next.js 15 with 8 brightness modes, AI chatbot
 
 I focus on accessibility (WCAG compliance), performance optimization, and mobile-responsive design. Visit [/skills](/skills) to see the interactive tech showcase with live examples."
 
@@ -134,15 +134,15 @@ I focus on accessibility (WCAG compliance), performance optimization, and mobile
 "I'm **T-shaped: full-stack with deep SDET specialization**.
 
 **Breadth (Full-Stack):**
-• Frontend: React, Next.js 15, TypeScript, Tailwind CSS
-• Backend: FastAPI, Django, PostgreSQL, Redis
-• AI/ML: LangChain, LangGraph, OpenAI API, RAG systems
-• DevOps: GitHub Actions, Docker, AWS, Railway, Vercel
+- Frontend: React, Next.js 15, TypeScript, Tailwind CSS
+- Backend: FastAPI, Django, PostgreSQL, Redis
+- AI/ML: LangChain, LangGraph, OpenAI API, RAG systems
+- DevOps: GitHub Actions, Docker, AWS, Railway, Vercel
 
 **Depth (Quality Engineering):**
-• 6+ years SDET experience with Playwright, Selenium, test frameworks
-• Built production QA systems for financial services and healthcare
-• Test strategy: TDD, BDD, CI/CD integration, shift-left quality
+- 6+ years SDET experience with Playwright, Selenium, test frameworks
+- Built production QA systems for financial services and healthcare
+- Test strategy: TDD, BDD, CI/CD integration, shift-left quality
 
 **In Practice:**
 I design and ship features end-to-end (product thinking), and my SDET roots ensure I build testable architectures from day one. Teams ship faster with fewer regressions. Check out [/projects/capstone-deadline](/projects/capstone-deadline) for a full-stack example with 64/64 tests passing."
@@ -151,26 +151,26 @@ I design and ship features end-to-end (product thinking), and my SDET roots ensu
 "I have 6+ years of **QA/SDET experience** with comprehensive testing tools:
 
 **End-to-End Testing:**
-• **Playwright** (primary) - Modern TypeScript/Python frameworks
-• **Selenium WebDriver** - Built .NET 8 production framework (TUEL)
-• **Cypress** - Component and integration testing
+- **Playwright** (primary) - Modern TypeScript/Python frameworks
+- **Selenium WebDriver** - Built .NET 8 production framework (TUEL)
+- **Cypress** - Component and integration testing
 
 **API Testing:**
-• REST Assured - Java-based API automation
-• Postman + Newman - CLI automation pipelines
-• Playwright API testing - Modern approach
+- REST Assured - Java-based API automation
+- Postman + Newman - CLI automation pipelines
+- Playwright API testing - Modern approach
 
 **Unit Testing:**
-• Vitest (JavaScript/TypeScript), pytest (Python)
-• JUnit, TestNG, xUnit, MSTest (.NET)
+- Vitest (JavaScript/TypeScript), pytest (Python)
+- JUnit, TestNG, xUnit, MSTest (.NET)
 
 **BDD Frameworks:**
-• Cucumber (Java), SpecFlow (C#) with Gherkin syntax
+- Cucumber (Java), SpecFlow (C#) with Gherkin syntax
 
 **Projects Demonstrating Testing:**
-• **DEADLINE** - 64/64 backend tests passing (pytest)
-• **TUEL Selenium Framework** - Production .NET 8 framework
-• **Genesis Test Copilot** - AI-powered test generation
+- **DEADLINE** - 64/64 backend tests passing (pytest)
+- **TUEL Selenium Framework** - Production .NET 8 framework
+- **Genesis Test Copilot** - AI-powered test generation
 
 Visit [/projects](/projects) to see testing implementations. Need details on any specific tool or methodology?"
 
