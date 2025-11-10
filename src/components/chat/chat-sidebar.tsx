@@ -716,7 +716,7 @@ export function ChatSidebar() {
                                 return (
                                   <div className="mt-2 flex flex-wrap gap-2">
                                     {navigationLinks.map((link, linkIndex) => {
-                                      const Icon = getIconComponent();
+                                      const Icon = getIconComponent(link.icon);
                                       const isExternal =
                                         link.type === "external";
 

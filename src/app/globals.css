@@ -1051,21 +1051,21 @@ html {
     font-size: 0.9em;
   }
 
-  /* Force white text for user messages in all brightness modes */
-  .chat-message.bg-brand-primary,
-  .chat-message.bg-brand-primary * {
-    color: #ffffff !important;
+  /* Ensure sufficient contrast for user messages on brand-primary background */
+  [data-brightness] .chat-message.bg-brand-primary,
+  [data-brightness] .chat-message.bg-brand-primary * {
+    color: rgb(255 255 255);
   }
 
   /* Override for links in user messages to remain white with underline */
-  .chat-message.bg-brand-primary a {
-    color: #ffffff !important;
+  [data-brightness] .chat-message.bg-brand-primary a {
+    color: rgb(255 255 255);
     text-decoration: underline;
   }
 
-  /* Override for code blocks in user messages */
-  .chat-message.bg-brand-primary code {
-    color: #0a1020;
-    background: rgba(255, 255, 255, 0.9);
+  /* Override for code blocks in user messages - use contrasting colors */
+  [data-brightness] .chat-message.bg-brand-primary code {
+    color: rgb(10 16 32);
+    background: rgb(255 255 255 / 0.9);
   }
 }

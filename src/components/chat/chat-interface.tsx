@@ -499,7 +499,7 @@ export function ChatInterface({
                           return (
                             <div className="mt-3 flex flex-wrap gap-2">
                               {navigationLinks.map((link, linkIndex) => {
-                                const Icon = getIconComponent();
+                                const Icon = getIconComponent(link.icon);
                                 const isExternal = link.type === "external";
 
                                 return (

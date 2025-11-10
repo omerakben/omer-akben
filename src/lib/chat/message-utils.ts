@@ -76,6 +76,7 @@ export type NavigationLink = {
   label: string;
   href: string;
   type: "internal" | "external";
+  icon?: string;
 };
 
 function isNavigationLink(value: unknown): value is NavigationLink {
@@ -86,7 +87,8 @@ function isNavigationLink(value: unknown): value is NavigationLink {
   return (
     typeof value.label === "string" &&
     typeof value.href === "string" &&
-    (value.type === "internal" || value.type === "external")
+    (value.type === "internal" || value.type === "external") &&
+    (!("icon" in value) || typeof value.icon === "string")
   );
 }
 
