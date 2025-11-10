@@ -22,17 +22,19 @@ const toolCallPartSchema = z.object({
   args: z.record(z.string(), z.unknown()),
 });
 
-const toolResultPartSchema = z.object({
-  type: z.literal("tool-result"),
-  toolCallId: z.string(),
+const dynamicToolPartSchema = z.object({
+  type: z.literal("dynamic-tool"),
   toolName: z.string(),
-  result: z.unknown(),
+  toolCallId: z.string(),
+  state: z.enum(["input-streaming", "input-available", "output-available", "output-error"]),
+  input: z.unknown(),
+  output: z.unknown().optional(),
 });
 
 const messagePartSchema = z.union([
   textPartSchema,
   toolCallPartSchema,
-  toolResultPartSchema,
+  dynamicToolPartSchema,
 ]);
 
 const messageSchema = z.object({
@@ -181,8 +183,8 @@ function shouldProvideNavigationLinks(text: string): boolean {
     /\bcontact/i,
     /\bresume\b/i,
     /\bCV\b/,
-    /\bcertificat/i,
-    /\bexplor/i,
+    /\bcertificate/i,
+    /\bexplore/i,
     /\bcheck out\b/i,
     /\btake a look\b/i,
     /\bview\b/i,
@@ -276,24 +278,30 @@ function injectNavigationLinksIfNeeded(message: UIMessage): void {
       return;
     }
 
-    // Check if already has navigation links tool call
+    // Check if AI already provided navigation links (via tool call or text)
     const hasNavigationLinks = message.parts.some((part) => {
       if (!("type" in part) || typeof part.type !== "string") {
         return false;
       }
 
-      // Check for direct type match
+      // Check for direct tool-specific type
       if (part.type === "tool-provide_navigation_links") {
         return true;
       }
 
-      // Check for tool-call or tool-result with matching toolName
+      // Check for tool-call with navigation tool name (AI-generated)
+      if (part.type === "tool-call" && "toolName" in part) {
+        const toolName = (part as { toolName?: string }).toolName;
+        return toolName === "provide_navigation_links";
+      }
+
+      // Check for dynamic-tool or tool-result with navigation tool name
       if (
-        (part.type === "tool-call" || part.type === "tool-result") &&
-        "toolName" in part &&
-        (part as { toolName?: unknown }).toolName === "provide_navigation_links"
+        (part.type === "dynamic-tool" || part.type === "tool-result") &&
+        "toolName" in part
       ) {
-        return true;
+        const toolName = (part as { toolName?: string }).toolName;
+        return toolName === "provide_navigation_links";
       }
 
       return false;
@@ -309,6 +317,13 @@ function injectNavigationLinksIfNeeded(message: UIMessage): void {
       .map((part) => ("text" in part ? part.text : ""))
       .join("");
 
+    // Check if text already contains explicit navigation link references
+    const hasTextNavigationLinks = /\b(Skills Page|Projects Page|Career Journey|Contact Me|Download Resume)\b/i.test(textContent);
+
+    if (hasTextNavigationLinks) {
+      return; // Text already has navigation references, don't inject
+    }
+
     // Check if should provide navigation links
     if (!shouldProvideNavigationLinks(textContent)) {
       return;
@@ -322,12 +337,14 @@ function injectNavigationLinksIfNeeded(message: UIMessage): void {
     }
 
     // Inject tool result part
-    const toolCallId = `nav-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const toolCallId = `nav-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     message.parts.push({
-      type: "tool-result",
-      toolCallId,
+      type: "dynamic-tool",
       toolName: "provide_navigation_links",
-      result: {
+      toolCallId,
+      state: "output-available",
+      input: {},
+      output: {
         success: true,
         data: { links },
       },
