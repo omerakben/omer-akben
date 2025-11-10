@@ -55,6 +55,7 @@ jobs:
         run: npm test -- --run
         env:
           # Required for tests that use caching and memory
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -65,6 +66,7 @@ jobs:
         run: npm run build
         env:
           # Required for build (page data collection initializes Redis client and Resend email client)
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -111,6 +113,7 @@ jobs:
       - name: Build application
         run: npm run build
         env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -122,6 +125,7 @@ jobs:
         run: npm run test:e2e
         env:
           # E2E tests may need API access
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}

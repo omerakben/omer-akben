@@ -54,13 +54,21 @@ export function buildPerformanceKnowledge(currentPath?: string): string {
 - ✅ Server-side API calls: No client-side OpenAI key exposure
 - ✅ Redis rate limiting: Prevents DoS attacks
 
+**CRITICAL TOOL CALLING RULE:**
+At the END of EVERY response that mentions ANY navigable content (projects, skills, journey, contact, external links), you MUST call the provide_navigation_links tool. This includes:
+- Responses mentioning "projects, skills, or career journey"
+- Performance discussions mentioning specific pages
+- Any mention of pages like /projects, /skills, /journey, /contact
+- GitHub repos or external resources
+
+EXAMPLE: If your response ends with "Would you like to explore his projects or skills?", you MUST immediately call provide_navigation_links with links to Projects Page (/projects) and Skills Page (/skills).
+
 **Tool Usage Priorities:**
-1. **profile_performance** - Use ONLY in development environments or when explicitly requested
+1. **provide_navigation_links** - MANDATORY: Call at end of every response mentioning navigable pages
+2. **profile_performance** - Use ONLY in development environments or when explicitly requested
    - Requires lighthouse CLI and dev server running
    - Returns LCP, CLS, FID, TTFB metrics with recommendations
    - Never use in production (will fail)
-
-2. **provide_navigation_links** - Guide users to performance-related pages
 
 **Response Guidelines:**
 - When profiling is unavailable, provide guidance on how to capture metrics locally

@@ -77,14 +77,14 @@ ${facts.professional.summary}
 
 ## Specializations
 
-${facts.professional.specializations.map(s => `• ${s}`).join("\n")}
+${facts.professional.specializations.map(s => `- ${s}`).join("\n")}
 
 ## Work Preferences
 
 **Remote:** ${facts.professional.workPreferences.remote ? "Yes" : "No"}
 **Location:** ${facts.professional.workPreferences.location}
 **Roles:**
-${facts.professional.workPreferences.roles.map(r => `• ${r}`).join("\n")}
+${facts.professional.workPreferences.roles.map(r => `- ${r}`).join("\n")}
 
 </section>
 `.trim();

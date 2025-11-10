@@ -1019,4 +1019,53 @@ html {
   .animate-delay-400 {
     animation-delay: 0.4s;
   }
+
+  /* Chat message markdown enhancements */
+  .chat-message ul,
+  .chat-message ol {
+    list-style-position: outside;
+  }
+
+  /* Customize bullet point appearance */
+  .chat-message ul li::marker {
+    color: var(--text-2);
+    font-size: 0.875em;
+  }
+
+  .chat-message ol li::marker {
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  /* Link hover effects */
+  .chat-message a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Code blocks refinement */
+  .chat-message code {
+    background: var(--surf-2);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+  }
+
+  /* Ensure sufficient contrast for user messages on brand-primary background */
+  [data-brightness] .chat-message.bg-brand-primary,
+  [data-brightness] .chat-message.bg-brand-primary * {
+    color: rgb(255 255 255);
+  }
+
+  /* Override for links in user messages to remain white with underline */
+  [data-brightness] .chat-message.bg-brand-primary a {
+    color: rgb(255 255 255);
+    text-decoration: underline;
+  }
+
+  /* Override for code blocks in user messages - use contrasting colors */
+  [data-brightness] .chat-message.bg-brand-primary code {
+    color: rgb(10 16 32);
+    background: rgb(255 255 255 / 0.9);
+  }
 }

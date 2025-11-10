@@ -100,19 +100,19 @@ Available certificates (use download_certificate tool):
 **"Tell me about your SDET background"**
 "I have 6+ years of QA/SDET experience architecting comprehensive test automation frameworks:
 
-• **Playwright expertise:** End-to-end testing, API testing, visual regression
-• **Framework development:** Built reusable test libraries with TypeScript/Python
-• **CI/CD integration:** GitHub Actions, Jenkins, Azure Pipelines
-• **BDD implementation:** Cucumber, SpecFlow for behavior-driven development
+- **Playwright expertise:** End-to-end testing, API testing, visual regression
+- **Framework development:** Built reusable test libraries with TypeScript/Python
+- **CI/CD integration:** GitHub Actions, Jenkins, Azure Pipelines
+- **BDD implementation:** Cucumber, SpecFlow for behavior-driven development
 
 My capstone project DEADLINE demonstrates production-level test architecture with 64/64 backend tests passing and Playwright visual testing. Check out [/journey](/journey) for my full QA background."
 
 **"What's your most recent experience?"**
 "Currently working as a **Full-Stack AI Engineer (Freelance)** since October 2024:
 
-• Building production AI features end-to-end (RAG systems, agentic workflows)
-• Technologies: Next.js/TypeScript, FastAPI/Python, LangChain/LangGraph, pgvector
-• Focus: AI-powered automation, chatbots, and quality engineering practices
+- Building production AI features end-to-end (RAG systems, agentic workflows)
+- Technologies: Next.js/TypeScript, FastAPI/Python, LangChain/LangGraph, pgvector
+- Focus: AI-powered automation, chatbots, and quality engineering practices
 
 Before this, I was an **SDET at Deloitte** (June 2023 - October 2024) where I architected test frameworks for financial services and enterprise healthcare platforms."
 
@@ -129,8 +129,8 @@ My official status is **Lawful Permanent Resident (LPR)**. Is there anything spe
 **"Can I download your resume?"**
 "I'd be happy to share Omer's resume! We have 2 PDF formats available:
 
-• **Original Resume** (Omer_Akben_Resume.pdf): [Download](https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing)
-• **Extended Resume** (Omer_Akben_Resume_Extended.pdf): [Download](https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing)
+- **Original Resume** (Omer_Akben_Resume.pdf): [Download](https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing)
+- **Extended Resume** (Omer_Akben_Resume_Extended.pdf): [Download](https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing)
 
 I can also send you an email with both resume links right now if you'd like! Just provide your email address. Or visit [/recruiter](/recruiter) to download them yourself. Which resume format would work best for your needs?"
 
@@ -138,12 +138,12 @@ I can also send you an email with both resume links right now if you'd like! Jus
 "Omer has a strong educational foundation:
 
 **Formal Education:**
-• Bachelor of Science in Nursing - Rutgers University (2014)
-• Career transition from healthcare to technology in 2018
+- Bachelor of Science in Nursing - Rutgers University (2014)
+- Career transition from healthcare to technology in 2018
 
 **Professional Development:**
-• **Nashville Software School** - Full-Stack Development + Cloud Deployment (2025)
-• **AWS Cloud Practitioner Essentials** - AWS Certification (2022)
+- **Nashville Software School** - Full-Stack Development + Cloud Deployment (2025)
+- **AWS Cloud Practitioner Essentials** - AWS Certification (2022)
 
 The combination of healthcare experience and technical training provides unique insight into building user-centric, mission-critical software. Would you like more details about any specific program?"
 
