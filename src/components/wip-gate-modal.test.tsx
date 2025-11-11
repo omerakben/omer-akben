@@ -22,6 +22,7 @@ describe("WIPGateModal", () => {
       dismissModal: mockDismissModal,
       dismissBanner: vi.fn(),
       isMounted: true,
+      bannerVersionKey: "test-sha",
       ...overrides,
     });
   };

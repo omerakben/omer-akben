@@ -3,9 +3,11 @@
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { posthog } from "@/lib/analytics/posthog-client";
 import { extractNavigationLinks, getMessageText } from "@/lib/chat/message-utils";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
+import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
@@ -28,7 +30,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
@@ -39,6 +41,8 @@ const suggestedQuestions = [
   "Tell me about yourself.",
   "Are you primarily a Software Engineer or an SDET?",
 ];
+
+const PIN_HINT_STORAGE_KEY = "sidebar_pin_hint_seen_v1";
 
 // Icon mapping for navigation links
 const getIconComponent = (iconName?: string) => {
@@ -73,11 +77,105 @@ export function ChatSidebar() {
   const [lastFailedMessage, setLastFailedMessage] = useState<string>("");
   const [isResizing, setIsResizing] = useState(false);
   const [currentFollowups, setCurrentFollowups] = useState<FollowupSuggestionType[]>([]);
+  const [showPinHint, setShowPinHint] = useState(false);
+  const [hasSeenPinHint, setHasSeenPinHint] = useState(true);
+  const [pinHintReady, setPinHintReady] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const markPinHintSeen = useCallback(
+    (reason: "dismiss" | "pin" = "dismiss") => {
+      setHasSeenPinHint(true);
+      setShowPinHint(false);
+
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(PIN_HINT_STORAGE_KEY, "true");
+        } catch (error) {
+          console.error("[ChatSidebar] Failed to persist pin hint state:", error);
+        }
+      }
+
+      posthog.capture("sidebar.pin_hint", {
+        action: reason,
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const stored = localStorage.getItem(PIN_HINT_STORAGE_KEY) === "true";
+      setHasSeenPinHint(stored);
+    } catch (error) {
+      console.error("[ChatSidebar] Failed to read pin hint state:", error);
+    } finally {
+      setPinHintReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!pinHintReady) return;
+
+    if (isPinned) {
+      if (!hasSeenPinHint) {
+        markPinHintSeen("pin");
+      }
+      return;
+    }
+
+    if (hasSeenPinHint) {
+      setShowPinHint(false);
+      return;
+    }
+
+    if (typeof window === "undefined") return;
+
+    const mediaMatch = window.matchMedia
+      ? window.matchMedia("(min-width: 1024px)").matches
+      : window.innerWidth >= 1024;
+
+    if (!mediaMatch) {
+      setShowPinHint(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setShowPinHint(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, [hasSeenPinHint, isPinned, pinHintReady, markPinHintSeen]);
+
+  useEffect(() => {
+    if (showPinHint) {
+      posthog.capture("sidebar.pin_hint.view");
+    }
+  }, [showPinHint]);
+
+  const handlePinToggle = useCallback(() => {
+    const nextPinned = !isPinned;
+    setPinned(nextPinned);
+
+    posthog.capture("sidebar.pin_toggle", {
+      action: nextPinned ? "pin" : "unpin",
+    });
+
+    if (nextPinned && !hasSeenPinHint) {
+      markPinHintSeen("pin");
+    }
+  }, [hasSeenPinHint, isPinned, markPinHintSeen, setPinned]);
+
+  const dismissPinHint = useCallback(() => {
+    if (!hasSeenPinHint) {
+      markPinHintSeen("dismiss");
+    } else {
+      setShowPinHint(false);
+    }
+  }, [hasSeenPinHint, markPinHintSeen]);
+
   const MAX_INPUT_LENGTH = 2000; // Character limit for chat input
+  const shouldShowPinHint = showPinHint && !isPinned;
 
   const { messages, sendMessage, status, setMessages } = useChat({
     id: threadId,
@@ -471,21 +569,61 @@ export function ChatSidebar() {
                     <Trash2 aria-hidden="true" className="w-4 h-4" />
                   </Button>
                 )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setPinned(!isPinned)}
-                  className="h-11 w-11 p-2"
-                  title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-                  aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-                  aria-pressed={isPinned}
-                >
-                  {isPinned ? (
-                    <PinOff aria-hidden="true" className="w-4 h-4" />
-                  ) : (
-                    <Pin aria-hidden="true" className="w-4 h-4" />
+                <div className="relative">
+                  <div
+                    className={cn(
+                      "relative",
+                      shouldShowPinHint && "pin-highlight inline-flex rounded-full"
+                    )}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handlePinToggle}
+                      className="h-11 w-11 p-2"
+                      title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                      aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                      aria-pressed={isPinned}
+                      aria-describedby={shouldShowPinHint ? "pin-sidebar-hint" : undefined}
+                    >
+                      {isPinned ? (
+                        <PinOff aria-hidden="true" className="w-4 h-4" />
+                      ) : (
+                        <Pin aria-hidden="true" className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  {shouldShowPinHint && (
+                    <div
+                      id="pin-sidebar-hint"
+                      role="status"
+                      className="pin-tooltip absolute right-0 top-14 w-64 rounded-2xl border border-brand-primary/40 bg-surf-2 p-4 text-left shadow-xl"
+                    >
+                      <p className="text-sm font-semibold text-text-1">
+                        Pin Ozzy to stay in view
+                      </p>
+                      <p className="mt-1 text-xs text-text-2">
+                        Keep the Projects page scrollable while Ozzy follows along.
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={handlePinToggle}
+                          className="rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold text-white"
+                        >
+                          Pin now
+                        </button>
+                        <button
+                          type="button"
+                          onClick={dismissPinHint}
+                          className="rounded-full border border-border-line px-3 py-1 text-xs font-medium text-text-2 hover:border-brand-primary hover:text-brand-primary"
+                        >
+                          Got it
+                        </button>
+                      </div>
+                    </div>
                   )}
-                </Button>
+                </div>
                 {!isPinned && (
                   <Button
                     variant="ghost"

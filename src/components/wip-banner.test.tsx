@@ -1,270 +1,115 @@
-import * as WIPContext from "@/lib/wip-context";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { WIPBanner } from "./wip-banner";
 
-// Mock Next.js navigation
+import { WIPBanner } from "@/components/wip-banner";
+import { posthog } from "@/lib/analytics/posthog-client";
+import * as WIPContext from "@/lib/wip-context";
+
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
 }));
 
-// Import after mocking
 import { usePathname } from "next/navigation";
 
+const mockPathname = vi.mocked(usePathname);
+const dismissSpy = vi.fn();
+const captureMock = posthog.capture as unknown as ReturnType<typeof vi.fn>;
+const useWIPSpy = vi.spyOn(WIPContext, "useWIP");
+
+const setContext = (overrides?: Partial<ReturnType<typeof WIPContext.useWIP>>) => {
+  useWIPSpy.mockReturnValue({
+    isModalDismissed: true,
+    isBannerDismissed: false,
+    dismissModal: vi.fn(),
+    dismissBanner: dismissSpy,
+    isMounted: true,
+    bannerVersionKey: "abcdef1",
+    ...overrides,
+  });
+};
+
+beforeEach(() => {
+  dismissSpy.mockReset();
+  captureMock.mockReset();
+  mockPathname.mockReturnValue("/");
+  setContext();
+});
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 describe("WIPBanner", () => {
-  const mockDismissBanner = vi.fn();
-  const mockPathname = vi.mocked(usePathname);
+  it("renders when user has not dismissed banner", () => {
+    const { container } = render(<WIPBanner />);
 
-  const mockWIPContext = (overrides?: Partial<ReturnType<typeof WIPContext.useWIP>>) => {
-    vi.spyOn(WIPContext, "useWIP").mockReturnValue({
-      isModalDismissed: true,
-      isBannerDismissed: false,
-      dismissModal: vi.fn(),
-      dismissBanner: mockDismissBanner,
-      isMounted: true,
-      ...overrides,
-    });
-  };
-
-  beforeEach(() => {
-    mockDismissBanner.mockClear();
-    mockPathname.mockReturnValue("/");
+    expect(container.querySelector("aside")).toBeInTheDocument();
+    expect(screen.getByText(/Site under active development/i)).toBeVisible();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
+  it("hides on status page", () => {
+    mockPathname.mockReturnValue("/status");
+
+    const { container } = render(<WIPBanner />);
+    expect(container.firstChild).toBeNull();
   });
 
-  describe("Visibility conditions", () => {
-    it("should render when on homepage and banner not dismissed", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
+  it("fires view analytics event when shown", () => {
+    render(<WIPBanner />);
 
-      render(<WIPBanner />);
-      expect(screen.getByRole("banner")).toBeInTheDocument();
-    });
-
-    it("should not render when not mounted", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: false });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
-
-    it("should not render when banner is dismissed", () => {
-      mockWIPContext({ isBannerDismissed: true, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
-
-    it("should not render when not on homepage", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/projects");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
-
-    it("should not render on /about page", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/about");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
-
-    it("should not render on /status page", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/status");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
-
-    it("should not render when both conditions are not met (not homepage and dismissed)", () => {
-      mockWIPContext({ isBannerDismissed: true, isMounted: true });
-      mockPathname.mockReturnValue("/contact");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
+    expect(captureMock).toHaveBeenCalledWith(
+      "status_banner.view",
+      expect.objectContaining({ sha: "abcdef1" })
+    );
   });
 
-  describe("Content", () => {
-    it("should display development message", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
+  it("dismisses and tracks analytics when close button clicked", () => {
+    render(<WIPBanner />);
 
-      render(<WIPBanner />);
-      expect(
-        screen.getByText(/Site under active development/i)
-      ).toBeInTheDocument();
-    });
+    fireEvent.click(screen.getByLabelText(/dismiss site status banner/i));
 
-    it("should display continuation text", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      render(<WIPBanner />);
-      expect(
-        screen.getByText(/Some features are still being built/i)
-      ).toBeInTheDocument();
-    });
-
-    it("should render Info icon", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      const icon = container.querySelector('svg');
-      expect(icon).toBeInTheDocument();
-      expect(icon).toHaveAttribute('aria-hidden', 'true');
-    });
-
-    it("should render View status link", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      render(<WIPBanner />);
-      const link = screen.getByRole("link", { name: /view status/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute("href", "/status");
-    });
+    expect(dismissSpy).toHaveBeenCalled();
+    expect(captureMock).toHaveBeenCalledWith(
+      "status_banner.dismiss",
+      expect.objectContaining({ sha: "abcdef1" })
+    );
   });
 
-  describe("Styling", () => {
-    it("should use info variant", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
+  it("dismisses when Escape key is pressed", () => {
+    render(<WIPBanner />);
 
-      render(<WIPBanner />);
-      const banner = screen.getByRole("banner");
-      // Info variant should have brand-primary background
-      expect(banner.className).toContain("bg-brand-primary");
-    });
-
-    it("should have flex layout classes", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      render(<WIPBanner />);
-      const banner = screen.getByRole("banner");
-      expect(banner.className).toContain("flex");
-      expect(banner.className).toContain("items-center");
-      expect(banner.className).toContain("gap-3");
-    });
-
-    it("should render Info icon with proper styling", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      // Verify icon exists (Lucide icons don't expose className in testable way)
-      const icon = container.querySelector('svg');
-      expect(icon).toBeInTheDocument();
-      expect(icon).toHaveAttribute('aria-hidden', 'true');
-    });
-
-    it("should have flex-1 class on description", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      // BannerDescription should have flex-1
-      const description = container.querySelector('[class*="flex-1"]');
-      expect(description).toBeInTheDocument();
-    });
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(dismissSpy).toHaveBeenCalled();
   });
 
-  describe("Dismiss functionality", () => {
-    it("should render dismiss button", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
+  it("tracks CTA click when View status link pressed", () => {
+    render(<WIPBanner />);
 
-      render(<WIPBanner />);
-      const dismissButton = screen.getByLabelText("Dismiss banner");
-      expect(dismissButton).toBeInTheDocument();
-    });
-
-    it("should call dismissBanner when dismiss button is clicked", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      render(<WIPBanner />);
-      const dismissButton = screen.getByLabelText("Dismiss banner");
-      dismissButton.click();
-
-      expect(mockDismissBanner).toHaveBeenCalledTimes(1);
-    });
+    fireEvent.click(screen.getByRole("link", { name: /view status/i }));
+    expect(dismissSpy).toHaveBeenCalled();
+    expect(captureMock).toHaveBeenCalledWith(
+      "status_banner.click_view_status",
+      expect.objectContaining({ path: "/" })
+    );
   });
 
-  describe("Accessibility", () => {
-    it("should have proper ARIA attributes", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
+  it("renders playful copy when variant is playful", () => {
+    render(<WIPBanner variant="playful" />);
 
-      render(<WIPBanner />);
-      const banner = screen.getByRole("banner");
-      expect(banner).toBeInTheDocument();
-    });
-
-    it("should have aria-hidden on Info icon", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      const icon = container.querySelector('svg');
-      expect(icon).toHaveAttribute("aria-hidden", "true");
-    });
+    expect(screen.getByText(/Still cooking\./i)).toBeVisible();
+    expect(screen.getByText(/Some features are in the pan/i)).toBeVisible();
   });
 
-  describe("Link behavior", () => {
-    it("should have correct hover styling on link", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
+  it("renders egg icon when icon prop is egg", () => {
+    render(<WIPBanner icon="egg" />);
 
-      render(<WIPBanner />);
-      const link = screen.getByRole("link", { name: /view status/i });
-      expect(link.className).toContain("hover:underline");
-    });
-
-    it("should have brand primary color on link", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      render(<WIPBanner />);
-      const link = screen.getByRole("link", { name: /view status/i });
-      expect(link.className).toContain("text-brand-primary");
-    });
-
-    it("should have font-medium on link", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      render(<WIPBanner />);
-      const link = screen.getByRole("link", { name: /view status/i });
-      expect(link.className).toContain("font-medium");
-    });
+    expect(screen.getByText("\uD83C\uDF73")).toBeVisible();
   });
 
-  describe("Early returns", () => {
-    it("should return null before mounting", () => {
-      mockWIPContext({ isBannerDismissed: false, isMounted: false });
-      mockPathname.mockReturnValue("/");
+  it("does not render until mounted", () => {
+    setContext({ isMounted: false });
+    const { container } = render(<WIPBanner />);
 
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
-
-    it("should return null when shouldShow is false", () => {
-      mockWIPContext({ isBannerDismissed: true, isMounted: true });
-      mockPathname.mockReturnValue("/");
-
-      const { container } = render(<WIPBanner />);
-      expect(container.firstChild).toBeNull();
-    });
+    expect(container.firstChild).toBeNull();
   });
 });

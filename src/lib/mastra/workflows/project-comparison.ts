@@ -1,6 +1,6 @@
 import { projects, type Project } from "@/data/projects";
-import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import { generateWithFallback } from "@/lib/ai/model-fallback";
+import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import type { WorkflowDefinition, WorkflowEvent } from "./types";
 
 /**
@@ -48,7 +48,6 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
   async *execute(
     context: AgentExecutionContext
   ): AsyncGenerator<WorkflowEvent> {
-    const workflowStartTime = Date.now();
     const totalSteps = 3;
 
     // Extract criteria from query
@@ -56,13 +55,7 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
     const criteria = extractComparisonCriteria(query);
 
     // Filter projects (synchronous - fast)
-    const filterStartTime = Date.now();
     const filteredProjects = filterProjects(criteria);
-    const filterDuration = Date.now() - filterStartTime;
-
-    console.log(
-      `[ProjectComparison] Filtered ${filteredProjects.length} projects in ${filterDuration}ms`
-    );
 
     // Steps 1 & 2: Run in parallel (both only depend on filteredProjects)
     // Emit progress events first
@@ -82,21 +75,14 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
 
     // Parallel execution: Run both AI calls simultaneously
     // Performance: 2-5s (parallel) vs 4-10s (sequential) = 40-50% faster
-    const parallelStartTime = Date.now();
     let filterSummary = "";
     let featureComparison = "";
-    let parallelDuration = 0; // Declare outside try block for scope access
 
     try {
       [filterSummary, featureComparison] = await Promise.all([
         summarizeFilteredProjects(filteredProjects, criteria),
         compareProjectFeatures(filteredProjects, criteria),
       ]);
-      parallelDuration = Date.now() - parallelStartTime;
-
-      console.log(
-        `[ProjectComparison] Parallel execution (Steps 1 & 2) completed in ${parallelDuration}ms`
-      );
 
       // Yield results in order (Step 1, then Step 2)
       yield {
@@ -115,8 +101,7 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       yield {
         type: "error",
         step: 1,
-        message:
-          "Failed to analyze projects. Using basic project information.",
+        message: "Failed to analyze projects. Using basic project information.",
         canContinue: true,
       };
 
@@ -150,9 +135,7 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       message: "Generating recommendation...",
     };
 
-    const step3StartTime = Date.now();
     let recommendation = "";
-    let step3Duration = 0; // Declare outside try block for scope access
 
     try {
       recommendation = await generateRecommendation(
@@ -160,11 +143,6 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
         criteria,
         filterSummary,
         featureComparison
-      );
-      step3Duration = Date.now() - step3StartTime;
-
-      console.log(
-        `[ProjectComparison] Step 3 (Recommendation) completed in ${step3Duration}ms`
       );
 
       yield {
@@ -185,7 +163,14 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
 
       // Provide fallback recommendation based on project data
       const topProject = filteredProjects[0];
-      recommendation = `**Recommendation:**\n\nBased on ${criteria.description}, **${topProject.title}** stands out as a strong candidate.\n\n**Key Highlights:**\n- ${topProject.description}\n- Technologies: ${topProject.technologies.join(", ")}\n- Category: ${topProject.category}\n- Role: ${topProject.role}\n\n**Why This Project:**\nThis project demonstrates practical implementation of ${topProject.technologies.slice(0, 3).join(", ")} and showcases ${topProject.role.toLowerCase()} capabilities.\n\n${filteredProjects.length > 1 ? `**Other Strong Candidates:**\n${filteredProjects.slice(1, 3).map((p) => `- **${p.title}**: ${p.description}`).join("\n")}` : ""}`;
+      recommendation = `**Recommendation:**\n\nBased on ${criteria.description}, **${topProject.title}** stands out as a strong candidate.\n\n**Key Highlights:**\n- ${topProject.description}\n- Technologies: ${topProject.technologies.join(", ")}\n- Category: ${topProject.category}\n- Role: ${topProject.role}\n\n**Why This Project:**\nThis project demonstrates practical implementation of ${topProject.technologies.slice(0, 3).join(", ")} and showcases ${topProject.role.toLowerCase()} capabilities.\n\n${
+        filteredProjects.length > 1
+          ? `**Other Strong Candidates:**\n${filteredProjects
+              .slice(1, 3)
+              .map((p) => `- **${p.title}**: ${p.description}`)
+              .join("\n")}`
+          : ""
+      }`;
 
       yield {
         type: "agent-result",
@@ -193,13 +178,7 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       };
     }
 
-    // Complete
-    const totalDuration = Date.now() - workflowStartTime;
-    console.log(
-      `[ProjectComparison] Workflow completed in ${totalDuration}ms total ` +
-        `(Filter: ${filterDuration}ms, Parallel Steps 1&2: ${parallelDuration}ms, Step 3: ${step3Duration}ms)`
-    );
-
+    // Complete workflow
     yield {
       type: "complete",
       summary: `Project comparison complete for ${filteredProjects.length} projects. Recommendation provided based on ${criteria.description}.`,

@@ -37,14 +37,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("[Cron] Starting episodic memory cleanup...");
-
     const memory = new RedisEpisodicMemory();
     const deletedCount = await memory.cleanup(90); // 90-day TTL
-
-    console.log(
-      `[Cron] Cleanup complete: ${deletedCount} vectors deleted`
-    );
 
     return NextResponse.json({
       success: true,
