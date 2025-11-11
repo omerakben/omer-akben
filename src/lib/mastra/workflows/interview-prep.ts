@@ -1,7 +1,7 @@
 import { facts } from "@/data/facts";
 import { getFeaturedProjects, type Project } from "@/data/projects";
-import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import { generateWithFallback } from "@/lib/ai/model-fallback";
+import type { AgentExecutionContext } from "@/lib/mastra/agents/base-agent";
 import type { WorkflowDefinition, WorkflowEvent } from "./types";
 
 /**
@@ -49,19 +49,12 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
   async *execute(
     context: AgentExecutionContext
   ): AsyncGenerator<WorkflowEvent> {
-    const workflowStartTime = Date.now();
     const totalSteps = 3;
 
     // Extract interview details from query (synchronous - fast)
-    const extractStartTime = Date.now();
     const query = context.query || "";
     const interviewType = extractInterviewType(query);
     const company = extractCompany(query);
-    const extractDuration = Date.now() - extractStartTime;
-
-    console.log(
-      `[InterviewPrep] Extracted interview details in ${extractDuration}ms (type: ${interviewType}, company: ${company || "not specified"})`
-    );
 
     // Steps 1 & 2: Run in parallel (both only depend on interviewType + company)
     // Emit progress events first
@@ -81,21 +74,14 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
 
     // Parallel execution: Run both AI calls simultaneously
     // Performance: 2-5s (parallel) vs 4-10s (sequential) = 40-50% faster
-    const parallelStartTime = Date.now();
     let resumeReview = "";
     let skillsAssessment = "";
-    let parallelDuration = 0; // Declare outside try block for scope access
 
     try {
       [resumeReview, skillsAssessment] = await Promise.all([
         reviewResume(interviewType, company),
         assessSkills(interviewType, company),
       ]);
-      parallelDuration = Date.now() - parallelStartTime;
-
-      console.log(
-        `[InterviewPrep] Parallel execution (Steps 1 & 2) completed in ${parallelDuration}ms`
-      );
 
       // Yield results in order (Step 1, then Step 2)
       yield {
@@ -142,9 +128,7 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
       message: "Generating tailored practice questions...",
     };
 
-    const step3StartTime = Date.now();
     let practiceQuestions = "";
-    let step3Duration = 0; // Declare outside try block for scope access
 
     try {
       practiceQuestions = await generatePracticeQuestions(
@@ -152,11 +136,6 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
         company,
         resumeReview,
         skillsAssessment
-      );
-      step3Duration = Date.now() - step3StartTime;
-
-      console.log(
-        `[InterviewPrep] Step 3 (Practice Questions) completed in ${step3Duration}ms`
       );
 
       yield {
@@ -170,7 +149,8 @@ export const interviewPrepWorkflow: WorkflowDefinition = {
       yield {
         type: "error",
         step: 3,
-        message: "Failed to generate practice questions. Using generic questions.",
+        message:
+          "Failed to generate practice questions. Using generic questions.",
         canContinue: true,
       };
 
@@ -195,13 +175,7 @@ These are general questions - review your specific projects and experiences to p
       };
     }
 
-    // Complete
-    const totalDuration = Date.now() - workflowStartTime;
-    console.log(
-      `[InterviewPrep] Workflow completed in ${totalDuration}ms total ` +
-        `(Extract: ${extractDuration}ms, Parallel Steps 1&2: ${parallelDuration}ms, Step 3: ${step3Duration}ms)`
-    );
-
+    // Complete workflow
     yield {
       type: "complete",
       summary: `Interview preparation complete for ${interviewType || "technical"} ${company ? `at ${company}` : "interview"}. Good luck!`,

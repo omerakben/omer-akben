@@ -243,7 +243,9 @@ export class RedisEpisodicMemory {
         // Extract vectors array from response (handle both array and object formats)
         const vectors = Array.isArray(rangeResponse)
           ? rangeResponse
-          : ((rangeResponse as Record<string, unknown>).vectors as { id: string }[]) || [];
+          : ((rangeResponse as Record<string, unknown>).vectors as {
+              id: string;
+            }[]) || [];
 
         // Parse timestamps from vector IDs and filter old ones
         for (const vector of vectors) {
@@ -285,8 +287,9 @@ export class RedisEpisodicMemory {
 
         // Check for next cursor to determine if we should continue
         const responseObj = rangeResponse as Record<string, unknown>;
-        const cursorValue = (responseObj.nextCursor as string | undefined) ||
-                           (responseObj.cursor as string | undefined);
+        const cursorValue =
+          (responseObj.nextCursor as string | undefined) ||
+          (responseObj.cursor as string | undefined);
 
         if (!cursorValue || cursorValue === "") {
           break;
@@ -297,9 +300,7 @@ export class RedisEpisodicMemory {
 
       // Delete old vectors in batches if any found
       if (idsToDelete.length > 0) {
-        console.log(
-          `[EpisodicMemory] Deleting ${idsToDelete.length} vectors older than ${ttlDays} days`
-        );
+        // Silent cleanup operation
 
         // Delete in batches of 100 to avoid overwhelming the API
         const BATCH_SIZE = 100;

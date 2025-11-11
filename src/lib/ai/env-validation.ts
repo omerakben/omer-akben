@@ -34,10 +34,7 @@ export function validateAIConfig(): void {
     throw new Error(result.errorMessage);
   }
 
-  // Optional: Log successful validation in development
-  if (process.env.NODE_ENV === "development") {
-    console.log("[EnvValidation] ✅ All required AI config environment variables are set");
-  }
+  // Validation successful - silent in production
 }
 
 /**

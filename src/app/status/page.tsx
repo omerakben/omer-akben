@@ -1,156 +1,209 @@
 "use client";
 
-import { PageHeader } from "@/components/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Clock, Cookie, Mail } from "lucide-react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { FeatureSpotlights } from "@/components/status/FeatureSpotlights";
+import { HowToUse } from "@/components/status/HowToUse";
+import { CapabilityGrid } from "@/components/status/CapabilityGrid";
+import { Lessons } from "@/components/status/Lessons";
+import { MetricsRow } from "@/components/status/MetricsRow";
+import { Milestones } from "@/components/status/Milestones";
+import { PersonaSwitch } from "@/components/status/PersonaSwitch";
+import { Roadmap } from "@/components/status/Roadmap";
+import { StatusHero } from "@/components/status/StatusHero";
+import { statusData, type Persona } from "@/data/status";
+import { wipBannerCopy } from "@/data/wip";
+import { posthog } from "@/lib/analytics/posthog-client";
+import { enrichMetrics } from "@/lib/status/metrics";
+
+const personas = [
+  { id: "recruiters" as Persona, label: "Recruiters" },
+  { id: "engineers" as Persona, label: "Engineers" },
+  { id: "curious" as Persona, label: "Curious" },
+];
 
 export default function StatusPage() {
+  const [activePersona, setActivePersona] = useState<Persona>("recruiters");
+  const [metrics, setMetrics] = useState(statusData.metrics);
+  const bannerMessage = `${wipBannerCopy.neutral.prefix} ${wipBannerCopy.neutral.main}`;
+
+  useEffect(() => {
+    let mounted = true;
+    enrichMetrics(statusData.metrics)
+      .then((enriched) => {
+        if (mounted) {
+          setMetrics(enriched);
+        }
+      })
+      .catch((error) => {
+        console.error("[StatusPage] Failed to enrich metrics:", error);
+        // Keep using placeholder values from statusData.metrics on error
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handlePersonaChange = (persona: Persona) => {
+    setActivePersona(persona);
+    posthog.capture("status_page.persona_switch", { persona });
+  };
+
   return (
-    <div className="py-20 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-4xl">
-        {/* Page Header */}
-        <PageHeader
-          icon={Cookie}
-          title="Still Cooking! 🍳"
-          description="This portfolio is actively being built and improved. Thanks for your patience!"
-          className="mb-16"
-        />
+    <div className="min-h-screen bg-surf-0" data-testid="status-page">
+      <StatusHero
+        title={statusData.hero.title}
+        subtitle={statusData.hero.subtitle}
+        ctas={statusData.hero.ctas}
+      />
 
-        <div className="space-y-8">
-          {/* Main Status Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What This Means</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-text-2">
-              <p>
-                You&rsquo;re visiting a work in progress! While the core features are
-                functional, some areas are still being refined and new features
-                are being added regularly.
-              </p>
-              <p>
-                I&rsquo;m committed to transparency about the development process. If
-                you encounter any bugs or have suggestions, I&rsquo;d love to hear
-                from you.
-              </p>
-            </CardContent>
-          </Card>
+      <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-12 sm:px-6">
+        <section
+          aria-labelledby="why-banner"
+          className="rounded-2xl border border-dashed border-brand-primary/40 bg-surf-1 p-6 shadow-sm"
+        >
+          <h2 id="why-banner" className="text-lg font-semibold text-text-1">
+            Why you saw a banner
+          </h2>
+          <p className="mt-2 text-sm text-text-2">
+            <span className="font-semibold text-text-1">{bannerMessage}</span>
+            {" "}This notice reappears whenever a new deploy ships (keyed to the
+            latest git SHA) and always links back here for the full roadmap and
+            release notes.
+          </p>
+        </section>
 
-          {/* Feature Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Development Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-medium text-text-1">
-                      Core Portfolio Features
-                    </div>
-                    <div className="text-sm text-text-3">
-                      Projects, skills, journey, and credentials are live
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-medium text-text-1">
-                      AI Assistant (Ozzy)
-                    </div>
-                    <div className="text-sm text-text-3">
-                      Interactive chat powered by Vercel AI SDK
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Clock className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-medium text-text-1">
-                      Additional Features
-                    </div>
-                    <div className="text-sm text-text-3">
-                      More interactive experiences and optimizations coming soon
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Feedback Card */}
-          <Card className="border-brand-primary/30 bg-brand-primary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
-                Found a Bug or Have Feedback?
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-text-2">
-              <p>
-                Your feedback helps make this site better! If you encounter any
-                issues or have suggestions for improvements, please reach out.
-              </p>
-              <Link
-                href="mailto:me@omerakben.com?subject=Portfolio Feedback"
-                className="inline-flex items-center gap-2 text-brand-primary hover:underline font-medium"
-              >
-                <Mail className="h-4 w-4" />
-                me@omerakben.com
-              </Link>
-            </CardContent>
-          </Card>
-
-          {/* Privacy & Cache Notice */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Cookie className="h-5 w-5" />
-                Privacy & Cache Storage
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-text-2 text-sm">
-              <p>
-                This site uses local browser storage and cloud-based caching to
-                enhance your experience:
-              </p>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>
-                  <strong>localStorage:</strong> Stores your preferences
-                  (brightness mode, sidebar state) locally in your browser
-                </li>
-                <li>
-                  <strong>Redis Cache:</strong> Temporarily caches your
-                  preferences server-side for improved performance across
-                  devices (90-day retention)
-                </li>
-                <li>
-                  <strong>AI Conversations:</strong> Chat messages are stored
-                  temporarily to maintain conversation context
-                </li>
-              </ul>
-              <p className="text-text-3">
-                No personal data is collected without your explicit consent. All
-                data is used solely to improve your browsing experience.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Back to Home */}
-          <div className="text-center pt-4">
-            <Link
-              href="/"
-              className="text-brand-primary hover:underline font-medium"
+        <section aria-labelledby="mission-vision" className="space-y-8">
+          <div>
+            <h2
+              id="mission-vision"
+              className="text-sm font-semibold uppercase tracking-[0.3em] text-text-3"
             >
-              ← Back to Home
-            </Link>
+              Mission
+            </h2>
+            <p className="mt-4 text-lg text-text-1">{statusData.mission}</p>
           </div>
-        </div>
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-text-3">
+              Vision
+            </h3>
+            <p className="mt-2 text-lg text-text-1">{statusData.vision}</p>
+          </div>
+        </section>
+
+        {statusData.spotlights.length > 0 && (
+          <section
+            aria-labelledby="spotlights-heading"
+            className="space-y-6"
+            id="sidebar-pin"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h2
+                  id="spotlights-heading"
+                  className="text-2xl font-semibold text-text-1"
+                >
+                  Feature Spotlight
+                </h2>
+                <p className="text-sm text-text-3">
+                  Pin Ozzy on desktop to keep context visible while scrolling.
+                </p>
+              </div>
+            </div>
+            <FeatureSpotlights items={statusData.spotlights} />
+          </section>
+        )}
+
+        <section aria-labelledby="metrics-heading">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2
+              id="metrics-heading"
+              className="text-2xl font-semibold text-text-1"
+            >
+              Live Metrics
+            </h2>
+            <p className="text-sm text-text-3">Git SHA + performance snapshot</p>
+          </div>
+          <div className="mt-6">
+            <MetricsRow items={metrics} />
+          </div>
+        </section>
+
+        <section aria-labelledby="capabilities-heading">
+          <h2
+            id="capabilities-heading"
+            className="text-2xl font-semibold text-text-1"
+          >
+            What is Live Today
+          </h2>
+          <p className="mt-2 text-sm text-text-3">
+            Each capability is backed by tests, telemetry, and accessible UI.
+          </p>
+          <div className="mt-6">
+            <CapabilityGrid items={statusData.capabilities} />
+          </div>
+        </section>
+
+        <section aria-labelledby="milestones-heading">
+          <h2
+            id="milestones-heading"
+            className="text-2xl font-semibold text-text-1"
+          >
+            Recent Milestones
+          </h2>
+          <div className="mt-6">
+            <Milestones items={statusData.milestones} />
+          </div>
+        </section>
+
+        <section aria-labelledby="roadmap-heading">
+          <h2
+            id="roadmap-heading"
+            className="text-2xl font-semibold text-text-1"
+          >
+            Roadmap
+          </h2>
+          <div className="mt-6">
+            <Roadmap data={statusData.roadmap} />
+          </div>
+        </section>
+
+        <section aria-labelledby="lessons-heading">
+          <h2
+            id="lessons-heading"
+            className="text-2xl font-semibold text-text-1"
+          >
+            Lessons Learned
+          </h2>
+          <div className="mt-6">
+            <Lessons items={statusData.lessons} />
+          </div>
+        </section>
+
+        <section aria-labelledby="how-to-use-heading">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2
+                id="how-to-use-heading"
+                className="text-2xl font-semibold text-text-1"
+              >
+                How to Use Ozzy
+              </h2>
+              <p className="text-sm text-text-3">
+                Copy prompts tailored to each persona and let Ozzy answer them.
+              </p>
+            </div>
+            <PersonaSwitch
+              active={activePersona}
+              onChange={handlePersonaChange}
+              personas={personas}
+            />
+          </div>
+          <div className="mt-6">
+            <HowToUse blocks={statusData.howToUse} persona={activePersona} />
+          </div>
+        </section>
       </div>
     </div>
   );

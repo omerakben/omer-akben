@@ -17,22 +17,19 @@
  * ```
  */
 
-import { generateText, generateObject, streamText } from "ai";
-import { xai } from "@ai-sdk/xai";
+import { getPostHogServer } from "@/lib/analytics/posthog-server";
 import { openai } from "@ai-sdk/openai";
+import { xai } from "@ai-sdk/xai";
 import type { CoreMessage } from "ai";
+import { generateObject, generateText, streamText } from "ai";
 import type { z } from "zod";
+import { classifyError, retryWithBackoff } from "./error-handler";
+import { extractJSON } from "./json-extractor";
 import {
-  getModelByVariant,
   FALLBACK_MODEL,
+  getModelByVariant,
   type ModelVariant,
 } from "./model-config";
-import { extractJSON } from "./json-extractor";
-import { getPostHogServer } from "@/lib/analytics/posthog-server";
-import {
-  retryWithBackoff,
-  classifyError,
-} from "./error-handler";
 
 /**
  * Get primary model based on variant
@@ -51,16 +48,28 @@ function getFallbackModel() {
 /**
  * Generate text with primary/fallback pattern
  */
-export async function generateWithFallback(options: {
-  variant: ModelVariant;
-  temperature?: number;
-  onFallback?: (error: Error) => void;
-  component?: string;
-  userId?: string;
-} & ({ prompt: string; messages?: never } | { messages: CoreMessage[]; prompt?: never }) & {
-  system?: string;
-}) {
-  const { variant, temperature = 0.5, onFallback, component, userId, ...generateOptions } = options;
+export async function generateWithFallback(
+  options: {
+    variant: ModelVariant;
+    temperature?: number;
+    onFallback?: (error: Error) => void;
+    component?: string;
+    userId?: string;
+  } & (
+    | { prompt: string; messages?: never }
+    | { messages: CoreMessage[]; prompt?: never }
+  ) & {
+      system?: string;
+    }
+) {
+  const {
+    variant,
+    temperature = 0.5,
+    onFallback,
+    component,
+    userId,
+    ...generateOptions
+  } = options;
 
   const primaryModel = getPrimaryModel(variant);
   const fallbackModel = getFallbackModel();
@@ -84,9 +93,9 @@ export async function generateWithFallback(options: {
       (attempt, classifiedError, delayMs) => {
         retryAttempts = attempt;
         lastErrorType = classifiedError.type;
-        console.log(
-          `[ModelFallback] Retrying ${component || 'LLM call'} after ${delayMs}ms ` +
-          `(attempt ${attempt}, error: ${classifiedError.type})`
+        console.warn(
+          `[ModelFallback] Retrying ${component || "LLM call"} after ${delayMs}ms ` +
+            `(attempt ${attempt}, error: ${classifiedError.type})`
         );
       }
     );
@@ -118,7 +127,7 @@ export async function generateWithFallback(options: {
     const classifiedPrimaryError = classifyError(primaryError);
     console.warn(
       `[ModelFallback] Primary (grok-4-fast-${variant}) failed after ${retryAttempts} retries ` +
-      `(${classifiedPrimaryError.type}), using fallback:`,
+        `(${classifiedPrimaryError.type}), using fallback:`,
       primaryError
     );
 
@@ -195,17 +204,30 @@ export async function generateWithFallback(options: {
  * so we use generateText() + manual JSON parsing for the primary call.
  * Falls back to OpenAI's native generateObject() support if parsing fails.
  */
-export async function generateObjectWithFallback<T>(options: {
-  variant: ModelVariant;
-  temperature?: number;
-  onFallback?: (error: Error) => void;
-  schema: z.ZodSchema<T>;
-  component?: string;
-  userId?: string;
-} & ({ prompt: string; messages?: never } | { messages: CoreMessage[]; prompt?: never }) & {
-  system?: string;
-}) {
-  const { variant, temperature = 0.5, onFallback, schema, component, userId, ...generateOptions } = options;
+export async function generateObjectWithFallback<T>(
+  options: {
+    variant: ModelVariant;
+    temperature?: number;
+    onFallback?: (error: Error) => void;
+    schema: z.ZodSchema<T>;
+    component?: string;
+    userId?: string;
+  } & (
+    | { prompt: string; messages?: never }
+    | { messages: CoreMessage[]; prompt?: never }
+  ) & {
+      system?: string;
+    }
+) {
+  const {
+    variant,
+    temperature = 0.5,
+    onFallback,
+    schema,
+    component,
+    userId,
+    ...generateOptions
+  } = options;
 
   const primaryModel = getPrimaryModel(variant);
   const fallbackModel = getFallbackModel();
@@ -236,9 +258,9 @@ export async function generateObjectWithFallback<T>(options: {
       (attempt, classifiedError, delayMs) => {
         retryAttempts = attempt;
         lastErrorType = classifiedError.type;
-        console.log(
-          `[ModelFallback] Retrying ${component || 'LLM object generation'} after ${delayMs}ms ` +
-          `(attempt ${attempt}, error: ${classifiedError.type})`
+        console.warn(
+          `[ModelFallback] Retrying ${component || "LLM object generation"} after ${delayMs}ms ` +
+            `(attempt ${attempt}, error: ${classifiedError.type})`
         );
       }
     );
@@ -270,7 +292,7 @@ export async function generateObjectWithFallback<T>(options: {
     const classifiedPrimaryError = classifyError(primaryError);
     console.warn(
       `[ModelFallback] Primary (grok-4-fast-${variant}) generateObject failed after ${retryAttempts} retries ` +
-      `(${classifiedPrimaryError.type}), using fallback:`,
+        `(${classifiedPrimaryError.type}), using fallback:`,
       primaryError
     );
 
@@ -354,13 +376,18 @@ export async function generateObjectWithFallback<T>(options: {
  * - Partial streams cannot be retried
  * - For better error handling with retries, use generateWithFallback
  */
-export async function streamWithFallback(options: {
-  variant: ModelVariant;
-  temperature?: number;
-  onFallback?: (error: Error) => void;
-} & ({ prompt: string; messages?: never } | { messages: CoreMessage[]; prompt?: never }) & {
-  system?: string;
-}) {
+export async function streamWithFallback(
+  options: {
+    variant: ModelVariant;
+    temperature?: number;
+    onFallback?: (error: Error) => void;
+  } & (
+    | { prompt: string; messages?: never }
+    | { messages: CoreMessage[]; prompt?: never }
+  ) & {
+      system?: string;
+    }
+) {
   const { variant, temperature = 0.5, onFallback, ...streamOptions } = options;
 
   const primaryModel = getPrimaryModel(variant);
@@ -375,7 +402,10 @@ export async function streamWithFallback(options: {
 
     return result;
   } catch (primaryError) {
-    console.warn(`[ModelFallback] Primary (grok-4-fast-${variant}) streaming failed, using fallback:`, primaryError);
+    console.warn(
+      `[ModelFallback] Primary (grok-4-fast-${variant}) streaming failed, using fallback:`,
+      primaryError
+    );
 
     if (onFallback) {
       onFallback(primaryError as Error);
@@ -425,7 +455,11 @@ export interface LLMMetric {
  * @param model - Model name (e.g., "grok-4-fast-reasoning", "gpt-4o-mini")
  * @returns Estimated cost in USD
  */
-function calculateCost(inputTokens: number, outputTokens: number, model: string): number {
+function calculateCost(
+  inputTokens: number,
+  outputTokens: number,
+  model: string
+): number {
   // Pricing per 1M tokens (as of Nov 2025)
   const pricing: Record<string, { input: number; output: number }> = {
     // Grok models (xAI)
@@ -450,6 +484,11 @@ export function logLLMMetric(metric: LLMMetric, userId?: string): void {
   try {
     const posthog = getPostHogServer();
 
+    // Skip if PostHog is not configured
+    if (!posthog) {
+      return;
+    }
+
     // Calculate cost based on token usage
     const estimatedCost = calculateCost(
       metric.tokenUsage.input,
@@ -459,8 +498,8 @@ export function logLLMMetric(metric: LLMMetric, userId?: string): void {
 
     // Capture event in PostHog
     posthog.capture({
-      distinctId: userId || 'anonymous',
-      event: 'llm_call',
+      distinctId: userId || "anonymous",
+      event: "llm_call",
       properties: {
         component: metric.component,
         primary_model: metric.primaryModel,
@@ -477,6 +516,6 @@ export function logLLMMetric(metric: LLMMetric, userId?: string): void {
     });
   } catch (error) {
     // Log errors but don't throw to avoid breaking LLM calls
-    console.error('[PostHog] Failed to log LLM metric:', error);
+    console.error("[PostHog] Failed to log LLM metric:", error);
   }
 }

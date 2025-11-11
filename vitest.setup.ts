@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
+import React from "react";
 import { afterEach, vi } from "vitest";
 
 // Cleanup after each test
@@ -20,6 +21,18 @@ vi.mock("next/navigation", () => ({
   }),
   usePathname: () => "/",
   useSearchParams: () => new URLSearchParams(),
+}));
+
+vi.mock("next/link", () => ({
+  __esModule: true,
+  default: ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) =>
+    React.createElement("a", props, children),
+}));
+
+vi.mock("@/lib/analytics/posthog-client", () => ({
+  posthog: {
+    capture: vi.fn(),
+  },
 }));
 
 // Mock framer-motion to avoid animation issues in tests

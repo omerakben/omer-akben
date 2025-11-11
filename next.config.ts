@@ -7,6 +7,23 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const resolveGitSha = () => {
+  return (
+    process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ??
+    process.env.NEXT_PUBLIC_GIT_SHA ??
+    "local"
+  );
+};
+
+const resolveBuildDate = () => {
+  if (process.env.NEXT_PUBLIC_BUILD_DATE) {
+    return process.env.NEXT_PUBLIC_BUILD_DATE;
+  }
+
+  const iso = new Date().toISOString().slice(0, 16).replace("T", " ");
+  return `${iso} UTC`;
+};
+
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
@@ -14,6 +31,11 @@ const bundleAnalyzer = withBundleAnalyzer({
 const nextConfig: NextConfig = {
   // Enable React strict mode for better error detection
   reactStrictMode: true,
+
+  env: {
+    NEXT_PUBLIC_GIT_SHA: resolveGitSha(),
+    NEXT_PUBLIC_BUILD_DATE: resolveBuildDate(),
+  },
 
   // Configure page extensions
   pageExtensions: ["js", "jsx", "ts", "tsx"],

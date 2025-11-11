@@ -3,9 +3,14 @@
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { extractNavigationLinks, getMessageText } from "@/lib/chat/message-utils";
+import { posthog } from "@/lib/analytics/posthog-client";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import {
+  extractNavigationLinks,
+  getMessageText,
+} from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
+import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
@@ -28,7 +33,13 @@ import {
   Zap,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
@@ -39,6 +50,8 @@ const suggestedQuestions = [
   "Tell me about yourself.",
   "Are you primarily a Software Engineer or an SDET?",
 ];
+
+const PIN_HINT_STORAGE_KEY = "sidebar_pin_hint_seen_v1";
 
 // Icon mapping for navigation links
 const getIconComponent = (iconName?: string) => {
@@ -72,12 +85,111 @@ export function ChatSidebar() {
   const [error, setError] = useState<string | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string>("");
   const [isResizing, setIsResizing] = useState(false);
-  const [currentFollowups, setCurrentFollowups] = useState<FollowupSuggestionType[]>([]);
+  const [currentFollowups, setCurrentFollowups] = useState<
+    FollowupSuggestionType[]
+  >([]);
+  const [showPinHint, setShowPinHint] = useState(false);
+  const [hasSeenPinHint, setHasSeenPinHint] = useState(true);
+  const [pinHintReady, setPinHintReady] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const markPinHintSeen = useCallback(
+    (reason: "dismiss" | "pin" = "dismiss") => {
+      setHasSeenPinHint(true);
+      setShowPinHint(false);
+
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(PIN_HINT_STORAGE_KEY, "true");
+        } catch (error) {
+          console.error(
+            "[ChatSidebar] Failed to persist pin hint state:",
+            error
+          );
+        }
+      }
+
+      posthog.capture("sidebar.pin_hint", {
+        action: reason,
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const stored = localStorage.getItem(PIN_HINT_STORAGE_KEY) === "true";
+      setHasSeenPinHint(stored);
+    } catch (error) {
+      console.error("[ChatSidebar] Failed to read pin hint state:", error);
+    } finally {
+      setPinHintReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!pinHintReady) return;
+
+    if (isPinned) {
+      if (!hasSeenPinHint) {
+        markPinHintSeen("pin");
+      }
+      return;
+    }
+
+    if (hasSeenPinHint) {
+      setShowPinHint(false);
+      return;
+    }
+
+    if (typeof window === "undefined") return;
+
+    const mediaMatch = window.matchMedia
+      ? window.matchMedia("(min-width: 1024px)").matches
+      : window.innerWidth >= 1024;
+
+    if (!mediaMatch) {
+      setShowPinHint(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setShowPinHint(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, [hasSeenPinHint, isPinned, pinHintReady, markPinHintSeen]);
+
+  useEffect(() => {
+    if (showPinHint) {
+      posthog.capture("sidebar.pin_hint.view");
+    }
+  }, [showPinHint]);
+
+  const handlePinToggle = useCallback(() => {
+    const nextPinned = !isPinned;
+    setPinned(nextPinned);
+
+    posthog.capture("sidebar.pin_toggle", {
+      action: nextPinned ? "pin" : "unpin",
+    });
+
+    if (nextPinned && !hasSeenPinHint) {
+      markPinHintSeen("pin");
+    }
+  }, [hasSeenPinHint, isPinned, markPinHintSeen, setPinned]);
+
+  const dismissPinHint = useCallback(() => {
+    if (!hasSeenPinHint) {
+      markPinHintSeen("dismiss");
+    } else {
+      setShowPinHint(false);
+    }
+  }, [hasSeenPinHint, markPinHintSeen]);
+
   const MAX_INPUT_LENGTH = 2000; // Character limit for chat input
+  const shouldShowPinHint = showPinHint && !isPinned;
 
   const { messages, sendMessage, status, setMessages } = useChat({
     id: threadId,
@@ -102,7 +214,9 @@ export function ChatSidebar() {
 
       // Handle abort errors gracefully (user navigation/refresh)
       if (error.name === "AbortError") {
-        console.warn("[ChatSidebar] Request aborted - likely navigation or user action");
+        console.warn(
+          "[ChatSidebar] Request aborted - likely navigation or user action"
+        );
         return;
       }
 
@@ -351,7 +465,9 @@ export function ChatSidebar() {
         });
 
         if (!response.ok) {
-          console.warn("[ChatSidebar] Follow-up API failed, clearing suggestions");
+          console.warn(
+            "[ChatSidebar] Follow-up API failed, clearing suggestions"
+          );
           setCurrentFollowups([]);
           return;
         }
@@ -359,7 +475,10 @@ export function ChatSidebar() {
         const data = await response.json();
 
         // Extract structured follow-ups from response
-        if (data.suggested_followups && Array.isArray(data.suggested_followups)) {
+        if (
+          data.suggested_followups &&
+          Array.isArray(data.suggested_followups)
+        ) {
           setCurrentFollowups(data.suggested_followups);
         } else {
           console.warn("[ChatSidebar] Invalid follow-up response format");
@@ -471,21 +590,65 @@ export function ChatSidebar() {
                     <Trash2 aria-hidden="true" className="w-4 h-4" />
                   </Button>
                 )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setPinned(!isPinned)}
-                  className="h-11 w-11 p-2"
-                  title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-                  aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-                  aria-pressed={isPinned}
-                >
-                  {isPinned ? (
-                    <PinOff aria-hidden="true" className="w-4 h-4" />
-                  ) : (
-                    <Pin aria-hidden="true" className="w-4 h-4" />
+                <div className="relative">
+                  <div
+                    className={cn(
+                      "relative",
+                      shouldShowPinHint &&
+                        "pin-highlight inline-flex rounded-full"
+                    )}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handlePinToggle}
+                      className="h-11 w-11 p-2"
+                      title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                      aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                      aria-pressed={isPinned}
+                      aria-describedby={
+                        shouldShowPinHint ? "pin-sidebar-hint" : undefined
+                      }
+                    >
+                      {isPinned ? (
+                        <PinOff aria-hidden="true" className="w-4 h-4" />
+                      ) : (
+                        <Pin aria-hidden="true" className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  {shouldShowPinHint && (
+                    <div
+                      id="pin-sidebar-hint"
+                      role="status"
+                      className="pin-tooltip absolute right-0 top-14 w-64 rounded-2xl border border-brand-primary/40 bg-surf-2 p-4 text-left shadow-xl"
+                    >
+                      <p className="text-sm font-semibold text-text-1">
+                        Pin Ozzy to stay in view
+                      </p>
+                      <p className="mt-1 text-xs text-text-2">
+                        Keep the Projects page scrollable while Ozzy follows
+                        along.
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={handlePinToggle}
+                          className="rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold text-white"
+                        >
+                          Pin now
+                        </button>
+                        <button
+                          type="button"
+                          onClick={dismissPinHint}
+                          className="rounded-full border border-border-line px-3 py-1 text-xs font-medium text-text-2 hover:border-brand-primary hover:text-brand-primary"
+                        >
+                          Got it
+                        </button>
+                      </div>
+                    </div>
                   )}
-                </Button>
+                </div>
                 {!isPinned && (
                   <Button
                     variant="ghost"
@@ -578,7 +741,7 @@ export function ChatSidebar() {
                           }`}
                         >
                           {message.role === "assistant" && (
-                            <div className="flex-shrink-0">
+                            <div className="shrink-0">
                               <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
                                 <AnimatedBlobContainer
                                   size={16}
@@ -664,7 +827,9 @@ export function ChatSidebar() {
                                   );
                                 },
                                 p: ({ children }) => (
-                                  <p className="mb-4 last:mb-0 leading-[1.7] text-text-1">{children}</p>
+                                  <p className="mb-4 last:mb-0 leading-[1.7] text-text-1">
+                                    {children}
+                                  </p>
                                 ),
                                 ul: ({ children }) => (
                                   <ul className="list-disc ml-6 mb-4 space-y-2.5 marker:text-text-2">
@@ -677,7 +842,9 @@ export function ChatSidebar() {
                                   </ol>
                                 ),
                                 li: ({ children }) => (
-                                  <li className="pl-2 leading-[1.7] text-text-1">{children}</li>
+                                  <li className="pl-2 leading-[1.7] text-text-1">
+                                    {children}
+                                  </li>
                                 ),
                                 strong: ({ children }) => (
                                   <strong className="font-semibold text-text-1">
@@ -738,7 +905,7 @@ export function ChatSidebar() {
                                           }}
                                           className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
                                         >
-                                          <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                          <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center shrink-0">
                                             <Icon
                                               aria-hidden="true"
                                               className="w-2.5 h-2.5 text-brand-primary"
@@ -759,7 +926,7 @@ export function ChatSidebar() {
                               })()}
                           </div>
                           {message.role === "user" && (
-                            <div className="flex-shrink-0">
+                            <div className="shrink-0">
                               <div className="w-8 h-8 rounded-full bg-surf-2 flex items-center justify-center">
                                 <User
                                   aria-hidden="true"
@@ -786,7 +953,7 @@ export function ChatSidebar() {
                   })}
                   {isLoading && (
                     <div className="flex gap-3 justify-start">
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
                           <AnimatedBlobContainer
                             size={16}
@@ -837,7 +1004,7 @@ export function ChatSidebar() {
                       }
                     }}
                     placeholder="Ask anything about me..."
-                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-[44px] max-h-[200px] scrollbar-vertical-gradient"
+                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-11 max-h-[200px] scrollbar-vertical-gradient"
                     disabled={isLoading}
                     rows={1}
                     maxLength={MAX_INPUT_LENGTH}

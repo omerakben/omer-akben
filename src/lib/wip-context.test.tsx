@@ -2,6 +2,9 @@ import { act, render, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WIPProvider, useWIP } from "./wip-context";
 
+process.env.NEXT_PUBLIC_GIT_SHA = "testsha";
+const TEST_BANNER_KEY = `wip_banner_dismissed:${process.env.NEXT_PUBLIC_GIT_SHA ?? "local"}`;
+
 // Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -177,7 +180,7 @@ describe("WIPContext", () => {
 
     describe("localStorage persistence - Banner", () => {
       it("should load banner dismissed state from localStorage on mount", async () => {
-        localStorageMock.setItem("wip_banner_dismissed", "false");
+        localStorageMock.setItem(TEST_BANNER_KEY, "false");
 
         const { result } = renderHook(() => useWIP(), {
           wrapper: WIPProvider,
@@ -189,7 +192,7 @@ describe("WIPContext", () => {
 
         expect(result.current.isBannerDismissed).toBe(false);
         expect(localStorageMock.getItem).toHaveBeenCalledWith(
-          "wip_banner_dismissed"
+          TEST_BANNER_KEY
         );
       });
 
@@ -204,7 +207,7 @@ describe("WIPContext", () => {
 
         expect(result.current.isBannerDismissed).toBe(true);
         expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          "wip_banner_dismissed",
+          TEST_BANNER_KEY,
           "true"
         );
       });
@@ -292,7 +295,7 @@ describe("WIPContext", () => {
       });
 
       it("should correctly parse 'true' string from localStorage for banner", async () => {
-        localStorageMock.setItem("wip_banner_dismissed", "true");
+        localStorageMock.setItem(TEST_BANNER_KEY, "true");
 
         const { result } = renderHook(() => useWIP(), {
           wrapper: WIPProvider,
@@ -306,7 +309,7 @@ describe("WIPContext", () => {
       });
 
       it("should correctly parse 'false' string from localStorage for banner", async () => {
-        localStorageMock.setItem("wip_banner_dismissed", "false");
+        localStorageMock.setItem(TEST_BANNER_KEY, "false");
 
         const { result } = renderHook(() => useWIP(), {
           wrapper: WIPProvider,
@@ -370,7 +373,7 @@ describe("WIPContext", () => {
     describe("Independent state management", () => {
       it("should manage modal and banner state independently", async () => {
         localStorageMock.setItem("wip_modal_dismissed", "true");
-        localStorageMock.setItem("wip_banner_dismissed", "false");
+        localStorageMock.setItem(TEST_BANNER_KEY, "false");
 
         const { result } = renderHook(() => useWIP(), {
           wrapper: WIPProvider,

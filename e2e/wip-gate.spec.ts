@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const bannerStorageKey = `wip_banner_dismissed:${process.env.NEXT_PUBLIC_GIT_SHA ?? "local"}`;
+
 test.describe("WIP Gate - Modal and Banner Flow", () => {
   test.beforeEach(async ({ page, context }) => {
     // Clear cookies and localStorage to simulate first visit
@@ -83,7 +85,7 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
 
     // Verify banner appears
     const banner = page
-      .locator('[role="banner"]')
+      .locator('aside[aria-label="Site status banner"]')
       .filter({ hasText: /Site under active development/i });
     await expect(banner).toBeVisible();
 
@@ -109,7 +111,7 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
 
     // Verify banner is visible
     const banner = page
-      .locator('[role="banner"]')
+      .locator('aside[aria-label="Site status banner"]')
       .filter({ hasText: /Site under active development/i });
     await expect(banner).toBeVisible();
 
@@ -123,13 +125,16 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
     await expect(banner).not.toBeVisible();
 
     // Verify localStorage persistence
-    const bannerDismissed = await page.evaluate(() =>
-      localStorage.getItem("wip_banner_dismissed")
+    const bannerDismissed = await page.evaluate(
+      (key) => localStorage.getItem(key),
+      bannerStorageKey
     );
     expect(bannerDismissed).toBe("true");
   });
 
-  test.skip("should navigate to status page from banner link", async ({ page }) => {
+  test.skip("should navigate to status page from banner link", async ({
+    page,
+  }) => {
     // Set modal as dismissed
     await page.evaluate(() => {
       localStorage.setItem("wip_modal_dismissed", "true");
@@ -140,7 +145,7 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
 
     // Verify banner is visible
     const banner = page
-      .locator('[role="banner"]')
+      .locator('aside[aria-label="Site status banner"]')
       .filter({ hasText: /Site under active development/i });
     await expect(banner).toBeVisible();
 
@@ -150,7 +155,7 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
 
     // Verify navigation to status page
     await expect(page).toHaveURL("/status");
-    await expect(page.locator("h1")).toContainText(/Still Cooking/i);
+    await expect(page.locator("h1")).toContainText(/Live Status & Roadmap/i);
   });
 
   test("should not show modal on non-homepage routes", async ({ page }) => {
@@ -175,11 +180,11 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
     await page.goto("/skills", { waitUntil: "networkidle" });
     await page.waitForTimeout(500);
 
-    // Verify banner does not appear
+    // Verify banner DOES appear (banner shows on all pages except /status)
     const banner = page
-      .locator('[role="banner"]')
+      .locator('aside[aria-label="Site status banner"]')
       .filter({ hasText: /Site under active development/i });
-    await expect(banner).not.toBeVisible();
+    await expect(banner).toBeVisible();
   });
 
   test("should maintain dismissal state across page reloads", async ({
@@ -187,12 +192,12 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
   }) => {
     // Clear first, then set dismissal state using addInitScript (persists across navigations)
     await page.context().clearCookies();
-    await page.addInitScript(() => {
+    await page.addInitScript((key) => {
       localStorage.clear();
       sessionStorage.clear();
       localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
+      localStorage.setItem(key, "true");
+    }, bannerStorageKey);
 
     // Navigate to homepage
     await page.goto("/", { waitUntil: "networkidle" });
@@ -205,7 +210,7 @@ test.describe("WIP Gate - Modal and Banner Flow", () => {
     await expect(modal).not.toBeVisible();
 
     const banner = page
-      .locator('[role="banner"]')
+      .locator('aside[aria-label="Site status banner"]')
       .filter({ hasText: /Site under active development/i });
     await expect(banner).not.toBeVisible();
 
@@ -228,7 +233,7 @@ test.describe("WIP Gate - Status Page", () => {
     await page.waitForTimeout(500);
 
     // Verify page heading
-    await expect(page.locator("h1")).toContainText(/Still Cooking/i);
+    await expect(page.locator("h1")).toContainText(/Live Status & Roadmap/i);
 
     // Verify status page contains development information
     // (exact content depends on implementation - adjust as needed)
@@ -250,7 +255,7 @@ test.describe("WIP Gate - Status Page", () => {
 
     // Click View status link from banner
     const banner = page
-      .locator('[role="banner"]')
+      .locator('aside[aria-label="Site status banner"]')
       .filter({ hasText: /Site under active development/i });
     const statusLink = banner.locator('a[href="/status"]');
     await statusLink.click();
@@ -261,6 +266,6 @@ test.describe("WIP Gate - Status Page", () => {
 
     // Verify we're on status page
     await expect(page).toHaveURL("/status");
-    await expect(page.locator("h1")).toContainText(/Still Cooking/i);
+    await expect(page.locator("h1")).toContainText(/Live Status & Roadmap/i);
   });
 });
