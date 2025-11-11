@@ -162,15 +162,20 @@ export const projectComparisonWorkflow: WorkflowDefinition = {
       };
 
       // Provide fallback recommendation based on project data
-      const topProject = filteredProjects[0];
-      recommendation = `**Recommendation:**\n\nBased on ${criteria.description}, **${topProject.title}** stands out as a strong candidate.\n\n**Key Highlights:**\n- ${topProject.description}\n- Technologies: ${topProject.technologies.join(", ")}\n- Category: ${topProject.category}\n- Role: ${topProject.role}\n\n**Why This Project:**\nThis project demonstrates practical implementation of ${topProject.technologies.slice(0, 3).join(", ")} and showcases ${topProject.role.toLowerCase()} capabilities.\n\n${
-        filteredProjects.length > 1
-          ? `**Other Strong Candidates:**\n${filteredProjects
-              .slice(1, 3)
-              .map((p) => `- **${p.title}**: ${p.description}`)
-              .join("\n")}`
-          : ""
-      }`;
+      if (filteredProjects.length === 0) {
+        recommendation =
+          "**Recommendation:**\n\nNo matching projects are available at this time. Please try broadening your search criteria or check back later for new projects.";
+      } else {
+        const topProject = filteredProjects[0];
+        recommendation = `**Recommendation:**\n\nBased on ${criteria.description}, **${topProject.title}** stands out as a strong candidate.\n\n**Key Highlights:**\n- ${topProject.description}\n- Technologies: ${topProject.technologies.join(", ")}\n- Category: ${topProject.category}\n- Role: ${topProject.role}\n\n**Why This Project:**\nThis project demonstrates practical implementation of ${topProject.technologies.slice(0, 3).join(", ")} and showcases ${topProject.role.toLowerCase()} capabilities.\n\n${
+          filteredProjects.length > 1
+            ? `**Other Strong Candidates:**\n${filteredProjects
+                .slice(1, 3)
+                .map((p) => `- **${p.title}**: ${p.description}`)
+                .join("\n")}`
+            : ""
+        }`;
+      }
 
       yield {
         type: "agent-result",

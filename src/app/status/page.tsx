@@ -29,11 +29,16 @@ export default function StatusPage() {
 
   useEffect(() => {
     let mounted = true;
-    enrichMetrics(statusData.metrics).then((enriched) => {
-      if (mounted) {
-        setMetrics(enriched);
-      }
-    });
+    enrichMetrics(statusData.metrics)
+      .then((enriched) => {
+        if (mounted) {
+          setMetrics(enriched);
+        }
+      })
+      .catch((error) => {
+        console.error("[StatusPage] Failed to enrich metrics:", error);
+        // Keep using placeholder values from statusData.metrics on error
+      });
 
     return () => {
       mounted = false;

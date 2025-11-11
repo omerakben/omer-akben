@@ -30,8 +30,8 @@ export function Milestones({ items }: MilestonesProps) {
             {milestone.title}
           </h3>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-text-2">
-            {milestone.details.map((detail) => (
-              <li key={detail}>{detail}</li>
+            {milestone.details.map((detail, idx) => (
+              <li key={`${milestone.date}-${idx}`}>{detail}</li>
             ))}
           </ul>
         </li>

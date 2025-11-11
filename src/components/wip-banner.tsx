@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { WIP_STATUS_ROUTE, wipBannerCopy } from "@/data/wip";
 import { posthog } from "@/lib/analytics/posthog-client";
@@ -26,7 +26,7 @@ export function WIPBanner({
   const { isBannerDismissed, dismissBanner, isMounted, bannerVersionKey } =
     useWIP();
   const [isVisible, setIsVisible] = useState(false);
-  const [hasTrackedView, setHasTrackedView] = useState(false);
+  const hasTrackedViewRef = useRef(false);
 
   const copy = useMemo(() => wipBannerCopy[variant], [variant]);
 
@@ -40,20 +40,36 @@ export function WIPBanner({
   }, [isBannerDismissed, isMounted, pathname, statusHref]);
 
   useEffect(() => {
-    if (isVisible && !hasTrackedView) {
+    if (isVisible && !hasTrackedViewRef.current) {
       posthog.capture("status_banner.view", {
         sha: bannerVersionKey,
         variant,
         icon,
         path: pathname,
       });
-      setHasTrackedView(true);
+      hasTrackedViewRef.current = true;
     }
+  }, [bannerVersionKey, icon, isVisible, pathname, variant]);
 
-    if (!isVisible && hasTrackedView) {
-      setHasTrackedView(false);
-    }
-  }, [bannerVersionKey, hasTrackedView, icon, isVisible, pathname, variant]);
+  const handleDismiss = useCallback(() => {
+    dismissBanner();
+    posthog.capture("status_banner.dismiss", {
+      sha: bannerVersionKey,
+      variant,
+      icon,
+      path: pathname,
+    });
+  }, [bannerVersionKey, dismissBanner, icon, pathname, variant]);
+
+  const handleViewStatus = useCallback(() => {
+    dismissBanner();
+    posthog.capture("status_banner.click_view_status", {
+      sha: bannerVersionKey,
+      variant,
+      icon,
+      path: pathname,
+    });
+  }, [bannerVersionKey, dismissBanner, icon, pathname, variant]);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -66,28 +82,7 @@ export function WIPBanner({
 
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible]);
-
-  const handleDismiss = () => {
-    dismissBanner();
-    posthog.capture("status_banner.dismiss", {
-      sha: bannerVersionKey,
-      variant,
-      icon,
-      path: pathname,
-    });
-  };
-
-  const handleViewStatus = () => {
-    dismissBanner();
-    posthog.capture("status_banner.click_view_status", {
-      sha: bannerVersionKey,
-      variant,
-      icon,
-      path: pathname,
-    });
-  };
+  }, [handleDismiss, isVisible]);
 
   if (!isMounted || !isVisible) {
     return null;
@@ -95,10 +90,30 @@ export function WIPBanner({
 
   const renderIcon = () => {
     if (icon === "egg") {
+      // Cooking pot icon (replaces emoji per CLAUDE.md rule)
       return (
-        <span aria-hidden="true" className="text-lg">
-          {"\uD83C\uDF73"}
-        </span>
+        <svg
+          aria-hidden="true"
+          className="h-5 w-5"
+          fill="none"
+          role="presentation"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M3 11h18M3 11a2 2 0 012-2h14a2 2 0 012 2M3 11v6a2 2 0 002 2h14a2 2 0 002-2v-6M8 15h8"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M9 9V6a3 3 0 013-3v0a3 3 0 013 3v3"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.5"
+          />
+        </svg>
       );
     }
 

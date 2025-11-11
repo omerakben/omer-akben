@@ -27,8 +27,8 @@ export function FeatureSpotlights({ items }: FeatureSpotlightsProps) {
           </div>
           <p className="mt-2 text-sm text-text-2">{item.summary}</p>
           <ul className="mt-4 space-y-2 text-sm text-text-1">
-            {item.details.map((detail) => (
-              <li key={detail} className="flex items-start gap-2">
+            {item.details.map((detail, idx) => (
+              <li key={`${item.id}-${idx}`} className="flex items-start gap-2">
                 <span aria-hidden="true" className="mt-1 h-1.5 w-1.5 rounded-full bg-brand-primary" />
                 <span>{detail}</span>
               </li>

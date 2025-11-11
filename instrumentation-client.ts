@@ -18,6 +18,8 @@ if (isBrowser && isProjectApiKey) {
     capture_pageleave: true,
     loaded: (client) => {
       if (process.env.NODE_ENV === 'development') client.debug()
+      // Clear any previous opt-out when we have a valid key
+      client.opt_in_capturing?.()
     },
   })
 } else if (isBrowser) {
@@ -26,9 +28,8 @@ if (isBrowser && isProjectApiKey) {
       '[PostHog] Skipping browser analytics – provide NEXT_PUBLIC_POSTHOG_KEY (project key starting with "phc_") and NEXT_PUBLIC_POSTHOG_HOST to enable tracking.'
     )
   }
-
-  // Ensure capture calls become no-ops when PostHog is disabled
-  posthog.opt_out_capturing?.()
+  // Note: NOT calling opt_out_capturing() to avoid persisting opt-out across deployments
+  // PostHog will simply not initialize, making all capture calls no-ops
 }
 
 export default posthog
