@@ -1,75 +1,173 @@
+/**
+ * Status Page Data Configuration
+ *
+ * Centralized data source for the /status page including hero content, capabilities,
+ * metrics, milestones, roadmap, lessons learned, and feature spotlights.
+ *
+ * @module data/status
+ *
+ * @example
+ * ```tsx
+ * import { statusData } from '@/data/status';
+ *
+ * // Access hero content
+ * const { title, subtitle, ctas } = statusData.hero;
+ *
+ * // Access capabilities
+ * statusData.capabilities.map(cap => <CapabilityCard {...cap} />);
+ * ```
+ */
+
+/**
+ * Persona types for contextual content targeting
+ */
 export type Persona = "recruiters" | "engineers" | "curious";
 
+/**
+ * Capability card data structure
+ */
 export interface Capability {
+  /** Unique identifier for the capability */
   id: string;
+  /** Display title */
   title: string;
+  /** Brief description */
   summary: string;
+  /** Optional badge text (e.g., "MVP", "New", "Live") */
   badge?: string;
+  /** Optional navigation link */
   link?: string;
 }
 
+/**
+ * Metric badge data structure
+ */
 export interface MetricBadge {
+  /** Metric label (e.g., "Deploy", "Commit") */
   label: string;
+  /** Metric value (can be enriched at runtime) */
   value: string;
+  /** Optional tooltip text for additional context */
   tooltip?: string;
 }
 
+/**
+ * Milestone data structure
+ */
 export interface Milestone {
+  /** ISO date string (YYYY-MM-DD) */
   date: string;
+  /** Milestone title */
   title: string;
+  /** Array of detail strings describing accomplishments */
   details: string[];
 }
 
+/**
+ * Roadmap data structure with three phases
+ */
 export interface Roadmap {
+  /** Current focus items */
   now: string[];
+  /** Upcoming planned items */
   next: string[];
+  /** Future vision items */
   later: string[];
 }
 
+/**
+ * Lesson learned data structure
+ */
 export interface Lesson {
+  /** ISO date string (YYYY-MM-DD) */
   date: string;
+  /** Observation or insight note */
   note: string;
 }
 
+/**
+ * How-to-use prompt block for specific persona
+ */
 export interface HowToUse {
+  /** Target persona */
   persona: Persona;
+  /** Array of suggested prompts for this persona */
   prompts: string[];
 }
 
+/**
+ * Spotlight feature link
+ */
 export interface SpotlightLink {
+  /** Link label text */
   label: string;
+  /** URL to navigate to */
   href: string;
 }
 
+/**
+ * Feature spotlight data structure
+ */
 export interface Spotlight {
+  /** Unique identifier for the spotlight */
   id: string;
+  /** Feature title */
   title: string;
+  /** Brief summary */
   summary: string;
+  /** Optional badge text (e.g., "New", "Beta") */
   badge?: string;
+  /** Array of detail strings */
   details: string[];
+  /** Optional navigation link */
   link?: SpotlightLink;
 }
 
+/**
+ * Complete status page data structure
+ */
 export interface StatusData {
+  /** Hero section content */
   hero: {
+    /** Main heading */
     title: string;
+    /** Subtitle description */
     subtitle: string;
+    /** Call-to-action URLs */
     ctas: {
+      /** URL to open chat */
       chatHref: string;
+      /** URL to download resume */
       resumeHref: string;
     };
   };
+  /** Mission statement */
   mission: string;
+  /** Vision statement */
   vision: string;
+  /** Array of capability cards */
   capabilities: Capability[];
+  /** Array of metric badges (values can be enriched at runtime) */
   metrics: MetricBadge[];
+  /** Array of chronological milestones */
   milestones: Milestone[];
+  /** Three-phase roadmap */
   roadmap: Roadmap;
+  /** Array of lessons learned */
   lessons: Lesson[];
+  /** Persona-specific how-to-use blocks */
   howToUse: HowToUse[];
+  /** Array of feature spotlights */
   spotlights: Spotlight[];
 }
 
+/**
+ * Status page data singleton
+ *
+ * This object serves as the single source of truth for all status page content.
+ * Metrics with placeholder values (e.g., "__BUILD_DATE__") are enriched at runtime
+ * by the enrichMetrics() utility function.
+ */
 export const statusData: StatusData = {
   hero: {
     title: "Live Status & Roadmap",

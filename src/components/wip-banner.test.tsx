@@ -16,7 +16,9 @@ const dismissSpy = vi.fn();
 const captureMock = posthog.capture as unknown as ReturnType<typeof vi.fn>;
 const useWIPSpy = vi.spyOn(WIPContext, "useWIP");
 
-const setContext = (overrides?: Partial<ReturnType<typeof WIPContext.useWIP>>) => {
+const setContext = (
+  overrides?: Partial<ReturnType<typeof WIPContext.useWIP>>
+) => {
   useWIPSpy.mockReturnValue({
     isModalDismissed: true,
     isBannerDismissed: false,
@@ -101,9 +103,12 @@ describe("WIPBanner", () => {
   });
 
   it("renders egg icon when icon prop is egg", () => {
-    render(<WIPBanner icon="egg" />);
+    const { container } = render(<WIPBanner icon="egg" />);
 
-    expect(screen.getByText("\uD83C\uDF73")).toBeVisible();
+    // Verify cooking pot SVG is rendered (replaces emoji per CLAUDE.md)
+    const svg = container.querySelector('svg[viewBox="0 0 24 24"]');
+    expect(svg).toBeInTheDocument();
+    expect(svg).toHaveAttribute("aria-hidden", "true");
   });
 
   it("does not render until mounted", () => {

@@ -1,14 +1,50 @@
+/**
+ * Persona Switch Component
+ *
+ * Tab-style navigation for switching between different persona views.
+ * Uses ARIA tab pattern for keyboard navigation and screen reader support.
+ *
+ * @module components/status/PersonaSwitch
+ *
+ * @example
+ * ```tsx
+ * <PersonaSwitch
+ *   personas={[
+ *     { id: "recruiters", label: "For Recruiters" },
+ *     { id: "engineers", label: "For Engineers" }
+ *   ]}
+ *   active="recruiters"
+ *   onChange={(persona) => setActive(persona)}
+ * />
+ * ```
+ */
+
 "use client";
 
 import type { Persona } from "@/data/status";
 import { cn } from "@/lib/utils";
 
+/**
+ * Props for the PersonaSwitch component
+ */
 interface PersonaSwitchProps {
+  /** Available personas with IDs and labels */
   personas: Array<{ id: Persona; label: string }>;
+  /** Currently active persona */
   active: Persona;
+  /** Callback when persona selection changes */
   onChange: (persona: Persona) => void;
 }
 
+/**
+ * Tab-style persona switcher with keyboard navigation
+ *
+ * Implements ARIA tablist pattern for accessible persona switching.
+ * Active state is visually distinct with emerald background.
+ *
+ * @param props - Component props
+ * @returns Rendered persona switcher with tab buttons
+ */
 export function PersonaSwitch({ personas, active, onChange }: PersonaSwitchProps) {
   return (
     <div

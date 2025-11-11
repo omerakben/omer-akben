@@ -1,9 +1,37 @@
+/**
+ * Capability Grid Component
+ *
+ * Displays a responsive grid of capability cards with optional links and badges.
+ * Cards are interactive when linked, with hover effects and keyboard navigation.
+ *
+ * @module components/status/CapabilityGrid
+ *
+ * @example
+ * ```tsx
+ * <CapabilityGrid
+ *   items={[
+ *     {
+ *       id: "ai-assistant",
+ *       title: "AI Assistant",
+ *       summary: "12 tools, episodic memory",
+ *       badge: "Live",
+ *       link: "/projects"
+ *     }
+ *   ]}
+ * />
+ * ```
+ */
+
 import Link from "next/link";
 
 import type { Capability } from "@/data/status";
 import { cn } from "@/lib/utils";
 
+/**
+ * Props for the CapabilityGrid component
+ */
 interface CapabilityGridProps {
+  /** Array of capability items to display */
   items: Capability[];
 }
 
@@ -13,6 +41,15 @@ const baseCardClasses = cn(
   "hover:border-brand-primary/60 hover:bg-surf-0/80 hover:shadow-lg hover:shadow-brand-primary/10"
 );
 
+/**
+ * Responsive grid of capability cards
+ *
+ * Renders cards as links when item.link is provided, otherwise as articles.
+ * Grid adapts from 1 column (mobile) to 4 columns (xl screens).
+ *
+ * @param props - Component props
+ * @returns Rendered grid with capability cards
+ */
 export function CapabilityGrid({ items }: CapabilityGridProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

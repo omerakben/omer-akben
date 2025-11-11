@@ -1,3 +1,34 @@
+/**
+ * WIP Banner Component
+ *
+ * A dismissible site-wide banner that notifies visitors about ongoing development.
+ * Integrates with WIP context for persistence and PostHog for analytics tracking.
+ *
+ * @module components/wip-banner
+ *
+ * @features
+ * - Two visual variants: neutral (default) and playful
+ * - Two icon options: info (default) and egg (cooking pot)
+ * - Keyboard accessible (ESC to dismiss)
+ * - Analytics tracking for views, dismissals, and CTA clicks
+ * - Automatic hiding on status page
+ * - SHA-keyed version tracking for banner updates
+ *
+ * @example
+ * ```tsx
+ * // Default neutral variant
+ * <WIPBanner />
+ *
+ * // Playful variant with egg icon
+ * <WIPBanner variant="playful" icon="egg" />
+ * ```
+ *
+ * @remarks
+ * - Uses localStorage via WIP context for dismissal persistence
+ * - Dismissal is scoped to banner version (SHA-keyed)
+ * - Automatically tracks PostHog events: view, dismiss, click_view_status
+ */
+
 "use client";
 
 import Link from "next/link";
@@ -8,15 +39,41 @@ import { WIP_STATUS_ROUTE, wipBannerCopy } from "@/data/wip";
 import { posthog } from "@/lib/analytics/posthog-client";
 import { useWIP } from "@/lib/wip-context";
 
+/**
+ * Visual variant of the WIP banner
+ * - neutral: Professional, informative tone
+ * - playful: Friendly, casual tone
+ */
 export type WipBannerVariant = "neutral" | "playful";
+
+/**
+ * Icon variant for the WIP banner
+ * - info: Information circle icon
+ * - egg: Cooking pot icon (playful theme)
+ */
 export type WipBannerIcon = "info" | "egg";
 
+/**
+ * Props for the WIPBanner component
+ */
 interface WIPBannerProps {
+  /** Visual variant of the banner (default: "neutral") */
   variant?: WipBannerVariant;
+  /** Icon to display in the banner (default: "info") */
   icon?: WipBannerIcon;
+  /** URL to navigate when "View status" is clicked (default: /status) */
   statusHref?: string;
 }
 
+/**
+ * WIP Banner Component
+ *
+ * Displays a dismissible banner across the top of the site to inform visitors
+ * about ongoing development. Automatically hidden on the status page itself.
+ *
+ * @param props - Component props
+ * @returns Rendered banner or null if dismissed/unmounted/on status page
+ */
 export function WIPBanner({
   variant = "neutral",
   icon = "info",
@@ -51,6 +108,11 @@ export function WIPBanner({
     }
   }, [bannerVersionKey, icon, isVisible, pathname, variant]);
 
+  /**
+   * Handles banner dismissal
+   * - Updates WIP context to persist dismissal
+   * - Tracks analytics event with banner metadata
+   */
   const handleDismiss = useCallback(() => {
     dismissBanner();
     posthog.capture("status_banner.dismiss", {
@@ -61,6 +123,11 @@ export function WIPBanner({
     });
   }, [bannerVersionKey, dismissBanner, icon, pathname, variant]);
 
+  /**
+   * Handles "View status" link click
+   * - Dismisses banner (user is navigating to status page)
+   * - Tracks analytics event with navigation metadata
+   */
   const handleViewStatus = useCallback(() => {
     dismissBanner();
     posthog.capture("status_banner.click_view_status", {
@@ -88,6 +155,10 @@ export function WIPBanner({
     return null;
   }
 
+  /**
+   * Renders the appropriate icon based on icon prop
+   * @returns SVG icon element
+   */
   const renderIcon = () => {
     if (icon === "egg") {
       // Cooking pot icon (replaces emoji per CLAUDE.md rule)

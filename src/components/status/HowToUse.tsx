@@ -1,3 +1,28 @@
+/**
+ * How To Use Component
+ *
+ * Persona-specific prompt suggestions with copy-to-clipboard functionality.
+ * Displays suggested prompts for the active persona with analytics tracking.
+ *
+ * @module components/status/HowToUse
+ *
+ * @example
+ * ```tsx
+ * <HowToUse
+ *   persona="recruiters"
+ *   blocks={[
+ *     {
+ *       persona: "recruiters",
+ *       prompts: [
+ *         "Give me a 60-second pitch",
+ *         "Link your best 3 projects"
+ *       ]
+ *     }
+ *   ]}
+ * />
+ * ```
+ */
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -5,11 +30,26 @@ import { useEffect, useMemo, useState } from "react";
 import type { HowToUse as HowToUseBlock, Persona } from "@/data/status";
 import { posthog } from "@/lib/analytics/posthog-client";
 
+/**
+ * Props for the HowToUse component
+ */
 interface HowToUseProps {
+  /** Currently active persona */
   persona: Persona;
+  /** Array of persona-specific prompt blocks */
   blocks: HowToUseBlock[];
 }
 
+/**
+ * Persona-specific prompt suggestion cards with clipboard copying
+ *
+ * Displays contextual prompts based on the active persona.
+ * Each prompt has a copy button with visual feedback and analytics tracking.
+ * Implements ARIA live regions for screen reader feedback on copy actions.
+ *
+ * @param props - Component props
+ * @returns Rendered tabpanel with copyable prompt cards
+ */
 export function HowToUse({ persona, blocks }: HowToUseProps) {
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
 
@@ -33,6 +73,14 @@ export function HowToUse({ persona, blocks }: HowToUseProps) {
     return () => window.clearTimeout(timeout);
   }, [copiedPrompt]);
 
+  /**
+   * Copies prompt text to clipboard with fallback
+   *
+   * Uses Clipboard API when available, falls back to execCommand for older browsers.
+   * Tracks successful copies via PostHog analytics.
+   *
+   * @param prompt - Text to copy to clipboard
+   */
   const copyPrompt = async (prompt: string) => {
     try {
       if (navigator?.clipboard?.writeText) {

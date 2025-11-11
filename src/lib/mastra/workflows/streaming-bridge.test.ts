@@ -3,15 +3,15 @@
  * Tests real-time workflow event streaming to AI SDK compatible streams
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { AgentExecutionContext } from "../agents/base-agent";
 import {
-  workflowToTextStream,
-  createWorkflowTextStream,
   createWorkflowAISDKStream,
+  createWorkflowTextStream,
   isStreamingTimeoutError,
+  workflowToTextStream,
 } from "./streaming-bridge";
 import type { WorkflowDefinition, WorkflowEvent } from "./types";
-import type { AgentExecutionContext } from "../agents/base-agent";
 
 // Mock workflow for testing
 function createMockWorkflow(events: WorkflowEvent[]): WorkflowDefinition {
@@ -88,7 +88,10 @@ describe("workflowToTextStream", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(errorWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      errorWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -165,7 +168,12 @@ describe("workflowToTextStream", () => {
       detect: () => true,
       steps: [],
       async *execute() {
-        yield { type: "progress", step: 1, total: 3, message: "Starting Step 1" };
+        yield {
+          type: "progress",
+          step: 1,
+          total: 3,
+          message: "Starting Step 1",
+        };
         // Simulate AI generation failure
         yield {
           type: "error",
@@ -175,10 +183,20 @@ describe("workflowToTextStream", () => {
         };
         yield { type: "agent-result", content: "Fallback content for Step 1" };
 
-        yield { type: "progress", step: 2, total: 3, message: "Starting Step 2" };
+        yield {
+          type: "progress",
+          step: 2,
+          total: 3,
+          message: "Starting Step 2",
+        };
         yield { type: "agent-result", content: "Step 2 succeeded" };
 
-        yield { type: "progress", step: 3, total: 3, message: "Starting Step 3" };
+        yield {
+          type: "progress",
+          step: 3,
+          total: 3,
+          message: "Starting Step 3",
+        };
         yield {
           type: "error",
           step: 3,
@@ -206,15 +224,22 @@ describe("workflowToTextStream", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(errorWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      errorWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
     const output = chunks.join("");
 
     // Verify error events are formatted correctly
-    expect(output).toContain("⚠️ ERROR (Step 1): AI generation failed [Continuing]");
-    expect(output).toContain("⚠️ ERROR (Step 3): Another AI error [Continuing]");
+    expect(output).toContain(
+      "⚠️ ERROR (Step 1): AI generation failed [Continuing]"
+    );
+    expect(output).toContain(
+      "⚠️ ERROR (Step 3): Another AI error [Continuing]"
+    );
 
     // Verify fallback content appears
     expect(output).toContain("Fallback content for Step 1");
@@ -234,7 +259,12 @@ describe("workflowToTextStream", () => {
       detect: () => true,
       steps: [],
       async *execute() {
-        yield { type: "progress", step: 1, total: 2, message: "Running parallel steps" };
+        yield {
+          type: "progress",
+          step: 1,
+          total: 2,
+          message: "Running parallel steps",
+        };
 
         // Simulate partial failure: Step 1A succeeds, Step 1B fails
         yield {
@@ -270,7 +300,10 @@ describe("workflowToTextStream", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(partialErrorWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      partialErrorWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -298,15 +331,26 @@ describe("workflowToTextStream", () => {
       steps: [],
       async *execute() {
         // Step 1: Parallel failures
-        yield { type: "progress", step: 1, total: 3, message: "Step 1 (parallel)" };
+        yield {
+          type: "progress",
+          step: 1,
+          total: 3,
+          message: "Step 1 (parallel)",
+        };
         yield {
           type: "error",
           step: 1,
           message: "Both parallel AI calls failed",
           canContinue: true,
         };
-        yield { type: "agent-result", content: "Fallback 1A: Using cached data" };
-        yield { type: "agent-result", content: "Fallback 1B: Using default template" };
+        yield {
+          type: "agent-result",
+          content: "Fallback 1A: Using cached data",
+        };
+        yield {
+          type: "agent-result",
+          content: "Fallback 1B: Using default template",
+        };
 
         // Step 2: Another failure
         yield { type: "progress", step: 2, total: 3, message: "Step 2" };
@@ -347,7 +391,10 @@ describe("workflowToTextStream", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(completeFailureWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      completeFailureWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -411,7 +458,10 @@ describe("workflowToTextStream", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(canContinueWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      canContinueWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -463,7 +513,12 @@ describe("workflow event validation", () => {
       steps: [],
       async *execute() {
         // Missing required fields
-        yield { type: "progress", step: -1, total: 0, message: "" } as WorkflowEvent;
+        yield {
+          type: "progress",
+          step: -1,
+          total: 0,
+          message: "",
+        } as WorkflowEvent;
       },
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       formatEvent(_event: WorkflowEvent): string {
@@ -472,7 +527,10 @@ describe("workflow event validation", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(malformedWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      malformedWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -499,7 +557,10 @@ describe("workflow event validation", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(malformedWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      malformedWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -516,7 +577,12 @@ describe("workflow event validation", () => {
       async *execute() {
         yield { type: "content", text: "First valid event" };
         // Invalid event (negative step)
-        yield { type: "progress", step: -5, total: 3, message: "Invalid" } as WorkflowEvent;
+        yield {
+          type: "progress",
+          step: -5,
+          total: 3,
+          message: "Invalid",
+        } as WorkflowEvent;
         yield { type: "content", text: "Second valid event" };
         yield { type: "complete", summary: "Done despite error" };
       },
@@ -533,7 +599,10 @@ describe("workflow event validation", () => {
     };
 
     const chunks: string[] = [];
-    for await (const chunk of workflowToTextStream(mixedWorkflow, mockContext)) {
+    for await (const chunk of workflowToTextStream(
+      mixedWorkflow,
+      mockContext
+    )) {
       chunks.push(chunk);
     }
 
@@ -608,9 +677,7 @@ describe("createWorkflowAISDKStream", () => {
   });
 
   it("should encode text chunks in SSE format with text-delta type", async () => {
-    const events: WorkflowEvent[] = [
-      { type: "content", text: "Test content" },
-    ];
+    const events: WorkflowEvent[] = [{ type: "content", text: "Test content" }];
     const workflow = createMockWorkflow(events);
 
     const stream = createWorkflowAISDKStream(workflow, mockContext);
@@ -647,37 +714,8 @@ describe("createWorkflowAISDKStream", () => {
 
       // Should end with finish message
       expect(output).toContain('data: {"type":"finish"');
-      expect(output).toContain('data: [DONE]');
+      expect(output).toContain("data: [DONE]");
     }
-  });
-
-  it.skip("should call onFinish callback after streaming completes", async () => {
-    const events: WorkflowEvent[] = [{ type: "complete", summary: "Complete" }];
-    const workflow = createMockWorkflow(events);
-
-    const onFinish = vi.fn();
-    const stream = createWorkflowAISDKStream(workflow, mockContext);
-    const response = stream.toUIMessageStreamResponse({ onFinish });
-
-    // Consume the entire stream
-    const reader = response.body?.getReader();
-    if (reader) {
-      try {
-        while (true) {
-          const { done } = await reader.read();
-          if (done) break;
-        }
-      } finally {
-        reader.releaseLock();
-      }
-    }
-
-    // Wait for async operations to complete
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // onFinish callback should be called by Mastra's stream handler
-    // Note: The exact structure is internal to Mastra's AISDKV5OutputStream
-    expect(onFinish).toHaveBeenCalled();
   });
 
   it("should handle multiple text chunks in sequence", async () => {
@@ -719,9 +757,15 @@ describe("createWorkflowAISDKStream", () => {
 describe("isStreamingTimeoutError", () => {
   it("should detect timeout errors by message pattern", () => {
     expect(isStreamingTimeoutError(new Error("Request timeout"))).toBe(true);
-    expect(isStreamingTimeoutError(new Error("Operation timed out"))).toBe(true);
-    expect(isStreamingTimeoutError(new Error("Exceeded time limit"))).toBe(true);
-    expect(isStreamingTimeoutError(new Error("Time limit exceeded"))).toBe(true);
+    expect(isStreamingTimeoutError(new Error("Operation timed out"))).toBe(
+      true
+    );
+    expect(isStreamingTimeoutError(new Error("Exceeded time limit"))).toBe(
+      true
+    );
+    expect(isStreamingTimeoutError(new Error("Time limit exceeded"))).toBe(
+      true
+    );
     expect(isStreamingTimeoutError(new Error("Request aborted"))).toBe(true);
   });
 

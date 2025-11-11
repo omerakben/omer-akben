@@ -1,9 +1,48 @@
+/**
+ * Feature Spotlights Component
+ *
+ * Displays highlighted features in a responsive two-column grid.
+ * Each spotlight includes title, summary, detailed points, and optional link.
+ *
+ * @module components/status/FeatureSpotlights
+ *
+ * @example
+ * ```tsx
+ * <FeatureSpotlights
+ *   items={[
+ *     {
+ *       id: "sidebar-pin",
+ *       title: "Pinned Ozzy Sidebar",
+ *       summary: "Desktop visitors can lock Ozzy to the right edge",
+ *       badge: "New",
+ *       details: ["Auto margin", "Local persistence", "Keyboard shortcut"],
+ *       link: { label: "See guidance", href: "/status#sidebar-pin" }
+ *     }
+ *   ]}
+ * />
+ * ```
+ */
+
 import type { Spotlight } from "@/data/status";
 
+/**
+ * Props for the FeatureSpotlights component
+ */
 interface FeatureSpotlightsProps {
+  /** Array of spotlight features to display */
   items: Spotlight[];
 }
 
+/**
+ * Responsive grid of feature spotlight cards
+ *
+ * Displays spotlights in a 2-column grid (stacks on mobile).
+ * Returns null if no spotlights provided (empty state).
+ * Spotlight cards are visually distinct with brand-colored borders and shadows.
+ *
+ * @param props - Component props
+ * @returns Rendered spotlight grid or null if empty
+ */
 export function FeatureSpotlights({ items }: FeatureSpotlightsProps) {
   if (!items.length) {
     return null;

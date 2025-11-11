@@ -484,6 +484,11 @@ export function logLLMMetric(metric: LLMMetric, userId?: string): void {
   try {
     const posthog = getPostHogServer();
 
+    // Skip if PostHog is not configured
+    if (!posthog) {
+      return;
+    }
+
     // Calculate cost based on token usage
     const estimatedCost = calculateCost(
       metric.tokenUsage.input,
