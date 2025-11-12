@@ -9,8 +9,8 @@
  * Future: Implement LLM response mocking for reliable E2E testing without network dependencies.
  */
 
-import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 /**
  * Helper function to ensure chat sidebar is open
