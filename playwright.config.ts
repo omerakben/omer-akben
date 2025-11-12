@@ -22,11 +22,33 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    /* Navigation timeout increased for Turbopack on-demand compilation */
-    navigationTimeout: 90000, // 90s to handle first-time route compilation with Turbopack
+    /**
+     * Navigation timeout: 90s to handle Turbopack on-demand compilation
+     * 
+     * WHY 90s? Turbopack's first compilation of a route can take 60-90s due to:
+     * - On-demand compilation (routes aren't pre-compiled)
+     * - Module graph traversal for dependencies
+     * - TypeScript type checking per route
+     * - React Server Component serialization
+     * 
+     * TESTED: 60s causes 2/127 test failures (recruiter, skills routes)
+     * ALTERNATIVE: Could reduce to 45s in CI with --production build, but that
+     * defeats the purpose of testing dev server behavior (the real user experience)
+     */
+    navigationTimeout: 90000,
   },
-  /* Test timeout increased for Turbopack compilation delays */
-  timeout: 90000, // 90s per test to handle on-demand compilation
+  /**
+   * Test timeout: 90s per test
+   * 
+   * JUSTIFICATION: Each test may visit new routes that trigger Turbopack compilation.
+   * With 8 routes tested in a11y.spec.ts, some tests will hit uncompiled routes.
+   * 
+   * OPTIMIZATION NOTES:
+   * - Production build (npm run build && npm start): ~3s per route, could use 30s timeout
+   * - Dev server caching: After first run, subsequent tests use ~10s per route
+   * - This timeout is for WORST CASE: first run with cold Turbopack cache
+   */
+  timeout: 90000,
 
   /* Configure projects for major browsers */
   projects: [
