@@ -22,7 +22,11 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    /* Navigation timeout increased for Turbopack on-demand compilation */
+    navigationTimeout: 90000, // 90s to handle first-time route compilation with Turbopack
   },
+  /* Test timeout increased for Turbopack compilation delays */
+  timeout: 90000, // 90s per test to handle on-demand compilation
 
   /* Configure projects for major browsers */
   projects: [

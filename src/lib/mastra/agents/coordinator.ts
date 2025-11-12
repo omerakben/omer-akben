@@ -24,6 +24,10 @@ import {
   buildResumeInstructions,
   resumeAgent,
 } from "@/lib/mastra/agents/resume-agent";
+import {
+  buildSkillsInstructions,
+  skillsAgent,
+} from "@/lib/mastra/agents/skills-agent";
 import { workflowRegistry } from "@/lib/mastra/workflows";
 import { createWorkflowAISDKStream } from "@/lib/mastra/workflows/streaming-bridge";
 import type { SystemMessage } from "@mastra/core/llm";
@@ -39,7 +43,8 @@ type PortfolioIntent =
   | "projects"
   | "contact"
   | "navigation"
-  | "performance";
+  | "performance"
+  | "skills";
 
 type AgentRoute = {
   agent: BasePortfolioAgent;
@@ -57,6 +62,7 @@ const baseRoutes: Record<Exclude<PortfolioIntent, "contact">, AgentRoute> = {
     agent: performanceAgent,
     instructions: buildPerformanceInstructions,
   },
+  skills: { agent: skillsAgent, instructions: buildSkillsInstructions },
 };
 
 const ROUTES: Record<PortfolioIntent, AgentRoute> =
@@ -86,14 +92,27 @@ function classifyIntent(query: string): PortfolioIntent {
   if (/resume|cv|experience|certification/.test(normalized)) {
     return "resume";
   }
-  if (/project|portfolio|work|case study|build/.test(normalized)) {
-    return "projects";
-  }
+
+  const contactRegex =
+    /contact|email|reach|hire|connect|schedule|meeting|zoom|call|calendly|book|intro call|follow up|talk with|chat with/;
+  const emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
+  const nameIntroRegex = /\b(my name is|this is)\b/;
+
   if (
     process.env.ENABLE_CONTACT_COLLECTION === "true" &&
-    /contact|email|reach|hire|connect/.test(normalized)
+    (contactRegex.test(normalized) ||
+      emailRegex.test(query) ||
+      nameIntroRegex.test(normalized))
   ) {
     return "contact";
+  }
+  const overviewPattern =
+    /skill|stack|tech|technology|expertise|strength|specialize|what do you do|tell me about (yourself|you)|who\s*(are|r)\s*(you|u)|who is omer|background|bio|profile|introduce|introduction|summary of experience|about you|hi\b|hello\b|hey\b/;
+  if (overviewPattern.test(normalized)) {
+    return "skills";
+  }
+  if (/project|portfolio|work|case study|build/.test(normalized)) {
+    return "projects";
   }
   if (
     /navigate|section|scroll|where is|go to|show me the page/.test(normalized)

@@ -150,3 +150,71 @@ export function extractNavigationLinks(
 
   return Array.from(uniqueByHref.values());
 }
+
+function readCollectContactMessageFromResult(result: unknown): string | null {
+  if (!isRecord(result)) {
+    return null;
+  }
+
+  const data = result.data;
+  if (!isRecord(data)) {
+    return null;
+  }
+
+  const message = data.message;
+  if (typeof message === "string" && message.trim()) {
+    return message.trim();
+  }
+
+  return null;
+}
+
+export function extractCollectContactMessage(
+  message: UIMessage | null | undefined
+): string | null {
+  if (!message || !Array.isArray(message.parts)) {
+    return null;
+  }
+
+  for (const part of message.parts) {
+    if (!isRecord(part) || typeof part.type !== "string") {
+      continue;
+    }
+
+    if (part.type === "tool-collect_contact") {
+      const output = (part as { output?: unknown }).output;
+      const extracted = readCollectContactMessageFromResult(output);
+      if (extracted) {
+        return extracted;
+      }
+    }
+
+    if (
+      part.type === "tool-result" &&
+      "toolName" in part &&
+      part.toolName === "collect_contact"
+    ) {
+      const extracted = readCollectContactMessageFromResult(
+        (part as { result?: unknown }).result
+      );
+      if (extracted) {
+        return extracted;
+      }
+    }
+
+    if (
+      part.type === "dynamic-tool" &&
+      "toolName" in part &&
+      part.toolName === "collect_contact"
+    ) {
+      const extracted = readCollectContactMessageFromResult(
+        (part as { output?: unknown }).output
+      );
+      if (extracted) {
+        return extracted;
+      }
+    }
+  }
+
+  return null;
+}

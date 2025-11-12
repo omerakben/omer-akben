@@ -4,11 +4,12 @@
  *
  * SKIPPED: These tests require real LLM API calls which timeout in CI/CD environment.
  * Unit tests for workflow functionality pass (streaming-bridge.test.ts, project-comparison.test.ts, interview-prep.test.ts)
- * TODO: Implement LLM response mocking for reliable E2E testing
- * Issue: Workflows make 3x LLM calls (6-15s total) but E2E timeout is 10s
+ *
+ * Reason: Workflows make 3x LLM calls (6-15s total) but E2E timeout is 10s.
+ * Future: Implement LLM response mocking for reliable E2E testing without network dependencies.
  */
 
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe.skip("Workflow Streaming E2E", () => {
   test.beforeEach(async ({ page }) => {
@@ -22,7 +23,9 @@ test.describe.skip("Workflow Streaming E2E", () => {
     await page.goto("/", { waitUntil: "networkidle" });
   });
 
-  test("should stream project comparison workflow in real-time", async ({ page }) => {
+  test("should stream project comparison workflow in real-time", async ({
+    page,
+  }) => {
     // Open chat sidebar if not already open
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');
     const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
@@ -30,11 +33,13 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Submit query that triggers project comparison workflow
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Compare my web projects");
     await input.press("Enter");
 
@@ -43,14 +48,20 @@ test.describe.skip("Workflow Streaming E2E", () => {
     const chunkTimestamps: number[] = [];
 
     // Wait for first progress message to appear
-    await page.waitForSelector('text=/\\*\\*\\[Step 1\\/3\\]\\*\\*/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\*\\*\\[Step 1\\/3\\]\\*\\*/", {
+      timeout: 10000,
+    });
     chunkTimestamps.push(Date.now() - streamingStartTime);
 
     // Verify progress messages appear sequentially
-    await page.waitForSelector('text=/\\*\\*\\[Step 2\\/3\\]\\*\\*/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\*\\*\\[Step 2\\/3\\]\\*\\*/", {
+      timeout: 10000,
+    });
     chunkTimestamps.push(Date.now() - streamingStartTime);
 
-    await page.waitForSelector('text=/\\*\\*\\[Step 3\\/3\\]\\*\\*/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\*\\*\\[Step 3\\/3\\]\\*\\*/", {
+      timeout: 10000,
+    });
     chunkTimestamps.push(Date.now() - streamingStartTime);
 
     // Verify streaming is truly real-time (chunks appear within reasonable intervals)
@@ -62,14 +73,18 @@ test.describe.skip("Workflow Streaming E2E", () => {
     }
 
     // Verify completion message appears
-    await page.waitForSelector('text=/Project comparison complete/', { timeout: 10000 });
+    await page.waitForSelector("text=/Project comparison complete/", {
+      timeout: 10000,
+    });
 
     // Total workflow time should be reasonable (< 15 seconds for 3 steps)
     const totalTime = Date.now() - streamingStartTime;
     expect(totalTime).toBeLessThan(15000);
   });
 
-  test("should stream interview prep workflow in real-time", async ({ page }) => {
+  test("should stream interview prep workflow in real-time", async ({
+    page,
+  }) => {
     // Open chat sidebar if not already open
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');
     const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
@@ -77,11 +92,13 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Submit query that triggers interview prep workflow
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Help me prepare for a React interview");
     await input.press("Enter");
 
@@ -89,13 +106,20 @@ test.describe.skip("Workflow Streaming E2E", () => {
     const streamingStartTime = Date.now();
 
     // Wait for progress messages in sequence
-    await page.waitForSelector('text=/Reviewing your resume/', { timeout: 10000 });
+    await page.waitForSelector("text=/Reviewing your resume/", {
+      timeout: 10000,
+    });
     const step1Time = Date.now() - streamingStartTime;
 
-    await page.waitForSelector('text=/Assessing your technical skills/', { timeout: 10000 });
+    await page.waitForSelector("text=/Assessing your technical skills/", {
+      timeout: 10000,
+    });
     const step2Time = Date.now() - streamingStartTime;
 
-    await page.waitForSelector('text=/Generating tailored practice questions/', { timeout: 10000 });
+    await page.waitForSelector(
+      "text=/Generating tailored practice questions/",
+      { timeout: 10000 }
+    );
     const step3Time = Date.now() - streamingStartTime;
 
     // Verify steps stream progressively (not all at once)
@@ -103,14 +127,18 @@ test.describe.skip("Workflow Streaming E2E", () => {
     expect(step3Time - step2Time).toBeLessThan(5000);
 
     // Verify completion
-    await page.waitForSelector('text=/Interview preparation complete/', { timeout: 10000 });
+    await page.waitForSelector("text=/Interview preparation complete/", {
+      timeout: 10000,
+    });
 
     // Total workflow time should be reasonable
     const totalTime = Date.now() - streamingStartTime;
     expect(totalTime).toBeLessThan(15000);
   });
 
-  test("should display error messages during workflow failures", async ({ page }) => {
+  test("should display error messages during workflow failures", async ({
+    page,
+  }) => {
     // This test would require mocking API failures, which is complex in E2E
     // For now, we verify the error UI elements are renderable
 
@@ -121,7 +149,9 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Verify chat sidebar has proper error handling structure
@@ -137,20 +167,22 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Submit first workflow request
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Compare my AI projects");
     await input.press("Enter");
 
     // Wait for first workflow to start
-    await page.waitForSelector('text=/\\*\\*\\[Step/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\*\\*\\[Step/", { timeout: 10000 });
 
     // Verify new message can be sent (chat isn't locked)
     await page.waitForTimeout(1000); // Brief wait for input to be ready
-    const inputAfterSend = page.locator('#chat-sidebar-input');
+    const inputAfterSend = page.locator("#chat-sidebar-input");
     expect(await inputAfterSend.isEnabled()).toBe(true);
   });
 
@@ -162,21 +194,23 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Submit workflow query
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Compare featured projects");
     await input.press("Enter");
 
     // Verify progress messages appear with step numbers
-    await page.waitForSelector('text=/\\[Step 1\\/3\\]/', { timeout: 10000 });
-    await page.waitForSelector('text=/\\[Step 2\\/3\\]/', { timeout: 10000 });
-    await page.waitForSelector('text=/\\[Step 3\\/3\\]/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\[Step 1\\/3\\]/", { timeout: 10000 });
+    await page.waitForSelector("text=/\\[Step 2\\/3\\]/", { timeout: 10000 });
+    await page.waitForSelector("text=/\\[Step 3\\/3\\]/", { timeout: 10000 });
 
     // Verify completion indicator
-    await page.waitForSelector('text=/complete/', { timeout: 10000 });
+    await page.waitForSelector("text=/complete/", { timeout: 10000 });
   });
 
   test("should preserve workflow results in chat history", async ({ page }) => {
@@ -187,16 +221,18 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Submit workflow query
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Compare my projects");
     await input.press("Enter");
 
     // Wait for workflow to complete
-    await page.waitForSelector('text=/complete/', { timeout: 15000 });
+    await page.waitForSelector("text=/complete/", { timeout: 15000 });
 
     // Submit another message
     await input.fill("What are my skills?");
@@ -207,11 +243,13 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     // Verify previous workflow results are still visible
     // Messages don't have data-testid, so we verify the workflow completion text is still present
-    const workflowComplete = page.locator('text=/complete/');
+    const workflowComplete = page.locator("text=/complete/");
     expect(await workflowComplete.count()).toBeGreaterThanOrEqual(1);
   });
 
-  test("should handle workflow streaming with sidebar pinned", async ({ page }) => {
+  test("should handle workflow streaming with sidebar pinned", async ({
+    page,
+  }) => {
     // Open and pin chat sidebar
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');
     const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
@@ -219,7 +257,9 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Pin sidebar
@@ -230,15 +270,21 @@ test.describe.skip("Workflow Streaming E2E", () => {
     }
 
     // Submit workflow query
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Compare my web projects");
     await input.press("Enter");
 
     // Verify workflow streams correctly with sidebar pinned
-    await page.waitForSelector('text=/\\*\\*\\[Step 1\\/3\\]\\*\\*/', { timeout: 10000 });
-    await page.waitForSelector('text=/\\*\\*\\[Step 2\\/3\\]\\*\\*/', { timeout: 10000 });
-    await page.waitForSelector('text=/\\*\\*\\[Step 3\\/3\\]\\*\\*/', { timeout: 10000 });
-    await page.waitForSelector('text=/complete/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\*\\*\\[Step 1\\/3\\]\\*\\*/", {
+      timeout: 10000,
+    });
+    await page.waitForSelector("text=/\\*\\*\\[Step 2\\/3\\]\\*\\*/", {
+      timeout: 10000,
+    });
+    await page.waitForSelector("text=/\\*\\*\\[Step 3\\/3\\]\\*\\*/", {
+      timeout: 10000,
+    });
+    await page.waitForSelector("text=/complete/", { timeout: 10000 });
 
     // Verify sidebar remains pinned
     expect(await sidebar.isVisible()).toBe(true);
@@ -252,24 +298,30 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
     if (!isSidebarOpen) {
       await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', { timeout: 5000 });
+      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+        timeout: 5000,
+      });
     }
 
     // Submit workflow query
-    const input = page.locator('#chat-sidebar-input');
+    const input = page.locator("#chat-sidebar-input");
     await input.fill("Compare all my projects");
     await input.press("Enter");
 
     // Wait for multiple progress updates
-    await page.waitForSelector('text=/\\[Step 1\\/3\\]/', { timeout: 10000 });
-    await page.waitForSelector('text=/\\[Step 2\\/3\\]/', { timeout: 10000 });
-    await page.waitForSelector('text=/\\[Step 3\\/3\\]/', { timeout: 10000 });
+    await page.waitForSelector("text=/\\[Step 1\\/3\\]/", { timeout: 10000 });
+    await page.waitForSelector("text=/\\[Step 2\\/3\\]/", { timeout: 10000 });
+    await page.waitForSelector("text=/\\[Step 3\\/3\\]/", { timeout: 10000 });
 
     // Verify latest content is visible (auto-scrolled)
-    const messagesContainer = page.locator('.chat-scroll-smooth');
+    const messagesContainer = page.locator(".chat-scroll-smooth");
     const scrollTop = await messagesContainer.evaluate((el) => el.scrollTop);
-    const scrollHeight = await messagesContainer.evaluate((el) => el.scrollHeight);
-    const clientHeight = await messagesContainer.evaluate((el) => el.clientHeight);
+    const scrollHeight = await messagesContainer.evaluate(
+      (el) => el.scrollHeight
+    );
+    const clientHeight = await messagesContainer.evaluate(
+      (el) => el.clientHeight
+    );
 
     // Should be scrolled near bottom (within 100px)
     const scrolledToBottom = scrollHeight - scrollTop - clientHeight < 100;

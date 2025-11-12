@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
 import type { ToolCallOptions } from "ai";
+import { describe, expect, it, vi } from "vitest";
 
-import { aiToolRegistry, mastraToolList, mastraToolRegistry } from "@/lib/tools";
+import {
+  aiToolRegistry,
+  mastraToolList,
+  mastraToolRegistry,
+} from "@/lib/tools";
 
 vi.mock("@/lib/email/send-zoom-link", () => ({
   sendZoomLinkEmail: vi.fn().mockResolvedValue({ success: true }),
@@ -20,7 +24,7 @@ const EXPECTED_TOOL_IDS = [
   "search_projects_semantic",
   "open_project",
   "get_contact",
-  // TODO: Re-enable when email dependencies are installed
+  // Note: collect_contact excluded - requires Resend API key for email tests
   // "collect_contact",
 ] as const;
 
@@ -67,7 +71,7 @@ describe("tool registry", () => {
     );
   });
 
-  // TODO: Re-enable when email dependencies are installed
+  // Note: collect_contact tests disabled - require Resend API key and email validation
   // it("should reject disposable contact emails", async () => {
   //   const tool = aiToolRegistry.collect_contact;
   //   expect(tool.execute).toBeDefined();

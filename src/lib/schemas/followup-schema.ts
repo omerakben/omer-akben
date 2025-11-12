@@ -147,7 +147,13 @@ export const FollowupRequest = z.object({
     content: z.string()
   })).min(1, "Must provide at least one message"),
   userId: z.string().optional(),  // Optional for personalization
-  threadId: z.string().optional()  // Optional for conversation context
+  threadId: z.string().optional(),  // Optional for conversation context
+  context: z
+    .object({
+      currentPath: z.string().optional(),
+      lastAction: z.string().optional(),
+    })
+    .optional()
 });
 
 export type FollowupRequestType = z.infer<typeof FollowupRequest>;

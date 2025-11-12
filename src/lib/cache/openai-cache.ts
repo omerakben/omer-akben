@@ -339,7 +339,7 @@ export async function getCacheMetrics(
       misses: totalMisses,
       hitRate: parseFloat(hitRate.toFixed(2)),
       totalCalls,
-      avgLookupTime: 0, // TODO: Implement lookup time tracking
+      avgLookupTime: 0, // Not tracked: Redis client doesn't expose per-operation latency
     };
   } catch (error) {
     console.error(`[Cache:${type}] Failed to retrieve cache metrics`, {

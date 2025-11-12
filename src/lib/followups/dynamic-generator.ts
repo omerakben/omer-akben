@@ -30,6 +30,10 @@ interface DynamicGeneratorContext {
   userId?: string;
   threadId?: string;
   semanticMemory?: SemanticMemory | null;
+  context?: {
+    currentPath?: string;
+    lastAction?: string;
+  };
 }
 
 /**
@@ -43,7 +47,8 @@ function buildFollowupSystemPrompt(
     topic: TopicEnum;
     project: string | null;
     confidence: number;
-  }
+  },
+  conversationContext?: { currentPath?: string; lastAction?: string }
 ): string {
   const validSlugs = projects.map(p => p.slug).join(", ");
 
@@ -74,6 +79,24 @@ Adapt follow-up suggestions based on this profile.`;
 Use these hints to validate your entity extraction, but trust your LLM analysis if there are clear signals in the conversation.`;
   }
 
+  let contextHint = "";
+  if (conversationContext?.currentPath || conversationContext?.lastAction) {
+    const parts: string[] = [];
+    if (conversationContext.currentPath) {
+      parts.push(`- Current Page: ${conversationContext.currentPath}`);
+    }
+    if (conversationContext.lastAction) {
+      parts.push(`- Last Action: ${conversationContext.lastAction}`);
+    }
+
+    contextHint = `
+
+## Live Context Signals
+${parts.join("\n")}
+
+Use these cues to keep the conversation moving forward (e.g., if they're already on /projects, suggest deeper project actions).`;
+  }
+
   return `You are an expert at generating contextual follow-up questions for a portfolio chatbot conversation.
 
 ## Your Task
@@ -93,7 +116,7 @@ You can suggest follow-ups with these actions:
 ${validSlugs}
 
 IMPORTANT: Only use project slugs from the list above. If user mentions a project not in the list, use "search_projects" action instead.
-${personalizationContext}${entityHintsContext}
+${personalizationContext}${entityHintsContext}${contextHint}
 
 ## Response Format (JSON)
 Return ONLY valid JSON matching this exact structure:
@@ -267,7 +290,11 @@ export async function generateDynamicFollowups(
     const result = await generateObjectWithFallback({
       variant: "non-reasoning",
       schema: FollowupResponse,
-      system: buildFollowupSystemPrompt(semanticMemory, extractedEntities),
+      system: buildFollowupSystemPrompt(
+        semanticMemory,
+        extractedEntities,
+        context.context
+      ),
       messages: recentMessages,
       temperature: 0.5,
       component: "follow-up-generator",
