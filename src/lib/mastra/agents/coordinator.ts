@@ -1,5 +1,6 @@
 import { buildCoordinatorKnowledge } from "@/lib/agent-knowledge/builders/coordinator-agent";
 import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
+import { OVERVIEW_PATTERN } from "@/lib/chat/patterns";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -106,9 +107,7 @@ function classifyIntent(query: string): PortfolioIntent {
   ) {
     return "contact";
   }
-  const overviewPattern =
-    /skill|stack|tech|technology|expertise|strength|specialize|what do you do|tell me about (yourself|you)|who\s*(are|r)\s*(you|u)|who is omer|background|bio|profile|introduce|introduction|summary of experience|about you|hi\b|hello\b|hey\b/;
-  if (overviewPattern.test(normalized)) {
+  if (OVERVIEW_PATTERN.test(normalized)) {
     return "skills";
   }
   if (/project|portfolio|work|case study|build/.test(normalized)) {

@@ -1,8 +1,6 @@
 import { facts } from "@/data/facts";
 import type { UIMessage } from "ai";
-
-const overviewPattern =
-  /skill|stack|tech|technology|expertise|strength|specialize|what do you do|tell me about (yourself|you)|who\s*(are|r)\s*(you|u)|who is omer|background|bio|profile|introduce|introduction|summary of experience|about you|hi\b|hello\b|hey\b/;
+import { OVERVIEW_PATTERN } from "./patterns";
 
 const FIRST_NAME = facts.personal.fullName.split(" ")[0];
 
@@ -27,5 +25,5 @@ export function shouldUseFastIntro(
     return false;
   }
 
-  return overviewPattern.test(userInput.toLowerCase());
+  return OVERVIEW_PATTERN.test(userInput.toLowerCase());
 }
