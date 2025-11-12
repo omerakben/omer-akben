@@ -70,7 +70,10 @@ const ROUTES: Record<PortfolioIntent, AgentRoute> =
   process.env.ENABLE_CONTACT_COLLECTION === "true"
     ? {
         ...baseRoutes,
-        contact: { agent: contactAgent, instructions: buildContactInstructions },
+        contact: {
+          agent: contactAgent,
+          instructions: buildContactInstructions,
+        },
       }
     : (baseRoutes as Record<PortfolioIntent, AgentRoute>);
 
@@ -153,10 +156,19 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     console.error("[Coordinator] Workflow detected:", workflow?.name || "none");
 
     if (workflow) {
-      console.error("[Coordinator] Executing WORKFLOW stream for:", workflow.name);
+      console.error(
+        "[Coordinator] Executing WORKFLOW stream for:",
+        workflow.name
+      );
       const workflowStream = this.executeWorkflowStream(workflow, context);
-      console.error("[Coordinator] Workflow stream created, type:", typeof workflowStream);
-      console.error("[Coordinator] Has toUIMessageStreamResponse:", !!workflowStream?.toUIMessageStreamResponse);
+      console.error(
+        "[Coordinator] Workflow stream created, type:",
+        typeof workflowStream
+      );
+      console.error(
+        "[Coordinator] Has toUIMessageStreamResponse:",
+        !!workflowStream?.toUIMessageStreamResponse
+      );
       return workflowStream;
     }
 
@@ -180,7 +192,10 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     });
 
     console.error("[Coordinator] Agent stream created, type:", typeof stream);
-    console.error("[Coordinator] Has toUIMessageStreamResponse:", !!stream?.toUIMessageStreamResponse);
+    console.error(
+      "[Coordinator] Has toUIMessageStreamResponse:",
+      !!stream?.toUIMessageStreamResponse
+    );
     return stream as AISDKV5OutputStream;
   }
 

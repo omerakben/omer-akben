@@ -10,6 +10,24 @@
  */
 
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+
+/**
+ * Helper function to ensure chat sidebar is open
+ * Eliminates repeated sidebar opening logic across tests
+ */
+async function ensureSidebarOpen(page: Page): Promise<void> {
+  const chatButton = page.locator('button[aria-label*="Ozzy" i]');
+  const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
+  const isSidebarOpen = await sidebar.isVisible();
+
+  if (!isSidebarOpen) {
+    await chatButton.click();
+    await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
+      timeout: 5000,
+    });
+  }
+}
 
 test.describe.skip("Workflow Streaming E2E", () => {
   test.beforeEach(async ({ page }) => {
@@ -27,16 +45,7 @@ test.describe.skip("Workflow Streaming E2E", () => {
     page,
   }) => {
     // Open chat sidebar if not already open
-    const chatButton = page.locator('button[aria-label*="Ozzy" i]');
-    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
-    const isSidebarOpen = await sidebar.isVisible();
-
-    if (!isSidebarOpen) {
-      await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
-        timeout: 5000,
-      });
-    }
+    await ensureSidebarOpen(page);
 
     // Submit query that triggers project comparison workflow
     const input = page.locator("#chat-sidebar-input");
@@ -86,16 +95,7 @@ test.describe.skip("Workflow Streaming E2E", () => {
     page,
   }) => {
     // Open chat sidebar if not already open
-    const chatButton = page.locator('button[aria-label*="Ozzy" i]');
-    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
-    const isSidebarOpen = await sidebar.isVisible();
-
-    if (!isSidebarOpen) {
-      await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
-        timeout: 5000,
-      });
-    }
+    await ensureSidebarOpen(page);
 
     // Submit query that triggers interview prep workflow
     const input = page.locator("#chat-sidebar-input");
@@ -143,34 +143,17 @@ test.describe.skip("Workflow Streaming E2E", () => {
     // For now, we verify the error UI elements are renderable
 
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="Ozzy" i]');
-    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
-    const isSidebarOpen = await sidebar.isVisible();
-
-    if (!isSidebarOpen) {
-      await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
-        timeout: 5000,
-      });
-    }
+    await ensureSidebarOpen(page);
 
     // Verify chat sidebar has proper error handling structure
     // (actual error testing requires API mocking, which is done in unit tests)
+    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
     expect(sidebar).toBeVisible();
   });
 
   test("should handle concurrent workflow requests", async ({ page }) => {
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="Ozzy" i]');
-    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
-    const isSidebarOpen = await sidebar.isVisible();
-
-    if (!isSidebarOpen) {
-      await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
-        timeout: 5000,
-      });
-    }
+    await ensureSidebarOpen(page);
 
     // Submit first workflow request
     const input = page.locator("#chat-sidebar-input");
@@ -188,16 +171,7 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
   test("should display workflow progress indicators", async ({ page }) => {
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="Ozzy" i]');
-    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
-    const isSidebarOpen = await sidebar.isVisible();
-
-    if (!isSidebarOpen) {
-      await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
-        timeout: 5000,
-      });
-    }
+    await ensureSidebarOpen(page);
 
     // Submit workflow query
     const input = page.locator("#chat-sidebar-input");
@@ -215,16 +189,7 @@ test.describe.skip("Workflow Streaming E2E", () => {
 
   test("should preserve workflow results in chat history", async ({ page }) => {
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="Ozzy" i]');
-    const sidebar = page.locator('[role="dialog"][aria-label*="Ozzy" i]');
-    const isSidebarOpen = await sidebar.isVisible();
-
-    if (!isSidebarOpen) {
-      await chatButton.click();
-      await page.waitForSelector('[role="dialog"][aria-label*="Ozzy" i]', {
-        timeout: 5000,
-      });
-    }
+    await ensureSidebarOpen(page);
 
     // Submit workflow query
     const input = page.locator("#chat-sidebar-input");

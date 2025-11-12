@@ -258,11 +258,18 @@ export function ChatSidebar() {
     e.preventDefault();
     if (isHydratingThread || !input.trim()) return;
 
-    if (shouldUseFastIntro(input, messages)) {
+    const userMessage = input.trim();
+
+    // Check if fast intro should be used (greetings on first message)
+    if (shouldUseFastIntro(userMessage, messages)) {
       setFastPreview(FAST_INTRO_RESPONSE);
+      setInput("");
+      setLastFollowupAction(null);
+      setShowMessages(true);
+      // Skip API call - fast intro is sufficient for greetings
+      return;
     }
 
-    const userMessage = input.trim();
     setInput("");
     setLastFollowupAction(null);
     setShowMessages(true);
@@ -317,8 +324,13 @@ export function ChatSidebar() {
       return;
     }
 
+    // Check if fast intro should be used (greetings on first message)
     if (shouldUseFastIntro(question, messages)) {
       setFastPreview(FAST_INTRO_RESPONSE);
+      setShowMessages(true);
+      setLastFollowupAction(question);
+      // Skip API call - fast intro is sufficient for greetings
+      return;
     }
 
     setShowMessages(true);
@@ -482,7 +494,7 @@ export function ChatSidebar() {
         setFastPreview(null);
       }
     }
-  }, [messages.length, fastPreview]); // Use messages.length to prevent infinite loop, messagesRef for stable reference
+  }, [messages.length, fastPreview]); // Re-run when message count changes or fast preview is set/cleared
 
   // Generate dynamic follow-ups after each assistant message
   useEffect(() => {
