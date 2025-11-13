@@ -18,7 +18,18 @@ const DEFAULT_WIDTH = 480; // px
 const MIN_WIDTH = 320; // px
 const MAX_WIDTH = 800; // px
 const THREAD_STORAGE_KEY = "chat_thread_id";
-const DEFAULT_THREAD_ID = "thread-main";
+
+/**
+ * Generates a unique thread ID for chat sessions
+ * Uses crypto.randomUUID() when available, falls back to timestamp + random string
+ */
+const generateThreadId = (): string => {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return `thread-${crypto.randomUUID()}`;
+  }
+  // Fallback for environments without crypto.randomUUID
+  return `thread-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+};
 
 interface ChatSidebarContextType {
   isOpen: boolean;
@@ -47,7 +58,7 @@ export function ChatSidebarProvider({
   const [isOpen, setIsOpen] = useState(false);
   const [isPinned, setIsPinnedState] = useState(false);
   const [width, setWidthState] = useState(DEFAULT_WIDTH);
-  const [threadId, setThreadIdState] = useState(DEFAULT_THREAD_ID);
+  const [threadId, setThreadIdState] = useState("");
 
   // Load persisted state from localStorage on mount
   useEffect(() => {
@@ -157,20 +168,50 @@ export function ChatSidebarProvider({
       if (savedThreadId) {
         setThreadIdState(savedThreadId);
       } else {
-        localStorage.setItem(THREAD_STORAGE_KEY, DEFAULT_THREAD_ID);
+        // Generate a new unique thread ID for first-time visitors
+        const newThreadId = generateThreadId();
+        localStorage.setItem(THREAD_STORAGE_KEY, newThreadId);
+        setThreadIdState(newThreadId);
       }
     } catch (error) {
       console.error("[ChatSidebar] Failed to load persisted thread id:", error);
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== THREAD_STORAGE_KEY) {
+        return;
+      }
+
+      const newValue = event.newValue;
+      if (!newValue) {
+        return;
+      }
+
+      setThreadIdState((current) => {
+        if (current === newValue) {
+          return current;
+        }
+        return newValue;
+      });
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const newChat = useCallback(() => {
-    const newThreadId = `thread-${Date.now()}`;
+    const newThreadId = generateThreadId();
     persistThreadId(newThreadId);
   }, [persistThreadId]);
 
   const clearConversation = useCallback(() => {
-    const newThreadId = `thread-${Date.now()}`;
+    const newThreadId = generateThreadId();
     persistThreadId(newThreadId);
   }, [persistThreadId]);
 

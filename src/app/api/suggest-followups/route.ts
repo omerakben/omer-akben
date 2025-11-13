@@ -101,7 +101,8 @@ export async function POST(req: Request) {
     );
   }
 
-  const { messages, userId, threadId }: FollowupRequestType = parsed.data;
+  const { messages, userId, threadId, context }: FollowupRequestType =
+    parsed.data;
 
   try {
     // Load semantic memory for personalization (if userId provided)
@@ -116,6 +117,7 @@ export async function POST(req: Request) {
       userId,
       threadId,
       semanticMemory,
+      context,
     });
 
     // Handle generation failure (null return from generator)

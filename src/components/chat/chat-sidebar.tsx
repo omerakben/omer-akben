@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { posthog } from "@/lib/analytics/posthog-client";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import {
+  FAST_INTRO_RESPONSE,
+  shouldUseFastIntro,
+} from "@/lib/chat/fast-responses";
+import {
+  extractCollectContactMessage,
   extractNavigationLinks,
   getMessageText,
 } from "@/lib/chat/message-utils";
@@ -22,6 +27,7 @@ import {
   FileText,
   Github,
   GripVertical,
+  Loader2,
   Mail,
   MessageSquarePlus,
   Pin,
@@ -32,7 +38,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -80,6 +86,7 @@ export function ChatSidebar() {
     newChat,
     clearConversation,
   } = useChatSidebar();
+  const pathname = usePathname();
   const [input, setInput] = useState("");
   const [showMessages, setShowMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,12 +95,19 @@ export function ChatSidebar() {
   const [currentFollowups, setCurrentFollowups] = useState<
     FollowupSuggestionType[]
   >([]);
+  const [lastFollowupAction, setLastFollowupAction] = useState<string | null>(
+    null
+  );
+  const [fastPreview, setFastPreview] = useState<string | null>(null);
+  const [isHydratingThread, setIsHydratingThread] = useState(true);
   const [showPinHint, setShowPinHint] = useState(false);
   const [hasSeenPinHint, setHasSeenPinHint] = useState(true);
   const [pinHintReady, setPinHintReady] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesRef = useRef<UIMessage[]>([]);
+  const skipHydrationRef = useRef(false);
 
   const markPinHintSeen = useCallback(
     (reason: "dismiss" | "pin" = "dismiss") => {
@@ -242,10 +256,22 @@ export function ChatSidebar() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (isHydratingThread || !input.trim()) return;
 
     const userMessage = input.trim();
+
+    // Check if fast intro should be used (greetings on first message)
+    if (shouldUseFastIntro(userMessage, messages)) {
+      setFastPreview(FAST_INTRO_RESPONSE);
+      setInput("");
+      setLastFollowupAction(null);
+      setShowMessages(true);
+      // Skip API call - fast intro is sufficient for greetings
+      return;
+    }
+
     setInput("");
+    setLastFollowupAction(null);
     setShowMessages(true);
     setError(null); // Clear previous errors
 
@@ -262,7 +288,7 @@ export function ChatSidebar() {
   };
 
   const handleRetry = async () => {
-    if (!lastFailedMessage.trim()) return;
+    if (isHydratingThread || !lastFailedMessage.trim()) return;
 
     setError(null);
     setInput("");
@@ -278,15 +304,39 @@ export function ChatSidebar() {
     }
   };
 
+  const resetConversationState = useCallback(() => {
+    setMessages([]);
+    messagesRef.current = [];
+    setShowMessages(false);
+    setCurrentFollowups([]);
+    setError(null);
+    setLastFailedMessage("");
+    setInput("");
+  }, [setMessages, setError, setLastFailedMessage, setInput]);
+
   const handleSuggestedQuestion = async (question: string) => {
+    if (isHydratingThread) {
+      return;
+    }
+
     if (!question.trim()) {
       console.warn("[ChatSidebar] Empty question provided");
+      return;
+    }
+
+    // Check if fast intro should be used (greetings on first message)
+    if (shouldUseFastIntro(question, messages)) {
+      setFastPreview(FAST_INTRO_RESPONSE);
+      setShowMessages(true);
+      setLastFollowupAction(question);
+      // Skip API call - fast intro is sufficient for greetings
       return;
     }
 
     setShowMessages(true);
     setError(null); // Clear previous errors
     setLastFailedMessage(""); // Clear previous failed messages
+    setLastFollowupAction(question);
 
     try {
       await sendMessage({
@@ -348,6 +398,11 @@ export function ChatSidebar() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]); // Use messages.length to prevent infinite loop
 
+  // Keep a mutable reference of the latest messages to avoid stale closures
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
   // Handle resize drag
   useEffect(() => {
     if (!isResizing) return;
@@ -380,7 +435,15 @@ export function ChatSidebar() {
     let isMounted = true;
     const controller = new AbortController();
 
-    const fetchHistory = async () => {
+    const hydrateHistory = async () => {
+      if (skipHydrationRef.current) {
+        skipHydrationRef.current = false;
+        setIsHydratingThread(false);
+        return;
+      }
+
+      setIsHydratingThread(true);
+
       try {
         const response = await fetch(`/api/chat?chatId=${threadId}`, {
           signal: controller.signal,
@@ -396,6 +459,8 @@ export function ChatSidebar() {
         }
 
         const history = data.messages ?? [];
+
+        messagesRef.current = history;
         setMessages(history);
         setShowMessages(history.length > 0);
         setCurrentFollowups([]);
@@ -404,13 +469,14 @@ export function ChatSidebar() {
           return;
         }
         console.error("[ChatSidebar] Failed to load chat history:", error);
+      } finally {
+        if (isMounted) {
+          setIsHydratingThread(false);
+        }
       }
     };
 
-    setMessages([]);
-    setShowMessages(false);
-    setCurrentFollowups([]);
-    fetchHistory();
+    hydrateHistory();
 
     return () => {
       isMounted = false;
@@ -421,8 +487,14 @@ export function ChatSidebar() {
   useEffect(() => {
     if (messages.length > 0) {
       setShowMessages(true);
+      if (
+        fastPreview &&
+        messagesRef.current.some((m) => m.role === "assistant")
+      ) {
+        setFastPreview(null);
+      }
     }
-  }, [messages.length]); // Use messages.length to prevent infinite loop
+  }, [messages.length, fastPreview]); // Re-run when message count changes or fast preview is set/cleared
 
   // Generate dynamic follow-ups after each assistant message
   useEffect(() => {
@@ -461,6 +533,10 @@ export function ChatSidebar() {
               { role: "user", content: userText },
               { role: "assistant", content: assistantText },
             ],
+            context: {
+              currentPath: pathname,
+              lastAction: lastFollowupAction ?? undefined,
+            },
           }),
         });
 
@@ -562,14 +638,14 @@ export function ChatSidebar() {
                   variant="ghost"
                   size="sm"
                   onClick={() => {
+                    skipHydrationRef.current = true;
                     newChat();
-                    setMessages([]);
-                    setShowMessages(false);
-                    setCurrentFollowups([]);
+                    resetConversationState();
                   }}
                   className="h-11 w-11 p-2"
                   title="New Chat"
                   aria-label="Start new chat"
+                  disabled={isHydratingThread}
                 >
                   <MessageSquarePlus aria-hidden="true" className="w-4 h-4" />
                 </Button>
@@ -578,14 +654,14 @@ export function ChatSidebar() {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
+                      skipHydrationRef.current = true;
                       clearConversation();
-                      setMessages([]);
-                      setShowMessages(false);
-                      setCurrentFollowups([]);
+                      resetConversationState();
                     }}
                     className="h-11 w-11 p-2"
                     title="Clear Conversation"
                     aria-label="Clear conversation"
+                    disabled={isHydratingThread}
                   >
                     <Trash2 aria-hidden="true" className="w-4 h-4" />
                   </Button>
@@ -677,6 +753,7 @@ export function ChatSidebar() {
                           size="sm"
                           onClick={handleRetry}
                           className="h-7 px-2 text-xs"
+                          disabled={isHydratingThread}
                         >
                           Retry
                         </Button>
@@ -697,33 +774,38 @@ export function ChatSidebar() {
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto scrollbar-vertical-gradient chat-scroll-smooth">
-              {!showMessages ? (
-                <>
-                  {/* Welcome Message */}
-                  <ChatSidebarWelcome />
-
-                  {/* Quick Actions */}
-                  <ChatSidebarQuickActions />
-
-                  {/* Suggested Questions */}
-                  <div className="px-4 py-3 space-y-3">
-                    <p className="text-sm text-text-2">Or ask me:</p>
-                    <div className="space-y-2">
-                      {suggestedQuestions.map((question, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          onClick={() => handleSuggestedQuestion(question)}
-                          className="w-full text-left px-4 py-2 rounded-lg bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 transition-all"
-                        >
-                          {question}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
+              {isHydratingThread ? (
+                <div className="px-4 py-10 flex flex-col items-center gap-3 text-text-2">
+                  <Loader2
+                    aria-hidden="true"
+                    className="h-6 w-6 animate-spin"
+                  />
+                  <p className="text-sm">Loading conversation…</p>
+                </div>
+              ) : showMessages ? (
                 <div className="px-4 py-4 space-y-4">
+                  {fastPreview && (
+                    <div className="flex gap-3">
+                      <div className="shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
+                          <AnimatedBlobContainer
+                            size={16}
+                            className="rounded-full"
+                            disableCenterDimming={true}
+                            asIcon={true}
+                          />
+                        </div>
+                      </div>
+                      <div className="chat-message max-w-[85%] rounded-lg px-4 py-3 text-sm bg-surf-1/95 border border-border-line/40 text-text-1 shadow-sm backdrop-blur-sm">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {fastPreview}
+                        </ReactMarkdown>
+                        <p className="mt-2 text-xs text-text-3">
+                          Loading live response…
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   {messages.map((message, index) => {
                     const textContent = getMessageText(message);
 
@@ -924,6 +1006,20 @@ export function ChatSidebar() {
                                   </div>
                                 );
                               })()}
+                            {message.role === "assistant" &&
+                              (() => {
+                                const contactMessage =
+                                  extractCollectContactMessage(message);
+                                if (!contactMessage) {
+                                  return null;
+                                }
+
+                                return (
+                                  <div className="mt-3 rounded-lg border border-brand-primary/30 bg-brand-primary/5 px-3 py-2 text-sm text-text-1">
+                                    {contactMessage}
+                                  </div>
+                                );
+                              })()}
                           </div>
                           {message.role === "user" && (
                             <div className="shrink-0">
@@ -974,6 +1070,32 @@ export function ChatSidebar() {
                   )}
                   <div ref={messagesEndRef} />
                 </div>
+              ) : (
+                <>
+                  {/* Welcome Message */}
+                  <ChatSidebarWelcome />
+
+                  {/* Quick Actions */}
+                  <ChatSidebarQuickActions />
+
+                  {/* Suggested Questions */}
+                  <div className="px-4 py-3 space-y-3">
+                    <p className="text-sm text-text-2">Or ask me:</p>
+                    <div className="space-y-2">
+                      {suggestedQuestions.map((question, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => handleSuggestedQuestion(question)}
+                          className="w-full text-left px-4 py-2 rounded-lg bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 transition-all"
+                          disabled={isHydratingThread}
+                        >
+                          {question}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
               )}
             </div>
 
@@ -1003,15 +1125,19 @@ export function ChatSidebar() {
                         );
                       }
                     }}
-                    placeholder="Ask anything about me..."
+                    placeholder={
+                      isHydratingThread
+                        ? "Loading previous messages..."
+                        : "Ask anything about me..."
+                    }
                     className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-11 max-h-[200px] scrollbar-vertical-gradient"
-                    disabled={isLoading}
+                    disabled={isLoading || isHydratingThread}
                     rows={1}
                     maxLength={MAX_INPUT_LENGTH}
                   />
                   <Button
                     type="submit"
-                    disabled={isLoading || !input.trim()}
+                    disabled={isHydratingThread || isLoading || !input.trim()}
                     className="bg-brand-primary text-white hover:bg-brand-primary/90 h-auto px-4 py-3"
                   >
                     <Send aria-hidden="true" className="w-4 h-4" />
