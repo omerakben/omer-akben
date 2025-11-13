@@ -263,11 +263,7 @@ export function ChatSidebar() {
     // Check if fast intro should be used (greetings on first message)
     if (shouldUseFastIntro(userMessage, messages)) {
       setFastPreview(FAST_INTRO_RESPONSE);
-      setInput("");
-      setLastFollowupAction(null);
-      setShowMessages(true);
-      // Skip API call - fast intro is sufficient for greetings
-      return;
+      // Fast preview shown immediately, API call will stream full response
     }
 
     setInput("");
@@ -327,10 +323,8 @@ export function ChatSidebar() {
     // Check if fast intro should be used (greetings on first message)
     if (shouldUseFastIntro(question, messages)) {
       setFastPreview(FAST_INTRO_RESPONSE);
-      setShowMessages(true);
       setLastFollowupAction(question);
-      // Skip API call - fast intro is sufficient for greetings
-      return;
+      // Fast preview shown immediately, API call will stream full response
     }
 
     setShowMessages(true);
