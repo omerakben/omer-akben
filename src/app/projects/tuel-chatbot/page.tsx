@@ -27,7 +27,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = createMetadata({
-  title: "Tuel AI Chatbot Builder | Omer Akben",
+  title: "Tuel AI Chatbot Builder",
   description:
     "Enterprise-grade AI chatbot platform for educational institutions. Multi-provider support (OpenAI, Gemini, OpenRouter), RAG with Azure AI Search, OAuth authentication, BYOK encryption. Full-stack Next.js 15 + FastAPI with comprehensive Azure PaaS architecture ready for production deployment.",
   path: "/projects/tuel-chatbot",

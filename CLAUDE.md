@@ -366,7 +366,7 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 
 **Dynamic Project Queries:** `lib/agent-knowledge/helpers/project-queries.ts`
 
-- 15 helper functions for real-time project data
+- 13 helper functions for real-time project data
 - Hybrid template approach (static context + runtime injection)
 - Zero-staleness architecture (single source of truth: `@/data/projects`)
 - Cross-referencing logic for Elon University and Tuel projects

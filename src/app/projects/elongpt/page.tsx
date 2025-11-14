@@ -53,8 +53,8 @@ export default function ElonGPTPage() {
               </h3>
               <div className="text-text-2 text-sm space-y-2">
                 <p>
-                  This project, along with the AI Toolbox, ElonGPT, and LSB
-                  Applied AI Studio, was developed for Elon University and
+                  This project, along with the Elon AI Agent, AI Toolbox, and
+                  LSB Applied AI Studio, was developed for Elon University and
                   remains their intellectual property.
                 </p>
                 <p>

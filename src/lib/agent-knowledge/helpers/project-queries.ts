@@ -187,7 +187,7 @@ export function getProjectStatistics() {
   const publicRepos = projects.filter(
     (p) => p.githubUrl && !p.githubUrl.includes('TEMPORARILY DISABLED')
   );
-  const aiProjects = getProjectsByCategory('AI/ML');
+  const aiProjects = getProjectsByCategory('ai-ml');
 
   return {
     total: projects.length,

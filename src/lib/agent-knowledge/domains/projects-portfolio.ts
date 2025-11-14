@@ -166,7 +166,7 @@ All ${screenshots.length} featured projects include screenshots showcasing their
 
 **"Show me AI projects"**
 ${(() => {
-  const aiProjects = getProjectsByCategory('AI/ML');
+  const aiProjects = getProjectsByCategory('ai-ml');
   const featuredAI = aiProjects.filter(p => p.featured);
   const elonProjects = getElonUniversityProjects();
 
@@ -244,7 +244,7 @@ Want to explore more? Visit [/projects](/projects) to see all demos, repositorie
 **"What technologies do you use?"**
 ${(() => {
   const techStack = getProjectTechStack();
-  const aiProjects = getProjectsByCategory('AI/ML');
+  const aiProjects = getProjectsByCategory('ai-ml');
 
   return `"My projects demonstrate expertise across the modern tech stack with ${techStack.length}+ technologies:
 

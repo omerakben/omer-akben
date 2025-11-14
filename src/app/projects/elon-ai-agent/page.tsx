@@ -22,7 +22,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = createMetadata({
-  title: "Elon AI Agent - Business Plan Generator | Omer Akben",
+  title: "Elon AI Agent - Business Plan Generator",
   description:
     "AI-powered business plan generator with parallel agent processing achieving 3-4x speedup. Production-validated by North Glass LLC. Developed for Elon University with FastAPI and OpenAI. [ELON UNIVERSITY PROPERTY - PRIVATE REPOSITORY]",
   path: "/projects/elon-ai-agent",
