@@ -2,6 +2,7 @@ export interface Project {
   id: string;
   slug: string;
   title: string;
+  shortTitle?: string; // Shortened title for card display
   description: string;
   longDescription?: string;
   image?: string;
@@ -23,11 +24,12 @@ export const projects: Project[] = [
     id: "5",
     slug: "capstone-deadline",
     title: "DEADLINE - Developer Command Center",
+    shortTitle: "DEADLINE",
     description:
       "Production full-stack developer operations platform achieving A- (92/100) UI/UX grade. Centralizes ENV variables, AI prompts, and documentation across dev/staging/prod environments with Firebase authentication, workspace isolation, and immutable audit logs for compliance.",
     longDescription:
       "DEADLINE solves the scattered artifact problem developers face daily—hunting ENV variables in Slack threads, losing reusable prompts, and navigating fragmented documentation. Built with Django 5 + PostgreSQL (Railway) and Next.js 15 (Vercel), it provides a secure command center with polymorphic artifact management (ENV_VAR, PROMPT, DOC_LINK), environment-aware scoping (DEV/STAGING/PROD), masked sensitive values with explicit reveal tracking, comprehensive tagging/search, and immutable audit logs (user, IP, timestamp). Rate limiting (10 reveals/min, 60 searches/hour) prevents credential harvesting. Achieved A- grade in Playwright visual testing with professional micro-interactions (hover states, loading feedback, accessible focus rings). 64/64 backend tests passing, zero linting errors, mobile-responsive across all viewports (375px-1512px). Firebase Authentication (Email/Password + Google OAuth) required for full access—no demo credentials to ensure security.",
-    image: "/assets/deadline-hero.png",
+    image: "/deadline_img/deadline-dashboard.png",
     technologies: [
       "Django 5",
       "Next.js 15",
@@ -45,6 +47,7 @@ export const projects: Project[] = [
     role: "Full-Stack",
     category: "tools",
     featured: true,
+    displayOrder: 1,
     demoUrl: "https://deadline-demo.vercel.app",
     githubUrl: "https://github.com/omerakben/deadline",
     startDate: "September 2024",
@@ -55,10 +58,12 @@ export const projects: Project[] = [
     id: "9",
     slug: "tuel-animation-library",
     title: "Tuel - Professional React Animation Library",
+    shortTitle: "Tuel Animation Library",
     description:
       "Production-ready React animation library with 13 specialized NPM packages (@tuel/*). Features scroll animations, interactive galleries, Three.js integration, and performance optimization utilities. Built with TypeScript, Turborepo, and modern monorepo tooling.",
     longDescription:
       "Open-source animation library addressing the gap between basic CSS animations and complex animation frameworks. Tuel provides professional-grade components with zero-config defaults, SSR safety, and accessibility built-in. The monorepo architecture (Turborepo + pnpm workspaces) manages 13 packages covering motion primitives, scroll effects, galleries, text animations, GSAP/Three.js integration, and performance utilities. Published to npm with automated Changesets versioning and GitHub Actions CI/CD. Currently at v0.2.0 (alpha) with active development toward v2.0.0 production release (80%+ test coverage, WCAG AA compliance, comprehensive documentation).",
+    image: "/tuel_animations_img/tuel_page.png",
     technologies: [
       "TypeScript",
       "React 19",
@@ -75,6 +80,7 @@ export const projects: Project[] = [
     role: "Full-Stack",
     category: "tools",
     featured: true,
+    displayOrder: 4,
     demoUrl: "https://tuel.vercel.app",
     githubUrl: "https://github.com/omerakben/tuel",
     status: "in-progress",
@@ -85,6 +91,7 @@ export const projects: Project[] = [
     id: "10",
     slug: "tuel-selenium-webdriver-restsharp",
     title: "TUEL Selenium WebDriver + RestSharp Test Framework",
+    shortTitle: "Tuel Selenium Test Framework",
     description:
       "Production-ready .NET 8 automation framework combining Selenium WebDriver UI suites with RestSharp API coverage, centralized configuration, Azure AD auth flows, and Docker-first execution for CI pipelines.",
     longDescription:
@@ -103,7 +110,8 @@ export const projects: Project[] = [
     ],
     role: "QA",
     category: "tools",
-    featured: true,
+    featured: false,
+    displayOrder: 1,
     githubUrl: "https://github.com/omerakben/tuel-Selenium-WebDriver-RestSharp",
     status: "completed",
   },
@@ -113,10 +121,12 @@ export const projects: Project[] = [
     id: "1",
     slug: "north-glass",
     title: "North Glass LLC - Production Website",
+    shortTitle: "North Glass LLC",
     description:
       "Live commercial website for glass/aluminum contractor with AI-powered business intelligence integration. Used by real customers with production-level performance and analytics.",
     longDescription:
       "Full-featured marketing website for North Glass LLC with integrated AI business plan generator (Elon AI Agent). Features include service showcases, project portfolio, contact forms with email delivery, Vercel Analytics tracking, SEO optimization, and mobile-responsive design. Actively serving real business operations.",
+    image: "/nort_glass_img/north_glass_hero.png",
     technologies: [
       "Next.js 15",
       "React 19",
@@ -128,6 +138,7 @@ export const projects: Project[] = [
     role: "Full-Stack",
     category: "web",
     featured: true,
+    displayOrder: 2,
     demoUrl: "https://www.northglassnc.com",
     githubUrl: "https://github.com/omerakben/north-glass",
     status: "completed",
@@ -137,9 +148,9 @@ export const projects: Project[] = [
     slug: "elon-ai-agent",
     title: "Elon AI Agent - Business Plan Generator",
     description:
-      "AI-powered business plan generator with parallel agent processing achieving 3-4x speedup. Production-validated by North Glass LLC with comprehensive sections and citation-rich output.",
+      "AI-powered business plan generator with parallel agent processing achieving 3-4x speedup. Production-validated by North Glass LLC with comprehensive sections and citation-rich output. [ELON UNIVERSITY PROPERTY - PRIVATE REPOSITORY]",
     longDescription:
-      "OpenAI-powered system generating comprehensive business plans in under 60 seconds using 7 specialized sub-agents running in parallel via asyncio. Features three-phase workflow (clarification, parallel generation, review), web search integration, code interpreter tools, JSON Schema validation, and quality assurance with 0-10 scoring. Built with FastAPI and Next.js 15.",
+      "OpenAI-powered system generating comprehensive business plans in under 60 seconds using 7 specialized sub-agents running in parallel via asyncio. Features three-phase workflow (clarification, parallel generation, review), web search integration, code interpreter tools, JSON Schema validation, and quality assurance with 0-10 scoring. Built with FastAPI and Next.js 15. This is a private repository developed for Elon University and remains their intellectual property.",
     technologies: [
       "FastAPI",
       "OpenAI API",
@@ -150,10 +161,11 @@ export const projects: Project[] = [
     ],
     role: "AI",
     category: "ai-ml",
-    featured: true,
+    featured: false,
+    displayOrder: 2,
     demoUrl:
       "https://elon-ai-agent.happyplant-fd188d6c.canadacentral.azurecontainerapps.io/docs",
-    githubUrl: "https://github.com/omerakben/elon-ai-agent",
+    // GitHub: Private repository - Elon University property
     status: "completed",
   },
   {
@@ -173,9 +185,11 @@ export const projects: Project[] = [
     ],
     role: "Full-Stack",
     category: "tools",
-    featured: true,
-    demoUrl: "https://developer-cheat-sheets.vercel.app/",
-    githubUrl: "https://github.com/omerakben/developer-cheat-sheets",
+    featured: false,
+    displayOrder: 5,
+    // TEMPORARILY DISABLED - Updating with original sources
+    // demoUrl: "https://developer-cheat-sheets.vercel.app/",
+    // githubUrl: "https://github.com/omerakben/developer-cheat-sheets",
     status: "completed",
   },
 
@@ -183,25 +197,28 @@ export const projects: Project[] = [
   {
     id: "4",
     slug: "elon-ai-toolbox",
-    title: "Elon AI Toolbox - University Resources",
+    title: "Elon Generative AI Toolbox",
+    shortTitle: "AI Toolbox",
     description:
-      "Curated catalog of 134 AI tools for Elon University students, faculty, and staff. Features smart filtering, search functionality, and responsive design with university branding.",
+      "Comprehensive catalog of AI-powered educational and productivity tools for Elon University students, faculty, and staff. Features smart filtering, responsive design, and university branding to enhance teaching, learning, and research.",
     longDescription:
-      "The Elon AI Toolbox was born out of a need to provide students, faculty, and staff at Elon University with a centralized, easy-to-use platform for discovering and utilizing AI tools. The project's main goal was to create a curated and searchable catalog of AI resources to support teaching, learning, and research across the university. I took on the challenge of building this platform from the ground up, focusing on creating a user-friendly interface and a robust filtering and search system. The result is a fast, responsive, and accessible web application that has been praised for its design and functionality. The toolbox is now a go-to resource for the Elon community, empowering users to explore the potential of AI in their academic and professional endeavors.",
-    image: "/assets/elon-ai-toolbox-screenshot.png",
+      "The Elon Generative AI Toolbox provides the Elon University community with a centralized, searchable platform for discovering and utilizing AI resources. Built with Next.js 15 and React 19, the toolbox features a curated collection of generative AI tools and custom chatbots designed to enhance productivity, support research initiatives, and elevate teaching and learning experiences across campus. The platform includes smart filtering by category and keywords, responsive design optimized for all devices, comprehensive tool descriptions with direct links, and Elon University brand integration. Each tool is categorized for easy discovery across Academic Support, Administrative Tools, Career Development, Creative Tools, Data Analysis, Language Learning, Research Assistance, Teaching Tools, Writing Support, and more. The application is deployed on Azure App Service with performance optimization, image lazy loading, and WCAG accessibility compliance.",
+    image: "/elon_ai_img/elon_ai_toolbox.png",
     technologies: [
       "Next.js 15",
       "React 19",
       "TypeScript",
-      "Tailwind CSS",
+      "Tailwind CSS 4",
+      "Font Awesome",
       "Fuse.js",
+      "Azure App Service",
     ],
     role: "Full-Stack",
     category: "tools",
-    featured: true,
-    displayOrder: 1,
+    featured: false,
+    displayOrder: 3,
     demoUrl: "https://elon-ai-toolbox-mdxazqewk-omera.vercel.app",
-    githubUrl: "https://github.com/omerakben/elon-ai-toolbox",
+    // Production URL: https://elonopenapps.azurewebsites.net/AItoolbox/toolbox.html
     status: "completed",
   },
   {
@@ -223,8 +240,10 @@ export const projects: Project[] = [
     role: "Full-Stack",
     category: "ai-ml",
     featured: false,
-    demoUrl: "https://oteemo-ai-roadmap.vercel.app",
-    githubUrl: "https://github.com/omerakben/oteemo-ai-roadmap",
+    displayOrder: 6,
+    // TEMPORARILY DISABLED - Updating with original sources
+    // demoUrl: "https://oteemo-ai-roadmap.vercel.app",
+    // githubUrl: "https://github.com/omerakben/oteemo-ai-roadmap",
     status: "completed",
   },
 
@@ -233,10 +252,12 @@ export const projects: Project[] = [
     id: "7",
     slug: "tuel-chatbot",
     title: "Tuel AI Chatbot Builder",
+    shortTitle: "Tuel AI Chatbot Builder",
     description:
       "Full-stack chatbot builder platform for Tuel University with multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
     longDescription:
       "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control.",
+    image: "/tuel_chatbot_img/tuel_ai_landing_page.png",
     technologies: [
       "FastAPI",
       "Next.js 15",
@@ -248,8 +269,9 @@ export const projects: Project[] = [
     ],
     role: "AI",
     category: "ai-ml",
-    featured: false,
-    githubUrl: "https://github.com/omerakben/tuel-chatbot",
+    featured: true,
+    displayOrder: 3,
+    githubUrl: "https://github.com/omerakben/tuel-ai-chatbot",
     status: "completed",
   },
   {
@@ -274,8 +296,61 @@ export const projects: Project[] = [
     role: "AI",
     category: "ai-ml",
     featured: false,
-    githubUrl: "https://github.com/omerakben/ai-tutor",
+    displayOrder: 7,
+    // TEMPORARILY DISABLED - Updating with original sources
+    // githubUrl: "https://github.com/omerakben/ai-tutor",
     status: "in-progress",
+  },
+  {
+    id: "11",
+    slug: "elongpt",
+    title: "ElonGPT - University Information Assistant",
+    shortTitle: "ElonGPT",
+    description:
+      "AI-powered campus information chatbot developed by Elon University's AI Hub. Provides real-time information about campus events, news, and university resources by synthesizing data from official Elon sources.",
+    longDescription:
+      "ElonGPT is an intelligent information retrieval system designed by Elon University's AI Hub to help students, faculty, and staff quickly find campus information, discover events, access news, and navigate university resources. The chatbot pulls information from the official Elon website and curated university sources to ensure accuracy and relevance. ElonGPT emphasizes query specificity for optimal results - users are encouraged to ask detailed questions like 'What events are happening today on campus? Today is [specific date]' rather than broad queries. Built with Next.js 15 and integrated with OpenAI's API, the system uses Supabase for data management and is deployed on Vercel for reliable, fast access. The chatbot serves as a 24/7 information companion for the Elon community, helping users stay informed about campus life, academic events, university news, and institutional resources.",
+    image: "/elon_ai_img/elon_ai_hub.png",
+    technologies: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "OpenAI API",
+      "Supabase",
+      "Tailwind CSS",
+      "Vercel",
+    ],
+    role: "AI",
+    category: "ai-ml",
+    featured: false,
+    displayOrder: 4,
+    demoUrl: "https://www.elon.edu/u/ai/elongpt/",
+    status: "completed",
+  },
+  {
+    id: "12",
+    slug: "lsb-ai-studio",
+    title: "LSB Applied AI Studio - Business AI Education Platform",
+    shortTitle: "LSB AI Studio",
+    description:
+      "Comprehensive AI education ecosystem from Elon's Love School of Business featuring four integrated learning applications: AI Tutor, Prompt Bank, LSB AI Toolbox, and Business Agents. Prepares business leaders for AI-native markets through hands-on learning.",
+    longDescription:
+      "The LSB Applied AI Studio is a dynamic educational ecosystem from Elon University's Love School of Business designed to develop workforce competencies in artificial intelligence. The studio fosters innovative problem-solving and ethical AI development, helping participants 'Understand, Apply, and Lead in the AI-native economy.' The platform features four interconnected learning applications: (1) AI Tutor - an interactive learning companion for mastering foundational AI concepts through dialogue-based instruction, (2) Prompt Bank - a curated collection of business-ready prompts demonstrating practical prompt engineering techniques, (3) LSB AI Toolbox - a hands-on platform enabling users to construct, validate, and implement AI solutions through structured workflows, and (4) Business Agents - an experiential program connecting students with community partner projects for real-world AI deployment. Built with modern web technologies and deployed on Azure, the studio addresses the critical need for strategic foresight and practical skills in navigating AI-driven business environments. The platform serves LSB students and professionals seeking to master AI tools and methodologies essential for contemporary business leadership.",
+    image: "/elon_ai_img/elon_ai_studio.png",
+    technologies: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Azure App Service",
+      "Tailwind CSS",
+      "AI Integration",
+    ],
+    role: "AI",
+    category: "ai-ml",
+    featured: true,
+    displayOrder: 5,
+    demoUrl: "https://lsb-ai.azurewebsites.net/main.html",
+    status: "completed",
   },
 ];
 

@@ -259,12 +259,14 @@ These rules apply to ALL work, regardless of agent or skill:
 
 ### Recent Updates (Last 30 Days)
 
+- ✅ Professional screenshots for 7 featured projects (4 new image directories)
+- ✅ Elon University IP acknowledgments across 4 university projects
+- ✅ Dynamic knowledge base architecture (hybrid template approach)
+- ✅ Project cross-referencing patterns for intelligent navigation
+- ✅ Enhanced AI Ozzy with screenshot awareness and project context
 - ✅ Contact collection with email delivery (5/IP/24h rate limit)
 - ✅ Proactive Zoom link sharing with resume download links
 - ✅ LLM error classification with intelligent retry logic
-- ✅ Episodic memory cleanup cron (90-day TTL, weekly execution)
-- ✅ Robust JSON extraction from LLM responses
-- ✅ Real-time LLM cost tracking via PostHog
 
 ### Quality Metrics (Current)
 
@@ -361,6 +363,14 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 - Work authorization info (Green Card/LPR)
 - Conversation guidelines
 - Sample interactions
+
+**Dynamic Project Queries:** `lib/agent-knowledge/helpers/project-queries.ts`
+
+- 13 helper functions for real-time project data
+- Hybrid template approach (static context + runtime injection)
+- Zero-staleness architecture (single source of truth: `@/data/projects`)
+- Cross-referencing logic for Elon University and Tuel projects
+- Screenshot awareness and visual asset documentation
 
 ---
 

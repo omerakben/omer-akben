@@ -50,27 +50,16 @@ export const LIGHT_BRIGHTNESS_MODES = ["+1", "+2", "+3"] as const;
 export const DARK_BRIGHTNESS_MODES = ["-3", "-2", "-1", "0"] as const;
 
 /**
- * Favicon assets by tone and size
+ * Favicon assets - unified static favicon for all brightness modes
  */
 export const FAVICON_SOURCES = {
-  light: {
-    icon16: "/favicon_light/favicon-16x16.png",
-    icon32: "/favicon_light/favicon-32x32.png",
-    iconIco: "/favicon_light/favicon.ico",
-    appleTouch: "/favicon_light/apple-touch-icon.png",
-    android192: "/favicon_light/android-chrome-192x192.png",
-    android512: "/favicon_light/android-chrome-512x512.png",
-    manifest: "/favicon_light/site.webmanifest",
-  },
-  dark: {
-    icon16: "/favicon_dark/favicon-16x16.png",
-    icon32: "/favicon_dark/favicon-32x32.png",
-    iconIco: "/favicon_dark/favicon.ico",
-    appleTouch: "/favicon_dark/apple-touch-icon.png",
-    android192: "/favicon_dark/android-chrome-192x192.png",
-    android512: "/favicon_dark/android-chrome-512x512.png",
-    manifest: "/favicon_dark/site.webmanifest",
-  },
+  icon16: "/favicon/favicon-16x16.png",
+  icon32: "/favicon/favicon-32x32.png",
+  iconIco: "/favicon/favicon.ico",
+  appleTouch: "/favicon/apple-touch-icon.png",
+  android192: "/favicon/android-chrome-192x192.png",
+  android512: "/favicon/android-chrome-512x512.png",
+  manifest: "/favicon/site.webmanifest",
 } as const;
 
 /**

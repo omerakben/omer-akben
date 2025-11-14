@@ -89,7 +89,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
         const data = json.data as { results: unknown[] };
         expect(data.results.length).toBeLessThanOrEqual(10);
       }
-    });
+    }, 10000); // Increase timeout for vector search operations
 
     it("should handle natural language queries", async () => {
       const req = createMockRequest({

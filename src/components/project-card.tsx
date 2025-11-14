@@ -26,6 +26,7 @@ export interface ProjectCardProps {
   slug?: string;
   status?: "completed" | "in-progress" | "planned";
   index?: number;
+  priority?: boolean; // For Next.js Image priority loading
 }
 
 export const ProjectCard = memo(function ProjectCard({
@@ -38,6 +39,7 @@ export const ProjectCard = memo(function ProjectCard({
   slug,
   status,
   index = 0,
+  priority = false,
 }: ProjectCardProps) {
   // First 6 cards (2 rows of 3) should animate immediately on page load
   const shouldAnimateImmediately = index < 6;
@@ -63,6 +65,7 @@ export const ProjectCard = memo(function ProjectCard({
               src={image}
               alt={title}
               fill
+              priority={priority}
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
@@ -156,6 +159,7 @@ export const ProjectCard = memo(function ProjectCard({
     prevProps.githubUrl === nextProps.githubUrl &&
     prevProps.status === nextProps.status &&
     prevProps.index === nextProps.index &&
+    prevProps.priority === nextProps.priority &&
     prevProps.technologies.length === nextProps.technologies.length &&
     prevProps.technologies.every((tech, i) => tech === nextProps.technologies[i])
   );

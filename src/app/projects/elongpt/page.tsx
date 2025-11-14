@@ -1,21 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
-import { ArrowLeft, Building2, ExternalLink, Github } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  ExternalLink,
+  Github,
+  MessageSquare,
+  Search,
+} from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = createMetadata({
-  title: "Elon AI Toolbox",
+  title: "ElonGPT - University Information Assistant",
   description:
-    "A case study of the Elon AI Toolbox project, a curated catalog of AI tools for Elon University.",
-  path: "/projects/elon-ai-toolbox",
+    "AI-powered campus information chatbot developed by Elon University's AI Hub. Provides real-time information about campus events, news, and university resources by synthesizing data from official Elon sources.",
+  path: "/projects/elongpt",
 });
 
-export default function ElonAiToolboxPage() {
-  const project = getProjectBySlug("elon-ai-toolbox");
+export default function ElonGPTPage() {
+  const project = getProjectBySlug("elongpt");
 
   if (!project) {
     notFound();
@@ -45,8 +53,8 @@ export default function ElonAiToolboxPage() {
               </h3>
               <div className="text-text-2 text-sm space-y-2">
                 <p>
-                  This project, along with the AI Toolbox, ElonGPT, and LSB
-                  Applied AI Studio, was developed for Elon University and
+                  This project, along with the Elon AI Agent, AI Toolbox, and
+                  LSB Applied AI Studio, was developed for Elon University and
                   remains their intellectual property.
                 </p>
                 <p>
@@ -78,7 +86,7 @@ export default function ElonAiToolboxPage() {
                   rel="noopener noreferrer"
                 >
                   <ExternalLink aria-hidden="true" className="w-4 h-4" />
-                  View Live Demo
+                  Try ElonGPT
                 </a>
               </Button>
             )}
@@ -98,27 +106,47 @@ export default function ElonAiToolboxPage() {
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
+          <h2 className="text-2xl font-bold text-text-1 mb-4">The Purpose</h2>
           <p className="text-text-2 leading-relaxed">
-            Elon University needed a centralized platform to help students,
-            faculty, and staff discover and utilize the growing number of AI
-            tools. The challenge was to create a user-friendly and comprehensive
-            resource that would be easy to navigate and search, while also
-            reflecting the university&apos;s brand and academic mission.
+            ElonGPT serves as a 24/7 information companion for the Elon
+            University community, helping students, faculty, and staff quickly
+            find campus information, discover events, access news, and navigate
+            university resources. Developed by Elon University&apos;s AI Hub,
+            ElonGPT synthesizes data from official Elon sources to ensure
+            accuracy and relevance in every response.
           </p>
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
-          <p className="text-text-2 leading-relaxed">
-            I developed the Elon AI Toolbox, a web application that provides a
-            curated and searchable catalog of over 130 AI tools. The application
-            features a clean and intuitive interface, smart filtering and search
-            functionality, and a responsive design that works seamlessly across
-            all devices. The toolbox is built with Next.js, React, and
-            TypeScript, and it leverages Fuse.js for fast and accurate search
-            results.
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            How It Works
+          </h2>
+          <p className="text-text-2 leading-relaxed mb-4">
+            ElonGPT is an intelligent information retrieval system that pulls
+            information from the official Elon website and curated university
+            sources. The system is designed to provide fast, accurate answers
+            to questions about campus life, academic events, university news,
+            and institutional resources.
           </p>
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mt-4">
+            <div className="flex gap-3">
+              <MessageSquare
+                aria-hidden="true"
+                className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-1"
+              />
+              <div>
+                <h3 className="font-semibold text-text-1 mb-1">
+                  Pro Tip: Be Specific
+                </h3>
+                <p className="text-text-2 text-sm">
+                  ElonGPT works best with detailed questions. Instead of asking
+                  &quot;What events are happening?&quot;, try &quot;What events
+                  are happening today on campus? Today is [specific
+                  date]&quot;. Query specificity ensures optimal results.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {project.image && (
@@ -134,15 +162,79 @@ export default function ElonAiToolboxPage() {
         )}
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
-          <h2 className="text-2xl font-bold text-text-1 mb-4">Key Features</h2>
-          <ul className="list-disc list-inside text-text-2 space-y-2">
-            <li>Over 130 curated AI tools</li>
-            <li>Smart filtering by category</li>
-            <li>Real-time search with Fuse.js</li>
-            <li>Responsive design for all devices</li>
-            <li>URL-synced filters for easy sharing</li>
-            <li>Elon University branding</li>
-          </ul>
+          <h2 className="text-2xl font-bold text-text-1 mb-4">
+            Key Capabilities
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-surf-0 border border-border-line rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <Calendar
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary flex-shrink-0 mt-1"
+                />
+                <div>
+                  <h3 className="font-semibold text-text-1 mb-1">
+                    Campus Events
+                  </h3>
+                  <p className="text-sm text-text-2">
+                    Stay informed about upcoming university events, academic
+                    programs, and campus activities
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-surf-0 border border-border-line rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <MessageSquare
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary flex-shrink-0 mt-1"
+                />
+                <div>
+                  <h3 className="font-semibold text-text-1 mb-1">
+                    University News
+                  </h3>
+                  <p className="text-sm text-text-2">
+                    Access the latest news and announcements from across the
+                    Elon community
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-surf-0 border border-border-line rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <Search
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary flex-shrink-0 mt-1"
+                />
+                <div>
+                  <h3 className="font-semibold text-text-1 mb-1">
+                    Resource Navigation
+                  </h3>
+                  <p className="text-sm text-text-2">
+                    Quickly find university resources, departments, and
+                    services
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-surf-0 border border-border-line rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <MessageSquare
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-primary flex-shrink-0 mt-1"
+                />
+                <div>
+                  <h3 className="font-semibold text-text-1 mb-1">
+                    24/7 Availability
+                  </h3>
+                  <p className="text-sm text-text-2">
+                    Get campus information anytime, day or night, with
+                    consistent accuracy
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
@@ -181,19 +273,17 @@ export default function ElonAiToolboxPage() {
                 - Business Plan Generator
               </li>
               <li>
-                <strong>AI Toolbox</strong> - Comprehensive AI tools catalog
-                (this project)
-              </li>
-              <li>
-                <a
-                  href="https://www.elon.edu/u/ai/elongpt/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/projects/elon-ai-toolbox"
                   className="underline hover:text-text-1"
                 >
-                  <strong>ElonGPT</strong>
-                </a>{" "}
-                - University information assistant
+                  <strong>AI Toolbox</strong>
+                </Link>{" "}
+                - Comprehensive AI tools catalog
+              </li>
+              <li>
+                <strong>ElonGPT</strong> - University information assistant
+                (this project)
               </li>
               <li>
                 <Link

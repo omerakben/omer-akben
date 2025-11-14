@@ -270,6 +270,62 @@ npm run analyze      # Analyze bundle composition
 
 ---
 
+## 🎯 Featured Projects
+
+Showcasing 5 production-ready projects with live demos and professional screenshots:
+
+### 1. [North Glass LLC](https://omerakben.com/projects/north-glass) • **LIVE PRODUCTION**
+
+Modern e-commerce site for glass installation company serving North Carolina.
+
+- **Stack**: Next.js 15, React 19, TypeScript, Tailwind CSS 4
+- **Features**: Product catalog, service area mapping, contact forms, mobile-responsive
+- **Live Demo**: [northglassnc.com](https://www.northglassnc.com/)
+- **Status**: Production deployment serving real customers
+
+### 2. [DEADLINE - Developer Command Center](https://omerakben.com/projects/capstone-deadline)
+
+Centralized workspace management system for developers (**A- Capstone Grade: 92/100 UI/UX**).
+
+- **Stack**: Django 5 + PostgreSQL (Railway) | Next.js 15 + React 19 (Vercel)
+- **Features**: ENV variables, AI prompts, docs, multi-environment support, audit logs
+- **Testing**: 64/64 backend tests passing, Playwright visual testing
+- **Live Demos**: [Frontend](https://deadline-demo.vercel.app) | [API](https://deadline-production.up.railway.app/api/v1/)
+- **Source**: [GitHub](https://github.com/omerakben/deadline)
+
+### 3. [ElonGPT - Campus AI Assistant](https://omerakben.com/projects/elongpt) • **LIVE @ ELON UNIVERSITY**
+
+AI-powered chatbot serving Elon University students and faculty.
+
+- **Stack**: Next.js 14, TypeScript, OpenAI API, Vercel AI SDK
+- **Features**: Campus information, academic resources, event lookup
+- **Live Demo**: [elon.edu/ai/elongpt](https://www.elon.edu/u/ai/elongpt/)
+- **IP Notice**: Elon University property (part of 4-project AI initiative)
+
+### 4. [LSB AI Studio](https://omerakben.com/projects/lsb-ai-studio) • **LIVE @ ELON UNIVERSITY**
+
+Business education platform with AI-powered learning tools.
+
+- **Stack**: Next.js 14, Azure deployment, OpenAI integration
+- **Features**: Business AI education, case studies, interactive learning
+- **Live Demo**: [lsb-ai.azurewebsites.net](https://lsb-ai.azurewebsites.net/)
+- **IP Notice**: Elon University property (part of 4-project AI initiative)
+
+### 5. [Tuel AI Chatbot Builder](https://omerakben.com/projects/tuel-chatbot)
+
+Multi-provider chatbot platform with drag-and-drop interface.
+
+- **Stack**: Next.js 14, React, OpenAI + Claude + Gemini integration
+- **Features**: Visual chatbot builder, multi-LLM support, conversation management
+- **Screenshots**: Professional UI showcasing builder interface
+- **Portfolio**: [View Project Page](https://omerakben.com/projects/tuel-chatbot)
+
+**View All 12 Projects**: [omerakben.com/projects](https://omerakben.com/projects)
+
+**Project Categories**: AI/ML (5 projects) • Web Development (4 projects) • Tools & Frameworks (3 projects)
+
+---
+
 ## 📊 Quality Metrics
 
 ### Test Distribution
