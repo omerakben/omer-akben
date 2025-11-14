@@ -1,3 +1,5 @@
+"use client";
+
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import {
   extractCollectContactMessage,

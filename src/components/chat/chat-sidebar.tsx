@@ -322,13 +322,9 @@ export function ChatSidebar() {
 
   // Focus input when sidebar opens
   useEffect(() => {
-    if (isOpen) {
-      const input = document.querySelector(
-        "#chat-sidebar-input"
-      ) as HTMLInputElement;
-      if (input) {
-        setTimeout(() => input.focus(), 300);
-      }
+    if (isOpen && textareaRef.current) {
+      // Use ref for more reliable focus, with shorter timeout for hydration safety
+      setTimeout(() => textareaRef.current?.focus(), 100);
     }
   }, [isOpen]);
 
