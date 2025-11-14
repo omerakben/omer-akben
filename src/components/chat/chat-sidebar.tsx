@@ -75,6 +75,8 @@ export function ChatSidebar() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesRef = useRef<UIMessage[]>([]);
   const skipHydrationRef = useRef(false);
+  const followupGenerationIdRef = useRef(0); // Track current generation to prevent race conditions
+  const messagesContainerRef = useRef<HTMLDivElement>(null); // Track scroll container for smart auto-scroll
 
   const markPinHintSeen = useCallback(
     (reason: "dismiss" | "pin" = "dismiss") => {
@@ -343,9 +345,19 @@ export function ChatSidebar() {
   }, [input]);
 
   // Auto-scroll to latest message during streaming (throttled to prevent jank)
-  // Triggers on every message update, not just when length changes
+  // Only scrolls if user is already near the bottom to preserve reading position
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    // Check if user is near bottom (within 100px threshold)
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+
+    // Only auto-scroll if user is already following the conversation
+    if (isNearBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, []);
 
   useEffect(() => {
@@ -447,6 +459,10 @@ export function ChatSidebar() {
 
   // Generate dynamic follow-ups after each assistant message
   useEffect(() => {
+    // Increment generation ID to track this specific generation
+    followupGenerationIdRef.current += 1;
+    const currentGenerationId = followupGenerationIdRef.current;
+
     const generateFollowupsAsync = async () => {
       if (messages.length < 2) {
         setCurrentFollowups([]);
@@ -489,6 +505,15 @@ export function ChatSidebar() {
           }),
         });
 
+        // Check if this generation is still current before updating state
+        // Prevents stale responses from overwriting newer ones
+        if (currentGenerationId !== followupGenerationIdRef.current) {
+          console.log(
+            `[ChatSidebar] Ignoring stale follow-up response (gen ${currentGenerationId} vs current ${followupGenerationIdRef.current})`
+          );
+          return;
+        }
+
         if (!response.ok) {
           console.warn(
             "[ChatSidebar] Follow-up API failed, clearing suggestions"
@@ -498,6 +523,11 @@ export function ChatSidebar() {
         }
 
         const data = await response.json();
+
+        // Double-check generation ID before final state update
+        if (currentGenerationId !== followupGenerationIdRef.current) {
+          return;
+        }
 
         // Extract structured follow-ups from response
         if (
@@ -511,7 +541,10 @@ export function ChatSidebar() {
         }
       } catch (error) {
         console.error("[ChatSidebar] Failed to generate followups:", error);
-        setCurrentFollowups([]);
+        // Only clear followups if this generation is still current
+        if (currentGenerationId === followupGenerationIdRef.current) {
+          setCurrentFollowups([]);
+        }
       }
     };
 
@@ -734,7 +767,10 @@ export function ChatSidebar() {
             )}
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto scrollbar-vertical-gradient chat-scroll-smooth">
+            <div
+              ref={messagesContainerRef}
+              className="flex-1 overflow-y-auto scrollbar-vertical-gradient chat-scroll-smooth"
+            >
               {isHydratingThread ? (
                 <div className="px-4 py-10 flex flex-col items-center gap-3 text-text-2">
                   <Loader2

@@ -544,7 +544,7 @@ posthog.capture({
 
 ### Token Count Breakdown
 
-```
+```text
 Shared Knowledge:
 ├── conversation-guidelines.ts: 2,074 words (~2,700 tokens)
 ├── core-identity.ts: 336 words (~440 tokens)

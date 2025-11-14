@@ -68,7 +68,7 @@ function classifyIntent(query: string): PortfolioIntent {
 
   // Contact patterns: explicit contact requests, email addresses, name introductions
   const contactRegex =
-    /contact|email|reach|hire|connect|schedule|meeting|zoom|call|calendly|book|intro call|follow up|talk with|chat with/;
+    /\b(contact|email|hire|connect|schedule|meeting|zoom|call|calendly|book|intro call|follow up|talk with|chat with|reach out)\b/;
   const emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
   const nameIntroRegex = /\b(my name is|this is)\b/;
 

@@ -120,6 +120,15 @@ export const ChatMessage = memo(
                       <a
                         href={href}
                         onClick={(e) => {
+                          // Allow browser default for modifier keys and middle-click (new tab)
+                          if (
+                            e.metaKey ||
+                            e.ctrlKey ||
+                            e.shiftKey ||
+                            e.button === 1
+                          ) {
+                            return; // Let browser handle new-tab behavior
+                          }
                           e.preventDefault();
                           if (href) {
                             handleInternalNavigation(href);
