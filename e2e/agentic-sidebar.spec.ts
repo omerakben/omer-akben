@@ -155,14 +155,19 @@ test.describe("Agentic Sidebar - Quick Actions", () => {
   });
 
   test("should display quick action buttons", async ({ page }) => {
-    // Look for quick action buttons (based on implementation)
-    const quickActions = page.locator(
-      '[class*="quick-action"], button[class*="rounded-lg"]'
-    );
-    const count = await quickActions.count();
+    // Look for specific quick action buttons by their text content
+    // The buttons contain: "View Projects", "See Skills", "Get Resume"
+    const viewProjectsButton = page.locator('button', { hasText: 'View Projects' });
+    const seeSkillsButton = page.locator('button', { hasText: 'See Skills' });
+    const getResumeButton = page.locator('button', { hasText: 'Get Resume' });
 
-    // Should have at least 2 quick actions
-    expect(count).toBeGreaterThanOrEqual(2);
+    // Verify at least 2 of the 3 quick action buttons are visible
+    let visibleCount = 0;
+    if (await viewProjectsButton.isVisible().catch(() => false)) visibleCount++;
+    if (await seeSkillsButton.isVisible().catch(() => false)) visibleCount++;
+    if (await getResumeButton.isVisible().catch(() => false)) visibleCount++;
+
+    expect(visibleCount).toBeGreaterThanOrEqual(2);
   });
 
   test("should display suggested questions", async ({ page }) => {

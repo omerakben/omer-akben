@@ -3,7 +3,7 @@
  *
  * Comprehensive resume information including experience, education, and certifications.
  * Dynamically imports from facts.ts for single source of truth.
- * Used by Resume Agent and Coordinator when resume questions are detected.
+ * Used by OZZY Unified Agent and Coordinator when resume questions are detected.
  *
  * Token budget: ~30,000 tokens
  */
@@ -137,15 +137,16 @@ I can also send you an email with both resume links right now if you'd like! Jus
 **"What's your education background?"**
 "Omer has a strong educational foundation:
 
-**Formal Education:**
-- Bachelor of Science in Nursing - Rutgers University (2014)
-- Career transition from healthcare to technology in 2018
+${facts.education
+  .map(
+    (edu) => `
+**${edu.institution}** - ${edu.degree} (${edu.year})
+${edu.description ? `- ${edu.description}` : `- ${edu.specialization}`}
+`
+  )
+  .join("\n")}
 
-**Professional Development:**
-- **Nashville Software School** - Full-Stack Development + Cloud Deployment (2025)
-- **AWS Cloud Practitioner Essentials** - AWS Certification (2022)
-
-The combination of healthcare experience and technical training provides unique insight into building user-centric, mission-critical software. Would you like more details about any specific program?"
+The combination of healthcare management expertise and technical training provides unique insight into building HIPAA-compliant, mission-critical software. Career transition from healthcare to technology began in 2019. Would you like more details about any specific program?"
 
 </section>
 `.trim();

@@ -1,6 +1,4 @@
-import { buildCoordinatorKnowledge } from "@/lib/agent-knowledge/builders/coordinator-agent";
 import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
-import { OVERVIEW_PATTERN } from "@/lib/chat/patterns";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -10,42 +8,17 @@ import {
   contactAgent,
 } from "@/lib/mastra/agents/contact-agent";
 import {
-  buildNavigationInstructions,
-  navigationAgent,
-} from "@/lib/mastra/agents/navigation-agent";
-import {
-  buildPerformanceInstructions,
-  performanceAgent,
-} from "@/lib/mastra/agents/performance-agent";
-import {
-  buildProjectInstructions,
-  projectAgent,
-} from "@/lib/mastra/agents/project-agent";
-import {
-  buildResumeInstructions,
-  resumeAgent,
-} from "@/lib/mastra/agents/resume-agent";
-import {
-  buildSkillsInstructions,
-  skillsAgent,
-} from "@/lib/mastra/agents/skills-agent";
-import { workflowRegistry } from "@/lib/mastra/workflows";
-import { createWorkflowAISDKStream } from "@/lib/mastra/workflows/streaming-bridge";
+  buildOzzyInstructions,
+  ozzyAgent,
+  ozzyFastAgent,
+  classifyQuery,
+} from "@/lib/mastra/agents/ozzy-agent";
 import type { SystemMessage } from "@mastra/core/llm";
 import type { AISDKV5OutputStream } from "@mastra/core/stream";
 import type { UIMessage } from "ai";
 
-// Modular knowledge builder provides shared + ALL domain knowledge
-// Token budget: ~47,450 tokens (comprehensive for workflow presentations)
-const FULL_SYSTEM_PROMPT = buildCoordinatorKnowledge();
-
-type PortfolioIntent =
-  | "resume"
-  | "projects"
-  | "contact"
-  | "navigation"
-  | "performance"
-  | "skills";
+// Pure regex routing - no LLM knowledge base needed (~5ms latency)
+type PortfolioIntent = "ozzy" | "contact";
 
 type AgentRoute = {
   agent: BasePortfolioAgent;
@@ -53,17 +26,7 @@ type AgentRoute = {
 };
 
 const baseRoutes: Record<Exclude<PortfolioIntent, "contact">, AgentRoute> = {
-  resume: { agent: resumeAgent, instructions: buildResumeInstructions },
-  projects: { agent: projectAgent, instructions: buildProjectInstructions },
-  navigation: {
-    agent: navigationAgent,
-    instructions: buildNavigationInstructions,
-  },
-  performance: {
-    agent: performanceAgent,
-    instructions: buildPerformanceInstructions,
-  },
-  skills: { agent: skillsAgent, instructions: buildSkillsInstructions },
+  ozzy: { agent: ozzyAgent, instructions: buildOzzyInstructions },
 };
 
 const ROUTES: Record<PortfolioIntent, AgentRoute> =
@@ -91,14 +54,21 @@ function extractLatestUserText(messages: UIMessage[]): string {
   return "";
 }
 
+/**
+ * Classify user intent into routing categories
+ *
+ * Pure regex-based routing (~5ms latency) - no LLM reasoning needed
+ *
+ * Routes:
+ * - "contact" → Contact Agent (contact collection, email, scheduling)
+ * - "ozzy" → OZZY Unified Agent (everything else: resume, projects, skills, navigation, performance)
+ */
 function classifyIntent(query: string): PortfolioIntent {
   const normalized = query.toLowerCase();
-  if (/resume|cv|experience|certification/.test(normalized)) {
-    return "resume";
-  }
 
+  // Contact patterns: explicit contact requests, email addresses, name introductions
   const contactRegex =
-    /contact|email|reach|hire|connect|schedule|meeting|zoom|call|calendly|book|intro call|follow up|talk with|chat with/;
+    /\b(contact|email|hire|connect|schedule|meeting|zoom|call|calendly|book|intro call|follow up|talk with|chat with|reach out)\b/;
   const emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
   const nameIntroRegex = /\b(my name is|this is)\b/;
 
@@ -110,21 +80,10 @@ function classifyIntent(query: string): PortfolioIntent {
   ) {
     return "contact";
   }
-  if (OVERVIEW_PATTERN.test(normalized)) {
-    return "skills";
-  }
-  if (/project|portfolio|work|case study|build/.test(normalized)) {
-    return "projects";
-  }
-  if (
-    /navigate|section|scroll|where is|go to|show me the page/.test(normalized)
-  ) {
-    return "navigation";
-  }
-  if (/performance|lcp|cls|ttfb|metrics|optimi(s|z)e/.test(normalized)) {
-    return "performance";
-  }
-  return "projects";
+
+  // Default to OZZY for all other queries
+  // OZZY handles: resume, projects, skills, navigation, performance
+  return "ozzy";
 }
 
 class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
@@ -132,17 +91,13 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     super({
       name: "coordinator",
       description:
-        "Routes chat queries to the correct specialist agent and orchestrates responses.",
-      model: MASTRA_PRIMARY_REASONING,
+        "Routes chat queries to the correct specialist agent (OZZY or Contact) using pure regex routing (~5ms latency).",
+      model: MASTRA_PRIMARY_REASONING, // Unused - coordinator uses regex routing, not LLM reasoning
       instructions: {
         role: "system",
-        content: FULL_SYSTEM_PROMPT,
+        content: "Pure regex router - no instructions needed",
       },
     });
-  }
-
-  async buildInstructions(context: AgentExecutionContext) {
-    return this.buildInstructionMessage(context, FULL_SYSTEM_PROMPT);
   }
 
   async route(
@@ -151,34 +106,28 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     const query = extractLatestUserText(context.history);
     console.error("[Coordinator] Query:", query);
 
-    // Check for workflow match first (before single-agent routing)
-    const workflow = workflowRegistry.detect(query);
-    console.error("[Coordinator] Workflow detected:", workflow?.name || "none");
-
-    if (workflow) {
-      console.error(
-        "[Coordinator] Executing WORKFLOW stream for:",
-        workflow.name
-      );
-      const workflowStream = this.executeWorkflowStream(workflow, context);
-      console.error(
-        "[Coordinator] Workflow stream created, type:",
-        typeof workflowStream
-      );
-      console.error(
-        "[Coordinator] Has toUIMessageStreamResponse:",
-        !!workflowStream?.toUIMessageStreamResponse
-      );
-      return workflowStream;
-    }
-
-    // Fall back to single-agent routing
+    // Route to agent based on intent
     const intent = classifyIntent(query);
-    console.error("[Coordinator] Executing AGENT stream for intent:", intent);
-    const route = ROUTES[intent];
+    console.error("[Coordinator] Intent:", intent);
 
+    let route = ROUTES[intent];
     if (!route) {
       return null;
+    }
+
+    // For OZZY queries, also classify complexity to select appropriate model
+    if (intent === "ozzy") {
+      const complexity = classifyQuery(query);
+      console.error("[Coordinator] Complexity:", complexity);
+
+      // Simple queries (factual lookups) → ozzyFastAgent (70-85% faster)
+      // Complex queries (reasoning/analysis) → ozzyAgent (better quality)
+      if (complexity === "simple") {
+        route = { agent: ozzyFastAgent, instructions: buildOzzyInstructions };
+        console.error("[Coordinator] Using ozzyFastAgent (non-reasoning model)");
+      } else {
+        console.error("[Coordinator] Using ozzyAgent (reasoning model)");
+      }
     }
 
     const instructions = await route.instructions(context);
@@ -197,20 +146,6 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
       !!stream?.toUIMessageStreamResponse
     );
     return stream as AISDKV5OutputStream;
-  }
-
-  /**
-   * Execute a workflow and stream results in real-time
-   *
-   * Uses streaming bridge to convert workflow events to AI SDK stream immediately,
-   * eliminating 15-30s buffering delay and 30s timeout risk.
-   */
-  private executeWorkflowStream(
-    workflow: import("@/lib/mastra/workflows").WorkflowDefinition,
-    context: AgentExecutionContext
-  ): AISDKV5OutputStream {
-    // Stream workflow events in real-time using streaming bridge
-    return createWorkflowAISDKStream(workflow, context) as AISDKV5OutputStream;
   }
 }
 

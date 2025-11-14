@@ -1,20 +1,14 @@
 import { contactAgent } from "@/lib/mastra/agents/contact-agent";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
-import { navigationAgent } from "@/lib/mastra/agents/navigation-agent";
-import { performanceAgent } from "@/lib/mastra/agents/performance-agent";
-import { projectAgent } from "@/lib/mastra/agents/project-agent";
-import { resumeAgent } from "@/lib/mastra/agents/resume-agent";
+import { ozzyAgent } from "@/lib/mastra/agents/ozzy-agent";
 import { Mastra } from "@mastra/core";
 
 export const mastra = new Mastra({
   agents: {
     coordinator: coordinatorAgent,
-    resume: resumeAgent,
-    project: projectAgent,
+    ozzy: ozzyAgent,
     ...(process.env.ENABLE_CONTACT_COLLECTION === "true"
       ? { contact: contactAgent }
       : {}),
-    navigation: navigationAgent,
-    performance: performanceAgent,
   },
 });
