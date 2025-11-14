@@ -23,6 +23,7 @@
  */
 
 import type { MetricBadge } from "@/data/status";
+import { getProjectStatistics } from "@/lib/agent-knowledge/helpers/project-queries";
 
 /**
  * Deployment information data structure
@@ -183,4 +184,128 @@ export async function enrichMetrics(
 
     return metric;
   });
+}
+
+/**
+ * Project Portfolio Metrics
+ *
+ * Dynamic project statistics for status dashboard.
+ * Automatically syncs with @/data/projects - no manual updates needed.
+ *
+ * @returns Comprehensive project portfolio metrics
+ *
+ * @example
+ * ```tsx
+ * const stats = getProjectMetrics();
+ * // {
+ * //   total: 12,
+ * //   featured: 5,
+ * //   liveProduction: 3,
+ * //   ...
+ * // }
+ * ```
+ *
+ * @remarks
+ * - Always current (pulls from projects.ts at runtime)
+ * - Used for status page project statistics
+ * - Includes image asset counts and technology coverage
+ */
+export function getProjectMetrics() {
+  const stats = getProjectStatistics();
+
+  return {
+    // Core counts
+    total: stats.total,
+    featured: stats.featured,
+    liveProduction: stats.liveProduction,
+    publicGitHubRepos: stats.publicGitHubRepos,
+
+    // Categories
+    aiMlProjects: stats.aiMlProjects,
+    categories: stats.categories,
+
+    // Visual assets
+    withScreenshots: stats.withScreenshots,
+    screenshotCoverage: `${Math.round((stats.withScreenshots / stats.total) * 100)}%`,
+
+    // Technology stack
+    totalTechnologies: stats.technologies.length,
+    topTechnologies: stats.technologies.slice(0, 10),
+
+    // Recent updates
+    recentUpdates: [
+      `Added professional screenshots for ${stats.withScreenshots} projects`,
+      `${stats.liveProduction} live production sites serving customers`,
+      `Enhanced ${stats.aiMlProjects} AI/ML projects with latest tech stack`,
+      'Implemented Elon University IP acknowledgments',
+      'Updated to Next.js 15, React 19, Tailwind CSS 4',
+    ],
+
+    // Status summary
+    statusSummary: {
+      portfolioHealth: '100%',
+      visualAssets: `${stats.withScreenshots}/${stats.total} projects`,
+      productionSites: `${stats.liveProduction} live`,
+      techStackCurrent: 'Next.js 15, React 19, Tailwind CSS 4',
+    },
+  };
+}
+
+/**
+ * Generate project metrics badges for status dashboard
+ *
+ * Creates formatted metric badges showing portfolio statistics.
+ *
+ * @returns Array of project metric badges
+ *
+ * @example
+ * ```tsx
+ * const badges = getProjectMetricBadges();
+ * // [
+ * //   { label: "Projects", value: "12", tooltip: "Total portfolio projects" },
+ * //   { label: "Featured", value: "5", tooltip: "Homepage featured projects" },
+ * //   ...
+ * // ]
+ * ```
+ */
+export function getProjectMetricBadges(): MetricBadge[] {
+  const metrics = getProjectMetrics();
+
+  return [
+    {
+      label: 'Projects',
+      value: metrics.total.toString(),
+      tooltip: 'Total portfolio projects',
+    },
+    {
+      label: 'Featured',
+      value: metrics.featured.toString(),
+      tooltip: 'Homepage featured projects',
+    },
+    {
+      label: 'Live Sites',
+      value: metrics.liveProduction.toString(),
+      tooltip: 'Production sites serving customers',
+    },
+    {
+      label: 'Screenshots',
+      value: metrics.screenshotCoverage,
+      tooltip: `${metrics.withScreenshots}/${metrics.total} projects with professional screenshots`,
+    },
+    {
+      label: 'Public Repos',
+      value: metrics.publicGitHubRepos.toString(),
+      tooltip: 'Open-source GitHub repositories',
+    },
+    {
+      label: 'AI/ML Projects',
+      value: metrics.aiMlProjects.toString(),
+      tooltip: 'Production AI/ML implementations',
+    },
+    {
+      label: 'Technologies',
+      value: `${metrics.totalTechnologies}+`,
+      tooltip: 'Unique technologies across all projects',
+    },
+  ];
 }

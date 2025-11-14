@@ -5,10 +5,25 @@
  * Dynamically imports from projects.ts for single source of truth.
  * Used by Project Agent and Coordinator when project questions are detected.
  *
+ * Architecture: Hybrid template approach (Industry Best Practice 2025)
+ * - Static context for LLM understanding
+ * - Dynamic data queries for volatile project details
+ * - Runtime data injection ensures zero staleness
+ *
  * Token budget: ~8,000 tokens
  */
 
 import { projects } from "@/data/projects";
+import {
+  getFeaturedProjects,
+  getLiveProductionProjects,
+  getProjectsByCategory,
+  getProjectTechStack,
+  formatProjectList,
+  getProjectsWithScreenshots,
+  getElonUniversityContext,
+  getElonUniversityProjects,
+} from "../helpers/project-queries";
 
 export const projectsPortfolio = `
 <section name="projects-portfolio">
@@ -20,12 +35,13 @@ export const projectsPortfolio = `
 ${projects
   .map(
     (project, idx) => `
-## ${idx + 1}. ${project.title}
+## ${idx + 1}. ${project.title}${project.shortTitle && project.shortTitle !== project.title ? ` (Display: "${project.shortTitle}")` : ""}
 **Slug:** ${project.slug}
 **Category:** ${project.category.toUpperCase()}
 **Role:** ${project.role}
 **Status:** ${project.status}
-${project.featured ? "**⭐ FEATURED PROJECT**" : ""}
+${project.featured ? `**⭐ FEATURED PROJECT** ${project.displayOrder ? `(Display Order: #${project.displayOrder})` : ""}` : ""}
+${project.image ? `**📸 Screenshot Available:** ${project.image}` : ""}
 
 **Description:**
 ${project.description}
@@ -83,34 +99,92 @@ ${projects
   .map((p) => `- **${p.title}** (/projects/${p.slug})`)
   .join("\n")}
 
+---
+
+# ELON UNIVERSITY PROJECTS - INTELLECTUAL PROPERTY NOTICE
+
+${getElonUniversityContext()}
+
+**Cross-Linking Pattern:**
+When user asks about ANY of these 4 Elon projects, mention the other 3 related projects and offer to explore them.
+
+---
+
+# VISUAL PORTFOLIO ASSETS (Professional Screenshots)
+
+${(() => {
+  const screenshots = getProjectsWithScreenshots();
+
+  return `**${screenshots.length} Projects with Professional Screenshots:**
+
+${screenshots.map(s => `- **${s.title}**: \`${s.image}\` → [View](/projects/${s.slug})`).join('\n')}
+
+**Image Organization by Directory:**
+- \`/elon_ai_img/\` - 3 Elon University project screenshots (AI Toolbox, ElonGPT/LSB AI Studio hub images)
+- \`/nort_glass_img/\` - North Glass LLC production site (hero + custom components)
+- \`/tuel_chatbot_img/\` - AI Chatbot Builder demo (landing page + chat interface)
+- \`/tuel_animations_img/\` - Animation Library showcase
+
+**Proactive Screenshot Offering:**
+When users ask about projects, proactively offer:
+- "Would you like to see screenshots of these projects?"
+- "All featured projects include professional screenshots showcasing their UI design"
+- "I can show you screenshots of [project name] - would you like to see them?"
+
+**Homepage Display:**
+Featured projects appear in a 2-2-3 grid layout on the homepage with professional screenshots.`;
+})()}
+
+---
+
 # SAMPLE PROJECT QUESTIONS & RESPONSES
+## (Dynamic templates using helper functions - always current)
 
 **"What are your best projects?"**
-"I'd love to show you my featured projects! Here are the highlights:
+${(() => {
+  const featured = getFeaturedProjects();
+  const screenshots = getProjectsWithScreenshots();
 
-**1. DEADLINE - Developer Command Center**
-Production full-stack platform achieving A- (92/100) UI/UX grade. Centralizes ENV variables, AI prompts, and documentation with Firebase authentication and immutable audit logs. Built with Django 5 + Next.js 15.
-[View Project](/projects/capstone-deadline)
+  return `"I'd love to show you my top ${featured.length} featured projects! Here are the highlights:
 
-**2. Tuel Animation Library**
-Professional React animation library with 13 NPM packages. Features scroll animations, galleries, Three.js integration, and performance utilities. Open-source with TypeScript + Turborepo.
-[View Project](/projects/tuel-animation-library)
+${featured.map((p, idx) => {
+  const screenshotTag = p.image ? ' • [Screenshot Available]' : '';
+  const demoLink = p.demoUrl && !p.demoUrl.includes('TEMPORARILY DISABLED')
+    ? ` • [Live Demo](${p.demoUrl})`
+    : '';
+  const status = p.status === 'completed' && p.demoUrl && !p.demoUrl.includes('TEMPORARILY DISABLED')
+    ? ' • LIVE'
+    : '';
 
-**3. Elon AI Agent**
-Parallel multi-agent business plan generator achieving 3-4x speedup with asyncio. Uses LangChain, OpenAI GPT-4o, and FastAPI for REST API.
-[View Project](/projects/elon-ai-agent)
+  return `**${idx + 1}. ${p.title}${status}**
+${p.description}
+[View Project](/projects/${p.slug})${demoLink}${screenshotTag}`;
+}).join('\n\n')}
 
-Want to explore all projects? Visit [/projects](/projects) to filter by category (AI/ML, Web, Tools)."
+All ${screenshots.length} featured projects include screenshots showcasing their professional UI design. Want to explore all projects? Visit [/projects](/projects) to filter by category (AI/ML, Web, Tools)."`;
+})()}
 
 **"Show me AI projects"**
-"I have ${projects.filter((p) => p.category === "ai-ml").length} AI/ML projects demonstrating production experience:
+${(() => {
+  const aiProjects = getProjectsByCategory('AI/ML');
+  const featuredAI = aiProjects.filter(p => p.featured);
+  const elonProjects = getElonUniversityProjects();
 
-**Featured AI Work:**
-- **Elon AI Agent** - Parallel multi-agent system (3-4x faster with asyncio)
-- **Tuel AI Chatbot Builder** - Full-stack RAG platform with multi-provider support
-- **Genesis Test Copilot** - AI-powered test automation with LangChain + Playwright
+  return `"I have ${aiProjects.length} AI/ML projects demonstrating production experience:
 
-All projects use OpenAI API, LangChain/LangGraph, and vector search (pgvector). Visit [/projects](/projects) and filter by AI/ML to see detailed case studies. Which project interests you most?"
+**⭐ Featured AI Work:**
+${formatProjectList(featuredAI, true)}
+
+**Elon University AI Initiative (${elonProjects.length} projects):**
+${elonProjects.map(p => `- **${p.title}** - ${p.description}`).join('\n')}
+
+*Note: These ${elonProjects.length} Elon projects are university intellectual property with source code in private repositories. All cross-reference each other on portfolio pages. See detailed case studies with screenshots.*
+
+**Other AI Projects:**
+${formatProjectList(aiProjects.filter(p => !p.featured && !elonProjects.some(ep => ep.slug === p.slug)), true)}
+
+All projects use modern AI stack (OpenAI/XAI APIs, LangChain/LangGraph, vector search). Visit [/projects](/projects) and filter by AI/ML to see detailed case studies with screenshots. Which project interests you most?"`;
+})()}
 
 **"What's your capstone project?"**
 "My capstone is **DEADLINE - Developer Command Center**, achieving an **A- (92/100) UI/UX grade**.
@@ -139,50 +213,73 @@ All projects use OpenAI API, LangChain/LangGraph, and vector search (pgvector). 
 Check out [/projects/capstone-deadline](/projects/capstone-deadline) for the complete case study with architecture diagrams and development process!"
 
 **"Do you have any live demos?"**
-"Yes! Here are projects with live demos you can try right now:
+${(() => {
+  const liveProjects = getLiveProductionProjects();
+  const featured = liveProjects.filter(p => p.featured);
+  const other = liveProjects.filter(p => !p.featured);
 
-**1. DEADLINE** (Developer Command Center)
-Live at: https://deadline-demo.vercel.app
-Firebase Authentication required (Email/Password or Google OAuth)
+  return `"Yes! I have ${liveProjects.length} projects with live demos you can try right now:
 
-**2. Tuel Animation Library**
-Demo: https://tuel.vercel.app
-Documentation: https://tuel-lib.vercel.app
+**⭐ Featured Projects with Live Demos:**
 
-**3. Elon AI Agent**
-GitHub: https://github.com/omerakben/elon-ai-agent
-(REST API - requires API key setup)
+${featured.map((p, idx) => {
+  const isProduction = p.demoUrl?.includes('northglassnc.com') ||
+                       p.demoUrl?.includes('elon.edu') ||
+                       p.demoUrl?.includes('azurewebsites.net');
+  const productionNote = isProduction ? '\n**Real production website serving customers**' : '';
+  const screenshot = p.image ? '\nProfessional screenshots available on portfolio page' : '';
 
-**4. Genesis Test Copilot**
-GitHub: https://github.com/omerakben/genesis-test-copilot
-(CLI tool for AI-powered test generation)
+  return `**${idx + 1}. ${p.title}**
+Live at: ${p.demoUrl}${productionNote}${screenshot}`;
+}).join('\n\n')}
 
-Want to explore more? Visit [/projects](/projects) to see all demos and repositories. Which project would you like to dive into?"
+${other.length > 0 ? `**Other Live Projects:**
+${other.map(p => `- **${p.title}** - ${p.demoUrl ? `Live at: ${p.demoUrl}` : 'Demo available'}`).join('\n')}` : ''}
+
+*Note: Some projects (Developer Cheat Sheets, Oteemo AI Roadmap, AI Tutor) are temporarily being updated with original sources and demos are not currently available.*
+
+Want to explore more? Visit [/projects](/projects) to see all demos, repositories, and screenshots. Which project would you like to dive into?"`;
+})()}
 
 **"What technologies do you use?"**
-"My projects demonstrate expertise across the modern tech stack:
+${(() => {
+  const techStack = getProjectTechStack();
+  const aiProjects = getProjectsByCategory('AI/ML');
 
-**Frontend:**
-- React, Next.js 15 (App Router), TypeScript, Tailwind CSS
-- Projects: DEADLINE, Tuel Animation Library, MediTracks
+  return `"My projects demonstrate expertise across the modern tech stack with ${techStack.length}+ technologies:
 
-**Backend:**
-- Django 5, FastAPI, PostgreSQL, Redis, Firebase Auth
-- Projects: DEADLINE (Django), Elon AI Agent (FastAPI)
+**Frontend Frameworks & Libraries:**
+- Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS 4
+- Animation: Three.js, Framer Motion, GSAP
+- UI: shadcn/ui, Radix UI, Lucide Icons
+- Projects: ${projects.filter(p => p.technologies.some(t => ['Next.js', 'React', 'TypeScript'].includes(t))).length} projects
 
-**AI/ML:**
-- OpenAI API (GPT-4o, GPT-4o-mini), LangChain, LangGraph, pgvector
-- Projects: Elon AI Agent, Tuel AI Chatbot, Genesis Test Copilot
+**Backend & Infrastructure:**
+- Django 5, FastAPI, Node.js, PostgreSQL, Redis
+- Authentication: Firebase Auth, OAuth 2.0, JWT
+- Projects: DEADLINE (Django + Next.js), Elon AI Agent (FastAPI)
 
-**Testing/QA:**
-- Playwright, Selenium WebDriver, pytest, Vitest
-- Projects: DEADLINE (64/64 tests), TUEL Selenium Framework
+**AI/ML Stack:**
+- LLMs: OpenAI GPT-4o, XAI Grok, Gemini
+- Frameworks: Vercel AI SDK, LangChain, LangGraph, Mastra
+- Vector Search: Upstash Vector, pgvector, Pinecone
+- Projects: ${aiProjects.length} AI/ML projects
 
-**Cloud & DevOps:**
-- AWS (Lambda, S3, API Gateway), Railway, Vercel, Docker
-- Projects: DEADLINE (Railway + Vercel), MediTracks (AWS)
+**Testing & Quality:**
+- E2E: Playwright (${projects.filter(p => p.technologies.includes('Playwright')).length} projects), Selenium WebDriver
+- Unit: Vitest, pytest, Jest
+- Projects: DEADLINE (776 unit tests), Tuel Selenium Framework
 
-Visit [/skills](/skills) for the comprehensive skills matrix with all frameworks and tools."
+**Cloud & Deployment:**
+- Platforms: Vercel, Railway, Azure, AWS
+- DevOps: Docker, GitHub Actions, CI/CD pipelines
+- Projects: ${getLiveProductionProjects().length} live deployments
+
+**Complete Tech Stack:**
+${techStack.slice(0, 50).join(', ')}${techStack.length > 50 ? `, +${techStack.length - 50} more` : ''}
+
+Visit [/skills](/skills) for the comprehensive skills matrix with all ${techStack.length} frameworks and tools."`;
+})()}
 
 </section>
 `.trim();

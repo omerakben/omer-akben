@@ -27,86 +27,35 @@ export function createMetadata({
     icons: {
       icon: [
         {
-          url: FAVICON_SOURCES.light.icon32,
+          url: FAVICON_SOURCES.icon32,
           type: "image/png",
           sizes: "32x32",
-          media: "(prefers-color-scheme: light)",
         },
         {
-          url: FAVICON_SOURCES.dark.icon32,
-          type: "image/png",
-          sizes: "32x32",
-          media: "(prefers-color-scheme: dark)",
-        },
-        {
-          url: FAVICON_SOURCES.light.icon16,
+          url: FAVICON_SOURCES.icon16,
           type: "image/png",
           sizes: "16x16",
-          media: "(prefers-color-scheme: light)",
-        },
-        {
-          url: FAVICON_SOURCES.dark.icon16,
-          type: "image/png",
-          sizes: "16x16",
-          media: "(prefers-color-scheme: dark)",
         },
       ],
-      shortcut: [
-        {
-          url: FAVICON_SOURCES.light.iconIco,
-          media: "(prefers-color-scheme: light)",
-        },
-        {
-          url: FAVICON_SOURCES.dark.iconIco,
-          media: "(prefers-color-scheme: dark)",
-        },
-      ],
-      apple: [
-        {
-          url: FAVICON_SOURCES.light.appleTouch,
-          sizes: "180x180",
-          media: "(prefers-color-scheme: light)",
-        },
-        {
-          url: FAVICON_SOURCES.dark.appleTouch,
-          sizes: "180x180",
-          media: "(prefers-color-scheme: dark)",
-        },
-      ],
+      shortcut: FAVICON_SOURCES.iconIco,
+      apple: {
+        url: FAVICON_SOURCES.appleTouch,
+        sizes: "180x180",
+      },
       other: [
         {
           rel: "manifest",
-          url: FAVICON_SOURCES.light.manifest,
-          media: "(prefers-color-scheme: light)",
-        },
-        {
-          rel: "manifest",
-          url: FAVICON_SOURCES.dark.manifest,
-          media: "(prefers-color-scheme: dark)",
+          url: FAVICON_SOURCES.manifest,
         },
         {
           rel: "icon",
-          url: FAVICON_SOURCES.light.android192,
+          url: FAVICON_SOURCES.android192,
           sizes: "192x192",
-          media: "(prefers-color-scheme: light)",
         },
         {
           rel: "icon",
-          url: FAVICON_SOURCES.dark.android192,
-          sizes: "192x192",
-          media: "(prefers-color-scheme: dark)",
-        },
-        {
-          rel: "icon",
-          url: FAVICON_SOURCES.light.android512,
+          url: FAVICON_SOURCES.android512,
           sizes: "512x512",
-          media: "(prefers-color-scheme: light)",
-        },
-        {
-          rel: "icon",
-          url: FAVICON_SOURCES.dark.android512,
-          sizes: "512x512",
-          media: "(prefers-color-scheme: dark)",
         },
       ],
     },

@@ -279,6 +279,15 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 - Curated context for AI responses
 - Updated via data files, never hardcoded
 
+**Dynamic Project Queries (Added November 2025):**
+
+- Helper module: `lib/agent-knowledge/helpers/project-queries.ts`
+- 15 functions for real-time project data retrieval
+- Hybrid template approach: static context + runtime injection
+- Zero-staleness architecture (single source: `@/data/projects`)
+- Cross-referencing logic for Elon University (4 projects) and Tuel framework (3 projects)
+- Screenshot awareness and visual asset documentation
+
 ---
 
 ## 🎨 Unique Design Patterns
@@ -349,7 +358,7 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 **Source of Truth:**
 
 - `data/facts.ts` - Personal information (skills, experience, education)
-- `data/projects.ts` - Project catalog with helper functions
+- `data/projects.ts` - Project catalog (12 projects, 5 featured)
 - `config/assistantFaq.ts` - FAQ and intent libraries
 
 **Export Pattern:**
@@ -357,6 +366,28 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 - Typed objects + helper functions
 - TypeScript interfaces for type safety
 - Validation via Zod schemas where needed
+
+**Dynamic Project Query Pattern (Industry Best Practice 2025):**
+
+- **Helper Module:** `lib/agent-knowledge/helpers/project-queries.ts`
+- **Architecture:** Hybrid template approach (static context for LLM + runtime data injection)
+- **15 Helper Functions:**
+  - `getFeaturedProjects()` - Returns featured projects sorted by displayOrder
+  - `getLiveProductionProjects()` - Filters completed projects with live demos
+  - `getElonUniversityProjects()` - Returns 4 Elon University projects
+  - `getTuelProjects()` - Returns 3 Tuel framework projects
+  - `getProjectsByCategory(category)` - Filters by AI/ML, Web, Tools, Other
+  - `getProjectTechStack()` - Unique technology stack across all projects
+  - `getTemporarilyDisabledProjects()` - Projects with unavailable demos
+  - `getProjectsWithScreenshots()` - Projects with professional screenshots
+  - `getRelatedProjects(slug)` - Intelligent cross-linking for related projects
+  - `formatProjectList()` - Formatted markdown output for AI responses
+  - `getProjectStatistics()` - Comprehensive portfolio metrics
+  - `isElonUniversityProject(slug)` - Boolean check for IP acknowledgment
+  - `getElonUniversityContext()` - Formatted IP context string
+- **Usage:** Knowledge base templates call these functions at runtime for fresh data
+- **Benefits:** Zero-staleness, automatic updates when projects.ts changes, DRY principle
+- **Cross-Referencing:** When discussing Elon projects, AI mentions all 4 related projects
 
 ### 5. Memory Systems
 
@@ -629,9 +660,12 @@ ANALYZE=true  # Enable bundle analyzer
 ### Data (Source of Truth)
 
 - `src/data/facts.ts` - Personal info, skills, experience
-- `src/data/projects.ts` - Project catalog with helpers
+- `src/data/projects.ts` - Project catalog (12 projects, 5 featured)
+- `src/lib/agent-knowledge/helpers/project-queries.ts` - 15 dynamic query helpers (hybrid template approach)
 - `src/config/assistantFaq.ts` - FAQ and intent libraries
 - `src/lib/agent-knowledge-base.ts` - AI agent context
+- `src/lib/agent-knowledge/domains/projects-portfolio.ts` - Project knowledge with dynamic templates
+- `src/lib/agent-knowledge/shared/conversation-guidelines.ts` - Cross-referencing patterns
 
 ### Sidebar Assistant (Ozzy AI)
 

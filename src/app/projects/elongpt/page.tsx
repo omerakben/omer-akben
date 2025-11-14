@@ -41,11 +41,11 @@ export default function ElonGPTPage() {
         </Link>
 
         {/* University Property Warning */}
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-8">
+        <div className="bg-yellow-500/10 border-4 border-yellow-500/60 rounded-lg p-4 mb-8 shadow-lg">
           <div className="flex gap-3">
             <Building2
               aria-hidden="true"
-              className="w-5 h-5 text-blue-400 flex-shrink-0"
+              className="w-6 h-6 text-yellow-400 flex-shrink-0"
             />
             <div>
               <h3 className="font-semibold text-text-1 mb-2">
@@ -53,30 +53,19 @@ export default function ElonGPTPage() {
               </h3>
               <div className="text-text-2 text-sm space-y-2">
                 <p>
-                  This project, along with the{" "}
-                  <Link
-                    href="/projects/elon-ai-agent"
-                    className="underline hover:text-text-1"
-                  >
-                    Elon AI Agent
-                  </Link>
-                  ,{" "}
-                  <Link
-                    href="/projects/elon-ai-toolbox"
-                    className="underline hover:text-text-1"
-                  >
-                    AI Toolbox
-                  </Link>
-                  , and{" "}
-                  <Link
-                    href="/projects/lsb-ai-studio"
-                    className="underline hover:text-text-1"
-                  >
-                    LSB Applied AI Studio
-                  </Link>
-                  , was developed for Elon University and remains their
-                  intellectual property. Please respect Elon University&apos;s
-                  ownership of these educational resources.
+                  This project, along with the AI Toolbox, ElonGPT, and LSB
+                  Applied AI Studio, was developed for Elon University and
+                  remains their intellectual property.
+                </p>
+                <p>
+                  All source code is maintained in private repositories. Please
+                  respect Elon University&apos;s property and do not attempt to
+                  access, replicate, or distribute these systems without
+                  authorization.
+                </p>
+                <p>
+                  Demo access is provided for portfolio demonstration purposes
+                  only.
                 </p>
               </div>
             </div>

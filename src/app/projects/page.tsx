@@ -43,6 +43,29 @@ export default function ProjectsPage() {
     return roleMatch && techMatch;
   });
 
+  // Separate into featured and non-featured, both filtered
+  const featuredProjects = filteredProjects
+    .filter((p) => p.featured)
+    .sort((a, b) => {
+      if (a.displayOrder !== undefined && b.displayOrder === undefined)
+        return -1;
+      if (a.displayOrder === undefined && b.displayOrder !== undefined)
+        return 1;
+      if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+        return a.displayOrder - b.displayOrder;
+      }
+      return 0;
+    })
+    .slice(0, 5); // Limit to 5 featured projects
+
+  const otherProjects = filteredProjects
+    .filter((p) => !p.featured)
+    .sort((a, b) => {
+      const orderA = a.displayOrder ?? 999;
+      const orderB = b.displayOrder ?? 999;
+      return orderA - orderB;
+    });
+
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-7xl">
@@ -132,22 +155,79 @@ export default function ProjectsPage() {
           </CardContent>
         </Card>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              title={project.title}
-              description={project.description}
-              technologies={project.technologies}
-              demoUrl={project.demoUrl}
-              githubUrl={project.githubUrl}
-              slug={project.slug}
-              status={project.status}
-              index={index}
-            />
-          ))}
-        </div>
+        {/* Featured Projects Section */}
+        {featuredProjects.length > 0 && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-text-1 mb-6">
+              Featured Projects
+            </h2>
+            <div className="space-y-6">
+              {/* First Row - 2 Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {featuredProjects.slice(0, 2).map((project, index) => (
+                  <ProjectCard
+                    key={project.id}
+                    title={project.shortTitle || project.title}
+                    description={project.description}
+                    image={project.image}
+                    technologies={project.technologies}
+                    demoUrl={project.demoUrl}
+                    githubUrl={project.githubUrl}
+                    slug={project.slug}
+                    status={project.status}
+                    index={index}
+                    priority={true} // Above the fold - priority load
+                  />
+                ))}
+              </div>
+
+              {/* Second Row - 3 Cards */}
+              {featuredProjects.length > 2 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredProjects.slice(2, 5).map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      title={project.shortTitle || project.title}
+                      description={project.description}
+                      image={project.image}
+                      technologies={project.technologies}
+                      demoUrl={project.demoUrl}
+                      githubUrl={project.githubUrl}
+                      slug={project.slug}
+                      status={project.status}
+                      index={2 + index}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Other Projects Section */}
+        {otherProjects.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold text-text-1 mb-6">
+              More Projects
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  title={project.shortTitle || project.title}
+                  description={project.description}
+                  image={project.image}
+                  technologies={project.technologies}
+                  demoUrl={project.demoUrl}
+                  githubUrl={project.githubUrl}
+                  slug={project.slug}
+                  status={project.status}
+                  index={featuredProjects.length + index}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredProjects.length === 0 && (

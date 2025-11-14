@@ -13,20 +13,24 @@ import Link from "next/link";
 
 export const metadata = createMetadata({});
 
-const FEATURED_PROJECTS_FIRST_ROW_COUNT = 3;
-const FEATURED_PROJECTS_SECOND_ROW_COUNT = 2;
-const FEATURED_PROJECTS_GROUP_SIZE = 5;
+const FEATURED_PROJECTS_FIRST_ROW_COUNT = 2;
+const FEATURED_PROJECTS_SECOND_ROW_COUNT = 3;
+const MAX_FEATURED_PROJECTS = 5;
 
 export default async function HomePage() {
-  const featuredProjects = getFeaturedProjects().sort((a, b) => {
-    // Sort by displayOrder if present (lower numbers first)
-    if (a.displayOrder !== undefined && b.displayOrder === undefined) return -1;
-    if (a.displayOrder === undefined && b.displayOrder !== undefined) return 1;
-    if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
-      return a.displayOrder - b.displayOrder;
-    }
-    return 0;
-  });
+  const featuredProjects = getFeaturedProjects()
+    .sort((a, b) => {
+      // Sort by displayOrder if present (lower numbers first)
+      if (a.displayOrder !== undefined && b.displayOrder === undefined)
+        return -1;
+      if (a.displayOrder === undefined && b.displayOrder !== undefined)
+        return 1;
+      if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+        return a.displayOrder - b.displayOrder;
+      }
+      return 0;
+    })
+    .slice(0, MAX_FEATURED_PROJECTS); // Limit to exactly 5 projects
   const leadershipTestimonials = testimonials.filter(
     (t) => t.type === "leadership"
   );
@@ -76,30 +80,32 @@ export default async function HomePage() {
             </Button>
           </div>
 
-          {/* Masonry Grid: Row 1 = 3 cards, Row 2 = 2 wider cards */}
+          {/* Masonry Grid: Row 1 = 2 cards, Row 2 = 3 cards */}
           <div className="space-y-6">
-            {/* First Row - 3 Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* First Row - 2 Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {featuredProjects
                 .slice(0, FEATURED_PROJECTS_FIRST_ROW_COUNT)
                 .map((project, index) => (
                   <ProjectCard
                     key={project.id}
-                    title={project.title}
+                    title={project.shortTitle || project.title}
                     description={project.description}
+                    image={project.image}
                     technologies={project.technologies}
                     demoUrl={project.demoUrl}
                     githubUrl={project.githubUrl}
                     slug={project.slug}
                     status={project.status}
                     index={index}
+                    priority={true} // Above the fold - priority load
                   />
                 ))}
             </div>
 
-            {/* Second Row - 2 Wider Cards */}
+            {/* Second Row - 3 Cards */}
             {featuredProjects.length > FEATURED_PROJECTS_FIRST_ROW_COUNT && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredProjects
                   .slice(
                     FEATURED_PROJECTS_FIRST_ROW_COUNT,
@@ -109,8 +115,9 @@ export default async function HomePage() {
                   .map((project, index) => (
                     <ProjectCard
                       key={project.id}
-                      title={project.title}
+                      title={project.shortTitle || project.title}
                       description={project.description}
+                      image={project.image}
                       technologies={project.technologies}
                       demoUrl={project.demoUrl}
                       githubUrl={project.githubUrl}
@@ -120,72 +127,6 @@ export default async function HomePage() {
                     />
                   ))}
               </div>
-            )}
-
-            {/* Additional Rows (if more than 5 projects) - Continue 3-2 Pattern */}
-            {featuredProjects.length > FEATURED_PROJECTS_GROUP_SIZE && (
-              <>
-                {Array.from({
-                  length: Math.ceil(
-                    (featuredProjects.length - FEATURED_PROJECTS_GROUP_SIZE) /
-                      FEATURED_PROJECTS_GROUP_SIZE
-                  ),
-                }).map((_, groupIndex) => {
-                  const startIndex =
-                    FEATURED_PROJECTS_GROUP_SIZE +
-                    groupIndex * FEATURED_PROJECTS_GROUP_SIZE;
-                  const row1Projects = featuredProjects.slice(
-                    startIndex,
-                    startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT
-                  );
-                  const row2Projects = featuredProjects.slice(
-                    startIndex + FEATURED_PROJECTS_FIRST_ROW_COUNT,
-                    startIndex +
-                      FEATURED_PROJECTS_FIRST_ROW_COUNT +
-                      FEATURED_PROJECTS_SECOND_ROW_COUNT
-                  );
-
-                  return (
-                    <div key={`group-${groupIndex}`} className="space-y-6">
-                      {/* Row with 3 cards */}
-                      {row1Projects.length > 0 && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {row1Projects.map((project) => (
-                            <ProjectCard
-                              key={project.id}
-                              title={project.title}
-                              description={project.description}
-                              technologies={project.technologies}
-                              demoUrl={project.demoUrl}
-                              githubUrl={project.githubUrl}
-                              slug={project.slug}
-                              status={project.status}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Row with 2 wider cards */}
-                      {row2Projects.length > 0 && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                          {row2Projects.map((project) => (
-                            <ProjectCard
-                              key={project.id}
-                              title={project.title}
-                              description={project.description}
-                              technologies={project.technologies}
-                              demoUrl={project.demoUrl}
-                              githubUrl={project.githubUrl}
-                              slug={project.slug}
-                              status={project.status}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </>
             )}
           </div>
 
