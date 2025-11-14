@@ -29,31 +29,8 @@ import { conversationGuidelines } from "./conversation-guidelines";
  * @returns Complete shared knowledge base string (~6,450 tokens)
  */
 export function buildSharedKnowledge(currentPath?: string): string {
-  // Context hints based on current page
-  let contextHint = "";
-  if (currentPath) {
-    if (currentPath === "/") {
-      contextHint =
-        "\n\n**CURRENT PAGE CONTEXT:** User is on the homepage. Suggest exploring projects, viewing skills, or downloading resume.";
-    } else if (currentPath.startsWith("/projects")) {
-      contextHint =
-        "\n\n**CURRENT PAGE CONTEXT:** User is viewing the projects page. Offer to explain specific projects, filter by category, or show similar work.";
-    } else if (currentPath === "/skills") {
-      contextHint =
-        "\n\n**CURRENT PAGE CONTEXT:** User is on the skills page. Focus on technical expertise, frameworks, and tool proficiency.";
-    } else if (currentPath === "/journey") {
-      contextHint =
-        "\n\n**CURRENT PAGE CONTEXT:** User is on the journey page. Focus on career progression, education, and certifications.";
-    } else if (currentPath === "/contact") {
-      contextHint =
-        "\n\n**CURRENT PAGE CONTEXT:** User is on the contact page. Offer to help with contact information, resume downloads, or scheduling.";
-    } else if (currentPath === "/recruiter") {
-      contextHint =
-        "\n\n**CURRENT PAGE CONTEXT:** User is on the recruiter page. Prioritize work authorization, resume downloads, and scheduling meetings.";
-    }
-  }
-
-  return `# OZZY AI - PORTFOLIO ASSISTANT${contextHint}
+  // STATIC CONTENT (XAI will cache this portion - 99% of prompt)
+  const staticContent = `# OZZY AI - PORTFOLIO ASSISTANT
 
 You are Ozzy, Omer Akben's AI assistant and portfolio guide. Your primary role is to be **helpful and conversational** - think of yourself as a friendly colleague who happens to know Omer's work really well. You're here to help visitors (especially recruiters and employers) understand what Omer brings to the table in a natural, engaging way.
 
@@ -75,6 +52,31 @@ ${conversationGuidelines}
 
 ---
 
-**Remember:** This is a portfolio, not a resume dump. Help people understand Omer's work through stories and outcomes, with technical details available when they want to dig deeper.
-`.trim();
+**Remember:** This is a portfolio, not a resume dump. Help people understand Omer's work through stories and outcomes, with technical details available when they want to dig deeper.`;
+
+  // DYNAMIC CONTENT (placed at end for XAI prompt caching optimization)
+  let contextHint = "";
+  if (currentPath) {
+    if (currentPath === "/") {
+      contextHint =
+        "\n\n---\n\n**CURRENT PAGE CONTEXT:** User is on the homepage. Suggest exploring projects, viewing skills, or downloading resume.";
+    } else if (currentPath.startsWith("/projects")) {
+      contextHint =
+        "\n\n---\n\n**CURRENT PAGE CONTEXT:** User is viewing the projects page. Offer to explain specific projects, filter by category, or show similar work.";
+    } else if (currentPath === "/skills") {
+      contextHint =
+        "\n\n---\n\n**CURRENT PAGE CONTEXT:** User is on the skills page. Focus on technical expertise, frameworks, and tool proficiency.";
+    } else if (currentPath === "/journey") {
+      contextHint =
+        "\n\n---\n\n**CURRENT PAGE CONTEXT:** User is on the journey page. Focus on career progression, education, and certifications.";
+    } else if (currentPath === "/contact") {
+      contextHint =
+        "\n\n---\n\n**CURRENT PAGE CONTEXT:** User is on the contact page. Offer to help with contact information, resume downloads, or scheduling.";
+    } else if (currentPath === "/recruiter") {
+      contextHint =
+        "\n\n---\n\n**CURRENT PAGE CONTEXT:** User is on the recruiter page. Prioritize work authorization, resume downloads, and scheduling meetings.";
+    }
+  }
+
+  return `${staticContent}${contextHint}`.trim();
 }

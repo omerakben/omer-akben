@@ -5,15 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { posthog } from "@/lib/analytics/posthog-client";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import {
-  FAST_INTRO_RESPONSE,
-  shouldUseFastIntro,
-} from "@/lib/chat/fast-responses";
-import {
-  extractCollectContactMessage,
-  extractNavigationLinks,
-  getMessageText,
-} from "@/lib/chat/message-utils";
+import { getMessageText } from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
@@ -21,36 +13,27 @@ import { DefaultChatTransport, UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
-  ArrowRight,
-  Briefcase,
-  ExternalLink,
-  FileText,
-  Github,
   GripVertical,
   Loader2,
-  Mail,
   MessageSquarePlus,
   Pin,
   PinOff,
   Send,
   Trash2,
-  User,
   X,
-  Zap,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type FormEvent,
 } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { ChatMessage } from "./ChatMessage";
 import { ChatSidebarQuickActions } from "./chat-sidebar-quick-actions";
 import { ChatSidebarWelcome } from "./chat-sidebar-welcome";
-import { FollowupChips } from "./FollowupChips";
 
 const suggestedQuestions = [
   "Tell me about yourself.",
@@ -59,22 +42,7 @@ const suggestedQuestions = [
 
 const PIN_HINT_STORAGE_KEY = "sidebar_pin_hint_seen_v1";
 
-// Icon mapping for navigation links
-const getIconComponent = (iconName?: string) => {
-  const iconMap: Record<string, React.ElementType> = {
-    briefcase: Briefcase,
-    github: Github,
-    "external-link": ExternalLink,
-    "arrow-right": ArrowRight,
-    "file-text": FileText,
-    zap: Zap,
-    mail: Mail,
-  };
-  return iconMap[iconName || "arrow-right"] || ArrowRight;
-};
-
 export function ChatSidebar() {
-  const router = useRouter();
   const {
     isOpen,
     isPinned,
@@ -98,7 +66,6 @@ export function ChatSidebar() {
   const [lastFollowupAction, setLastFollowupAction] = useState<string | null>(
     null
   );
-  const [fastPreview, setFastPreview] = useState<string | null>(null);
   const [isHydratingThread, setIsHydratingThread] = useState(true);
   const [showPinHint, setShowPinHint] = useState(false);
   const [hasSeenPinHint, setHasSeenPinHint] = useState(true);
@@ -207,6 +174,7 @@ export function ChatSidebar() {
 
   const { messages, sendMessage, status, setMessages } = useChat({
     id: threadId,
+    experimental_throttle: 100,
     transport: new DefaultChatTransport({
       prepareSendMessagesRequest: ({ id, messages: outgoingMessages }) => {
         const lastMessage = outgoingMessages[outgoingMessages.length - 1];
@@ -260,12 +228,6 @@ export function ChatSidebar() {
 
     const userMessage = input.trim();
 
-    // Check if fast intro should be used (greetings on first message)
-    if (shouldUseFastIntro(userMessage, messages)) {
-      setFastPreview(FAST_INTRO_RESPONSE);
-      // Fast preview shown immediately, API call will stream full response
-    }
-
     setInput("");
     setLastFollowupAction(null);
     setShowMessages(true);
@@ -318,13 +280,6 @@ export function ChatSidebar() {
     if (!question.trim()) {
       console.warn("[ChatSidebar] Empty question provided");
       return;
-    }
-
-    // Check if fast intro should be used (greetings on first message)
-    if (shouldUseFastIntro(question, messages)) {
-      setFastPreview(FAST_INTRO_RESPONSE);
-      setLastFollowupAction(question);
-      // Fast preview shown immediately, API call will stream full response
     }
 
     setShowMessages(true);
@@ -387,10 +342,16 @@ export function ChatSidebar() {
     textarea.style.height = `${newHeight}px`;
   }, [input]);
 
-  // Auto-scroll to latest message
-  useEffect(() => {
+  // Auto-scroll to latest message during streaming (throttled to prevent jank)
+  // Triggers on every message update, not just when length changes
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]); // Use messages.length to prevent infinite loop
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timeoutId);
+  }, [messages, scrollToBottom]);
 
   // Keep a mutable reference of the latest messages to avoid stale closures
   useEffect(() => {
@@ -481,14 +442,8 @@ export function ChatSidebar() {
   useEffect(() => {
     if (messages.length > 0) {
       setShowMessages(true);
-      if (
-        fastPreview &&
-        messagesRef.current.some((m) => m.role === "assistant")
-      ) {
-        setFastPreview(null);
-      }
     }
-  }, [messages.length, fastPreview]); // Re-run when message count changes or fast preview is set/cleared
+  }, [messages.length]); // Re-run when message count changes
 
   // Generate dynamic follow-ups after each assistant message
   useEffect(() => {
@@ -566,6 +521,18 @@ export function ChatSidebar() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages.length, isLoading]); // Use messages.length to prevent infinite loop
+
+  // Memoize processed messages with pre-extracted text content
+  // This ensures each message maintains its own stable content during streaming
+  // and prevents the bug where previous messages get overwritten by new streaming content
+  const processedMessages = useMemo(
+    () =>
+      messages.map((msg) => ({
+        message: msg,
+        textContent: getMessageText(msg),
+      })),
+    [messages]
+  );
 
   return (
     <AnimatePresence>
@@ -778,267 +745,22 @@ export function ChatSidebar() {
                 </div>
               ) : showMessages ? (
                 <div className="px-4 py-4 space-y-4">
-                  {fastPreview && (
-                    <div className="flex gap-3">
-                      <div className="shrink-0">
-                        <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                          <AnimatedBlobContainer
-                            size={16}
-                            className="rounded-full"
-                            disableCenterDimming={true}
-                            asIcon={true}
-                          />
-                        </div>
-                      </div>
-                      <div className="chat-message max-w-[85%] rounded-lg px-4 py-3 text-sm bg-surf-1/95 border border-border-line/40 text-text-1 shadow-sm backdrop-blur-sm">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {fastPreview}
-                        </ReactMarkdown>
-                        <p className="mt-2 text-xs text-text-3">
-                          Loading live response…
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {messages.map((message, index) => {
-                    const textContent = getMessageText(message);
-
+                  {processedMessages.map((item, index) => {
                     const isLastAssistantMessage =
-                      message.role === "assistant" &&
+                      item.message.role === "assistant" &&
                       index === messages.length - 1;
 
                     return (
-                      <div key={message.id} className="space-y-2">
-                        <div
-                          className={`flex gap-3 ${
-                            message.role === "user"
-                              ? "justify-end"
-                              : "justify-start"
-                          }`}
-                        >
-                          {message.role === "assistant" && (
-                            <div className="shrink-0">
-                              <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
-                                <AnimatedBlobContainer
-                                  size={16}
-                                  className="rounded-full"
-                                  disableCenterDimming={true}
-                                  asIcon={true}
-                                />
-                              </div>
-                            </div>
-                          )}
-                          <div
-                            className={`chat-message max-w-[85%] rounded-lg px-4 py-3 text-sm ${
-                              message.role === "user"
-                                ? "bg-brand-primary text-white"
-                                : "bg-surf-1/95 border border-border-line/40 text-text-1 shadow-sm backdrop-blur-sm"
-                            }`}
-                          >
-                            <ReactMarkdown
-                              remarkPlugins={[remarkGfm]}
-                              components={{
-                                a: ({ href, children }) => {
-                                  // Detect internal vs external links securely
-                                  const INTERNAL_HOSTNAMES = [
-                                    "omerakben.com",
-                                    "www.omerakben.com",
-                                  ];
-                                  let isInternal =
-                                    href?.startsWith("/") ||
-                                    href?.startsWith("#");
-
-                                  if (!isInternal && href) {
-                                    try {
-                                      const url = new URL(
-                                        href,
-                                        "https://omerakben.com"
-                                      );
-                                      isInternal = INTERNAL_HOSTNAMES.includes(
-                                        url.hostname
-                                      );
-                                    } catch {
-                                      // If URL parsing fails, treat as external
-                                      isInternal = false;
-                                    }
-                                  }
-
-                                  if (isInternal) {
-                                    // Internal link: Navigate in same window using <a> for accessibility
-                                    return (
-                                      <a
-                                        href={href}
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          if (href) {
-                                            closeSidebar();
-                                            router.push(href);
-                                          }
-                                        }}
-                                        className={`font-medium transition-all duration-200 cursor-pointer ${
-                                          message.role === "user"
-                                            ? "text-white underline decoration-white/50 hover:decoration-white"
-                                            : "text-brand-primary no-underline hover:underline hover:decoration-brand-primary"
-                                        }`}
-                                      >
-                                        {children}
-                                      </a>
-                                    );
-                                  }
-
-                                  // External link: Open in new tab
-                                  return (
-                                    <a
-                                      href={href}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className={`font-medium transition-all duration-200 ${
-                                        message.role === "user"
-                                          ? "text-white underline decoration-white/50 hover:decoration-white"
-                                          : "text-brand-primary no-underline hover:underline hover:decoration-brand-primary"
-                                      }`}
-                                    >
-                                      {children}
-                                    </a>
-                                  );
-                                },
-                                p: ({ children }) => (
-                                  <p className="mb-4 last:mb-0 leading-[1.7] text-text-1">
-                                    {children}
-                                  </p>
-                                ),
-                                ul: ({ children }) => (
-                                  <ul className="list-disc ml-6 mb-4 space-y-2.5 marker:text-text-2">
-                                    {children}
-                                  </ul>
-                                ),
-                                ol: ({ children }) => (
-                                  <ol className="list-decimal ml-6 mb-4 space-y-2.5 marker:text-text-2">
-                                    {children}
-                                  </ol>
-                                ),
-                                li: ({ children }) => (
-                                  <li className="pl-2 leading-[1.7] text-text-1">
-                                    {children}
-                                  </li>
-                                ),
-                                strong: ({ children }) => (
-                                  <strong className="font-semibold text-text-1">
-                                    {children}
-                                  </strong>
-                                ),
-                                h1: ({ children }) => (
-                                  <h1 className="text-[1.4em] font-bold mb-4 text-text-1 leading-[1.6]">
-                                    {children}
-                                  </h1>
-                                ),
-                                h2: ({ children }) => (
-                                  <h2 className="text-[1.2em] font-semibold mb-3 text-text-1 leading-[1.6]">
-                                    {children}
-                                  </h2>
-                                ),
-                                h3: ({ children }) => (
-                                  <h3 className="text-base font-semibold mb-2 text-text-2 leading-[1.6]">
-                                    {children}
-                                  </h3>
-                                ),
-                              }}
-                            >
-                              {textContent}
-                            </ReactMarkdown>
-
-                            {/* Navigation Links */}
-                            {message.role === "assistant" &&
-                              (() => {
-                                const navigationLinks =
-                                  extractNavigationLinks(message);
-                                if (navigationLinks.length === 0) {
-                                  return null;
-                                }
-
-                                return (
-                                  <div className="mt-2 flex flex-wrap gap-2">
-                                    {navigationLinks.map((link, linkIndex) => {
-                                      const Icon = getIconComponent(link.icon);
-                                      const isExternal =
-                                        link.type === "external";
-
-                                      return (
-                                        <button
-                                          key={`${message.id}-link-${linkIndex}`}
-                                          type="button"
-                                          onClick={() => {
-                                            if (isExternal) {
-                                              window.open(
-                                                link.href,
-                                                "_blank",
-                                                "noopener,noreferrer"
-                                              );
-                                            } else {
-                                              closeSidebar();
-                                              router.push(link.href);
-                                            }
-                                          }}
-                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
-                                        >
-                                          <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center shrink-0">
-                                            <Icon
-                                              aria-hidden="true"
-                                              className="w-2.5 h-2.5 text-brand-primary"
-                                            />
-                                          </div>
-                                          <span>{link.label}</span>
-                                          {isExternal && (
-                                            <ExternalLink
-                                              aria-hidden="true"
-                                              className="w-2.5 h-2.5"
-                                            />
-                                          )}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                );
-                              })()}
-                            {message.role === "assistant" &&
-                              (() => {
-                                const contactMessage =
-                                  extractCollectContactMessage(message);
-                                if (!contactMessage) {
-                                  return null;
-                                }
-
-                                return (
-                                  <div className="mt-3 rounded-lg border border-brand-primary/30 bg-brand-primary/5 px-3 py-2 text-sm text-text-1">
-                                    {contactMessage}
-                                  </div>
-                                );
-                              })()}
-                          </div>
-                          {message.role === "user" && (
-                            <div className="shrink-0">
-                              <div className="w-8 h-8 rounded-full bg-surf-2 flex items-center justify-center">
-                                <User
-                                  aria-hidden="true"
-                                  className="w-4 h-4 text-text-2"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Dynamic follow-up questions after last assistant message */}
-                        {isLastAssistantMessage &&
-                          !isLoading &&
-                          currentFollowups.length > 0 && (
-                            <div className="ml-11 mt-3">
-                              <FollowupChips
-                                followups={currentFollowups}
-                                onSend={handleSuggestedQuestion}
-                              />
-                            </div>
-                          )}
-                      </div>
+                      <ChatMessage
+                        key={item.message.id}
+                        message={item.message}
+                        textContent={item.textContent}
+                        isLastAssistantMessage={isLastAssistantMessage}
+                        isLoading={isLoading}
+                        currentFollowups={currentFollowups}
+                        onSuggestedQuestion={handleSuggestedQuestion}
+                        closeSidebar={closeSidebar}
+                      />
                     );
                   })}
                   {isLoading && (

@@ -138,14 +138,15 @@ I can also send you an email with both resume links right now if you'd like! Jus
 "Omer has a strong educational foundation:
 
 **Formal Education:**
-- Bachelor of Science in Nursing - Rutgers University (2014)
-- Career transition from healthcare to technology in 2018
+- **Istanbul Okan University** - M.S., Healthcare Management (2014–2016)
+- Healthcare management background with focus on clinical systems and HIPAA compliance
 
 **Professional Development:**
-- **Nashville Software School** - Full-Stack Development + Cloud Deployment (2025)
+- **Nashville Software School** - Full-Stack Web Developer Bootcamp (2024–2025)
+- **TechCenture Academy** - Software Development Engineer in Test (SDET) (2019–2020)
 - **AWS Cloud Practitioner Essentials** - AWS Certification (2022)
 
-The combination of healthcare experience and technical training provides unique insight into building user-centric, mission-critical software. Would you like more details about any specific program?"
+The combination of healthcare management expertise and technical training provides unique insight into building HIPAA-compliant, mission-critical software. Career transition from healthcare to technology began in 2019. Would you like more details about any specific program?"
 
 </section>
 `.trim();
