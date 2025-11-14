@@ -322,11 +322,17 @@ export function ChatSidebar() {
 
   // Focus input when sidebar opens
   useEffect(() => {
-    if (isOpen && textareaRef.current) {
-      // Use ref for more reliable focus, with shorter timeout for hydration safety
-      setTimeout(() => textareaRef.current?.focus(), 100);
+    if (isOpen && !isHydratingThread) {
+      // Schedule focus after component mounts and animation starts
+      // Ref check happens inside timeout to ensure textarea is rendered
+      // Only focus if not hydrating to avoid focusing disabled element
+      setTimeout(() => {
+        if (!isHydratingThread && textareaRef.current && !textareaRef.current.disabled) {
+          textareaRef.current.focus();
+        }
+      }, 350); // Increased to allow for spring animation (damping: 25, stiffness: 300)
     }
-  }, [isOpen]);
+  }, [isOpen, isHydratingThread]);
 
   // Auto-resize textarea based on content (safe implementation)
   useEffect(() => {
@@ -835,7 +841,7 @@ export function ChatSidebar() {
                           key={index}
                           type="button"
                           onClick={() => handleSuggestedQuestion(question)}
-                          className="w-full text-left px-4 py-2 rounded-lg bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 transition-all"
+                          className="w-full text-left px-3 py-1.5 rounded-full bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 transition-all"
                           disabled={isHydratingThread}
                         >
                           {question}
@@ -878,7 +884,7 @@ export function ChatSidebar() {
                         ? "Loading previous messages..."
                         : "Ask anything about me..."
                     }
-                    className="flex-1 px-4 py-3 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-11 max-h-[200px] scrollbar-vertical-gradient"
+                    className="flex-1 px-3 py-2 rounded-lg bg-surf-1 border border-border-line text-text-1 placeholder:text-text-3 focus:outline-none focus:ring-2 focus:ring-brand-primary text-sm resize-none overflow-y-auto min-h-9 max-h-[200px] scrollbar-vertical-gradient"
                     disabled={isLoading || isHydratingThread}
                     rows={1}
                     maxLength={MAX_INPUT_LENGTH}
@@ -886,7 +892,7 @@ export function ChatSidebar() {
                   <Button
                     type="submit"
                     disabled={isHydratingThread || isLoading || !input.trim()}
-                    className="bg-brand-primary text-white hover:bg-brand-primary/90 h-auto px-4 py-3"
+                    className="bg-brand-primary text-white hover:bg-brand-primary/90 h-auto px-3 py-2"
                   >
                     <Send aria-hidden="true" className="w-4 h-4" />
                   </Button>

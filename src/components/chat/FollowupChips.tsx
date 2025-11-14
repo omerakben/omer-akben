@@ -127,7 +127,7 @@ export const FollowupChips = memo(function FollowupChips({
             key={`${item.label}-${index}`}
             onClick={() => handleClick(item.label, item.suggestion)}
             onKeyDown={(e) => handleKeyDown(e, item.label, item.suggestion)}
-            className="group relative flex items-start gap-2 px-4 py-3 rounded-lg
+            className="group relative flex items-start gap-2 px-3 py-2 rounded-lg
                      bg-surf-1 hover:bg-surf-2
                      border border-border-line hover:border-brand-primary/50
                      text-text-1 text-sm text-left
@@ -140,7 +140,7 @@ export const FollowupChips = memo(function FollowupChips({
           >
             {/* Chip number indicator */}
             <span
-              className="flex-shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center
+              className="flex-shrink-0 mt-0.5 w-4 h-4 flex items-center justify-center
                            rounded-full bg-brand-primary/10 text-brand-primary text-xs font-medium
                            group-hover:bg-brand-primary group-hover:text-surf-0
                            transition-colors duration-200"
