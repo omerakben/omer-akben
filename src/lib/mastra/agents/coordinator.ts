@@ -138,6 +138,7 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
         resource: "portfolio-chat",
       },
       format: "aisdk" as const,
+      maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
     });
 
     console.error("[Coordinator] Agent stream created, type:", typeof stream);

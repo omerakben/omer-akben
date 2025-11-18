@@ -867,6 +867,7 @@ export function ChatSidebar() {
                   <textarea
                     ref={textareaRef}
                     id="chat-sidebar-input"
+                    name="message"
                     value={input}
                     aria-label="Message Ozzy AI Assistant"
                     onChange={(e) => setInput(e.target.value)}
