@@ -143,6 +143,8 @@ export async function middleware(request: NextRequest) {
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' https://va.vercel-scripts.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
+    `script-src-elem 'self' 'nonce-${nonce}' https://va.vercel-scripts.com https://us-assets.i.posthog.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
+    `worker-src 'self' blob:`,
     isDevelopment
       ? "style-src 'self' 'unsafe-inline'" // Dev: Allow Turbopack HMR
       : "style-src 'self' 'unsafe-inline'", // Prod: Allow inline styles (nonce removed - see comment above)

@@ -54,6 +54,7 @@ export function BrightnessControl() {
 
   const sliderAriaProps = useMemo(
     () => ({
+      id: "brightness-slider",
       role: "slider" as const,
       "aria-valuemin": -3,
       "aria-valuemax": 3,
