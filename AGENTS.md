@@ -288,6 +288,52 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 - Cross-referencing logic for Elon University (4 projects) and Tuel framework (3 projects)
 - Screenshot awareness and visual asset documentation
 
+### Mastra Agent Streaming Configuration (CRITICAL)
+
+**Date Added:** 2025-11-18
+**Issue:** Chat responses rewriting mid-stream causing visual flickering
+
+**Root Cause:**
+
+Mastra's `Agent.stream()` method supports **multi-step execution** by default. When an agent completes a step (e.g., after a tool call), it automatically starts a new step unless `maxSteps` is explicitly configured.
+
+**Stream Pattern Without Fix:**
+
+```
+data: {"type":"start-step"}
+data: {"type":"text-delta","delta":"I'm a full-stack AI engineer..."}
+data: {"type":"tool-call","toolName":"provide_navigation_links"}
+data: {"type":"tool-output-available","output":{...}}
+data: {"type":"finish-step"}     ← Step 1 ends
+data: {"type":"start-step"}      ← Step 2 starts IMMEDIATELY
+data: {"type":"text-delta","delta":"I'm a full-stack AI engineer..."}  ← DUPLICATE
+```
+
+**Solution (coordinator.ts:141):**
+
+```typescript
+const stream = await route.agent.stream(context.history, {
+  instructions,
+  memory: { thread: { id: context.threadId }, resource: "portfolio-chat" },
+  format: "aisdk" as const,
+  maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
+});
+```
+
+**Key Learnings:**
+
+1. ✅ **ALWAYS set `maxSteps: 1`** for single-response chat agents
+2. ✅ Multi-step workflows are for agentic loops (planning → execution → reflection)
+3. ✅ Tool calls do NOT require multiple steps - they execute within a single step
+4. ❌ **NEVER rely on Mastra's default** - it enables multi-step continuation
+5. ✅ Stream pattern should be: `start-step` → content → tool calls → `finish` (NOT `finish-step`)
+
+**Prevention:**
+
+- All agent streaming calls must include explicit `maxSteps` configuration
+- Review stream data for `finish-step` followed by `start-step` patterns
+- Test chat interactions with tool calls to verify single-step execution
+
 ---
 
 ## 🎨 Unique Design Patterns

@@ -372,6 +372,37 @@ Chat UI → AI SDK streaming → Tool call → Zod validation → Handler → JS
 - Cross-referencing logic for Elon University and Tuel projects
 - Screenshot awareness and visual asset documentation
 
+### Mastra Agent Streaming Configuration (CRITICAL ⚠️)
+
+**Issue Fixed:** 2025-11-18 - Chat responses rewriting mid-stream
+
+**Root Cause:**
+
+Mastra's `Agent.stream()` defaults to **multi-step execution**. After completing a step (e.g., tool call), it automatically starts a new step, causing duplicate responses.
+
+**Stream Pattern (Without Fix):**
+```
+finish-step → start-step → DUPLICATE CONTENT
+```
+
+**Solution (coordinator.ts:141):**
+```typescript
+const stream = await route.agent.stream(context.history, {
+  instructions,
+  memory: { thread: { id: context.threadId }, resource: "portfolio-chat" },
+  format: "aisdk" as const,
+  maxSteps: 1, // ✅ Prevents duplicate responses
+});
+```
+
+**Key Rules:**
+- ✅ **ALWAYS** set `maxSteps: 1` for single-response chat agents
+- ✅ Multi-step is for agentic loops (planning → execution → reflection)
+- ✅ Tool calls execute within a single step
+- ❌ **NEVER** rely on Mastra's default behavior
+
+**Detailed explanation:** See AGENTS.md § "Mastra Agent Streaming Configuration"
+
 ---
 
 ## 🔑 Environment Variables
@@ -493,6 +524,7 @@ await page.waitForTimeout(500); // Stabilization
 6. **Client API calls** - All server-side
 7. **Quality gates** - Never skip to make builds pass
 8. **TypeScript `any`** - Use proper types
+9. **Mastra `maxSteps`** - ALWAYS set `maxSteps: 1` for chat agents (see below)
 
 ---
 
