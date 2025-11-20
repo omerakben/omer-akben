@@ -52,11 +52,6 @@ describe("agent-tools schemas", () => {
       expect(result.format).toBe("resume");
     });
 
-    it("should accept 'extended' format", () => {
-      const result = downloadResumeInputSchema.parse({ format: "extended" });
-      expect(result.format).toBe("extended");
-    });
-
     it("should default to 'resume' when no format provided", () => {
       const result = downloadResumeInputSchema.parse({});
       expect(result.format).toBe("resume");

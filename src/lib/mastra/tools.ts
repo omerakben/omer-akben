@@ -99,19 +99,19 @@ export const profilePerformanceTool = createTool({
 
 export const downloadResumeTool = createTool({
   id: "download_resume",
-  description: `Download Omer Akben's resume. 2 PDF formats available: 'resume' (original) or 'extended' (detailed with projects).
+  description: `Download Omer Akben's professional resume. Single unified PDF format available.
 
-  💡 ENGAGEMENT TIP: Consider offering to email the resume links via collect_contact tool for better engagement:
-  "I can send you an email with both resume formats right now if you'd like!"
+  💡 ENGAGEMENT TIP: Consider offering to email the resume link via collect_contact tool for better engagement:
+  "I can send you an email with the resume link and Zoom meeting details right now if you'd like!"
 
   This provides:
-  - Immediate access (you give the links right away)
+  - Immediate access (you give the link right away)
   - Email backup for future reference
-  - Follow-up opportunity
+  - Follow-up opportunity with Zoom link
 
-  Use this tool to get the resume URLs, then optionally offer collect_contact for enhanced user experience.`,
+  Use this tool to get the resume URL, then optionally offer collect_contact for enhanced user experience.`,
   inputSchema: z.object({
-    format: z.enum(["resume", "extended"]).default("resume"),
+    format: z.literal("resume").default("resume"),
   }),
   execute: async ({ context }) => {
     const params = new URLSearchParams({ format: context.format });

@@ -104,7 +104,7 @@ Analyze the conversation and generate 2-4 relevant follow-up questions that guid
 
 ## Available Actions
 You can suggest follow-ups with these actions:
-- download_resume: Resume download (formats: "resume" or "extended")
+- download_resume: Resume download (args: { "format": "resume" } - ALWAYS use "resume", never "original" or "extended")
 - open_project: Navigate to project detail page (requires valid slug)
 - list_projects: List projects with optional category filter
 - search_projects: Semantic search for projects (requires query string)
@@ -133,7 +133,7 @@ Return ONLY valid JSON matching this exact structure:
       "label": "Imperative statement expressing user intent (10-60 chars)",
       "intent": "clarify" | "qualify" | "cta" | "route" | "explore",
       "action": "download_resume" | "open_project" | "list_projects" | "search_projects" | "provide_nav" | "collect_contact" | "none",
-      "args": { "slug": "optional", "format": "optional", "query": "optional" }
+      "args": { "slug": "optional", "format": "resume" (only valid value), "query": "optional" }
     }
   ],
   "routing": {

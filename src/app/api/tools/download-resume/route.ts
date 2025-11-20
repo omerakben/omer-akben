@@ -2,21 +2,14 @@ import { logError } from "@/lib/log";
 import { downloadResumeInputSchema } from "@/lib/tools/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-// File mapping for all resume formats
+// File mapping for resume format
 const FILE_MAP = {
   resume: {
     filename: "Omer_Akben_Resume.pdf",
-    size: 55000, // ~55KB
+    size: 88320, // ~86.3KB (88KB)
     format: "pdf",
     googleDriveUrl:
-      "https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing",
-  },
-  extended: {
-    filename: "Omer_Akben_Resume_Extended.pdf",
-    size: 110000, // ~110KB
-    format: "pdf",
-    googleDriveUrl:
-      "https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing",
+      "https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing",
   },
 } as const;
 

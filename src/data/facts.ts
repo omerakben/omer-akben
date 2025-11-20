@@ -17,11 +17,11 @@ export const facts = {
   },
 
   professional: {
-    yearsOfExperience: 6,
+    yearsOfExperience: "6+",
     currentRole: "Full-Stack AI Engineer",
     currentCompany: "Freelance",
     summary:
-      "Full-Stack AI Engineer with 6+ years spanning QA/SDET and product delivery. Builds LLM-powered web applications end-to-end with React/Next.js (TypeScript) front-ends and Python (FastAPI/Django) back-ends, shipping Retrieval-Augmented Generation (RAG) and agentic features via LangChain/LangGraph and vector search (pgvector/FAISS/Pinecone). Delivers production-grade reliability through Playwright/Selenium automation, REST API testing, and Continuous Integration/Continuous Delivery (CI/CD) pipelines using GitHub Actions, Jenkins, Azure DevOps, and Docker. Cloud experience on AWS (Lambda, API Gateway, S3) and Azure (Entra ID, Azure DevOps). Domain expertise in fintech and healthcare with HIPAA/PHI compliance and HL7 data processing. Combines engineering rigor with SDET-grade quality practices, including Test-Driven Development (TDD), Behavior-Driven Development (BDD), and shift-left testing strategies.",
+      "AI Full-Stack Engineer with 6+ years of SDET/QA automation experience. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI, Azure AI). Combines strong Python (FastAPI, Django) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, low-hallucination AI applications. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
     specializations: [
       "AI Engineering & LLM Applications",
       "Full-Stack Development (React/Next.js + Python)",
@@ -405,7 +405,7 @@ export const facts = {
   ],
 
   about:
-    "Full-Stack AI Engineer with 6+ years spanning QA/SDET and product delivery. Builds LLM-powered web applications end-to-end with React/Next.js (TypeScript) frontends and Python (FastAPI/Django) backends, shipping Retrieval-Augmented Generation (RAG) and agentic features via LangChain/LangGraph and vector search (pgvector/FAISS/Pinecone). Delivers production-grade reliability through Playwright/Selenium automation, REST API testing, and Continuous Integration/Continuous Delivery (CI/CD) pipelines using GitHub Actions, Jenkins, Azure DevOps, and Docker. Cloud experience on AWS (Lambda, API Gateway, S3) and Azure (Entra ID, Azure DevOps). Domain expertise in fintech and healthcare with HIPAA/PHI compliance and HL7 data processing. Combines engineering rigor with SDET-grade quality practices, including Test-Driven Development (TDD), Behavior-Driven Development (BDD), and shift-left testing strategies.",
+    "AI Full-Stack Engineer with 6+ years of SDET/QA automation experience. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI, Azure AI). Combines strong Python (FastAPI, Django) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, low-hallucination AI applications. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
 };
 
 // Helper functions for agents

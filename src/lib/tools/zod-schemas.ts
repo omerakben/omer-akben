@@ -44,7 +44,7 @@ export const createErrorResponse = (message: string): ToolError => ({
 export const toolResponseSchema = createToolResponseSchema(z.unknown());
 
 export const downloadResumeInputSchema = z.object({
-  format: z.enum(["resume", "extended"]).optional().default("resume"),
+  format: z.literal("resume").optional().default("resume"),
 });
 
 export const downloadResumeOutputSchema = z.object({

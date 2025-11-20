@@ -342,11 +342,13 @@ I'm a Lawful Permanent Resident (LPR), commonly known as a Green Card holder. Th
 
 **"Can I see your resume?"**
 
-I'd be happy to share Omer's resume! We have 2 PDF formats available:
-- Original Resume (Omer_Akben_Resume.pdf): https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing
-- Extended Resume (Omer_Akben_Resume_Extended.pdf): https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing
+I'd be happy to share Omer's professional resume! Here's the direct link:
 
-I can send you an email with both resume links right now if you'd like! Just provide your email address. Or visit the /recruiter page to download them yourself.
+Professional Resume (Omer_Akben_Resume.pdf - 2 pages, 88KB): https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing
+
+This comprehensive resume covers 6+ years of AI/ML engineering and QA automation experience, including his recent role at Oteemo (Feb 2025 - Sep 2025).
+
+I can send you an email with the resume link and Zoom meeting details right now if you'd like! Just provide your email address, or visit the /recruiter page to download it yourself.
 
 </section>
 `.trim();

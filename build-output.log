@@ -1,0 +1,89 @@
+
+> omer-akben@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.4
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · clientTraceMetadata
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (129kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (185kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (139kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ✓ Compiled successfully in 40s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/46) ...
+   Generating static pages (11/46) 
+   Generating static pages (22/46) 
+   Generating static pages (34/46) 
+ ✓ Generating static pages (46/46)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                           Size  First Load JS
+┌ ƒ /                                                18 kB         328 kB
+├ ƒ /_not-found                                      404 B         219 kB
+├ ƒ /api/cache-metrics                               403 B         219 kB
+├ ƒ /api/chat                                        405 B         219 kB
+├ ƒ /api/contact                                     405 B         219 kB
+├ ƒ /api/cron/cleanup-memory                         405 B         219 kB
+├ ƒ /api/preferences/cache                           404 B         219 kB
+├ ƒ /api/suggest-followups                           405 B         219 kB
+├ ƒ /api/text-editor                                 404 B         219 kB
+├ ƒ /api/tools/collect-contact                       405 B         219 kB
+├ ƒ /api/tools/download-certificate                  403 B         219 kB
+├ ƒ /api/tools/download-resume                       405 B         219 kB
+├ ƒ /api/tools/extract-summary                       404 B         219 kB
+├ ƒ /api/tools/get-contact                           404 B         219 kB
+├ ƒ /api/tools/list-projects                         405 B         219 kB
+├ ƒ /api/tools/navigate-page                         403 B         219 kB
+├ ƒ /api/tools/open-project                          403 B         219 kB
+├ ƒ /api/tools/profile-performance                   404 B         219 kB
+├ ƒ /api/tools/provide-navigation-links              405 B         219 kB
+├ ƒ /api/tools/search-projects-semantic              404 B         219 kB
+├ ƒ /api/tools/trigger-workflow                      403 B         219 kB
+├ ƒ /contact                                        6.9 kB         302 kB
+├ ƒ /credentials                                   9.12 kB         276 kB
+├ ƒ /journey                                       7.02 kB         274 kB
+├ ○ /opengraph-image                                 404 B         219 kB
+├ ƒ /privacy                                         404 B         219 kB
+├ ƒ /projects                                      4.44 kB         286 kB
+├ ● /projects/[slug]                                 395 B         226 kB
+├   ├ /projects/capstone-deadline
+├   ├ /projects/tuel-animation-library
+├   ├ /projects/tuel-selenium-webdriver-restsharp
+├   └ [+9 more paths]
+├ ƒ /projects/[slug]/opengraph-image                 404 B         219 kB
+├ ƒ /projects/ai-tutor                               395 B         226 kB
+├ ƒ /projects/capstone-deadline                      395 B         226 kB
+├ ƒ /projects/developer-cheat-sheets                 395 B         226 kB
+├ ƒ /projects/elon-ai-agent                          359 B         221 kB
+├ ƒ /projects/elon-ai-toolbox                        395 B         226 kB
+├ ƒ /projects/elongpt                                395 B         226 kB
+├ ƒ /projects/lsb-ai-studio                          396 B         226 kB
+├ ƒ /projects/north-glass                            395 B         226 kB
+├ ƒ /projects/oteemo-ai-roadmap                      395 B         226 kB
+├ ƒ /projects/tuel-animation-library                 360 B         221 kB
+├ ƒ /projects/tuel-chatbot                           394 B         226 kB
+├ ƒ /projects/tuel-selenium-webdriver-restsharp      361 B         221 kB
+├ ƒ /recruiter                                       395 B         226 kB
+├ ○ /robots.txt                                      404 B         219 kB
+├ ○ /sitemap.xml                                     404 B         219 kB
+├ ƒ /skills                                        4.19 kB         302 kB
+├ ƒ /status                                        6.97 kB         295 kB
+└ ƒ /terms                                           405 B         219 kB
++ First Load JS shared by all                       219 kB
+  ├ chunks/1be50403-69076864badf86aa.js            36.9 kB
+  ├ chunks/24ea7f70-a327ccfdde34f719.js            54.4 kB
+  ├ chunks/3789-17ffc42d169b9927.js                 124 kB
+  └ other shared chunks (total)                       3 kB
+
+
+ƒ Middleware                                        112 kB
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

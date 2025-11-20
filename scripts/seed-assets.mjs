@@ -8,9 +8,9 @@ if (!existsSync(dir)) {
 
 const files = [
   "Omer_Akben_Resume.pdf",
-  "Omer_Akben_Resume_Extended.pdf",
   "Omer-Akben-AWS-Certificate.pdf",
   "Omer-Akben-NSS-Certificate.pdf",
+  "Omer-Akben-NSS-Cloud-Certificate.pdf",
 ];
 
 for (const file of files) {

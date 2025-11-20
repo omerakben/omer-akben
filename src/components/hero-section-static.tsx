@@ -3,19 +3,7 @@
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  ArrowRight,
-  ChevronDown,
-  Download,
-  Mail,
-  UserCheck,
-} from "lucide-react";
+import { ArrowRight, Download, Mail, UserCheck } from "lucide-react";
 import Link from "next/link";
 
 export function HeroSectionStatic() {
@@ -121,43 +109,22 @@ export function HeroSectionStatic() {
 
               {/* Utility CTA Group */}
               <div className="flex flex-col sm:flex-row gap-3">
-                {/* Download Resume Dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="lg"
-                      aria-label="Download resume options"
-                      className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      Download Resume
-                      <ChevronDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-48">
-                    <DropdownMenuItem asChild>
-                      <a
-                        href="/assets/Omer_Akben_Resume.pdf"
-                        download="Omer_Akben_Resume.pdf"
-                        className="cursor-pointer"
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        Resume (PDF)
-                      </a>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <a
-                        href="/assets/Omer_Akben_Resume_Extended.pdf"
-                        download="Omer_Akben_Resume_Extended.pdf"
-                        className="cursor-pointer"
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        Extended Resume (PDF)
-                      </a>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {/* Download Resume */}
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="lg"
+                  aria-label="Download professional resume"
+                  className="sm:flex-1 border border-border-line bg-surf-1/50 hover:bg-brand-primary hover:text-white hover:border-brand-primary focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surf-0"
+                >
+                  <a
+                    href="/assets/Omer_Akben_Resume.pdf"
+                    download="Omer_Akben_Resume.pdf"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Resume
+                  </a>
+                </Button>
 
                 {/* Contact Omer */}
                 <Button
