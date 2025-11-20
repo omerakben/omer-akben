@@ -4,54 +4,17 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { getLevelColor, skillsData } from "@/data/skills";
+import { skillsData } from "@/data/skills";
 import { SkillIcon } from "@/lib/skill-icons";
 import { motion } from "framer-motion";
-import { Search, Zap } from "lucide-react";
+import { Search, Zap, TrendingUp } from "lucide-react";
 import { useMemo, useState } from "react";
-
-const LEVEL_FILTER_OPTIONS = [
-  "All",
-  "Expert",
-  "Advanced",
-  "Proficient",
-] as const;
-type LevelFilterOption = (typeof LEVEL_FILTER_OPTIONS)[number];
-
-const LEVEL_BUTTON_BASE_CLASSES =
-  "px-5 py-2.5 rounded-full text-sm font-semibold transition-all";
-const LEVEL_INACTIVE_CLASSES =
-  "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50";
-const LEVEL_ACTIVE_STYLES: Record<Exclude<LevelFilterOption, "All">, string> = {
-  Expert: "bg-brand-primary text-surf-0 shadow-lg shadow-brand-primary/30",
-  Advanced: "bg-accent-primary text-white shadow-lg shadow-accent-primary/30",
-  Proficient:
-    "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg",
-};
-const LEVEL_ALL_ACTIVE_CLASSES =
-  "bg-surf-1 text-text-1 border-2 border-brand-primary/40 shadow-lg shadow-brand-primary/20";
-
-function getLevelButtonClasses(
-  level: LevelFilterOption,
-  selectedLevel: LevelFilterOption
-) {
-  if (level !== selectedLevel) {
-    return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_INACTIVE_CLASSES}`;
-  }
-
-  if (level === "All") {
-    return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_ALL_ACTIVE_CLASSES}`;
-  }
-
-  return `${LEVEL_BUTTON_BASE_CLASSES} ${LEVEL_ACTIVE_STYLES[level]}`;
-}
 
 // Note: Metadata export not supported in Client Components
 // SEO handled by root layout
 
 export default function SkillsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState<LevelFilterOption>("All");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   // Get unique categories
@@ -59,7 +22,7 @@ export default function SkillsPage() {
     return ["All", ...skillsData.map((cat) => cat.category)];
   }, []);
 
-  // Filter skills based on search query, level, and category
+  // Filter skills based on search query and category
   const filteredSkillsData = useMemo(() => {
     return skillsData
       .map((skillCategory) => {
@@ -71,14 +34,16 @@ export default function SkillsPage() {
           return null;
         }
 
-        // Filter skills by search query and level
+        // Filter skills by search query (now includes context fields)
         const filteredSkills = skillCategory.skills.filter((skill) => {
-          const matchesSearch = skill.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
-          const matchesLevel =
-            selectedLevel === "All" || skill.level === selectedLevel;
-          return matchesSearch && matchesLevel;
+          const searchLower = searchQuery.toLowerCase();
+          const matchesName = skill.name.toLowerCase().includes(searchLower);
+          const matchesContext = skill.context?.toLowerCase().includes(searchLower);
+          const matchesExperience = skill.experience?.toLowerCase().includes(searchLower);
+          const matchesProjects = skill.projects?.some(p => p.toLowerCase().includes(searchLower));
+          const matchesMetrics = skill.metrics?.toLowerCase().includes(searchLower);
+
+          return matchesName || matchesContext || matchesExperience || matchesProjects || matchesMetrics;
         });
 
         // Only return category if it has matching skills
@@ -92,7 +57,7 @@ export default function SkillsPage() {
         };
       })
       .filter((category) => category !== null);
-  }, [searchQuery, selectedLevel, selectedCategory]);
+  }, [searchQuery, selectedCategory]);
 
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8">
@@ -119,112 +84,32 @@ export default function SkillsPage() {
               />
             </div>
 
-            {/* Filter Pills */}
-            <div className="space-y-5">
-              {/* Level Filter */}
-              <div>
-                <label className="text-text-2 font-semibold text-sm mb-3 block">
-                  Proficiency Level
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {LEVEL_FILTER_OPTIONS.map((level) => (
-                    <button
-                      key={level}
-                      onClick={() => setSelectedLevel(level)}
-                      className={`${getLevelButtonClasses(level, selectedLevel)} focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none`}
-                    >
-                      {level}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Category Filter */}
-              <div>
-                <label className="text-text-2 font-semibold text-sm mb-3 block">
-                  Category
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none ${
-                        selectedCategory === category
-                          ? "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg"
-                          : "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50"
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Legend */}
-        <Card className="mb-12 border-brand-primary/20 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5">
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-start gap-3 p-4 bg-surf-0/50 rounded-xl border border-border-line">
-                <div className="shrink-0">
-                  <Badge
-                    className={`${getLevelColor("Expert")} text-xs font-bold`}
+            {/* Category Filter */}
+            <div>
+              <label className="text-text-2 font-semibold text-sm mb-3 block">
+                Category
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none ${
+                      selectedCategory === category
+                        ? "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg"
+                        : "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50"
+                    }`}
                   >
-                    Expert
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-text-1 font-medium text-sm mb-1">
-                    Expert Level
-                  </p>
-                  <p className="text-text-3 text-xs">
-                    Production experience & deep knowledge
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-4 bg-surf-0/50 rounded-xl border border-border-line">
-                <div className="shrink-0">
-                  <Badge
-                    className={`${getLevelColor("Advanced")} text-xs font-bold`}
-                  >
-                    Advanced
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-text-1 font-medium text-sm mb-1">
-                    Advanced Level
-                  </p>
-                  <p className="text-text-3 text-xs">
-                    Strong working knowledge
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-4 bg-surf-0/50 rounded-xl border border-border-line">
-                <div className="shrink-0">
-                  <Badge
-                    className={`${getLevelColor("Proficient")} text-xs font-bold`}
-                  >
-                    Proficient
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-text-1 font-medium text-sm mb-1">
-                    Proficient Level
-                  </p>
-                  <p className="text-text-3 text-xs">Working knowledge</p>
-                </div>
+                    {category}
+                  </button>
+                ))}
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Results Count */}
-        {(searchQuery ||
-          selectedLevel !== "All" ||
-          selectedCategory !== "All") && (
+        {(searchQuery || selectedCategory !== "All") && (
           <Card className="mb-6 border-border-line">
             <CardContent className="py-4">
               <div className="flex items-center justify-between">
@@ -247,7 +132,6 @@ export default function SkillsPage() {
                 <button
                   onClick={() => {
                     setSearchQuery("");
-                    setSelectedLevel("All");
                     setSelectedCategory("All");
                   }}
                   className="text-sm text-text-3 hover:text-brand-primary transition-colors font-medium"
@@ -276,7 +160,6 @@ export default function SkillsPage() {
                 <button
                   onClick={() => {
                     setSearchQuery("");
-                    setSelectedLevel("All");
                     setSelectedCategory("All");
                   }}
                   className="px-6 py-3 bg-gradient-to-r from-brand-primary to-accent-primary text-white rounded-full font-semibold hover:opacity-90 transition-opacity shadow-lg"
@@ -295,7 +178,7 @@ export default function SkillsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
               >
-                <Card className="border-border-line hover:border-brand-primary/40 transition-all">
+                <Card className="border-border-line hover:border-brand-primary/60 transition-all">
                   <CardHeader className="border-b border-border-line bg-surf-1/50">
                     <CardTitle className="text-2xl flex items-center gap-3">
                       <div className="w-2 h-8 bg-gradient-to-b from-brand-primary to-accent-primary rounded-full"></div>
@@ -310,24 +193,56 @@ export default function SkillsPage() {
                       {skillCategory.skills.map((skill) => (
                         <div
                           key={skill.name}
-                          className="group flex items-center justify-between p-4 bg-surf-0 border-2 border-border-line rounded-xl hover:border-brand-primary hover:shadow-lg hover:shadow-brand-primary/10 transition-all"
+                          className="group flex flex-col p-4 bg-surf-0 border-2 border-border-line rounded-xl hover:border-brand-primary hover:shadow-lg hover:shadow-brand-primary/10 transition-all"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 flex items-center justify-center group-hover:from-brand-primary/20 group-hover:to-accent-primary/20 transition-all border border-border-line group-hover:border-brand-primary/30">
-                              <SkillIcon
-                                skillName={skill.name}
-                                className="w-5 h-5 text-brand-primary group-hover:scale-110 transition-transform"
-                              />
+                          {/* Skill Header */}
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 flex items-center justify-center group-hover:from-brand-primary/20 group-hover:to-accent-primary/20 transition-all border border-border-line group-hover:border-brand-primary/30">
+                                <SkillIcon
+                                  skillName={skill.name}
+                                  className="w-5 h-5 text-brand-primary group-hover:scale-110 transition-transform"
+                                />
+                              </div>
+                              <span className="text-text-1 font-semibold">
+                                {skill.name}
+                              </span>
                             </div>
-                            <span className="text-text-1 font-medium">
-                              {skill.name}
-                            </span>
+                            {skill.experience && (
+                              <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 text-xs font-semibold shrink-0">
+                                {skill.experience}
+                              </Badge>
+                            )}
                           </div>
-                          <Badge
-                            className={`${getLevelColor(skill.level)} text-xs font-bold`}
-                          >
-                            {skill.level}
-                          </Badge>
+
+                          {/* Context */}
+                          {skill.context && (
+                            <p className="text-text-2 text-sm mb-2 leading-relaxed">
+                              {skill.context}
+                            </p>
+                          )}
+
+                          {/* Projects */}
+                          {skill.projects && skill.projects.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mb-2">
+                              {skill.projects.map((project) => (
+                                <Badge
+                                  key={project}
+                                  className="bg-surf-1 text-text-2 border-border-line hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 transition-colors text-xs"
+                                >
+                                  {project}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Metrics */}
+                          {skill.metrics && (
+                            <div className="flex items-center gap-1.5 text-xs text-brand-primary/90 font-semibold mt-auto pt-2">
+                              <TrendingUp className="w-3.5 h-3.5 text-brand-primary" />
+                              <span className="text-text-1/90">{skill.metrics}</span>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
