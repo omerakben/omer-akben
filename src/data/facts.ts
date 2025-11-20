@@ -175,7 +175,7 @@ export const facts = {
     {
       degree: "Software Development Engineer in Test (SDET)",
       institution: "TechCenture Academy",
-      year: "2019 - 2020",
+      year: "2018 - 2019",
       specialization: "QA Automation",
       description:
         "Comprehensive SDET training program focusing on test automation frameworks and quality engineering practices. Covered Java and C# programming, Selenium WebDriver, Cucumber, and SpecFlow for Behavior-Driven Development (BDD), Test-Driven Development (TDD) methodologies, and CI/CD integration with Jenkins and Azure DevOps.",

@@ -394,7 +394,7 @@ export const skillsData: SkillCategory[] = [
         name: "Vitest",
         experience: "Since 2024",
         context: "Unit testing for Vite projects",
-        metrics: "776/776 tests passing",
+        metrics: "792/792 tests passing",
       },
     ],
   },

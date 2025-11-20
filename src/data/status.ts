@@ -226,7 +226,7 @@ export const statusData: StatusData = {
     {
       id: "quality",
       title: "Quality Gates",
-      summary: "801 tests (777 passing), 0 TS errors, 6 automated gates in CI/CD",
+      summary: "792 tests (792 passing), 0 TS errors, 6 automated gates in CI/CD",
       badge: "Live",
     },
     {
