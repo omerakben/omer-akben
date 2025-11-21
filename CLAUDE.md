@@ -281,7 +281,7 @@ These rules apply to ALL work, regardless of agent or skill:
 ```
 ✅ TypeScript:    0 errors
 ✅ ESLint:        0 errors, 0 warnings
-✅ Unit Tests:    776/776 passing (100%)
+✅ Unit Tests:    814/814 passing (100%)
 ✅ E2E Tests:     66 passing, 14 skipped (OpenAI/WIP modal timing)
 ✅ Bundle Size:   7.73KB / 40KB homepage (within limits)
 ✅ Accessibility: 8/8 routes WCAG 2A compliant
