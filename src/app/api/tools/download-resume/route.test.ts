@@ -34,23 +34,14 @@ describe("POST /api/tools/download-resume", () => {
       }
     });
 
-    it("should return extended resume info for extended format", async () => {
+    it("should reject extended format (no longer supported)", async () => {
       const req = createMockRequest({ format: "extended" });
       const response = await POST(req);
       const json = await getResponseJson(response);
 
-      expect(response.status).toBe(200);
-      expect(isSuccessResponse(json)).toBe(true);
-
-      if (isSuccessResponse(json)) {
-        expect(json.data).toMatchObject({
-          url: "/assets/Omer_Akben_Resume_Extended.pdf",
-          filename: "Omer_Akben_Resume_Extended.pdf",
-          format: "pdf",
-          size: expect.any(Number),
-          googleDriveUrl: expect.stringContaining("drive.google.com"),
-        });
-      }
+      // Should fail - only "resume" format is accepted (literal type)
+      expect(response.status).toBe(400);
+      expect(isErrorResponse(json)).toBe(true);
     });
 
     it("should include all required fields in response", async () => {

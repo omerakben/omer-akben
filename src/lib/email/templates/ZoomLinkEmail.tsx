@@ -73,21 +73,19 @@ export const ZoomLinkEmail = ({
           <Section style={divider} />
 
           <Text style={text}>
-            <strong>Resume Downloads (PDF):</strong>
+            <strong>Professional Resume (PDF - 2 pages, 88KB):</strong>
             <br />
             <Link
-              href="https://drive.google.com/file/d/1La3VElM0vVNJDz867bUIXDb1HggHFYQL/view?usp=sharing"
+              href="https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing"
               style={resumeLink}
             >
-              → Original Resume
+              → Download Resume
             </Link>
             <br />
-            <Link
-              href="https://drive.google.com/file/d/1LiK6Q6BpnbfitPR-diaWR3ckGFv7yNFo/view?usp=sharing"
-              style={resumeLink}
-            >
-              → Extended Resume (with detailed projects)
-            </Link>
+            <span style={{ fontSize: "13px", color: "#666" }}>
+              Comprehensive resume covering 6+ years of AI/ML engineering and QA
+              automation experience
+            </span>
           </Text>
 
           <Section style={divider} />

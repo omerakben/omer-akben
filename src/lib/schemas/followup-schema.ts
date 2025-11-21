@@ -76,7 +76,7 @@ export const FollowupSuggestion = z.object({
   args: z.object({
     slug: z.string().optional(),                           // Project slug for open_project
     url: z.string().url().optional(),                      // Full URL for navigation
-    format: z.enum(["resume", "extended"]).optional(),     // Resume format
+    format: z.literal("resume").optional(),                // Resume format (single unified format)
     category: z.string().optional(),                       // Project category filter
     query: z.string().optional()                           // Search query
   }).optional()

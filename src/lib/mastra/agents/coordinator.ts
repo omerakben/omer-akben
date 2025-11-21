@@ -104,11 +104,9 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     context: AgentExecutionContext
   ): Promise<AISDKV5OutputStream | null> {
     const query = extractLatestUserText(context.history);
-    console.error("[Coordinator] Query:", query);
 
     // Route to agent based on intent
     const intent = classifyIntent(query);
-    console.error("[Coordinator] Intent:", intent);
 
     let route = ROUTES[intent];
     if (!route) {
@@ -118,15 +116,11 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     // For OZZY queries, also classify complexity to select appropriate model
     if (intent === "ozzy") {
       const complexity = classifyQuery(query);
-      console.error("[Coordinator] Complexity:", complexity);
 
       // Simple queries (factual lookups) → ozzyFastAgent (70-85% faster)
       // Complex queries (reasoning/analysis) → ozzyAgent (better quality)
       if (complexity === "simple") {
         route = { agent: ozzyFastAgent, instructions: buildOzzyInstructions };
-        console.error("[Coordinator] Using ozzyFastAgent (non-reasoning model)");
-      } else {
-        console.error("[Coordinator] Using ozzyAgent (reasoning model)");
       }
     }
 
@@ -141,11 +135,6 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
       maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
     });
 
-    console.error("[Coordinator] Agent stream created, type:", typeof stream);
-    console.error(
-      "[Coordinator] Has toUIMessageStreamResponse:",
-      !!stream?.toUIMessageStreamResponse
-    );
     return stream as AISDKV5OutputStream;
   }
 }

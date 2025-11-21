@@ -186,7 +186,7 @@ export const statusData: StatusData = {
     {
       id: "portfolio",
       title: "Portfolio Core",
-      summary: "10 projects, skills matrix, journey timeline, credentials",
+      summary: "12 projects, skills matrix, journey timeline, credentials",
       badge: "MVP",
       link: "/projects",
     },
@@ -226,13 +226,13 @@ export const statusData: StatusData = {
     {
       id: "quality",
       title: "Quality Gates",
-      summary: "856 tests, 0 TS errors, 6 automated gates in CI/CD",
+      summary: "792 tests (792 passing), 0 TS errors, 6 automated gates in CI/CD",
       badge: "Live",
     },
     {
       id: "performance",
       title: "Performance",
-      summary: "7.73KB homepage, 90% bundle reduction, sub-second loads",
+      summary: "7.19KB homepage, 90% bundle reduction, sub-second loads",
       badge: "Live",
     },
     {
@@ -275,7 +275,7 @@ export const statusData: StatusData = {
       ],
     },
     {
-      date: "2025-11-09",
+      date: "2025-11-07",
       title: "XAI Grok Migration for Follow-ups",
       details: [
         "Migrated follow-up generation to grok-2-1212 primary",

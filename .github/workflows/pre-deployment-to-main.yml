@@ -32,8 +32,8 @@ jobs:
       - name: 🔍 Gate 2/6 - TypeScript (strict, 0 errors)
         run: npx tsc --noEmit
 
-      # Gate 3: Unit Tests (541/541 passing)
-      - name: 🔍 Gate 3/6 - Unit Tests (541/541 passing)
+      # Gate 3: Unit Tests (792/792 passing)
+      - name: 🔍 Gate 3/6 - Unit Tests (792/792 passing)
         run: npm test -- --run
         env:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
@@ -141,7 +141,7 @@ jobs:
           All 6 quality gates passed:
           ✅ ESLint (0 errors)
           ✅ TypeScript (0 errors)
-          ✅ Unit Tests (541/541 passing)
+          ✅ Unit Tests (792/792 passing)
           ✅ Production Build (success)
           ✅ Bundle Size (within limits)
           ✅ E2E Tests (8/8 routes WCAG 2A)

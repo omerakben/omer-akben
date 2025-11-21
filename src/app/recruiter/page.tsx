@@ -7,10 +7,8 @@ import {
   Award,
   Briefcase,
   Clock,
-  DollarSign,
   Download,
   ExternalLink,
-  Eye,
   FileText,
   FileUser,
   Linkedin,
@@ -39,7 +37,6 @@ const tldr = {
     .concat(facts.skills.frontend.slice(0, 2))
     .concat(facts.skills.aiml.slice(0, 2)),
   preferredRoles: facts.professional.workPreferences.roles,
-  salary: "Competitive (Open to discussion)",
 };
 
 export default function RecruiterPage() {
@@ -113,6 +110,23 @@ export default function RecruiterPage() {
                   <Award className="w-4 h-4 mr-2" />
                   AWS Certified
                 </Badge>
+              </div>
+
+              {/* Primary CTA - Download Resume */}
+              <div className="pt-6">
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full sm:w-auto px-8 bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg hover:shadow-xl transition-all"
+                >
+                  <a
+                    href="/assets/Omer_Akben_Resume.pdf"
+                    download="Omer_Akben_Resume.pdf"
+                  >
+                    <Download className="mr-2 h-5 w-5" />
+                    Download Resume
+                  </a>
+                </Button>
               </div>
             </div>
           </div>
@@ -255,7 +269,7 @@ export default function RecruiterPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Key Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-gradient-to-br from-brand-primary/5 to-transparent border border-border-line">
                 <Clock className="h-5 w-5 text-brand-primary mb-2" />
                 <p className="text-xs font-medium text-text-2 mb-1">
@@ -274,12 +288,6 @@ export default function RecruiterPage() {
                 <p className="text-lg font-bold text-text-1">
                   {tldr.experience}
                 </p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/5 to-transparent border border-border-line">
-                <DollarSign className="h-5 w-5 text-emerald-600 mb-2" />
-                <p className="text-xs font-medium text-text-2 mb-1">Salary</p>
-                <p className="text-lg font-bold text-text-1">{tldr.salary}</p>
               </div>
             </div>
 
@@ -364,14 +372,15 @@ export default function RecruiterPage() {
                   <FileText className="h-4 w-4 text-brand-primary" />
                   Resume
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Resume PDF */}
+                <div className="max-w-md">
+                  {/* Professional Resume PDF */}
                   <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-brand-primary" />
-                      <h3 className="font-medium text-text-1">Resume (PDF)</h3>
+                      <h3 className="font-medium text-text-1">Professional Resume (PDF)</h3>
                     </div>
-                    <p className="text-xs text-text-2">PDF • ~55KB</p>
+                    <p className="text-xs text-text-2">Comprehensive 2-page PDF • 88KB</p>
+                    <p className="text-xs text-text-3">6+ years of AI/ML engineering and QA automation experience</p>
                     <div className="space-y-1.5">
                       <Button
                         asChild
@@ -382,33 +391,6 @@ export default function RecruiterPage() {
                         <a
                           href="/assets/Omer_Akben_Resume.pdf"
                           download="Omer_Akben_Resume.pdf"
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download PDF
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Extended Resume PDF */}
-                  <div className="p-4 border border-border-line rounded-lg bg-surf-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-brand-primary" />
-                      <h3 className="font-medium text-text-1">
-                        Extended Resume (PDF)
-                      </h3>
-                    </div>
-                    <p className="text-xs text-text-2">PDF • ~110KB</p>
-                    <div className="space-y-1.5">
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                      >
-                        <a
-                          href="/assets/Omer_Akben_Resume_Extended.pdf"
-                          download="Omer_Akben_Resume_Extended.pdf"
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Download PDF
@@ -430,111 +412,57 @@ export default function RecruiterPage() {
                     <p className="text-sm font-medium text-text-1 mb-2">
                       Nashville Software School Graduate (2025)
                     </p>
-                    <div className="flex gap-2">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="flex-1 bg-gradient-to-r from-brand-primary to-accent-primary"
+                    <Button
+                      asChild
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                    >
+                      <a
+                        href="/assets/Omer-Akben-NSS-Certificate.pdf"
+                        download="Omer_Akben_NSS_Certificate.pdf"
                       >
-                        <a
-                          href="/assets/Omer-Akben-NSS-Certificate.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show Certificate
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        title="Download PDF"
-                      >
-                        <a
-                          href="/assets/Omer-Akben-NSS-Certificate.pdf"
-                          download="Omer_Akben_NSS_Certificate.pdf"
-                          aria-label="Download Nashville Software School Certificate PDF"
-                        >
-                          <Download className="h-4 w-4" />
-                        </a>
-                      </Button>
-                    </div>
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Certificate
+                      </a>
+                    </Button>
                   </div>
 
                   <div className="p-3 border border-border-line rounded-lg bg-surf-1">
                     <p className="text-sm font-medium text-text-1 mb-2">
                       NSS Cloud Deployment Certificate (2025)
                     </p>
-                    <div className="flex gap-2">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="flex-1 bg-gradient-to-r from-brand-primary to-accent-primary"
+                    <Button
+                      asChild
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                    >
+                      <a
+                        href="/assets/Omer-Akben-NSS-Cloud-Certificate.pdf"
+                        download="Omer_Akben_NSS_Cloud_Certificate.pdf"
                       >
-                        <a
-                          href="/assets/Omer-Akben-NSS-Cloud-Certificate.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show Certificate
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        title="Download PDF"
-                      >
-                        <a
-                          href="/assets/Omer-Akben-NSS-Cloud-Certificate.pdf"
-                          download="Omer_Akben_NSS_Cloud_Certificate.pdf"
-                          aria-label="Download NSS Cloud Deployment Certificate PDF"
-                        >
-                          <Download className="h-4 w-4" />
-                        </a>
-                      </Button>
-                    </div>
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Certificate
+                      </a>
+                    </Button>
                   </div>
 
                   <div className="p-3 border border-border-line rounded-lg bg-surf-1">
                     <p className="text-sm font-medium text-text-1 mb-2">
                       AWS Cloud Practitioner Essentials (2022)
                     </p>
-                    <div className="flex gap-2">
-                      <Button
-                        asChild
-                        size="sm"
-                        className="flex-1 bg-gradient-to-r from-brand-primary to-accent-primary"
+                    <Button
+                      asChild
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                    >
+                      <a
+                        href="/assets/Omer-Akben-AWS-Certificate.pdf"
+                        download="Omer_Akben_AWS_Certificate.pdf"
                       >
-                        <a
-                          href="/assets/Omer-Akben-AWS-Certificate.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Show Certificate
-                          <ExternalLink className="ml-2 h-3 w-3 opacity-70" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        title="Download PDF"
-                      >
-                        <a
-                          href="/assets/Omer-Akben-AWS-Certificate.pdf"
-                          download="Omer_Akben_AWS_Certificate.pdf"
-                          aria-label="Download AWS Certificate PDF"
-                        >
-                          <Download className="h-4 w-4" />
-                        </a>
-                      </Button>
-                    </div>
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Certificate
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>
