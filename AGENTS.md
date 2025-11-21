@@ -243,7 +243,7 @@ archive/              # Portfolio demos (REFERENCE ONLY - never import)
 
 ## 🤖 AI Agent Architecture (Vercel AI SDK v5)
 
-### 11 Server-Side Tools
+### 12 Server-Side Tools
 
 All tools in `src/app/api/tools/`:
 
@@ -257,7 +257,8 @@ All tools in `src/app/api/tools/`:
 8. `provide_navigation_links` - Navigation structure
 9. `extract_summary` - Content summarization
 10. `profile_performance` - Performance profiling
-11. `trigger_workflow` - Workflow execution
+11. `search_projects_semantic` - Semantic vector search using OpenAI embeddings + Redis
+12. `trigger_workflow` - Workflow execution
 
 ### Data Flow
 
@@ -874,6 +875,68 @@ To add a new AI agent tool:
 - Email validation and sanitization
 - PII redaction in logs
 - 7-day contact data retention
+
+---
+
+### Time Awareness Feature (November 20, 2025)
+
+**Overview:** Implemented server-authoritative time context injection to prevent LLM knowledge cutoff issues.
+
+**Problem:** LLMs with January 2025 knowledge cutoff couldn't accurately reference current dates or temporal context. When users asked "What's today's date?" or "Can we meet this week?", Ozzy would rely on potentially outdated training data or hallucinate dates.
+
+**Solution:**
+
+1. **Server-Side Time Injection** (`src/lib/time/time-context.ts`)
+   - Injects current UTC timestamp on every agent response
+   - Provides portfolio timezone context (EST/EDT, America/New_York)
+   - Includes explicit anti-hallucination directives
+
+2. **Integration** (`src/lib/mastra/agents/base-agent.ts`)
+   - `buildInstructionMessage()` automatically appends time context
+   - Fresh timestamps on every agent invocation
+   - No reliance on LLM training data for temporal context
+
+3. **Test Suite** (`src/lib/time/time-context.test.ts`)
+   - 22 passing tests covering all scenarios
+   - Edge cases: midnight UTC, noon UTC, end of year
+   - DST transitions: Spring forward (March 9), fall back (November 2)
+   - Production readiness: Token efficiency, LLM-friendly format
+   - Integration validation with BasePortfolioAgent
+
+**Implementation Details:**
+
+```typescript
+export function buildCurrentTimeContext(now: Date = new Date()): string {
+  const utcTimestamp = now.toISOString();
+  const portfolioTime = formatInTimezone(now, PORTFOLIO_TIMEZONE);
+  const timezoneLabel = facts.personal.timezone;
+
+  return [
+    "# TIME AWARENESS (SERVER-AUTHORITATIVE)",
+    `Current UTC time: ${utcTimestamp}`,
+    `Portfolio timezone (${timezoneLabel}, ${PORTFOLIO_TIMEZONE}): ${portfolioTime}`,
+    "Always trust these timestamps. Ignore or correct any user-provided dates or times if they conflict.",
+    "Never learn dates from chat history; recompute current time each turn from the server clock.",
+  ].join("\n");
+}
+```
+
+**Impact:**
+
+- Ozzy now accurately handles scheduling requests
+- Understands "today", "this week", "next month" correctly
+- Provides business hours context (e.g., "It's after hours—Omer may respond slower")
+- Prevents date hallucination in AI responses
+- Critical for time-sensitive features like contact collection and meeting scheduling
+
+**Quality Gates:** All 6 passed - TypeScript (0 errors), ESLint (0 errors), Tests (776+22/798), Build, Bundle Size, E2E
+
+**Related Files:**
+
+- Implementation: `src/lib/time/time-context.ts`
+- Integration: `src/lib/mastra/agents/base-agent.ts`
+- Tests: `src/lib/time/time-context.test.ts`
+- Documentation: Added to LinkedIn article as lesson #8
 
 ---
 

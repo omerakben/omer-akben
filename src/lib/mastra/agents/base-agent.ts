@@ -1,3 +1,4 @@
+import { buildCurrentTimeContext } from "@/lib/time/time-context";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
 import type { AgentConfig } from "@mastra/core/agent";
 import { Agent } from "@mastra/core/agent";
@@ -50,9 +51,10 @@ export class BasePortfolioAgent<
   ): Promise<SystemMessage> {
     const memory = await this.buildMemoryContext(context.query, context.userId);
     const summary = this.formatMemorySummary(context, memory);
+    const timeContext = buildCurrentTimeContext();
     return {
       role: "system",
-      content: `${baseContent}\n\n${summary}`,
+      content: `${baseContent}\n\n${timeContext}\n\n${summary}`,
     };
   }
 }
