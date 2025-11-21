@@ -117,6 +117,19 @@ npm run analyze
 - LLM metrics
 - Model configuration
 
+### AI/LLM Engineering
+
+**Agent:** `ai-engineer-specialist`
+
+- AI agent tools implementation
+- Vercel AI SDK patterns (streaming, tool calling)
+- Memory systems (episodic/semantic)
+- LLM optimization and fallback strategies
+- Knowledge base governance
+- XAI/OpenAI integration
+
+**Skills:** aI-agent-implementation
+
 ---
 
 ## 📚 Skills Library (Organized by Category)
@@ -127,17 +140,17 @@ npm run analyze
 8-mode brightness system, CSS custom properties, color tokens
 *Use when:* Implementing theme switching, fixing color issues
 
-**hydration-safety-skill** ⭐ NEW
+**hydration-safety-skill**
 Next.js SSR patterns, isMounted pattern, browser API safety
 *Use when:* Fixing hydration errors, using localStorage/window
 
-**data-architecture-skill** (coming Phase 2)
+**data-architecture-skill**
 facts.ts patterns, single source of truth, type safety
 *Use when:* Working with project data, adding new facts
 
-**mastra-agent-skill** (coming Phase 4)
-Agent architecture, tool creation, workflows
-*Use when:* Creating new AI agents or tools
+**aI-agent-implementation-skill**
+Step-by-step checklist for implementing new AI agent tools
+*Use when:* Creating new agent tools, API routes, extending agent capabilities
 
 ### 🧪 Testing & Quality
 
@@ -147,11 +160,11 @@ Unit tests, E2E tests, quality gate execution
 
 ### ⚡ Performance & Optimization
 
-**bundle-optimization-skill** (coming Phase 2)
+**bundle-optimization-skill**
 Icon manifest, tree-shaking, bundle analysis
 *Use when:* Reducing bundle size, optimizing imports
 
-**redis-integration-skill** (coming Phase 2)
+**redis-integration-skill**
 Rate limiting, caching, vector search, memory systems
 *Use when:* Working with Redis/Upstash
 
@@ -160,10 +173,6 @@ Rate limiting, caching, vector search, memory systems
 **environment-configuration-skill**
 Environment variables, API keys, deployment config
 *Use when:* Setting up env vars, adding secrets
-
-**api-security-skill** (coming Phase 4)
-Input validation, security headers, PII protection
-*Use when:* Creating secure API routes
 
 ### 🚀 Infrastructure & Deployment
 
@@ -188,14 +197,10 @@ Step-by-step workflow for creating new AI agent tools
 **create-feature**
 Feature development workflow with quality checks
 
-**create-skill** (coming Phase 3)
-Template for creating new skill documentation
-
-**debug-hydration** (coming Phase 3)
-Common hydration debugging steps
-
-**analyze-bundle** (coming Phase 3)
-Bundle size investigation workflow
+**use-prompt-template**
+Access 17 prompt templates for consistent project work
+Supports #PLAN#, #ACTION#, #RESEARCH# workflow modes
+Templates for development, optimization, research, infrastructure, documentation
 
 ---
 
@@ -259,6 +264,9 @@ These rules apply to ALL work, regardless of agent or skill:
 
 ### Recent Updates (Last 30 Days)
 
+- ✅ Server-authoritative time context (prevents LLM knowledge cutoff issues)
+- ✅ Time context test suite (22 passing tests, DST handling, edge cases)
+- ✅ Semantic project search tool (vector similarity with OpenAI embeddings)
 - ✅ Professional screenshots for 7 featured projects (4 new image directories)
 - ✅ Elon University IP acknowledgments across 4 university projects
 - ✅ Dynamic knowledge base architecture (hybrid template approach)
@@ -320,9 +328,9 @@ src/
 └── config/           # Configuration files
 
 .claude/              # Claude Code configuration
-├── agents/           # 7 specialized agents
-├── commands/         # 3 quick commands
-└── skills/           # 6 skills (growing)
+├── agents/           # 8 specialized agents
+├── commands/         # 4 quick commands
+└── skills/           # 9 skills
 
 archive/              # Reference only (never import)
 ```
@@ -333,7 +341,7 @@ archive/              # Reference only (never import)
 
 ---
 
-## 🤖 AI Agent System (11 Server-Side Tools)
+## 🤖 AI Agent System (12 Server-Side Tools)
 
 All tools in `src/app/api/tools/`:
 
@@ -347,7 +355,8 @@ All tools in `src/app/api/tools/`:
 8. **provide_navigation_links** - Navigation structure
 9. **extract_summary** - Content summarization
 10. **profile_performance** - Performance profiling
-11. **trigger_workflow** - Workflow execution
+11. **search_projects_semantic** - Semantic vector search using OpenAI embeddings
+12. **trigger_workflow** - Workflow execution
 
 ### Data Flow
 
