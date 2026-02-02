@@ -25,7 +25,10 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("next/link", () => ({
   __esModule: true,
-  default: ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) =>
+  default: ({
+    children,
+    ...props
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) =>
     React.createElement("a", props, children),
 }));
 
@@ -43,21 +46,21 @@ vi.mock("framer-motion", async () => {
       {},
       {
         get: (_, prop: string) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const Component = ({ children, ...props }: any) => {
+          const Component = ({
+            children,
+            ...props
+          }: React.PropsWithChildren<Record<string, unknown>>) => {
             // Return a simple div for motion components
             return React.createElement("div", props, children);
           };
           Component.displayName = `motion.${prop}`;
           return Component;
         },
-      }
+      },
     ),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    AnimatePresence: ({ children }: any) => children,
+    AnimatePresence: ({ children }: { children?: React.ReactNode }) => children,
     useMotionValue: () => ({ get: () => 0, set: vi.fn() }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useSpring: (value: any) => value,
+    useSpring: (value: unknown) => value,
     useInView: () => true,
   };
 });
