@@ -1,4 +1,4 @@
-import {withSentryConfig} from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import type { NextConfig } from "next";
 import path from "path";
@@ -32,6 +32,16 @@ const nextConfig: NextConfig = {
   // Enable React strict mode for better error detection
   reactStrictMode: true,
 
+  // External packages for server-side to prevent Next.js from bundling react-email
+  // This fixes: "Error: <Html> should not be imported outside of pages/_document"
+  // See: https://github.com/resend/react-email/issues/977
+  serverExternalPackages: [
+    "@react-email/render",
+    "@react-email/components",
+    "@react-email/html",
+    "resend",
+  ],
+
   env: {
     NEXT_PUBLIC_GIT_SHA: resolveGitSha(),
     NEXT_PUBLIC_BUILD_DATE: resolveBuildDate(),
@@ -59,7 +69,6 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [75, 90, 100], // Next.js 16+ compatibility
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

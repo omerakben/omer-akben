@@ -16,14 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Verify environment variables
         run: |
@@ -46,13 +51,13 @@ jobs:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
 
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run TypeScript type check
-        run: npx tsc --noEmit
+        run: pnpm exec tsc --noEmit
 
       - name: Run unit tests
-        run: npm test -- --run
+        run: pnpm test -- --run
         env:
           # Required for tests that use caching and memory
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
@@ -63,7 +68,7 @@ jobs:
           UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
 
       - name: Build production
-        run: npm run build
+        run: pnpm run build
         env:
           # Required for build (page data collection initializes Redis client and Resend email client)
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
@@ -75,7 +80,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - name: Check bundle size
-        run: npm run size
+        run: pnpm run size
         continue-on-error: false # Fail CI if bundle size exceeds limits
 
       - name: Upload build artifacts (on failure)
@@ -98,20 +103,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build application
-        run: npm run build
+        run: pnpm run build
         env:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -122,7 +132,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - name: Run E2E tests
-        run: npm run test:e2e
+        run: pnpm run test:e2e
         env:
           # E2E tests may need API access
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}

@@ -1,4 +1,3 @@
-import { ContactEmail } from "@/lib/email/contact-email-template";
 import { contactFormRateLimit } from "@/lib/rate-limit";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
@@ -70,6 +69,12 @@ export async function POST(req: NextRequest) {
     const validatedData = contactSchema.parse(body);
 
     const { name, email, subject, message } = validatedData;
+
+    // Dynamic import to avoid build-time static analysis of @react-email/components
+    // Next.js incorrectly detects Html from @react-email as next/document Html
+    const { ContactEmail } = await import(
+      "@/lib/email/contact-email-template"
+    );
 
     // Send email via Resend
     const resend = getResendClient();
