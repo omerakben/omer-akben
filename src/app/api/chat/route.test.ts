@@ -24,13 +24,18 @@ vi.mock("@/lib/mastra/agents/coordinator", () => ({
   },
 }));
 
-vi.mock("@/lib/memory/redis-memory", () => ({
-  RedisMemoryManager: vi.fn(() => ({
-    loadSTM: loadSTMMock,
-    saveSTM: saveSTMMock,
-    saveLTM: saveLTMMock,
-  })),
+vi.mock("@/lib/memory/fact-extractor", () => ({
+  extractAndSaveFacts: vi.fn().mockResolvedValue(undefined),
 }));
+
+vi.mock("@/lib/memory/redis-memory", () => {
+  class RedisMemoryManager {
+    loadSTM = loadSTMMock;
+    saveSTM = saveSTMMock;
+    saveLTM = saveLTMMock;
+  }
+  return { RedisMemoryManager };
+});
 
 // Mock toAISdkStream
 vi.mock("@mastra/ai-sdk", () => ({
@@ -42,6 +47,10 @@ vi.mock("@mastra/ai-sdk", () => ({
       },
     });
   }),
+}));
+
+vi.mock("@/lib/followups/generate-and-cache", () => ({
+  generateAndCacheFollowups: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Mock AI SDK's createUIMessageStream to capture onFinish callback

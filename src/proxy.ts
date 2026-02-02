@@ -1,10 +1,10 @@
 /**
- * Next.js Middleware
+ * Next.js Proxy
  *
  * Handles rate limiting for API routes and applies Content Security Policy headers
  * to all responses. Generates cryptographic nonces for CSP script-src directives.
  *
- * @module middleware
+ * @module proxy
  *
  * @features
  * - Rate limiting with Redis (Upstash) - tiered by route
@@ -14,7 +14,7 @@
  *
  * @example
  * ```ts
- * // Automatic middleware execution on all routes
+ * // Automatic proxy execution on all routes
  * // Rate limits applied to /api/* routes
  * // CSP headers applied to all responses
  * ```
@@ -49,7 +49,7 @@ function getRateLimitKey(request: NextRequest): string {
 }
 
 /**
- * Next.js middleware function
+ * Next.js proxy function
  *
  * Executes on every request matching the config matcher.
  * Applies rate limiting to API routes and CSP headers to all routes.
@@ -70,7 +70,7 @@ function getRateLimitKey(request: NextRequest): string {
  * Security trade-off: unsafe-inline in style-src allows CSS injection but prevents JS execution
  * (script-src remains strict with nonce-only). Required for third-party animation libraries.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Generate cryptographic nonce for CSP
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   // Only apply rate limiting to API routes
@@ -160,9 +160,9 @@ export async function middleware(request: NextRequest) {
 }
 
 /**
- * Middleware configuration
+ * Proxy configuration
  *
- * Matcher pattern applies middleware to all routes except Next.js internals.
+ * Matcher pattern applies proxy to all routes except Next.js internals.
  * Excludes _next/static, _next/image, and favicon.ico.
  */
 export const config = {

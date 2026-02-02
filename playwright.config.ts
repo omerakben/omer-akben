@@ -60,7 +60,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run dev",
+    command: "node scripts/playwright-webserver.cjs",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 60 * 1000, // Reduced from 120s based on typical startup time

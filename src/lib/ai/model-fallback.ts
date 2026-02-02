@@ -20,7 +20,7 @@
 import { getPostHogServer } from "@/lib/analytics/posthog-server";
 import { openai } from "@ai-sdk/openai";
 import { xai } from "@ai-sdk/xai";
-import type { CoreMessage } from "ai";
+import type { ModelMessage } from "ai";
 import { generateObject, generateText, streamText } from "ai";
 import type { z } from "zod";
 import { classifyError, retryWithBackoff } from "./error-handler";
@@ -57,7 +57,7 @@ export async function generateWithFallback(
     userId?: string;
   } & (
     | { prompt: string; messages?: never }
-    | { messages: CoreMessage[]; prompt?: never }
+    | { messages: ModelMessage[]; prompt?: never }
   ) & {
       system?: string;
     }
@@ -214,7 +214,7 @@ export async function generateObjectWithFallback<T>(
     userId?: string;
   } & (
     | { prompt: string; messages?: never }
-    | { messages: CoreMessage[]; prompt?: never }
+    | { messages: ModelMessage[]; prompt?: never }
   ) & {
       system?: string;
     }
@@ -383,7 +383,7 @@ export async function streamWithFallback(
     onFallback?: (error: Error) => void;
   } & (
     | { prompt: string; messages?: never }
-    | { messages: CoreMessage[]; prompt?: never }
+    | { messages: ModelMessage[]; prompt?: never }
   ) & {
       system?: string;
     }

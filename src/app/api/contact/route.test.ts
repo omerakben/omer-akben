@@ -11,13 +11,12 @@ const { mockEmailsSend } = vi.hoisted(() => {
 
 // Mock Resend - must be before route import
 vi.mock("resend", () => {
-  return {
-    Resend: vi.fn(() => ({
-      emails: {
-        send: mockEmailsSend,
-      },
-    })),
-  };
+  class Resend {
+    emails = {
+      send: mockEmailsSend,
+    };
+  }
+  return { Resend };
 });
 
 // Mock rate limit

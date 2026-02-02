@@ -12,11 +12,12 @@ vi.mock("@/lib/log", () => ({
   logError: vi.fn(),
 }));
 
-vi.mock("@/lib/memory/redis-memory", () => ({
-  RedisMemoryManager: vi.fn().mockImplementation(() => ({
-    getSemantic: vi.fn().mockResolvedValue(null),
-  })),
-}));
+vi.mock("@/lib/memory/redis-memory", () => {
+  class RedisMemoryManager {
+    getSemantic = vi.fn().mockResolvedValue(null);
+  }
+  return { RedisMemoryManager };
+});
 
 vi.mock("@/lib/followups/dynamic-generator", () => ({
   generateDynamicFollowups: vi.fn(),

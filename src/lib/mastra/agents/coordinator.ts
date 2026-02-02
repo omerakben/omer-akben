@@ -13,6 +13,7 @@ import {
   ozzyFastAgent,
   classifyQuery,
 } from "@/lib/mastra/agents/ozzy-agent";
+import type { MessageListInput } from "@mastra/core/agent/message-list";
 import type { SystemMessage } from "@mastra/core/llm";
 import type { MastraModelOutput } from "@mastra/core/stream";
 import type { UIMessage } from "ai";
@@ -126,14 +127,17 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     }
 
     const instructions = await route.instructions(context);
-    const stream = await route.agent.stream(context.history, {
+    const stream = await route.agent.stream(
+      context.history as unknown as MessageListInput,
+      {
       instructions,
       memory: {
         thread: { id: context.threadId },
         resource: "portfolio-chat",
       },
       maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
-    });
+      }
+    );
 
     return stream;
   }
