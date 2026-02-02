@@ -14,7 +14,7 @@ import {
   classifyQuery,
 } from "@/lib/mastra/agents/ozzy-agent";
 import type { SystemMessage } from "@mastra/core/llm";
-import type { AISDKV5OutputStream } from "@mastra/core/stream";
+import type { MastraModelOutput } from "@mastra/core/stream";
 import type { UIMessage } from "ai";
 
 // Pure regex routing - no LLM knowledge base needed (~5ms latency)
@@ -89,6 +89,7 @@ function classifyIntent(query: string): PortfolioIntent {
 class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
   constructor() {
     super({
+      id: "coordinator",
       name: "coordinator",
       description:
         "Routes chat queries to the correct specialist agent (OZZY or Contact) using pure regex routing (~5ms latency).",
@@ -102,7 +103,7 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
 
   async route(
     context: AgentExecutionContext
-  ): Promise<AISDKV5OutputStream | null> {
+  ): Promise<MastraModelOutput<unknown> | null> {
     const query = extractLatestUserText(context.history);
 
     // Route to agent based on intent
@@ -131,11 +132,10 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
         thread: { id: context.threadId },
         resource: "portfolio-chat",
       },
-      format: "aisdk" as const,
       maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
     });
 
-    return stream as AISDKV5OutputStream;
+    return stream;
   }
 }
 

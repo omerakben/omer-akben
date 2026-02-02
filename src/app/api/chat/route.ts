@@ -4,7 +4,13 @@ import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
 import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
 import { generateAndCacheFollowups } from "@/lib/followups/generate-and-cache";
-import type { UIMessage } from "ai";
+import { toAISdkStream } from "@mastra/ai-sdk";
+import {
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  type UIMessage,
+  type UIMessageStreamWriter,
+} from "ai";
 import { z } from "zod";
 
 export const maxDuration = 30;
@@ -112,29 +118,54 @@ export async function POST(req: Request) {
       return ensureJsonResponse({ error: "Coordinator unavailable" }, 500);
     }
 
-    const response = stream.toUIMessageStreamResponse({
-      onFinish: async ({ messages: final }) => {
+    // Convert Mastra stream to AI SDK compatible format
+    const aiSdkStream = toAISdkStream(stream, {
+      from: "agent",
+      sendStart: true,
+      sendFinish: true,
+    });
+
+    // Create UI message stream that pipes from Mastra stream
+    const uiStream = createUIMessageStream({
+      execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
+        const reader = (
+          aiSdkStream as unknown as ReadableStream
+        ).getReader();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            // Forward chunks to the writer
+            writer.write(value);
+          }
+        } finally {
+          reader.releaseLock();
+        }
+      },
+      originalMessages: messages,
+      onFinish: async ({ messages: finalMessages }) => {
         // Use final messages only if they're actually populated (not empty array)
         // Empty arrays from workflow finish chunks should fall back to original messages
-        const finalMessages = (final && final.length > 0) ? final : messages;
+        const effectiveMessages =
+          finalMessages && finalMessages.length > 0 ? finalMessages : messages;
         const effectiveUserId = userId ?? "anonymous";
 
         try {
           // Auto-inject navigation links if appropriate
-          const lastMessage = finalMessages[finalMessages.length - 1];
+          const lastMessage = effectiveMessages[effectiveMessages.length - 1];
           if (lastMessage) {
             injectNavigationLinksIfNeeded(lastMessage);
           }
 
           // Persist conversation memory, extract facts, and generate follow-ups in parallel
           await Promise.all([
-            memoryManager.saveSTM(chatId, finalMessages),
-            memoryManager.saveLTM(chatId, finalMessages),
-            extractAndSaveFacts(effectiveUserId, finalMessages),
+            memoryManager.saveSTM(chatId, effectiveMessages),
+            memoryManager.saveLTM(chatId, effectiveMessages),
+            extractAndSaveFacts(effectiveUserId, effectiveMessages),
             generateAndCacheFollowups({
               threadId: chatId,
               userId: effectiveUserId,
-              messages: finalMessages,
+              messages: effectiveMessages,
             }),
           ]);
         } catch (error) {
@@ -143,7 +174,8 @@ export async function POST(req: Request) {
       },
     });
 
-    return response;
+    // Return streaming response
+    return createUIMessageStreamResponse({ stream: uiStream });
   } catch (error) {
     logError("chat:POST", error);
     return ensureJsonResponse({ error: "Failed to process chat request" }, 500);

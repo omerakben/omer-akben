@@ -7,7 +7,7 @@ import {
   searchProjectsSemanticSchema,
   triggerWorkflowInputSchema,
 } from "@/lib/tools/zod-schemas";
-import { createTool } from "@mastra/core";
+import { createTool } from '@mastra/core/tools';
 import { z } from "zod";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -34,10 +34,10 @@ export const provideNavigationLinksTool = createTool({
       })
     ),
   }),
-  execute: async ({ context }) => {
+  execute: async (inputData) => {
     return {
       success: true,
-      data: { links: context.links },
+      data: { links: inputData.links },
     };
   },
 });
@@ -46,8 +46,8 @@ export const navigatePageTool = createTool({
   id: "navigate_page",
   description: "Navigate to a specific page on omerakben.com.",
   inputSchema: navigatePageInputSchema,
-  execute: async ({ context }) => {
-    return fetchJson("/api/tools/navigate-page", context);
+  execute: async (inputData) => {
+    return fetchJson("/api/tools/navigate-page", inputData);
   },
 });
 
@@ -56,13 +56,13 @@ export const scrollToSectionTool = createTool({
   description:
     "Scroll to a specific section on the current page using CSS selector or ARIA label.",
   inputSchema: scrollToSectionInputSchema,
-  execute: async ({ context }) => {
+  execute: async (inputData) => {
     return {
       success: true,
       data: {
-        selector: context.selector,
-        behavior: context.behavior,
-        message: `Scrolling to ${context.selector}`,
+        selector: inputData.selector,
+        behavior: inputData.behavior,
+        message: `Scrolling to ${inputData.selector}`,
       },
     };
   },
@@ -72,8 +72,8 @@ export const extractPageSummaryTool = createTool({
   id: "extract_page_summary",
   description: "Extract and summarize the current page content.",
   inputSchema: extractPageSummaryInputSchema,
-  execute: async ({ context }) => {
-    return fetchJson("/api/tools/extract-summary", context);
+  execute: async (inputData) => {
+    return fetchJson("/api/tools/extract-summary", inputData);
   },
 });
 
@@ -82,8 +82,8 @@ export const triggerWorkflowTool = createTool({
   description:
     "Trigger a backend workflow for CRM updates, email notifications, or analytics events.",
   inputSchema: triggerWorkflowInputSchema,
-  execute: async ({ context }) => {
-    return fetchJson("/api/tools/trigger-workflow", context);
+  execute: async (inputData) => {
+    return fetchJson("/api/tools/trigger-workflow", inputData);
   },
 });
 
@@ -92,8 +92,8 @@ export const profilePerformanceTool = createTool({
   description:
     "Profile page performance with Chrome DevTools metrics (development only).",
   inputSchema: profilePerformanceInputSchema,
-  execute: async ({ context }) => {
-    return fetchJson("/api/tools/profile-performance", context);
+  execute: async (inputData) => {
+    return fetchJson("/api/tools/profile-performance", inputData);
   },
 });
 
@@ -113,8 +113,8 @@ export const downloadResumeTool = createTool({
   inputSchema: z.object({
     format: z.literal("resume").default("resume"),
   }),
-  execute: async ({ context }) => {
-    const params = new URLSearchParams({ format: context.format });
+  execute: async (inputData) => {
+    const params = new URLSearchParams({ format: inputData.format });
     const response = await fetch(
       `${BASE_URL}/api/tools/download-resume?${params.toString()}`
     );
@@ -128,8 +128,10 @@ export const listProjectsTool = createTool({
   inputSchema: z.object({
     tag: z.string().optional(),
   }),
-  execute: async ({ context }) => {
-    const query = context.tag ? `?tag=${encodeURIComponent(context.tag)}` : "";
+  execute: async (inputData) => {
+    const query = inputData.tag
+      ? `?tag=${encodeURIComponent(inputData.tag)}`
+      : "";
     const response = await fetch(`${BASE_URL}/api/tools/list-projects${query}`);
     return response.json();
   },
@@ -140,8 +142,8 @@ export const searchProjectsSemanticTool = createTool({
   description:
     "Search portfolio projects using natural language semantic search. Use this when the user asks vague questions like 'projects with machine learning' or 'what have you built with real-time features'.",
   inputSchema: searchProjectsSemanticSchema,
-  execute: async ({ context }) => {
-    return fetchJson("/api/tools/search-projects-semantic", context);
+  execute: async (inputData) => {
+    return fetchJson("/api/tools/search-projects-semantic", inputData);
   },
 });
 
@@ -151,8 +153,8 @@ export const openProjectTool = createTool({
   inputSchema: z.object({
     slug: z.string(),
   }),
-  execute: async ({ context }) => {
-    const params = new URLSearchParams({ slug: context.slug });
+  execute: async (inputData) => {
+    const params = new URLSearchParams({ slug: inputData.slug });
     const response = await fetch(
       `${BASE_URL}/api/tools/open-project?${params.toString()}`
     );
@@ -199,7 +201,7 @@ export const collectContactTool = createTool({
 
   Permission: User providing their name/email counts as consent. You don't need explicit "yes" - asking "how can I contact" implies interest in connecting.`,
   inputSchema: collectContactInputSchema,
-  execute: async ({ context }) => {
-    return fetchJson("/api/tools/collect-contact", context);
+  execute: async (inputData) => {
+    return fetchJson("/api/tools/collect-contact", inputData);
   },
 });
