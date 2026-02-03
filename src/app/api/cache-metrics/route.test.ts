@@ -37,7 +37,7 @@ describe("GET /api/cache-metrics", () => {
 
       const req = createMockGetRequest(
         { type: "embedding" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -65,7 +65,7 @@ describe("GET /api/cache-metrics", () => {
 
       const req = createMockGetRequest(
         { type: "completion", days: "30" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -93,7 +93,7 @@ describe("GET /api/cache-metrics", () => {
 
       const req = createMockGetRequest(
         { type: "embedding", days: "90" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -121,7 +121,7 @@ describe("GET /api/cache-metrics", () => {
 
       const req = createMockGetRequest(
         { type: "completion", days: "1" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -141,7 +141,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for missing type parameter", async () => {
       const req = createMockGetRequest(
         { days: "7" }, // No type param
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -157,7 +157,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for invalid type parameter", async () => {
       const req = createMockGetRequest(
         { type: "invalid", days: "7" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -173,7 +173,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for empty type parameter", async () => {
       const req = createMockGetRequest(
         { type: "", days: "7" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -191,7 +191,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for non-numeric days", async () => {
       const req = createMockGetRequest(
         { type: "embedding", days: "invalid" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -207,7 +207,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for days < 1", async () => {
       const req = createMockGetRequest(
         { type: "embedding", days: "0" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -223,7 +223,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for days > 90", async () => {
       const req = createMockGetRequest(
         { type: "embedding", days: "91" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -239,7 +239,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for negative days", async () => {
       const req = createMockGetRequest(
         { type: "completion", days: "-5" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -255,7 +255,7 @@ describe("GET /api/cache-metrics", () => {
     it("should return 400 for decimal days", async () => {
       const req = createMockGetRequest(
         { type: "embedding", days: "7.5" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -277,7 +277,7 @@ describe("GET /api/cache-metrics", () => {
 
       const req = createMockGetRequest(
         { type: "embedding", days: "7" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -295,7 +295,7 @@ describe("GET /api/cache-metrics", () => {
 
       const req = createMockGetRequest(
         { type: "completion", days: "7" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const response = await GET(req);
@@ -333,11 +333,11 @@ describe("GET /api/cache-metrics", () => {
 
       const req1 = createMockGetRequest(
         { type: "embedding", days: "7" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
       const req2 = createMockGetRequest(
         { type: "completion", days: "30" },
-        { baseUrl: "http://localhost:3000/api/cache-metrics" }
+        { baseUrl: "http://localhost:3001/api/cache-metrics" }
       );
 
       const [response1, response2] = await Promise.all([GET(req1), GET(req2)]);

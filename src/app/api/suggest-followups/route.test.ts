@@ -12,11 +12,12 @@ vi.mock("@/lib/log", () => ({
   logError: vi.fn(),
 }));
 
-vi.mock("@/lib/memory/redis-memory", () => ({
-  RedisMemoryManager: vi.fn().mockImplementation(() => ({
-    getSemantic: vi.fn().mockResolvedValue(null),
-  })),
-}));
+vi.mock("@/lib/memory/redis-memory", () => {
+  class RedisMemoryManager {
+    getSemantic = vi.fn().mockResolvedValue(null);
+  }
+  return { RedisMemoryManager };
+});
 
 vi.mock("@/lib/followups/dynamic-generator", () => ({
   generateDynamicFollowups: vi.fn(),
@@ -30,7 +31,7 @@ import { generateDynamicFollowups } from "@/lib/followups/dynamic-generator";
  * Helper to create mock NextRequest
  */
 function createMockRequest(data: unknown): NextRequest {
-  return new NextRequest("http://localhost:3000/api/suggest-followups", {
+  return new NextRequest("http://localhost:3001/api/suggest-followups", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -221,7 +222,7 @@ describe("POST /api/suggest-followups", () => {
 
   describe("Invalid JSON payload", () => {
     it("should return 400 for invalid JSON", async () => {
-      const req = new NextRequest("http://localhost:3000/api/suggest-followups", {
+      const req = new NextRequest("http://localhost:3001/api/suggest-followups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "invalid json {",

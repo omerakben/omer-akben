@@ -1,4 +1,4 @@
-import { createTool as createMastraTool } from "@mastra/core";
+import { createTool as createMastraTool } from '@mastra/core/tools';
 import type { Tool as AiTool, ToolCallOptions } from "ai";
 import type { ZodTypeAny } from "zod";
 
@@ -52,11 +52,9 @@ const adaptAiToolToMastra = <Input, Output>(
     // Runtime validation ensures these are valid Zod schemas
     inputSchema: aiTool.inputSchema as unknown as ZodTypeAny,
     outputSchema: aiTool.outputSchema as unknown as ZodTypeAny,
-    execute: async ({ context }, options) =>
-      aiTool.execute!(
-        context as Input,
-        (options ?? {}) as ToolCallOptions
-      ),
+    // Mastra v1 signature: execute(inputData, context)
+    execute: async (inputData) =>
+      aiTool.execute!(inputData as Input, {} as ToolCallOptions),
   });
 };
 

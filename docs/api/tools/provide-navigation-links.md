@@ -109,7 +109,7 @@ POST /api/tools/provide-navigation-links
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
+curl -X POST http://localhost:3001/api/tools/provide-navigation-links \
   -H "Content-Type: application/json" \
   -d '{
     "links": [
@@ -170,7 +170,7 @@ curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
+curl -X POST http://localhost:3001/api/tools/provide-navigation-links \
   -H "Content-Type: application/json" \
   -d '{
     "links": [
@@ -219,7 +219,7 @@ curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
+curl -X POST http://localhost:3001/api/tools/provide-navigation-links \
   -H "Content-Type: application/json" \
   -d '{
     "links": [
@@ -247,7 +247,7 @@ curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/provide-navigation-links \
+curl -X POST http://localhost:3001/api/tools/provide-navigation-links \
   -H "Content-Type: application/json" \
   -d '{
     "links": [

@@ -2052,7 +2052,7 @@ if (!emailResult.success) {
 
 ```bash
 # Test email sending locally
-curl -X POST http://localhost:3000/api/tools/collect-contact \
+curl -X POST http://localhost:3001/api/tools/collect-contact \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test User",
@@ -2471,7 +2471,7 @@ export const collectContactTool = createTool({
 ### HTTP Helper Function
 
 ```typescript
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001";
 
 const fetchJson = async (path: string, body?: unknown) => {
   const response = await fetch(`${BASE_URL}${path}`, {

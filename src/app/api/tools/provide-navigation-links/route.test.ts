@@ -301,7 +301,7 @@ describe("POST /api/tools/provide-navigation-links", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/provide-navigation-links",
+        "http://localhost:3001/api/tools/provide-navigation-links",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

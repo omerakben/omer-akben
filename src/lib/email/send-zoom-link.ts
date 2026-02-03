@@ -1,6 +1,4 @@
-import { render } from "@react-email/render";
 import { Resend } from "resend";
-import { ZoomLinkEmail } from "./templates/ZoomLinkEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -35,6 +33,11 @@ export async function sendZoomLinkEmail({
         error: "Zoom link not configured. Please contact support.",
       };
     }
+
+    // Dynamic imports to avoid build-time static analysis of @react-email/components
+    // Next.js incorrectly detects Html from @react-email as next/document Html
+    const { render } = await import("@react-email/render");
+    const { ZoomLinkEmail } = await import("./templates/ZoomLinkEmail");
 
     // Render email template
     const emailHtml = await render(

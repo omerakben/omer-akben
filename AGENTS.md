@@ -761,7 +761,7 @@ To add a new AI agent tool:
    - Return `{success: boolean, data?: T, error?: string}`
 3. **Update Knowledge Base** - Add tool to `lib/agent-knowledge-base.ts`
 4. **Write Tests** - Create `src/app/api/tools/[name]/route.test.ts`
-5. **Test Locally** - `curl -X POST http://localhost:3000/api/tools/[name] -H "Content-Type: application/json" -d '{}'`
+5. **Test Locally** - `curl -X POST http://localhost:3001/api/tools/[name] -H "Content-Type: application/json" -d '{}'`
 6. **Run Quality Gates** - All 6 must pass before committing
 
 ---
@@ -776,7 +776,7 @@ To add a new AI agent tool:
 
 ### Development
 
-- Port occupied → `lsof -ti:3000 | xargs kill`
+- Port occupied → `lsof -ti:3001 | xargs kill`
 - Brightness modes → Toggle `data-brightness` on `<html>` in DevTools
 - Bundle size → Run `npm run analyze` to see bundle composition
 

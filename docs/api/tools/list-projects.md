@@ -99,7 +99,7 @@ POST /api/tools/list-projects
 **Request (GET)**:
 
 ```bash
-curl http://localhost:3000/api/tools/list-projects
+curl http://localhost:3001/api/tools/list-projects
 ```
 
 **Response**:
@@ -134,7 +134,7 @@ curl http://localhost:3000/api/tools/list-projects
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/list-projects \
+curl -X POST http://localhost:3001/api/tools/list-projects \
   -H "Content-Type: application/json" \
   -d '{"category": "ai-ml", "featured": true}'
 ```
@@ -179,7 +179,7 @@ curl -X POST http://localhost:3000/api/tools/list-projects \
 **Request (GET)**:
 
 ```bash
-curl "http://localhost:3000/api/tools/list-projects?category=web&limit=5"
+curl "http://localhost:3001/api/tools/list-projects?category=web&limit=5"
 ```
 
 **Response**:
@@ -201,7 +201,7 @@ curl "http://localhost:3000/api/tools/list-projects?category=web&limit=5"
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/list-projects \
+curl -X POST http://localhost:3001/api/tools/list-projects \
   -H "Content-Type: application/json" \
   -d '{"category": "backend"}'
 ```
@@ -220,7 +220,7 @@ curl -X POST http://localhost:3000/api/tools/list-projects \
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/list-projects \
+curl -X POST http://localhost:3001/api/tools/list-projects \
   -H "Content-Type: application/json" \
   -d '{"limit": 100}'
 ```

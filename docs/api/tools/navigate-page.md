@@ -94,7 +94,7 @@ POST /api/tools/navigate-page
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/navigate-page \
+curl -X POST http://localhost:3001/api/tools/navigate-page \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://omerakben.com/projects"
@@ -118,7 +118,7 @@ curl -X POST http://localhost:3000/api/tools/navigate-page \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/navigate-page \
+curl -X POST http://localhost:3001/api/tools/navigate-page \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://omerakben.com/chat",
@@ -143,7 +143,7 @@ curl -X POST http://localhost:3000/api/tools/navigate-page \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/navigate-page \
+curl -X POST http://localhost:3001/api/tools/navigate-page \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://external-site.com/page"
@@ -164,7 +164,7 @@ curl -X POST http://localhost:3000/api/tools/navigate-page \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/navigate-page \
+curl -X POST http://localhost:3001/api/tools/navigate-page \
   -H "Content-Type: application/json" \
   -d '{
     "url": "/projects"
@@ -185,7 +185,7 @@ curl -X POST http://localhost:3000/api/tools/navigate-page \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/navigate-page \
+curl -X POST http://localhost:3001/api/tools/navigate-page \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://omerakben.com/",
@@ -329,7 +329,7 @@ curl -X POST http://localhost:3000/api/tools/navigate-page \
 
 ```bash
 # Test navigation to projects page
-curl -X POST http://localhost:3000/api/tools/navigate-page \
+curl -X POST http://localhost:3001/api/tools/navigate-page \
   -H "Content-Type: application/json" \
   -d '{"url": "https://omerakben.com/projects"}'
 ```

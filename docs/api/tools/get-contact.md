@@ -79,13 +79,13 @@ This tool accepts an empty object (no parameters needed).
 **Request (GET)**:
 
 ```bash
-curl http://localhost:3000/api/tools/get-contact
+curl http://localhost:3001/api/tools/get-contact
 ```
 
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/get-contact \
+curl -X POST http://localhost:3001/api/tools/get-contact \
   -H "Content-Type: application/json" \
   -d '{}'
 ```

@@ -367,7 +367,7 @@ describe("Cache Preferences API", () => {
       });
 
       it("should handle malformed JSON", async () => {
-        const request = new NextRequest("http://localhost:3000/api/preferences/cache", {
+        const request = new NextRequest("http://localhost:3001/api/preferences/cache", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: "invalid-json{",

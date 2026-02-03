@@ -280,7 +280,7 @@ Explain the motivation (missing documentation, outdated info, etc.).
 
 ```bash
 # ✅ Good - Complete command with all flags
-curl -X POST http://localhost:3000/api/tools/download-resume \
+curl -X POST http://localhost:3001/api/tools/download-resume \
   -H "Content-Type: application/json" \
   -d '{"format": "resume"}'
 

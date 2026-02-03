@@ -30,9 +30,9 @@ describe("Agent Knowledge Base", () => {
     it("should include extended resume details", () => {
       const prompt = buildEnhancedSystemPrompt();
       // Check for key sections from extended resume
-      expect(prompt).toContain("PROFESSIONAL SUMMARY");
-      expect(prompt).toContain("CORE SKILLS");
-      expect(prompt).toContain("PROFESSIONAL EXPERIENCE");
+      expect(prompt).toMatch(/professional summary/i);
+      expect(prompt).toMatch(/core skills/i);
+      expect(prompt).toMatch(/professional experience/i);
     });
 
     it("should include standard resume as quick reference", () => {

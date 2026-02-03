@@ -27,6 +27,7 @@ const FULL_SYSTEM_PROMPT = buildOzzyKnowledge();
 class OzzyAgent extends BasePortfolioAgent<"ozzy"> {
   constructor() {
     super({
+      id: "ozzy",
       name: "ozzy",
       description:
         "Unified AI assistant with comprehensive knowledge across resume, projects, skills, navigation, and performance domains. Handles all portfolio-related queries except contact collection.",
