@@ -88,7 +88,13 @@ const sharedFiles = new Set(
     .map(([file]) => file)
 );
 
-module.exports = routes.map((route) => {
+const sharedChunks = Array.from(sharedFiles);
+
+if (sharedChunks.length === 0) {
+  throw new Error("No shared chunks found across route entries.");
+}
+
+const routeEntries = routes.map((route) => {
   const files = routeFiles[route.name].filter(
     (file) => !sharedFiles.has(file)
   );
@@ -103,3 +109,12 @@ module.exports = routes.map((route) => {
     limit: route.limit,
   };
 });
+
+module.exports = [
+  ...routeEntries,
+  {
+    name: "Shared Chunks",
+    path: sharedChunks,
+    limit: "90 kB",
+  },
+];

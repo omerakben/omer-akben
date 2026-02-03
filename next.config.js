@@ -109,4 +109,5 @@ module.exports = withSentryConfig(withBundleAnalyzer(nextConfig), {
   silent: !process.env.CI,
   widenClientFileUpload: true,
   tunnelRoute: "/monitoring",
+  disableLogger: true,
 });

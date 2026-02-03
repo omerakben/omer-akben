@@ -222,7 +222,7 @@ describe("POST /api/tools/profile-performance", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/profile-performance",
+        "http://localhost:3001/api/tools/profile-performance",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

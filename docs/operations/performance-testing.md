@@ -25,7 +25,7 @@ This project uses Next.js 15 with the App Router and client-side interactions po
 ## 4. Lighthouse Regression Sweep
 
 1. `npm run dev` in one terminal.
-2. In another terminal, run `npx @lhci/cli autorun --collect.url=http://localhost:3000/ --collect.url=http://localhost:3000/projects`.
+2. In another terminal, run `npx @lhci/cli autorun --collect.url=http://localhost:3001/ --collect.url=http://localhost:3001/projects`.
 3. Track the LCP and INP trends in `.lighthouseci/` between commits.
 
 ## 5. Animation Smoothness Spot Check

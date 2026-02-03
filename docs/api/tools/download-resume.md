@@ -84,13 +84,13 @@ POST /api/tools/download-resume
 **Request (GET)**:
 
 ```bash
-curl http://localhost:3000/api/tools/download-resume
+curl http://localhost:3001/api/tools/download-resume
 ```
 
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/download-resume \
+curl -X POST http://localhost:3001/api/tools/download-resume \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -115,7 +115,7 @@ curl -X POST http://localhost:3000/api/tools/download-resume \
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/download-resume \
+curl -X POST http://localhost:3001/api/tools/download-resume \
   -H "Content-Type: application/json" \
   -d '{"format": "extended"}'
 ```

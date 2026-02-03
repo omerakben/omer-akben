@@ -238,7 +238,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/search-projects-semantic",
+        "http://localhost:3001/api/tools/search-projects-semantic",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

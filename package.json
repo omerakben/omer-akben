@@ -8,9 +8,9 @@
     "pnpm": ">=10"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack -p 3001",
     "build": "NODE_ENV=production next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "eslint",
     "analyze": "ANALYZE=true NODE_ENV=production next build",
     "size": "size-limit",

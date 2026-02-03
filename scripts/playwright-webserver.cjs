@@ -1,7 +1,7 @@
 const { spawn } = require("node:child_process");
 
 const child = spawn("pnpm", ["run", "dev"], {
-  env: process.env,
+  env: { ...process.env, PORT: "3001" },
   shell: true,
   stdio: ["inherit", "pipe", "pipe"],
 });

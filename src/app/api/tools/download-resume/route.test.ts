@@ -109,7 +109,7 @@ describe("POST /api/tools/download-resume", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/download-resume",
+        "http://localhost:3001/api/tools/download-resume",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

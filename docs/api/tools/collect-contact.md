@@ -107,7 +107,7 @@ GET  /api/tools/collect-contact  (Health check only)
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/collect-contact \
+curl -X POST http://localhost:3001/api/tools/collect-contact \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Sarah Johnson",
@@ -136,7 +136,7 @@ curl -X POST http://localhost:3000/api/tools/collect-contact \
 **Request** (6th request from same IP within 24h):
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/collect-contact \
+curl -X POST http://localhost:3001/api/tools/collect-contact \
   -H "Content-Type: application/json" \
   -d '{
     "name": "John Doe",
@@ -159,7 +159,7 @@ curl -X POST http://localhost:3000/api/tools/collect-contact \
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/collect-contact \
+curl -X POST http://localhost:3001/api/tools/collect-contact \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test User",
@@ -182,7 +182,7 @@ curl -X POST http://localhost:3000/api/tools/collect-contact \
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/collect-contact \
+curl -X POST http://localhost:3001/api/tools/collect-contact \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Alice Smith",
@@ -205,7 +205,7 @@ curl -X POST http://localhost:3000/api/tools/collect-contact \
 **Request**:
 
 ```bash
-curl http://localhost:3000/api/tools/collect-contact
+curl http://localhost:3001/api/tools/collect-contact
 ```
 
 **Response** (if enabled):
@@ -427,7 +427,7 @@ OMER_EMAIL=test@example.com
 OMER_ZOOM_LINK=https://zoom.us/test
 
 # Test request
-curl -X POST http://localhost:3000/api/tools/collect-contact \
+curl -X POST http://localhost:3001/api/tools/collect-contact \
   -H "Content-Type: application/json" \
   -d '{"name":"Test User","email":"test@example.com","purpose":"other"}'
 ```
@@ -435,7 +435,7 @@ curl -X POST http://localhost:3000/api/tools/collect-contact \
 ### Health Check
 
 ```bash
-curl http://localhost:3000/api/tools/collect-contact
+curl http://localhost:3001/api/tools/collect-contact
 ```
 
 ## Changelog

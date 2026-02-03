@@ -96,13 +96,13 @@ POST /api/tools/trigger-workflow
 **Request (GET)**:
 
 ```bash
-curl "http://localhost:3000/api/tools/trigger-workflow?workflowId=email-summary"
+curl "http://localhost:3001/api/tools/trigger-workflow?workflowId=email-summary"
 ```
 
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/trigger-workflow \
+curl -X POST http://localhost:3001/api/tools/trigger-workflow \
   -H "Content-Type: application/json" \
   -d '{"workflowId": "email-summary"}'
 ```
@@ -129,7 +129,7 @@ curl -X POST http://localhost:3000/api/tools/trigger-workflow \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/trigger-workflow \
+curl -X POST http://localhost:3001/api/tools/trigger-workflow \
   -H "Content-Type: application/json" \
   -d '{
     "workflowId": "send-email",
@@ -163,7 +163,7 @@ curl -X POST http://localhost:3000/api/tools/trigger-workflow \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/trigger-workflow \
+curl -X POST http://localhost:3001/api/tools/trigger-workflow \
   -H "Content-Type: application/json" \
   -d '{
     "workflowId": "generate-report",
@@ -199,7 +199,7 @@ curl -X POST http://localhost:3000/api/tools/trigger-workflow \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/trigger-workflow \
+curl -X POST http://localhost:3001/api/tools/trigger-workflow \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -218,7 +218,7 @@ curl -X POST http://localhost:3000/api/tools/trigger-workflow \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/trigger-workflow \
+curl -X POST http://localhost:3001/api/tools/trigger-workflow \
   -H "Content-Type: application/json" \
   -d '{
     "workflowId": "test",

@@ -31,7 +31,7 @@ import { generateDynamicFollowups } from "@/lib/followups/dynamic-generator";
  * Helper to create mock NextRequest
  */
 function createMockRequest(data: unknown): NextRequest {
-  return new NextRequest("http://localhost:3000/api/suggest-followups", {
+  return new NextRequest("http://localhost:3001/api/suggest-followups", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -222,7 +222,7 @@ describe("POST /api/suggest-followups", () => {
 
   describe("Invalid JSON payload", () => {
     it("should return 400 for invalid JSON", async () => {
-      const req = new NextRequest("http://localhost:3000/api/suggest-followups", {
+      const req = new NextRequest("http://localhost:3001/api/suggest-followups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "invalid json {",

@@ -13,7 +13,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Test endpoint
-ENDPOINT="http://localhost:3000/api/chat"
+ENDPOINT="http://localhost:3001/api/chat"
 
 # Make 35 requests to test rate limiting
 for i in {1..35}; do
