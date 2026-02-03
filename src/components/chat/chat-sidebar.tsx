@@ -411,6 +411,11 @@ export function ChatSidebar() {
         return;
       }
 
+      if (!threadId) {
+        setIsHydratingThread(false);
+        return;
+      }
+
       setIsHydratingThread(true);
 
       try {

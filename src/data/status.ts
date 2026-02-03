@@ -186,7 +186,7 @@ export const statusData: StatusData = {
     {
       id: "portfolio",
       title: "Portfolio Core",
-      summary: "12 projects, skills matrix, journey timeline, credentials",
+      summary: "13 projects, skills matrix, journey timeline, credentials",
       badge: "MVP",
       link: "/projects",
     },
@@ -226,7 +226,7 @@ export const statusData: StatusData = {
     {
       id: "quality",
       title: "Quality Gates",
-      summary: "792 tests (792 passing), 0 TS errors, 6 automated gates in CI/CD",
+      summary: "813 tests (813 passing), 0 TS errors, 6 automated gates in CI/CD",
       badge: "Live",
     },
     {
@@ -266,6 +266,15 @@ export const statusData: StatusData = {
   ],
   milestones: [
     {
+      date: "2026-02-03",
+      title: "Elon AI Case Study + Resume Refresh",
+      details: [
+        "Launched dedicated Elon AI case study with flagship visuals and outcomes",
+        "Refreshed resume, role narrative, and flagship TUEL AI positioning",
+        "Added updated LinkedIn recommendations to homepage testimonials",
+      ],
+    },
+    {
       date: "2025-11-10",
       title: "Skills Agent & Auto-Merge Workflow",
       details: [
@@ -304,6 +313,8 @@ export const statusData: StatusData = {
   ],
   roadmap: {
     now: [
+      "Ongoing case study polish for Elon AI + TUEL AI (metrics, visuals, recruiter-ready narrative)",
+      "Sustained testimonial refresh with verified LinkedIn recommendations",
       "Pre-screen flow: \"Ask Ozzy 10 recruiter questions\" (one click)",
       "Perf snapshot card using server tool to collect metrics",
       "Richer summaries based on curated knowledge snippets",

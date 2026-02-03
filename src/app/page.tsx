@@ -1,9 +1,10 @@
 import { HeroSectionStatic } from "@/components/hero-section-static";
 import { ProjectCard } from "@/components/project-card";
 import { TechMarqueeSection } from "@/components/tech-marquee";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ExpandableQuote } from "@/components/expandable-quote";
 import { getFeaturedProjects } from "@/data/projects";
 import { testimonials } from "@/data/testimonials";
 import { createMetadata } from "@/lib/metadata";
@@ -163,19 +164,25 @@ export default async function HomePage() {
               </h3>
               <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-brand-primary/30" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {leadershipTestimonials.map((testimonial) => (
                 <Card
                   key={testimonial.id}
-                  className="border-border-line hover:border-brand-primary/40 transition-all"
+                  className="h-full border-border-line hover:border-brand-primary/40 transition-all"
                 >
-                  <CardContent className="pt-6 space-y-4">
-                    <Quote className="w-8 h-8 text-brand-primary" />
-                    <p className="text-text-2 italic">
-                      &ldquo;{testimonial.quote}&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3 pt-4">
+                  <CardContent className="flex h-full flex-col pt-6">
+                    <div className="flex-1 space-y-4">
+                      <Quote className="w-8 h-8 text-brand-primary" />
+                      <ExpandableQuote text={testimonial.quote} clampLines={6} />
+                    </div>
+                    <div className="flex items-center gap-3 pt-6">
                       <Avatar className="w-10 h-10">
+                        {testimonial.avatar ? (
+                          <AvatarImage
+                            alt={`${testimonial.author} profile photo`}
+                            src={testimonial.avatar}
+                          />
+                        ) : null}
                         <AvatarFallback className="bg-gradient-to-br from-brand-primary to-accent-primary text-surf-0">
                           {testimonial.author
                             .split(" ")
@@ -183,9 +190,9 @@ export default async function HomePage() {
                             .join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-text-1">{testimonial.author}</div>
-                        <div className="text-text-3 text-sm">
+                        <div className="text-text-3 text-sm break-words">
                           {testimonial.role}
                         </div>
                       </div>
@@ -205,19 +212,25 @@ export default async function HomePage() {
               </h3>
               <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-accent-primary/30" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {teamTestimonials.map((testimonial) => (
                 <Card
                   key={testimonial.id}
-                  className="border-border-line hover:border-brand-primary/40 transition-all"
+                  className="h-full border-border-line hover:border-brand-primary/40 transition-all"
                 >
-                  <CardContent className="pt-6 space-y-4">
-                    <Quote className="w-8 h-8 text-brand-primary" />
-                    <p className="text-text-2 italic">
-                      &ldquo;{testimonial.quote}&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3 pt-4">
+                  <CardContent className="flex h-full flex-col pt-6">
+                    <div className="flex-1 space-y-4">
+                      <Quote className="w-8 h-8 text-brand-primary" />
+                      <ExpandableQuote text={testimonial.quote} clampLines={5} />
+                    </div>
+                    <div className="flex items-center gap-3 pt-6">
                       <Avatar className="w-10 h-10">
+                        {testimonial.avatar ? (
+                          <AvatarImage
+                            alt={`${testimonial.author} profile photo`}
+                            src={testimonial.avatar}
+                          />
+                        ) : null}
                         <AvatarFallback className="bg-gradient-to-br from-brand-primary to-accent-primary text-surf-0">
                           {testimonial.author
                             .split(" ")
@@ -225,9 +238,9 @@ export default async function HomePage() {
                             .join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-text-1">{testimonial.author}</div>
-                        <div className="text-text-3 text-sm">
+                        <div className="text-text-3 text-sm break-words">
                           {testimonial.role}
                         </div>
                       </div>
