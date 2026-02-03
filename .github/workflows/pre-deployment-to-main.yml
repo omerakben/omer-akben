@@ -5,6 +5,8 @@ on:
   push:
     branches: [pre-deployment]
 
+permissions: read-all
+
 jobs:
   quality-gates:
     name: Quality Gates (Pre-Deployment)
@@ -124,6 +126,8 @@ jobs:
   auto-merge-to-main:
     name: Auto-Merge to Main (Production)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [quality-gates, e2e-tests]
     if: success() # Only run if all quality gates pass
 
