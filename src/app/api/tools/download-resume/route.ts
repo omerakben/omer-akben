@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 const FILE_MAP = {
   resume: {
     filename: "Omer_Akben_Resume.pdf",
-    size: 88320, // ~86.3KB (88KB)
+    size: 129384, // ~126KB
     format: "pdf",
     googleDriveUrl:
       "https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing",

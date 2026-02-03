@@ -21,7 +21,7 @@ type ResumeDescriptor = {
 const FILE_MAP: Record<ResumeFormat, ResumeDescriptor> = {
   resume: {
     filename: "Omer_Akben_Resume.pdf",
-    size: 88320, // ~86.3KB (88KB)
+    size: 129384, // ~126KB
     format: "pdf",
     googleDriveUrl:
       "https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing",
@@ -32,7 +32,7 @@ export const downloadResume = tool<
   DownloadResumeInput,
   DownloadResumeResponse
 >({
-  description: "Provide the latest professional resume download link (PDF, 2 pages, 88KB). Comprehensive resume covering 6+ years of AI/ML engineering and QA automation experience.",
+  description: "Provide the latest professional resume download link (PDF, 2 pages, 126KB). Comprehensive resume covering 6+ years of AI/ML engineering and QA automation experience.",
   inputSchema: downloadResumeInputSchema,
   outputSchema: downloadResumeResponseSchema,
   execute: async (input) => {

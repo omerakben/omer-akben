@@ -244,9 +244,8 @@ Here's your meeting link with Omer Akben
 - **Personalized Greeting**: "Hi {name},"
 - **Purpose Acknowledgment**: Customized message based on `purpose` field
 - **Zoom Meeting Link**: Clickable button with Omer's Zoom link
-- **Resume Download Links**:
-  - Original Resume (1-page PDF)
-  - Extended Resume (2-page PDF)
+- **Resume Download Link**:
+  - Professional Resume (2-page PDF)
 - **Professional Signature**: Omer's contact information
 - **Branding**: Consistent with omerakben.com design system
 
@@ -262,14 +261,13 @@ I'm excited to connect with you. Here's my Zoom meeting link:
 [Schedule Meeting] (button)
 
 You can also download my resume:
-- Original Resume (1-page)
-- Extended Resume (2-page)
+- Professional Resume (2-page)
 
 Looking forward to our conversation!
 
 Best regards,
 Omer Akben
-Full-Stack Developer | AI Enthusiast
+Founder & AI Full-Stack Engineer | EdTech Founder
 me@omerakben.com
 ```
 

@@ -53,9 +53,9 @@ export default function ElonGPTPage() {
               </h3>
               <div className="text-text-2 text-sm space-y-2">
                 <p>
-                  This project, along with the Elon AI Agent, AI Toolbox, and
-                  LSB Applied AI Studio, was developed for Elon University and
-                  remains their intellectual property.
+                  This project, along with the Elon AI platform (TUEL AI), Elon
+                  AI Agent, AI Toolbox, and LSB Applied AI Studio, was developed
+                  for Elon University and remains their intellectual property.
                 </p>
                 <p>
                   All source code is maintained in private repositories. Please
@@ -263,6 +263,15 @@ export default function ElonGPTPage() {
               projects:
             </p>
             <ul className="list-disc list-inside space-y-1 ml-4">
+              <li>
+                <Link
+                  href="/projects/elon-ai"
+                  className="underline hover:text-text-1"
+                >
+                  <strong>Elon AI Platform</strong>
+                </Link>{" "}
+                - Live TUEL AI deployment
+              </li>
               <li>
                 <Link
                   href="/projects/elon-ai-agent"

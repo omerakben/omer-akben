@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { facts } from "@/data/facts";
+import { projects } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
 import {
   Award,
@@ -31,13 +32,19 @@ const tldr = {
   availability: facts.professional.availability,
   location: facts.professional.workPreferences.location,
   experience: `${facts.professional.yearsOfExperience}+ years`,
-  specialization: "Full-Stack Developer • AI Engineer • SDET",
+  specialization: facts.personal.title,
   topSkills: facts.skills.languages
     .slice(0, 3)
     .concat(facts.skills.frontend.slice(0, 2))
     .concat(facts.skills.aiml.slice(0, 2)),
   preferredRoles: facts.professional.workPreferences.roles,
 };
+
+const liveProjectsCount = projects.filter(
+  (project) => project.status === "completed" && project.demoUrl
+).length;
+const totalProjectsCount = projects.length;
+const clientProjectsCount = 3;
 
 export default function RecruiterPage() {
   return (
@@ -104,7 +111,8 @@ export default function RecruiterPage() {
                   {tldr.availability}
                 </Badge>
                 <Badge variant="outline" className="text-sm px-4 py-2">
-                  <Briefcase className="w-4 h-4 mr-2" />6 Live Projects
+                  <Briefcase className="w-4 h-4 mr-2" />
+                  {liveProjectsCount} Live Projects
                 </Badge>
                 <Badge variant="outline" className="text-sm px-4 py-2">
                   <Award className="w-4 h-4 mr-2" />
@@ -156,7 +164,7 @@ export default function RecruiterPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <div className="relative">
                   <div className="text-4xl font-bold text-brand-primary mb-2 group-hover:scale-110 transition-transform">
-                    6
+                    {liveProjectsCount}
                   </div>
                   <div className="text-sm font-medium text-text-1 mb-2">
                     Live Projects
@@ -173,7 +181,7 @@ export default function RecruiterPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <div className="relative">
                   <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform">
-                    2
+                    {clientProjectsCount}
                   </div>
                   <div className="text-sm font-medium text-text-1 mb-2">
                     Client Projects
@@ -189,7 +197,7 @@ export default function RecruiterPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <div className="relative">
                   <div className="text-4xl font-bold text-accent-primary mb-2 group-hover:scale-110 transition-transform">
-                    9
+                    {totalProjectsCount}
                   </div>
                   <div className="text-sm font-medium text-text-1 mb-2">
                     Total Projects
@@ -209,8 +217,8 @@ export default function RecruiterPage() {
                     Real Client Work
                   </p>
                   <p className="text-sm text-text-2">
-                    <strong>North Glass LLC</strong> - Live commercial website
-                    with AI integration, serving real customers
+                    <strong>Elon University, Minor Use Foundation, North Glass LLC</strong>{" "}
+                    - production deployments and automation outcomes
                   </p>
                 </div>
               </div>
@@ -221,8 +229,8 @@ export default function RecruiterPage() {
                     Production-Validated AI
                   </p>
                   <p className="text-sm text-text-2">
-                    <strong>Elon AI Agent</strong> - Business plan generator
-                    achieving 3-4x speedup, validated by real client usage
+                    <strong>Elon AI (TUEL AI platform)</strong> - 20M+ tokens,
+                    95% satisfaction, 60% faster support response
                   </p>
                 </div>
               </div>
@@ -233,9 +241,8 @@ export default function RecruiterPage() {
                     Mixed Infrastructure
                   </p>
                   <p className="text-sm text-text-2">
-                    5 Vercel deployments (free tier) + 1 Azure Container Apps
-                    backend (free tier) - demonstrates multi-cloud expertise and
-                    cost optimization
+                    Vercel + Azure App Service + AWS infrastructure with
+                    cost-aware deployment and multi-cloud experience
                   </p>
                 </div>
               </div>
@@ -379,7 +386,7 @@ export default function RecruiterPage() {
                       <FileText className="h-5 w-5 text-brand-primary" />
                       <h3 className="font-medium text-text-1">Professional Resume (PDF)</h3>
                     </div>
-                    <p className="text-xs text-text-2">Comprehensive 2-page PDF • 88KB</p>
+                    <p className="text-xs text-text-2">Comprehensive 2-page PDF • 126KB</p>
                     <p className="text-xs text-text-3">6+ years of AI/ML engineering and QA automation experience</p>
                     <div className="space-y-1.5">
                       <Button

@@ -27,7 +27,7 @@ This document provides the current implementation status of omerakben.com portfo
 
 **11 Server-Side Tools** (all in `src/app/api/tools/`):
 
-1. `download_resume` - 4 formats (full, short, two-page, docx)
+1. `download_resume` - Professional resume PDF (2 pages)
 2. `download_certificate` - AWS, NSS certs
 3. `list_projects` - Filter by category, featured, limit
 4. `open_project` - Get project details by slug
@@ -69,7 +69,7 @@ This document provides the current implementation status of omerakben.com portfo
 - Rate limiting: 5 collections per IP per 24 hours (Redis-backed, increased from 1 for recruiting teams)
 - Email validation, disposable email blocking, PII redaction
 - 7-day contact data retention in Redis
-- Direct Google Drive resume links in email (Original + Extended PDFs)
+- Direct Google Drive resume link in email (Professional PDF)
 
 **Environment Variables:**
 
@@ -348,7 +348,7 @@ docs/
 - **Resend Integration:** React Email templates with resume links
 - **Rate Limiting:** 5 collections per IP per 24h (increased from 1 for recruiting teams)
 - **Email Validation:** Disposable email blocking, PII redaction
-- **Resume Links:** Direct Google Drive links (Original + Extended PDFs)
+- **Resume Link:** Direct Google Drive link (Professional PDF)
 
 **Lessons Learned:**
 
@@ -462,7 +462,7 @@ npm run test:e2e      # ✅ 8/8 routes WCAG 2A
 - **AI Assistant**: 11 tools providing comprehensive portfolio information
 - **Work Authorization**: Professional representation for recruiter interactions
 - **Contact Collection**: Proactive engagement with 5 collections per IP per 24h
-- **Resume Access**: 4 formats available with direct Google Drive links
+- **Resume Access**: Professional PDF with direct Google Drive link
 
 ### Technical Metrics
 

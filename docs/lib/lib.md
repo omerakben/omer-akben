@@ -249,7 +249,7 @@ function buildEnhancedSystemPrompt(currentPath?: string): string
 - Loads resume markdown files from `public/assets/`
 - Context-aware hints based on current page path
 - Security directive to prevent API disclosure
-- Combines extended + standard resume versions
+- Loads unified resume markdown from `public/assets/Omer_Akben_Resume.md`
 - Dynamic system prompt construction
 
 **Usage Example:**
@@ -703,7 +703,7 @@ All tool responses follow this consistent structure for predictable error handli
 
 ```typescript
 export const downloadResumeInputSchema = z.object({
-  format: z.enum(["resume", "extended"]).optional().default("resume"),
+  format: z.literal("resume").optional().default("resume"),
 });
 ```
 
@@ -714,16 +714,14 @@ export const downloadResumeOutputSchema = z.object({
   url: z.string().url(),
   filename: z.string(),
   size: z.number(),
-  format: z.string().describe("File format (pdf or docx)"),
+  format: z.string().describe("File format (PDF)"),
   googleDriveUrl: z.string().url().optional().describe("Fallback Google Drive link"),
 });
 ```
 
 **Use Cases:**
 
-- Resume download (standard 2-page format)
-- Extended resume (detailed 4-page format)
-- Multiple file formats (PDF, DOCX)
+- Resume download (2-page PDF)
 - Fallback to Google Drive if local unavailable
 
 ---
@@ -2354,7 +2352,7 @@ export const profilePerformanceTool = createTool({
 ```typescript
 export const downloadResumeTool = createTool({
   id: "download_resume",
-  description: "Provide resume download URL (PDF/DOCX formats)",
+  description: "Provide resume download URL (PDF)",
   inputSchema: downloadResumeInputSchema,
   execute: async ({ context }) => {
     return fetchJson("/api/tools/download-resume", context);
@@ -3079,7 +3077,7 @@ export async function buildResumeInstructions(
 
 **Your Expertise:**
 - Detailed knowledge of work experience, skills, and education
-- Access to resume downloads (PDF/DOCX formats)
+- Access to resume downloads (PDF)
 - Certification information (AWS, Nashville Software School)
 
 **Guidelines:**
@@ -3107,10 +3105,8 @@ export async function buildResumeInstructions(
 
 ```
 User: "Show me your resume"
-Agent: "I'd be happy to share my resume! I have two versions:
-       - Standard Resume (2 pages, PDF): [download link]
-       - Extended Resume (4 pages with detailed projects, DOCX): [download link]
-       Which would you prefer?"
+Agent: "I'd be happy to share my resume! Here is the professional PDF:
+       - Professional Resume (2 pages, PDF): [download link]"
 
 User: "Do you have AWS certifications?"
 Agent: "Yes! I'm AWS Cloud Practitioner Essentials certified (2023).

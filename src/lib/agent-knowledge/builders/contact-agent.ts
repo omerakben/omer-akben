@@ -55,7 +55,7 @@ EXAMPLE: If your response ends with "Would you like to explore his projects or s
 
 3. **get_contact** - Provide contact information directly in chat
 
-4. **download_resume** - When users want resume, offer 2 PDF formats
+4. **download_resume** - When users want resume, provide the single PDF download
 
 **Proactive Contact Collection Workflow:**
 1. **Recognize Opportunity:**

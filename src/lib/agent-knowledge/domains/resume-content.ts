@@ -71,7 +71,7 @@ We have a single professional resume (unified format):
 
 **Professional Resume (PDF)** - Comprehensive 2-page resume
    - File: Omer_Akben_Resume.pdf
-   - Size: 88KB (2 pages)
+   - Size: 126KB (2 pages)
    - Coverage: 6+ years of AI/ML engineering and QA automation experience
    - Google Drive: https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing
 
@@ -106,13 +106,13 @@ Available certificates (use download_certificate tool):
 My capstone project DEADLINE demonstrates production-level test architecture with 64/64 backend tests passing and Playwright visual testing. Check out [/journey](/journey) for my full QA background."
 
 **"What's your most recent experience?"**
-"Currently working as a **Full-Stack AI Engineer (Freelance)** since October 2024:
+"Currently working as a **Founder & AI Full-Stack Engineer at TUEL AI** (Jan 2024 – Present):
 
-- Building production AI features end-to-end (RAG systems, agentic workflows)
+- Building production RAG and agentic workflows for education platforms
 - Technologies: Next.js/TypeScript, FastAPI/Python, LangChain/LangGraph, pgvector
-- Focus: AI-powered automation, chatbots, and quality engineering practices
+- Focus: reliable AI systems, observability, and rigorous evaluation
 
-Before this, I was an **SDET at Deloitte** (June 2023 - October 2024) where I architected test frameworks for financial services and enterprise healthcare platforms."
+In parallel, I served as a **Test Automation Architect (SDET) at Oteemo** (Feb 2025 – Sep 2025), leading enterprise automation strategy and framework development."
 
 **"Are you authorized to work in the US?"**
 "Yes, I'm a **U.S. Permanent Resident (Green Card holder)**, which means:
@@ -127,9 +127,9 @@ My official status is **Lawful Permanent Resident (LPR)**. Is there anything spe
 **"Can I download your resume?"**
 "I'd be happy to share Omer's professional resume! Here's the direct link:
 
-**Professional Resume** (Omer_Akben_Resume.pdf - 2 pages, 88KB): [Download](https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing)
+**Professional Resume** (Omer_Akben_Resume.pdf - 2 pages, 126KB): [Download](https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing)
 
-This comprehensive resume covers 6+ years of AI/ML engineering and QA automation experience, including details about his recent role at Oteemo (Feb 2025 - Sep 2025).
+This comprehensive resume covers 6+ years of AI/ML engineering and QA automation experience, including his current Founder & AI Full-Stack Engineer role at TUEL AI and the Test Automation Architect role at Oteemo (Feb 2025 - Sep 2025).
 
 I can also send you an email with the resume link and Zoom meeting details right now if you'd like! Just provide your email address, or visit [/recruiter](/recruiter) to download it yourself."
 

@@ -9,7 +9,7 @@ export const facts = {
   personal: {
     fullName: "Omer Akben",
     nickname: "Ozzy",
-    title: "Full-Stack Developer • AI Engineer • SDET",
+    title: "AI Full-Stack Engineer • EdTech Founder • SDET",
     location: "Raleigh, NC",
     timezone: "EST (UTC-5)",
     email: "me@omerakben.com",
@@ -18,16 +18,16 @@ export const facts = {
 
   professional: {
     yearsOfExperience: "6+",
-    currentRole: "Full-Stack AI Engineer",
-    currentCompany: "Freelance",
+    currentRole: "Founder & AI Full-Stack Engineer",
+    currentCompany: "TUEL AI",
     summary:
-      "AI Full-Stack Engineer with 6+ years of SDET/QA automation experience. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI, Azure AI). Combines strong Python (FastAPI, Django) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, low-hallucination AI applications. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
+      "AI Full-Stack Software Engineer and EdTech Founder with 6+ years of SDET/QA automation experience. Creator of TUEL AI, a B2B educational technology platform deployed at Elon University with production metrics demonstrating real user impact. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI). Combines strong Python (FastAPI) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, capability-building AI applications. Focused on human-AI interaction that develops genuine user skill rather than engagement metrics. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
     specializations: [
-      "AI Engineering & LLM Applications",
-      "Full-Stack Development (React/Next.js + Python)",
+      "EdTech Platform Founder & AI Product Delivery",
+      "Retrieval-Augmented Generation (RAG) & Agentic Workflows",
+      "Full-Stack Development (Next.js/React + FastAPI)",
+      "LLMOps, Observability & Automated Evaluation",
       "QA Test Automation & SDET",
-      "Retrieval-Augmented Generation (RAG)",
-      "Test-Driven Development (TDD) & Behavior-Driven Development (BDD)",
       "CI/CD Architecture & DevOps",
     ],
     availability: "Available for new opportunities",
@@ -55,7 +55,15 @@ export const facts = {
 
   skills: {
     // Programming Languages
-    languages: ["Python", "TypeScript", "JavaScript", "C#", "Java", "SQL"],
+    languages: [
+      "Python",
+      "TypeScript",
+      "JavaScript",
+      "C#",
+      "Java",
+      "SQL",
+      "Bash",
+    ],
 
     // Frontend Development
     frontend: [
@@ -63,6 +71,7 @@ export const facts = {
       "Next.js",
       "TypeScript/JavaScript",
       "Tailwind CSS",
+      "Streaming UIs (SSE)",
       "Server-Side Rendering (SSR)",
       "Incremental Static Regeneration (ISR)",
       "Accessibility (a11y)",
@@ -79,6 +88,7 @@ export const facts = {
       "Pydantic",
       "OpenAPI/Swagger",
       "Object-Relational Mapping (ORM)",
+      "API Versioning",
       "SQL Schema Design",
     ],
 
@@ -88,13 +98,18 @@ export const facts = {
       "Anthropic Claude API",
       "Vertex AI",
       "Amazon Bedrock",
-      "Azure AI services",
-      "Elasticsearch",
+      "Azure AI / Microsoft Foundry",
       "LangChain",
       "LangGraph",
       "Retrieval-Augmented Generation (RAG)",
-      "Prompt Engineering & Evaluation",
+      "RAGAS",
+      "DeepEval",
+      "LangSmith",
+      "Arize Phoenix",
       "Vector Databases (pgvector, FAISS, Pinecone, Weaviate)",
+      "Multi-Agent Systems (CrewAI, Mastra)",
+      "Prompt Engineering & Evaluation",
+      "Golden Datasets",
       "Content Guardrails",
       "Function/Tool Calling",
     ],
@@ -113,13 +128,14 @@ export const facts = {
 
     // Cloud & DevOps
     cloud: [
-      "AWS (Lambda, API Gateway, S3)",
+      "AWS (Lambda, ECS, S3, API Gateway)",
       "Azure (Entra ID, Azure DevOps)",
       "Docker",
       "Kubernetes (environment parity)",
       "Git/GitHub",
       "CI/CD (GitHub Actions, Jenkins, Azure Pipelines)",
       "Observability (logging, metrics, tracing)",
+      "Terraform",
     ],
 
     // QA & Test Automation (SDET)
@@ -215,44 +231,43 @@ export const facts = {
 
   experience: [
     {
-      title: "AI Full-Stack Software Engineer",
-      company: "Freelance",
+      title: "Founder & AI Full-Stack Engineer",
+      company: "TUEL AI",
       location: "Remote (Raleigh, NC)",
-      period: "January 2024 – Present",
+      period: "Jan 2024 – Present",
       achievements: [
-        "Built a multi-tenant AI chat platform for higher education using Next.js (TypeScript) and FastAPI, integrating OpenAI and Anthropic Claude APIs via LangChain and LangGraph orchestration frameworks with Retrieval-Augmented Generation (RAG) over pgvector. The platform reduced average support response time by 60% through intelligent query routing, conversation memory, and context-aware responses. Implemented role-based access control (RBAC) with Microsoft Entra ID, comprehensive audit logging, and content guardrails for sensitive information.",
-        "Engineered end-to-end retrieval pipelines including document chunking strategies, metadata filtering, and hybrid search combining vector similarity with keyword matching. Developed an evaluation harness tracking answer accuracy, context recall, and hallucination rates. Iteratively improved top-K retrieval precision by 25% while maintaining P95 latency under 2 seconds through caching strategies and query optimization.",
-        "Implemented comprehensive Playwright end-to-end and API test suites integrated into CI/CD pipelines (GitHub Actions and Azure DevOps) with parallel execution, automatic retries on transient failures, and visual regression testing. Achieved 95%+ stability on critical user flows, including authentication, chat interactions, and document uploads. Test coverage prevented multiple production regressions during rapid development cycles of features.",
-        "Designed RESTful APIs (FastAPI and Node.js/Express) following OpenAPI 3.0 specifications with Pydantic validation, typed client generation, and structured error taxonomy. Implemented comprehensive logging with correlation IDs, distributed tracing, and performance metrics. Reached 90%+ unit and integration test coverage on critical paths, including authentication, authorization, and data processing endpoints.",
-        "Delivered 15+ workflow automations using Zapier, n8n, and Make that integrated Google Workspace, CRM systems, and LLM-based data extraction. Reduced repetitive operational tasks by 60% through intelligent routing, automatic categorization, and status tracking. Built monitoring dashboards, implemented retry logic with exponential backoff, and created comprehensive audit trails for compliance requirements.",
-        "Maintained personal portfolio (omerakben.com) built with Next.js and TypeScript, implementing performance budgets (Lighthouse scores consistently above 95), Playwright smoke and regression test suites in CI/CD, and analytics for user experience insights. Deployed on Vercel with automated preview environments for pull requests.",
+        "Selected for Elon University Business Faculty Pilot Program after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with source citations. Production metrics: 100+ sessions, 50+ users, 20M+ tokens, 2% error rate, 95% satisfaction (62/65 positive), and 60% support response time reduction.",
+        "Built FERPA-compliant multi-tenant architecture with row-level isolation, Microsoft Entra ID RBAC, faculty dashboard for AI behavior control, and 35+ audit action types. Implemented production RAG pipeline (pgvector + keyword hybrid search, Upstash Redis semantic caching, RAGAS validation) improving retrieval precision by 25% while keeping P95 latency under 2 seconds.",
+        "Orchestrated multi-agent workflows in LangGraph and Vercel AI SDK for autonomous tool calling and student services flows with content guardrails and conversation memory. Automated regulatory document workflows for Minor Use Foundation using LLM-based PDF extraction, reducing manual data entry by 60% with full audit trails.",
+        "Integrated Playwright E2E tests into GitHub Actions and LangSmith tracing, achieving 95%+ stability on critical chat/auth flows and cutting query costs by 15%.",
       ],
       technologies: [
         "TypeScript",
-        "Next.js",
-        "React",
+        "Next.js 15",
+        "React 19",
         "Node.js",
         "Python",
         "FastAPI",
-        "Django",
+        "Vercel AI SDK",
         "OpenAI API",
         "Anthropic Claude API",
+        "Vertex AI",
+        "Azure AI / Microsoft Foundry",
+        "Amazon Bedrock",
         "LangChain",
         "LangGraph",
-        "Playwright",
-        "Jest",
-        "Docker",
-        "GitHub Actions",
-        "Azure DevOps",
+        "RAGAS",
+        "LangSmith",
         "PostgreSQL (pgvector)",
-        "FAISS",
-        "MongoDB",
-        "Redis",
-        "AWS (Lambda, API Gateway, S3)",
-        "Azure (Entra ID)",
-        "Zapier",
-        "n8n",
-        "Git",
+        "Upstash Redis",
+        "Drizzle ORM",
+        "Neon Postgres",
+        "QStash",
+        "Hume AI",
+        "Playwright",
+        "GitHub Actions",
+        "Microsoft Entra ID",
+        "Docker",
       ],
     },
     {
@@ -360,31 +375,37 @@ export const facts = {
   projects: {
     featured: [
       {
-        name: "Elon AI Chat Builder",
+        name: "Elon AI (TUEL AI Platform)",
         description:
-          "Enterprise AI chatbot platform for Elon University enabling faculty and staff to create custom AI assistants with knowledge base integration",
-        technologies: ["Next.js", "OpenAI", "Supabase", "TypeScript", "Vercel"],
+          "Live deployment of TUEL AI at Elon University with multi-tenant RAG and agentic workflows",
+        technologies: [
+          "Next.js 15",
+          "FastAPI",
+          "Vercel AI SDK",
+          "LangChain",
+          "LangGraph",
+        ],
         status: "completed",
         year: "2024",
       },
       {
-        name: "AI Toolbar — Chrome Extension",
+        name: "Tuel Animation Library",
         description:
-          "Productivity Chrome extension with AI-powered tools for text summarization, translation, and content generation",
-        technologies: ["Chrome API", "React", "OpenAI", "TypeScript"],
-        status: "completed",
+          "Open-source React animation framework with 13 published NPM packages",
+        technologies: ["React", "TypeScript", "Turborepo", "Storybook"],
+        status: "in-progress",
         year: "2024",
       },
       {
-        name: "Genesis Test Copilot",
+        name: "North Glass LLC",
         description:
-          "AI-powered test automation assistant that generates Playwright tests from natural language descriptions",
-        technologies: ["Playwright", "LangChain", "FastAPI", "Python"],
+          "Production Next.js site with AI integration serving real customers",
+        technologies: ["Next.js", "TypeScript", "Vercel"],
         status: "completed",
         year: "2024",
       },
     ],
-    total: 6,
+    total: 13,
   },
 
   social: {
@@ -405,7 +426,7 @@ export const facts = {
   ],
 
   about:
-    "AI Full-Stack Engineer with 6+ years of SDET/QA automation experience. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI, Azure AI). Combines strong Python (FastAPI, Django) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, low-hallucination AI applications. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
+    "AI Full-Stack Software Engineer and EdTech Founder with 6+ years of SDET/QA automation experience. Creator of TUEL AI, a B2B educational technology platform deployed at Elon University with production metrics demonstrating real user impact. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI). Combines strong Python (FastAPI) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, capability-building AI applications. Focused on human-AI interaction that develops genuine user skill rather than engagement metrics. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
 };
 
 // Helper functions for agents

@@ -9,10 +9,10 @@
 **Google Drive (PDF):** <https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing>
 **Google Drive (Docs - Editable):** <https://docs.google.com/document/d/1No6UUViu6leZEKCU9GS9iApoA8ia4x8zQEPbyP680oM/edit?usp=sharing>
 
-**Size:** 88KB
+**Size:** 126KB
 **Pages:** 2
 **Format:** PDF
-**Description:** Comprehensive professional resume covering 6+ years of AI/ML engineering and QA automation experience, including the recent Oteemo role (Feb 2025 - Sep 2025).
+**Description:** Comprehensive professional resume covering 6+ years of AI/ML engineering and QA automation experience, including the current TUEL AI founder role and the Oteemo Test Automation Architect role (Feb 2025 - Sep 2025).
 
 ---
 
@@ -40,6 +40,7 @@
 **Email:** <mailto:me@omerakben.com>
 **Phone:** <tel:+2675124566>
 **Portfolio:** <https://omerakben.com>
+**TUEL AI:** <https://tuel.ai>
 **LinkedIn:** <https://www.linkedin.com/in/omerakben/>
 **GitHub:** [omerakben](https://github.com/omerakben)
 
@@ -49,11 +50,11 @@
 
 **Primary Resume (Markdown):** Omer_Akben_Resume.md
 **Distribution Format (PDF):** Omer_Akben_Resume.pdf
-**Experience:** 6+ years (as of 2025)
+**Experience:** 6+ years (as of 2026)
 
 ### Key Employment Dates
 
-- **Freelance AI Full-Stack Engineer:** January 2024 – Present
+- **Founder & AI Full-Stack Engineer — TUEL AI:** Jan 2024 – Present
 - **Test Automation Architect (SDET) — Oteemo:** February 2025 – September 2025
 - **QA Engineer — ECS:** April 2023 – January 2024
 - **SDET — Xsolis:** October 2022 – April 2023
@@ -61,7 +62,7 @@
 
 ### Core Skills Summary
 
-**AI/ML:** OpenAI API, Claude API, LangChain, LangGraph, RAG, Vector DBs (pgvector, FAISS, Pinecone)
+**AI/ML:** OpenAI API, Claude API, Vertex AI, Azure AI / Microsoft Foundry, Amazon Bedrock, LangChain, LangGraph, RAG, RAGAS, LangSmith, Vector DBs (pgvector, FAISS, Pinecone, Weaviate)
 **Frontend:** React, Next.js, TypeScript, Tailwind CSS, SSR/ISR, Accessibility
 **Backend:** Python (FastAPI, Django), Node.js/Express, RESTful APIs, GraphQL
 **Testing:** Playwright, Selenium, REST Assured, Cucumber/SpecFlow (BDD), JMeter

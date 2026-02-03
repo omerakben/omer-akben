@@ -24,7 +24,7 @@ All API tools follow a consistent pattern:
 
 ### Document Management
 
-- **[download_resume](tools/download-resume.md)** - 4 formats (full, short, two-page, docx)
+- **[download_resume](tools/download-resume.md)** - Single PDF format (2 pages)
 - **[download_certificate](tools/download-certificate.md)** - AWS, NSS certificates
 
 ### Project Information
@@ -64,7 +64,7 @@ type ApiResponse<T> = {
 
 // Input validation (example)
 const DownloadResumeSchema = z.object({
-  format: z.enum(['full', 'short', 'two-page', 'docx']),
+  format: z.literal('resume').optional().default('resume'),
 });
 
 // Output schema (example)
@@ -92,7 +92,7 @@ All tools follow consistent error patterns:
 // Validation error
 {
   success: false,
-  error: "Invalid format parameter: must be one of [full, short, two-page, docx]"
+  error: "Invalid literal value, expected \"resume\""
 }
 
 // Rate limit error

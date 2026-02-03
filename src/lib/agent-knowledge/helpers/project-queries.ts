@@ -42,6 +42,7 @@ export function getLiveProductionProjects(): Project[] {
  */
 export function getElonUniversityProjects(): Project[] {
   const elonSlugs = [
+    'elon-ai',
     'elon-ai-agent',
     'elongpt',
     'elon-ai-toolbox',
@@ -56,6 +57,7 @@ export function getElonUniversityProjects(): Project[] {
  */
 export function getTuelProjects(): Project[] {
   const tuelSlugs = [
+    'elon-ai',
     'tuel-animation-library',
     'tuel-chatbot',
     'tuel-selenium-webdriver-restsharp',
@@ -120,12 +122,14 @@ export function getProjectsWithScreenshots(): Array<{
  */
 export function getRelatedProjects(projectSlug: string): Project[] {
   const elonSlugs = [
+    'elon-ai',
     'elon-ai-agent',
     'elongpt',
     'elon-ai-toolbox',
     'lsb-ai-studio',
   ];
   const tuelSlugs = [
+    'elon-ai',
     'tuel-animation-library',
     'tuel-chatbot',
     'tuel-selenium-webdriver-restsharp',
@@ -208,6 +212,7 @@ export function getProjectStatistics() {
  */
 export function isElonUniversityProject(projectSlug: string): boolean {
   const elonSlugs = [
+    'elon-ai',
     'elon-ai-agent',
     'elongpt',
     'elon-ai-toolbox',
@@ -223,14 +228,14 @@ export function isElonUniversityProject(projectSlug: string): boolean {
 export function getElonUniversityContext(): string {
   const elonProjects = getElonUniversityProjects();
 
-  return `Four projects were developed for Elon University and are university intellectual property:
+  return `${elonProjects.length} projects were delivered for Elon University and are institutional intellectual property:
 
 ${formatProjectList(elonProjects, true)}
 
 **Important Context:**
-- Source code in private repositories (institutional property)
-- All 4 projects cross-reference each other on portfolio pages
-- Professional IP acknowledgment sections on all 4 project pages
+- Source code in private repositories (institutional/client IP)
+- All ${elonProjects.length} projects cross-reference each other on portfolio pages
+- Professional IP acknowledgment is included on Elon project pages where applicable
 - Detailed case studies available with screenshots
 
 **When discussing any Elon project:**
