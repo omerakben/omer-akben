@@ -113,7 +113,7 @@ ANALYZE=true
 
    ```bash
    npm run dev
-   # Visit http://localhost:3000 and test chat
+   # Visit http://localhost:3001 and test chat
    ```
 
 ### Vercel Deployment

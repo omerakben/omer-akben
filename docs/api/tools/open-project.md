@@ -98,7 +98,7 @@ POST /api/tools/open-project
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/open-project \
+curl -X POST http://localhost:3001/api/tools/open-project \
   -H "Content-Type: application/json" \
   -d '{"slug": "ozzy-ai-portfolio"}'
 ```
@@ -149,7 +149,7 @@ curl -X POST http://localhost:3000/api/tools/open-project \
 **Request (GET)**:
 
 ```bash
-curl "http://localhost:3000/api/tools/open-project?slug=non-existent-project"
+curl "http://localhost:3001/api/tools/open-project?slug=non-existent-project"
 ```
 
 **Response** (400 Bad Request):
@@ -166,7 +166,7 @@ curl "http://localhost:3000/api/tools/open-project?slug=non-existent-project"
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/open-project \
+curl -X POST http://localhost:3001/api/tools/open-project \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -213,7 +213,7 @@ To discover available project slugs, use the [list_projects](list-projects.md) t
 
 ```bash
 # Get all project slugs
-curl http://localhost:3000/api/tools/list-projects
+curl http://localhost:3001/api/tools/list-projects
 ```
 
 **Common Slugs**:
@@ -277,11 +277,11 @@ curl http://localhost:3000/api/tools/list-projects
 
 ```bash
 # Step 1: List featured AI projects
-curl -X POST http://localhost:3000/api/tools/list-projects \
+curl -X POST http://localhost:3001/api/tools/list-projects \
   -d '{"category": "ai-ml", "featured": true}'
 
 # Step 2: Open specific project by slug
-curl -X POST http://localhost:3000/api/tools/open-project \
+curl -X POST http://localhost:3001/api/tools/open-project \
   -d '{"slug": "ozzy-ai-portfolio"}'
 ```
 
@@ -289,7 +289,7 @@ curl -X POST http://localhost:3000/api/tools/open-project \
 
 ```bash
 # Known slug, get details immediately
-curl -X POST http://localhost:3000/api/tools/open-project \
+curl -X POST http://localhost:3001/api/tools/open-project \
   -d '{"slug": "openai-cache-middleware"}'
 ```
 

@@ -139,7 +139,7 @@ describe("POST /api/tools/open-project", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/open-project", {
+      const req = new Request("http://localhost:3001/api/tools/open-project", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "invalid json{",

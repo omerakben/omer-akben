@@ -5,6 +5,18 @@ const loadSTMMock = vi.fn();
 const routeMock = vi.fn();
 const saveSTMMock = vi.fn();
 const saveLTMMock = vi.fn();
+let onFinishCallback: (({ messages }: { messages: UIMessage[] }) => void) | null = null;
+
+// Helper to create a mock MastraModelOutput stream (Mastra v1 format)
+function createMockMastraStream() {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue({ type: "text-delta", textDelta: "Hi" });
+      controller.close();
+    },
+  });
+  return { fullStream: stream, textStream: stream };
+}
 
 vi.mock("@/lib/mastra/agents/coordinator", () => ({
   coordinatorAgent: {
@@ -12,42 +24,64 @@ vi.mock("@/lib/mastra/agents/coordinator", () => ({
   },
 }));
 
-vi.mock("@/lib/memory/redis-memory", () => ({
-  RedisMemoryManager: vi.fn(() => ({
-    loadSTM: loadSTMMock,
-    saveSTM: saveSTMMock,
-    saveLTM: saveLTMMock,
-  })),
+vi.mock("@/lib/memory/fact-extractor", () => ({
+  extractAndSaveFacts: vi.fn().mockResolvedValue(undefined),
 }));
+
+vi.mock("@/lib/memory/redis-memory", () => {
+  class RedisMemoryManager {
+    loadSTM = loadSTMMock;
+    saveSTM = saveSTMMock;
+    saveLTM = saveLTMMock;
+  }
+  return { RedisMemoryManager };
+});
+
+// Mock toAISdkStream
+vi.mock("@mastra/ai-sdk", () => ({
+  toAISdkStream: vi.fn(() => {
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue({ type: "text", text: "Hi" });
+        controller.close();
+      },
+    });
+  }),
+}));
+
+vi.mock("@/lib/followups/generate-and-cache", () => ({
+  generateAndCacheFollowups: vi.fn().mockResolvedValue(undefined),
+}));
+
+// Mock AI SDK's createUIMessageStream to capture onFinish callback
+vi.mock("ai", async () => {
+  const actual = await vi.importActual("ai");
+  return {
+    ...actual,
+    createUIMessageStream: vi.fn(({ onFinish }) => {
+      // Store the onFinish callback for later invocation
+      onFinishCallback = onFinish;
+      return new ReadableStream({
+        start(controller) {
+          controller.enqueue({ type: "text", text: "Hi" });
+          controller.close();
+        },
+      });
+    }),
+    createUIMessageStreamResponse: vi.fn(({ stream }) => {
+      return new Response(stream, { status: 200 });
+    }),
+  };
+});
 
 describe("chat route", () => {
   beforeEach(() => {
     loadSTMMock.mockResolvedValue([]);
     routeMock.mockReset();
-    routeMock.mockImplementation(async () => ({
-      toUIMessageStreamResponse: ({
-        onFinish,
-      }: {
-        onFinish?: ({
-          messages,
-        }: {
-          messages?: UIMessage[];
-        }) => Promise<void> | void;
-      }) => {
-        onFinish?.({
-          messages: [
-            {
-              id: "2",
-              role: "assistant",
-              parts: [{ type: "text", text: "Hi" }],
-            } as UIMessage,
-          ],
-        });
-        return new Response(null, { status: 200 });
-      },
-    }));
+    routeMock.mockImplementation(async () => createMockMastraStream());
     saveSTMMock.mockResolvedValue(undefined);
     saveLTMMock.mockResolvedValue(undefined);
+    onFinishCallback = null;
   });
 
   describe("GET", () => {
@@ -113,6 +147,20 @@ describe("chat route", () => {
       const routeArgs = routeMock.mock.calls[0][0];
       expect(routeArgs.threadId).toBe("thread-1");
       expect(routeArgs.history).toHaveLength(2);
+
+      // Trigger the onFinish callback that was captured during stream creation
+      if (onFinishCallback) {
+        await onFinishCallback({
+          messages: [
+            {
+              id: "2",
+              role: "assistant",
+              parts: [{ type: "text", text: "Hi" }],
+            } as UIMessage,
+          ],
+        });
+      }
+
       expect(saveSTMMock).toHaveBeenCalledWith("thread-1", expect.any(Array));
       expect(saveLTMMock).toHaveBeenCalledWith("thread-1", expect.any(Array));
     });

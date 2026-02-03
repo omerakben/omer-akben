@@ -56,6 +56,22 @@ class MockWebGLRenderingContext {
   drawElements = vi.fn();
 }
 
+class MockMutationObserver {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = vi.fn();
+}
+
+class MockIntersectionObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = vi.fn();
+  root: Element | null = null;
+  rootMargin = '';
+  thresholds: ReadonlyArray<number> = [];
+}
+
 // Mock canvas.getContext
 const mockGetContext = vi.fn((type: string) => {
   if (type === 'webgl' || type === 'experimental-webgl') {
@@ -78,22 +94,12 @@ beforeEach(() => {
   })) as unknown as typeof window.getComputedStyle;
 
   // Mock MutationObserver
-  global.MutationObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    disconnect: vi.fn(),
-    takeRecords: vi.fn(),
-  })) as unknown as typeof MutationObserver;
+  global.MutationObserver =
+    MockMutationObserver as unknown as typeof MutationObserver;
 
   // Mock IntersectionObserver
-  global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-    takeRecords: vi.fn(),
-    root: null,
-    rootMargin: '',
-    thresholds: [],
-  })) as unknown as typeof IntersectionObserver;
+  global.IntersectionObserver =
+    MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
   // Mock requestAnimationFrame - don't call callback immediately to prevent infinite loop
   global.requestAnimationFrame = vi.fn(() => 1) as unknown as typeof requestAnimationFrame;

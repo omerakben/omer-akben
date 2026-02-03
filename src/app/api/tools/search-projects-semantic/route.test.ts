@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from "next/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   createMockRequest,
   getResponseJson,
@@ -12,6 +12,10 @@ import {
   isSuccessResponse,
 } from "../test-utils";
 import { POST } from "./route";
+
+vi.mock("@/lib/redis/embeddings", () => ({
+  searchProjectsBySimilarity: vi.fn().mockResolvedValue([]),
+}));
 
 describe("POST /api/tools/search-projects-semantic", () => {
   describe("Valid requests", () => {
@@ -234,7 +238,7 @@ describe("POST /api/tools/search-projects-semantic", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/search-projects-semantic",
+        "http://localhost:3001/api/tools/search-projects-semantic",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

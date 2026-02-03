@@ -83,7 +83,7 @@ POST /api/tools/extract-summary
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/extract-summary \
+curl -X POST http://localhost:3001/api/tools/extract-summary \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -105,7 +105,7 @@ curl -X POST http://localhost:3000/api/tools/extract-summary \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/extract-summary \
+curl -X POST http://localhost:3001/api/tools/extract-summary \
   -H "Content-Type: application/json" \
   -d '{"maxLength": 100}'
 ```
@@ -127,7 +127,7 @@ curl -X POST http://localhost:3000/api/tools/extract-summary \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/extract-summary \
+curl -X POST http://localhost:3001/api/tools/extract-summary \
   -H "Content-Type: application/json" \
   -d '{"maxLength": 500}'
 ```
@@ -149,7 +149,7 @@ curl -X POST http://localhost:3000/api/tools/extract-summary \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/extract-summary \
+curl -X POST http://localhost:3001/api/tools/extract-summary \
   -H "Content-Type: application/json" \
   -d '{"maxLength": 25}'
 ```
@@ -168,7 +168,7 @@ curl -X POST http://localhost:3000/api/tools/extract-summary \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/extract-summary \
+curl -X POST http://localhost:3001/api/tools/extract-summary \
   -H "Content-Type: application/json" \
   -d '{"maxLength": 1000}'
 ```

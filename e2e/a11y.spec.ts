@@ -15,7 +15,7 @@ const routes = [
 test.describe("A11y", () => {
   for (const route of routes) {
     test(`axe: ${route}`, async ({ page }) => {
-      await page.goto(`http://localhost:3000${route}`, {
+      await page.goto(`http://localhost:3001${route}`, {
         waitUntil: "networkidle",
       });
 

@@ -19,6 +19,7 @@ const FULL_SYSTEM_PROMPT = buildContactKnowledge();
 class ContactAgent extends BasePortfolioAgent<"contact"> {
   constructor() {
     super({
+      id: "contact",
       name: "contact",
       description:
         "Guides visitors to the best contact channels and follow-up actions.",

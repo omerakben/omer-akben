@@ -298,7 +298,7 @@ describe("POST /api/tools/list-projects", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/list-projects", {
+      const req = new Request("http://localhost:3001/api/tools/list-projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "invalid json{",

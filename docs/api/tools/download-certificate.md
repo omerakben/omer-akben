@@ -87,7 +87,7 @@ POST /api/tools/download-certificate
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/download-certificate \
+curl -X POST http://localhost:3001/api/tools/download-certificate \
   -H "Content-Type: application/json" \
   -d '{"type": "aws"}'
 ```
@@ -115,7 +115,7 @@ curl -X POST http://localhost:3000/api/tools/download-certificate \
 **Request (GET)**:
 
 ```bash
-curl "http://localhost:3000/api/tools/download-certificate?type=nss"
+curl "http://localhost:3001/api/tools/download-certificate?type=nss"
 ```
 
 **Response**:
@@ -141,7 +141,7 @@ curl "http://localhost:3000/api/tools/download-certificate?type=nss"
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/download-certificate \
+curl -X POST http://localhost:3001/api/tools/download-certificate \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -160,7 +160,7 @@ curl -X POST http://localhost:3000/api/tools/download-certificate \
 **Request**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/download-certificate \
+curl -X POST http://localhost:3001/api/tools/download-certificate \
   -H "Content-Type: application/json" \
   -d '{"type": "google"}'
 ```

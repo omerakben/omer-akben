@@ -28,7 +28,7 @@ export function createMockRequest(
     headers?: Record<string, string>;
   }
 ): NextRequest {
-  const url = options?.url || "http://localhost:3000/api/tools/test";
+  const url = options?.url || "http://localhost:3001/api/tools/test";
   const method = options?.method || "POST";
   const headers = options?.headers || { "Content-Type": "application/json" };
 
@@ -145,7 +145,7 @@ export function createMockGetRequest(
     headers?: Record<string, string>;
   }
 ): NextRequest {
-  const baseUrl = options?.baseUrl || "http://localhost:3000/api/test";
+  const baseUrl = options?.baseUrl || "http://localhost:3001/api/test";
   const url = new URL(baseUrl);
 
   Object.entries(params).forEach(([key, value]) => {

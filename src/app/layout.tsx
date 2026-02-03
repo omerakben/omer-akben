@@ -27,8 +27,8 @@ export default async function RootLayout({
   // CRITICAL: Reading x-nonce triggers Next.js automatic nonce injection
   // into ALL generated inline styles/scripts. Without this, CSP blocks everything in production.
   // Do not remove - this "unused" variable has essential side effects.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const nonce = (await headers()).get("x-nonce") || "";
+  void nonce;
 
   return (
     <html lang="en" className={inter.variable}>

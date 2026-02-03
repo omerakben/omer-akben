@@ -140,7 +140,7 @@ describe("POST /api/tools/extract-summary", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/extract-summary",
+        "http://localhost:3001/api/tools/extract-summary",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

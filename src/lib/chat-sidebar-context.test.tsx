@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
 import {
   ChatSidebarProvider,
@@ -129,7 +129,9 @@ describe("ChatSidebarProvider", () => {
       const initialId = screen.getByTestId("thread-id").textContent;
 
       // Click new chat button
-      screen.getByTestId("new-chat-btn").click();
+      act(() => {
+        screen.getByTestId("new-chat-btn").click();
+      });
 
       // Force re-render to see the updated ID
       rerender(

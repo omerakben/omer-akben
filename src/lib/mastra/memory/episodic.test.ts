@@ -22,14 +22,17 @@ vi.mock("@/lib/cache/openai-cache", () => ({
   recordCacheMiss: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock("openai", () => ({
-  __esModule: true,
-  default: vi.fn().mockImplementation(() => ({
-    embeddings: {
+vi.mock("openai", () => {
+  class OpenAI {
+    embeddings = {
       create: embeddingsCreateMock,
-    },
-  })),
-}));
+    };
+  }
+  return {
+    __esModule: true,
+    default: OpenAI,
+  };
+});
 
 describe("RedisEpisodicMemory", () => {
   beforeEach(() => {

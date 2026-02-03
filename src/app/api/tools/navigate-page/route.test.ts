@@ -41,7 +41,7 @@ describe("POST /api/tools/navigate-page", () => {
     });
 
     it("should navigate to localhost (for development)", async () => {
-      const req = createMockRequest({ url: "http://localhost:3000" });
+      const req = createMockRequest({ url: "http://localhost:3001" });
       const response = await POST(req);
       const json = await getResponseJson(response);
 
@@ -165,7 +165,7 @@ describe("POST /api/tools/navigate-page", () => {
 
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
-      const req = new Request("http://localhost:3000/api/tools/navigate-page", {
+      const req = new Request("http://localhost:3001/api/tools/navigate-page", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "invalid json{",

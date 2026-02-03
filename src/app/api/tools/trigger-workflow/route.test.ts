@@ -191,7 +191,7 @@ describe("POST /api/tools/trigger-workflow", () => {
   describe("Malformed requests", () => {
     it("should handle invalid JSON body", async () => {
       const req = new Request(
-        "http://localhost:3000/api/tools/trigger-workflow",
+        "http://localhost:3001/api/tools/trigger-workflow",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

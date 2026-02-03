@@ -93,13 +93,13 @@ POST /api/tools/profile-performance
 **Request (GET)**:
 
 ```bash
-curl http://localhost:3000/api/tools/profile-performance
+curl http://localhost:3001/api/tools/profile-performance
 ```
 
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/profile-performance \
+curl -X POST http://localhost:3001/api/tools/profile-performance \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -131,13 +131,13 @@ curl -X POST http://localhost:3000/api/tools/profile-performance \
 **Request (GET)**:
 
 ```bash
-curl "http://localhost:3000/api/tools/profile-performance?includeScreenshots=true&duration=10000"
+curl "http://localhost:3001/api/tools/profile-performance?includeScreenshots=true&duration=10000"
 ```
 
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/profile-performance \
+curl -X POST http://localhost:3001/api/tools/profile-performance \
   -H "Content-Type: application/json" \
   -d '{"includeScreenshots": true, "duration": 10000}'
 ```
@@ -190,7 +190,7 @@ curl -X POST https://omerakben.com/api/tools/profile-performance \
 **Request (POST)**:
 
 ```bash
-curl -X POST http://localhost:3000/api/tools/profile-performance \
+curl -X POST http://localhost:3001/api/tools/profile-performance \
   -H "Content-Type: application/json" \
   -d '{"duration": -1000}'
 ```
@@ -340,7 +340,7 @@ import { chromium } from 'playwright';
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
-await page.goto('http://localhost:3000');
+await page.goto('http://localhost:3001');
 
 const metrics = await page.evaluate(() => ({
   lcp: performance.getEntriesByType('largest-contentful-paint')[0].renderTime,

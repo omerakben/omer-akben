@@ -46,7 +46,7 @@ frame-ancestors 'none';
    npm run dev
    ```
 
-   - Visit `http://localhost:3000` and inspect **Network → Headers** for `Strict-Transport-Security` and the CSP block.
+   - Visit `http://localhost:3001` and inspect **Network → Headers** for `Strict-Transport-Security` and the CSP block.
    - Confirm DevTools **Console** is free of CSP violations when navigating core routes.
 
 2. **curl verification**
