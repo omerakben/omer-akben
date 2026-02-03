@@ -40,7 +40,7 @@ tags: [architecture, nextjs, ai-assistant, technical-overview]
 
 **11 Server-Side Tools** (all in `src/app/api/tools/`):
 
-1. `download_resume` - 4 formats (full, short, two-page, docx)
+1. `download_resume` - Professional resume PDF (2 pages)
 2. `download_certificate` - AWS, NSS certificates
 3. `list_projects` - Filter by category, featured flag, limit
 4. `open_project` - Get project details by slug

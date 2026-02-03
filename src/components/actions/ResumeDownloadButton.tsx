@@ -26,7 +26,7 @@ interface ResumeDownloadButtonProps {
  *
  * Button for downloading professional resume (unified format).
  * Features:
- * - Single unified professional resume (PDF, 2 pages, 88KB)
+ * - Single unified professional resume (PDF, 2 pages, 126KB)
  * - Loading states during download
  * - Accessible with ARIA labels
  * - Error handling with user feedback

@@ -27,18 +27,12 @@ describe("Agent Knowledge Base", () => {
       expect(prompt).toContain("me@omerakben.com");
     });
 
-    it("should include extended resume details", () => {
+    it("should include resume details", () => {
       const prompt = buildEnhancedSystemPrompt();
-      // Check for key sections from extended resume
+      // Check for key sections from resume
       expect(prompt).toMatch(/professional summary/i);
       expect(prompt).toMatch(/core skills/i);
       expect(prompt).toMatch(/professional experience/i);
-    });
-
-    it("should include standard resume as quick reference", () => {
-      const prompt = buildEnhancedSystemPrompt();
-      expect(prompt).toContain("Concise Resume Version");
-      expect(prompt).toContain("for quick overview");
     });
 
     it("should include core identity information", () => {
@@ -72,15 +66,14 @@ describe("Agent Knowledge Base", () => {
     it("should include work experience details", () => {
       const prompt = buildEnhancedSystemPrompt();
       // Check for company names from resume
-      expect(prompt).toContain("Freelance");
+      expect(prompt).toContain("TUEL AI");
       expect(prompt).toContain("Oteemo");
     });
 
     it("should be long enough to contain detailed resume", () => {
       const prompt = buildEnhancedSystemPrompt();
-      // Extended resume is ~17KB, standard is ~5KB
-      // Prompt should be substantial (>20KB with other content)
-      expect(prompt.length).toBeGreaterThan(20000);
+      // Prompt should be substantial (>12KB with other content)
+      expect(prompt.length).toBeGreaterThan(12000);
     });
   });
 });

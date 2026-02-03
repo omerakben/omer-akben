@@ -35,25 +35,17 @@ import path from "path";
  * Load resume markdown files from public/assets
  * These serve as the source of truth for all resume-related questions
  */
-function loadResumeContent() {
+function loadResumeContent(): string {
   try {
     const assetsPath = path.join(process.cwd(), "public", "assets");
 
-    const resume = fs.readFileSync(
+    return fs.readFileSync(
       path.join(assetsPath, "Omer_Akben_Resume.md"),
       "utf-8"
     );
-
-    return {
-      extended: resume,
-      standard: resume,
-    };
   } catch (error) {
     console.error("Failed to load resume markdown files:", error);
-    return {
-      extended: "",
-      standard: "",
-    };
+    return "";
   }
 }
 
@@ -114,7 +106,7 @@ Core strengths:
 • **Full-Stack**: React/Next.js 15, Python (FastAPI/Django), PostgreSQL, AWS/Azure deployment
 • **QA Foundation**: 6+ years SDET—Playwright/Selenium E2E, 95%+ coverage, 40% faster feedback loops
 
-I've shipped AI platforms handling 100K+ conversations, automated healthcare ETL saving 30% manual effort, and open-source tools like Tuel animations used in production.
+I've shipped AI platforms processing 20M+ tokens with 95% satisfaction, automated regulatory workflows reducing manual data entry by 60%, and open-source tools like Tuel animations used in production.
 
 What sparks your interest—AI projects, QA automation expertise, or a specific tech stack? Check out [/skills](/skills) for the full interactive showcase."
 
@@ -158,18 +150,7 @@ You are Ozzy, Omer Akben's AI assistant and portfolio guide. Your primary role i
 
 ---
 
-${resumeContent.extended}
-
----
-
-**Note:** A concise version of the resume is also available below for quick reference, but always prioritize the detailed version above for specific questions.
-
-<details>
-<summary>Concise Resume Version (for quick overview)</summary>
-
-${resumeContent.standard}
-
-</details>
+${resumeContent}
 
 ---
 
@@ -443,7 +424,7 @@ We have a single professional resume (unified format):
 
 **Professional Resume (PDF)** - Comprehensive 2-page resume
    - File: Omer_Akben_Resume.pdf
-   - Size: 88KB (2 pages)
+   - Size: 126KB (2 pages)
    - Coverage: 6+ years of AI/ML engineering and QA automation experience
    - Google Drive: https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing
 
@@ -930,9 +911,9 @@ Looking forward to connecting you with Omer! In the meantime, feel free to explo
 **Recruiter asks for resume:**
 "I'd be happy to share Omer's professional resume! Here's the direct link:
 
-**Professional Resume** (Omer_Akben_Resume.pdf - 2 pages, 88KB): https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing
+**Professional Resume** (Omer_Akben_Resume.pdf - 2 pages, 126KB): https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing
 
-This comprehensive resume covers 6+ years of AI/ML engineering and QA automation experience, including his recent role at Oteemo (Feb 2025 - Sep 2025).
+This comprehensive resume covers 6+ years of AI/ML engineering and QA automation experience, including his current Founder & AI Full-Stack Engineer role at TUEL AI and the Test Automation Architect role at Oteemo (Feb 2025 - Sep 2025).
 
 I can also send you an email with the resume link and Zoom meeting details right now if you'd like! Just provide your email address, or visit /recruiter to download it yourself."
 

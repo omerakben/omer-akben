@@ -24,15 +24,15 @@ export function HeroSectionStatic() {
             {/* Main Heading */}
             <h1 className="hero-slide-up text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-[#10B981] to-[#2563EB] bg-clip-text text-transparent">
-                AI Engineer & Full-Stack Developer
+                AI Full-Stack Engineer & EdTech Founder
               </span>
             </h1>
 
             {/* Subheadline */}
             <p className="hero-slide-up-delay-1 text-base sm:text-lg text-text-2 mb-8">
-              I build GenAI/LLM apps and workflow automations with OpenAI
-              Responses API and LangGraph—shipped with SDET-grade reliability.
-              6+ years across QA and software engineering.
+              Founder of TUEL AI, shipping production RAG and agentic workflows
+              with Next.js/FastAPI and modern LLMs—backed by 6+ years of SDET/QA
+              automation experience.
             </p>
 
             {/* Proof & Capability Chips */}
@@ -40,18 +40,16 @@ export function HeroSectionStatic() {
               {/* Proof Chips (metrics/outcomes) */}
               {[
                 {
-                  text: "15+ workflow automations",
-                  title: "Shipped 15+ production automation workflows",
+                  text: "16+ learning tools",
+                  title: "Built 16+ interactive learning tools in TUEL AI",
                 },
                 {
-                  text: "90% critical-path tests",
-                  title:
-                    "Achieved 90% test coverage on critical features and workflows",
+                  text: "20M+ tokens",
+                  title: "Processed 20M+ tokens in production usage",
                 },
                 {
-                  text: "~98% suite pass rates",
-                  title:
-                    "Maintained ~98% test suite pass rates in enterprise environments",
+                  text: "95% satisfaction",
+                  title: "62/65 positive ratings in production pilots",
                 },
               ].map((chip) => (
                 <span
@@ -66,15 +64,15 @@ export function HeroSectionStatic() {
               {/* Capability Chips (skills/stack) - shown on desktop, hidden on mobile for space */}
               <span
                 className="hidden md:inline-block rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
-                title="GenAI with OpenAI Responses API"
+                title="RAG pipelines and LangGraph orchestration"
               >
-                GenAI (OpenAI Responses API)
+                RAG + LangGraph
               </span>
               <span
                 className="hidden lg:inline-block rounded-full border border-border-line bg-surf-1 px-3 py-1 cursor-default"
-                title="Agent Builder and LangGraph"
+                title="LLM evaluation and observability"
               >
-                Agents / LangGraph
+                RAGAS / LangSmith
               </span>
             </div>
 
@@ -143,8 +141,8 @@ export function HeroSectionStatic() {
 
               {/* Micro-proof footer */}
               <p className="mt-4 text-sm text-text-3">
-                Previously: assetized an enterprise test framework; mature
-                suites achieved ~98% pass rates.
+                Selected for Elon University Business Faculty Pilot Program
+                after 6 months production use.
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 ---
 title: "download_resume Tool"
-description: "Download Omer's professional resume in PDF format (2-page, 88KB) with Google Drive fallback"
+description: "Download Omer's professional resume in PDF format (2-page, 126KB) with Google Drive fallback"
 date: 2025-11-20
 status: stable
 tags: [api, tool, resume, pdf, document-management]
@@ -61,7 +61,7 @@ POST /api/tools/download-resume
   data: {
     url: string,              // Local download URL
     filename: string,         // PDF filename
-    size: number,             // File size in bytes (88320 = ~86.3KB)
+    size: number,             // File size in bytes (129384 = ~126KB)
     format: string,           // "pdf"
     googleDriveUrl: string    // Google Drive fallback link
   }
@@ -103,7 +103,7 @@ curl -X POST http://localhost:3001/api/tools/download-resume \
   "data": {
     "url": "/assets/Omer_Akben_Resume.pdf",
     "filename": "Omer_Akben_Resume.pdf",
-    "size": 88320,
+    "size": 129384,
     "format": "pdf",
     "googleDriveUrl": "https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing"
   }
@@ -134,7 +134,7 @@ curl -X POST http://localhost:3001/api/tools/download-resume \
 ### Professional Resume (2-page)
 
 - **File**: `Omer_Akben_Resume.pdf`
-- **Size**: 88KB (~86.3KB / 88,320 bytes)
+- **Size**: 126KB (~126KB / 129,384 bytes)
 - **Content**: Comprehensive 2-page professional resume covering 6+ years of AI/ML engineering and QA automation experience
 - **Use Case**: Complete professional overview for hiring managers, recruiters, and technical interviews
 - **Google Drive**: [View/Download](https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing)
@@ -160,7 +160,7 @@ curl -X POST http://localhost:3001/api/tools/download-resume \
 
 **Static Files**: `/public/assets/`
 
-- `Omer_Akben_Resume.pdf` (88KB)
+- `Omer_Akben_Resume.pdf` (126KB)
 - `Omer_Akben_Resume.md` (source of truth markdown)
 
 **Features**:
@@ -183,7 +183,7 @@ curl -X POST http://localhost:3001/api/tools/download-resume \
 - **2025-11-20**: Unified to single format (removed "extended" option)
 - **2025-11-20**: Updated Google Drive URL to new unified resume
 - **2025-11-20**: Changed schema from enum to literal type
-- **2025-11-20**: Updated file size to 88320 bytes (88KB)
+- **2026-02-03**: Updated file size to 129384 bytes (126KB)
 - **2025-10-29**: Removed DOCX format (PDF-only policy)
 - **2025-10-27**: Added Google Drive fallback URLs
 - **2025-10-20**: Initial implementation with 2 PDF formats

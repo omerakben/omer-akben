@@ -106,7 +106,7 @@ ${projects
 ${getElonUniversityContext()}
 
 **Cross-Linking Pattern:**
-When user asks about ANY of these 4 Elon projects, mention the other 3 related projects and offer to explore them.
+When user asks about ANY of these Elon projects, mention the other related projects and offer to explore them.
 
 ---
 
@@ -120,7 +120,7 @@ ${(() => {
 ${screenshots.map(s => `- **${s.title}**: \`${s.image}\` → [View](/projects/${s.slug})`).join('\n')}
 
 **Image Organization by Directory:**
-- \`/elon_ai_img/\` - 3 Elon University project screenshots (AI Toolbox, ElonGPT/LSB AI Studio hub images)
+- \`/elon_ai_img/\` - 3 Elon University project screenshots (Elon AI hub, AI Toolbox, LSB AI Studio)
 - \`/nort_glass_img/\` - North Glass LLC production site (hero + custom components)
 - \`/tuel_chatbot_img/\` - AI Chatbot Builder demo (landing page + chat interface)
 - \`/tuel_animations_img/\` - Animation Library showcase

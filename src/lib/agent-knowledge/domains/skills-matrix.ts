@@ -16,7 +16,7 @@ export const skillsMatrix = `
 
 ## Programming Languages
 - **Primary:** TypeScript, Python, JavaScript
-- **Additional:** SQL, C#, Java
+- **Additional:** SQL, C#, Java, Bash
 
 ## Frontend Development
 - **Frameworks:** React, Next.js (App Router 15), TypeScript/JavaScript
@@ -31,10 +31,11 @@ export const skillsMatrix = `
 - **Databases:** Object-Relational Mapping (ORM), SQL Schema Design
 
 ## AI/Generative AI Engineering
-- **LLM Providers:** OpenAI API (GPT-4o, GPT-4o-mini), Anthropic Claude API, Vertex AI, Amazon Bedrock, Azure AI services
-- **Frameworks:** LangChain, LangGraph (agentic workflows), Elasticsearch
-- **RAG Systems:** Retrieval-Augmented Generation implementation
-- **Vector Databases:** pgvector, FAISS, Pinecone, Weaviate
+- **LLM Providers:** OpenAI API, Anthropic Claude, Vertex AI (Gemini), Amazon Bedrock, Azure AI / Microsoft Foundry, Grok
+- **Frameworks:** LangChain, LangGraph (agentic workflows)
+- **RAG Systems:** Retrieval-Augmented Generation implementation with hybrid search
+- **Vector Databases:** pgvector, FAISS, Pinecone, Weaviate, Upstash Vector
+- **Evaluation & Observability:** RAGAS, DeepEval, LangSmith, Arize Phoenix
 - **Advanced:** Prompt Engineering & Evaluation, Content Guardrails, Function/Tool Calling
 - **Multi-Agent:** Parallel agent processing with asyncio
 
@@ -44,10 +45,11 @@ export const skillsMatrix = `
 - **Skills:** Schema Design, Data Migrations, Data Validation, SQL Queries & Optimization
 
 ## Cloud & DevOps
-- **AWS:** Lambda, API Gateway, S3, Elastic Beanstalk
+- **AWS:** Lambda, ECS, API Gateway, S3
 - **Azure:** Entra ID, Azure DevOps, Container Apps
 - **Containers:** Docker, Kubernetes (environment parity)
 - **CI/CD:** GitHub Actions, Jenkins, Azure Pipelines
+- **Infrastructure:** Terraform
 - **Monitoring:** Observability (logging, metrics, tracing), Vercel Analytics
 
 ## QA & Test Automation (SDET)
@@ -109,9 +111,9 @@ My SDET foundation means I build testable architectures from day one, enabling t
 - RAG systems with vector search (pgvector)
 
 **Projects Demonstrating AI Expertise:**
-- **Elon AI Agent** - Parallel multi-agent system (3-4x speedup)
-- **Tuel AI Chatbot** - Full-stack RAG platform with multi-provider support
-- **Genesis Test Copilot** - AI-powered test automation
+- **Elon AI (TUEL AI Platform)** - Multi-tenant RAG + agentic workflows in production
+- **Tuel AI Chatbot Builder** - Full-stack RAG platform with multi-provider support
+- **Elon AI Agent** - Parallel multi-agent business plan generator
 
 I build end-to-end AI features with Next.js/TypeScript frontend and FastAPI/Python backend. Visit [/projects](/projects) and filter by AI/ML to see detailed case studies. Which AI capability interests you most?"
 
@@ -137,7 +139,7 @@ I focus on accessibility (WCAG compliance), performance optimization, and mobile
 - Frontend: React, Next.js 15, TypeScript, Tailwind CSS
 - Backend: FastAPI, Django, PostgreSQL, Redis
 - AI/ML: LangChain, LangGraph, OpenAI API, RAG systems
-- DevOps: GitHub Actions, Docker, AWS, Railway, Vercel
+- DevOps: GitHub Actions, Docker, AWS, Azure, Vercel
 
 **Depth (Quality Engineering):**
 - 6+ years SDET experience with Playwright, Selenium, test frameworks

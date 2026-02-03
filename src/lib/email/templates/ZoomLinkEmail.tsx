@@ -73,7 +73,7 @@ export const ZoomLinkEmail = ({
           <Section style={divider} />
 
           <Text style={text}>
-            <strong>Professional Resume (PDF - 2 pages, 88KB):</strong>
+            <strong>Professional Resume (PDF - 2 pages, 126KB):</strong>
             <br />
             <Link
               href="https://drive.google.com/file/d/1_Q4LEz9emCn2FpR5Mbw9eSi62Rs1HOYw/view?usp=sharing"
@@ -93,7 +93,7 @@ export const ZoomLinkEmail = ({
           <Text style={footer}>
             <strong>Omer &quot;Ozzy&quot; Akben</strong>
             <br />
-            Full-Stack AI Engineer • SDET
+            Founder & AI Full-Stack Engineer • SDET
             <br />
             <br />
             <span style={contactLabel}>Email:</span>{" "}

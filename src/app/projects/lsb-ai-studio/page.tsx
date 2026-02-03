@@ -45,9 +45,9 @@ export default function LSBAIStudioPage() {
               </h3>
               <div className="text-text-2 text-sm space-y-2">
                 <p>
-                  This project, along with the AI Toolbox, ElonGPT, and LSB
-                  Applied AI Studio, was developed for Elon University and
-                  remains their intellectual property.
+                  This project, along with the Elon AI platform (TUEL AI), AI
+                  Toolbox, ElonGPT, and LSB Applied AI Studio, was developed
+                  for Elon University and remains their intellectual property.
                 </p>
                 <p>
                   All source code is maintained in private repositories. Please
@@ -259,6 +259,15 @@ export default function LSBAIStudioPage() {
             <ul className="list-disc list-inside space-y-1 ml-4">
               <li>
                 <Link
+                  href="/projects/elon-ai"
+                  className="underline hover:text-text-1"
+                >
+                  <strong>Elon AI Platform</strong>
+                </Link>{" "}
+                - Live TUEL AI deployment
+              </li>
+              <li>
+                <Link
                   href="/projects/elon-ai-agent"
                   className="underline hover:text-text-1"
                 >
@@ -292,10 +301,11 @@ export default function LSBAIStudioPage() {
               </li>
             </ul>
             <p>
-              All projects remain the intellectual property of Elon University.
-              I am grateful for the opportunity to have contributed to these
-              educational initiatives that advance AI literacy across the
-              university community.
+              All projects are delivered for Elon University and maintained in
+              private repositories for institutional/client IP. I am grateful
+              for the opportunity to have contributed to these educational
+              initiatives that advance AI literacy across the university
+              community.
             </p>
           </div>
         </div>
