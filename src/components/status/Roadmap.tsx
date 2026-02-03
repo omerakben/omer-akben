@@ -19,6 +19,7 @@
  */
 
 import type { Roadmap as RoadmapData } from "@/data/status";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for the Roadmap component
@@ -57,7 +58,12 @@ export function Roadmap({ data }: RoadmapProps) {
         <section
           key={key}
           aria-labelledby={`roadmap-${key}`}
-          className="rounded-2xl border border-border-line bg-surf-1 p-4 shadow-sm"
+          className={cn(
+            "rounded-2xl border p-4 shadow-sm",
+            key === "now"
+              ? "border-brand-primary/50 bg-brand-primary/5 shadow-brand-primary/10"
+              : "border-border-line bg-surf-1"
+          )}
         >
           <h3
             id={`roadmap-${key}`}

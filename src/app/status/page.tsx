@@ -22,6 +22,19 @@ const personas = [
   { id: "curious" as Persona, label: "Curious" },
 ];
 
+const quickLinks = [
+  { id: "status-overview", label: "Overview" },
+  ...(statusData.spotlights.length > 0
+    ? [{ id: "sidebar-pin", label: "Spotlight" }]
+    : []),
+  { id: "status-metrics", label: "Metrics" },
+  { id: "status-capabilities", label: "Live Today" },
+  { id: "status-milestones", label: "Milestones" },
+  { id: "status-roadmap", label: "Roadmap" },
+  { id: "status-lessons", label: "Lessons" },
+  { id: "status-how-to-use", label: "Use Ozzy" },
+];
+
 export default function StatusPage() {
   const [activePersona, setActivePersona] = useState<Persona>("recruiters");
   const [metrics, setMetrics] = useState(statusData.metrics);
@@ -59,43 +72,66 @@ export default function StatusPage() {
       />
 
       <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-12 sm:px-6">
-        <section
-          aria-labelledby="why-banner"
-          className="rounded-2xl border border-dashed border-brand-primary/40 bg-surf-1 p-6 shadow-sm"
+        <nav
+          aria-label="Status sections"
+          className="rounded-2xl border border-border-line bg-surf-1 p-4 shadow-sm"
         >
-          <h2 id="why-banner" className="text-lg font-semibold text-text-1">
-            Why you saw a banner
-          </h2>
-          <p className="mt-2 text-sm text-text-2">
-            <span className="font-semibold text-text-1">{bannerMessage}</span>
-            {" "}This notice reappears whenever a new deploy ships (keyed to the
-            latest git SHA) and always links back here for the full roadmap and
-            release notes.
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-text-3">
+            Jump to
           </p>
-        </section>
-
-        <section aria-labelledby="mission-vision" className="space-y-8">
-          <div>
-            <h2
-              id="mission-vision"
-              className="text-sm font-semibold uppercase tracking-[0.3em] text-text-3"
-            >
-              Mission
-            </h2>
-            <p className="mt-4 text-lg text-text-1">{statusData.mission}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {quickLinks.map((link) => (
+              <a
+                key={link.id}
+                className="rounded-full border border-border-line bg-surf-0 px-3 py-1.5 text-xs font-semibold text-text-2 transition hover:border-brand-primary/60 hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                href={`#${link.id}`}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-text-3">
-              Vision
-            </h3>
-            <p className="mt-2 text-lg text-text-1">{statusData.vision}</p>
+        </nav>
+
+        <section
+          aria-labelledby="mission-vision"
+          className="space-y-8 scroll-mt-24"
+          id="status-overview"
+        >
+          <div className="rounded-2xl border border-dashed border-brand-primary/40 bg-surf-1 p-6 shadow-sm">
+            <h2 id="why-banner" className="text-lg font-semibold text-text-1">
+              Why you saw a banner
+            </h2>
+            <p className="mt-2 text-sm text-text-2">
+              <span className="font-semibold text-text-1">{bannerMessage}</span>{" "}
+              This notice reappears whenever a new deploy ships (keyed to the
+              latest git SHA) and always links back here for the full roadmap and
+              release notes.
+            </p>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div className="rounded-2xl border border-border-line bg-surf-1 p-6 shadow-sm">
+              <h2
+                id="mission-vision"
+                className="text-sm font-semibold uppercase tracking-[0.3em] text-text-3"
+              >
+                Mission
+              </h2>
+              <p className="mt-4 text-lg text-text-1">{statusData.mission}</p>
+            </div>
+            <div className="rounded-2xl border border-border-line bg-surf-1 p-6 shadow-sm">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-text-3">
+                Vision
+              </h3>
+              <p className="mt-4 text-lg text-text-1">{statusData.vision}</p>
+            </div>
           </div>
         </section>
 
         {statusData.spotlights.length > 0 && (
           <section
             aria-labelledby="spotlights-heading"
-            className="space-y-6"
+            className="space-y-6 scroll-mt-24"
             id="sidebar-pin"
           >
             <div className="flex items-center justify-between gap-4">
@@ -115,7 +151,11 @@ export default function StatusPage() {
           </section>
         )}
 
-        <section aria-labelledby="metrics-heading">
+        <section
+          aria-labelledby="metrics-heading"
+          className="scroll-mt-24"
+          id="status-metrics"
+        >
           <div className="flex items-baseline justify-between gap-4">
             <h2
               id="metrics-heading"
@@ -130,7 +170,11 @@ export default function StatusPage() {
           </div>
         </section>
 
-        <section aria-labelledby="capabilities-heading">
+        <section
+          aria-labelledby="capabilities-heading"
+          className="scroll-mt-24"
+          id="status-capabilities"
+        >
           <h2
             id="capabilities-heading"
             className="text-2xl font-semibold text-text-1"
@@ -145,7 +189,11 @@ export default function StatusPage() {
           </div>
         </section>
 
-        <section aria-labelledby="milestones-heading">
+        <section
+          aria-labelledby="milestones-heading"
+          className="scroll-mt-24"
+          id="status-milestones"
+        >
           <h2
             id="milestones-heading"
             className="text-2xl font-semibold text-text-1"
@@ -157,7 +205,11 @@ export default function StatusPage() {
           </div>
         </section>
 
-        <section aria-labelledby="roadmap-heading">
+        <section
+          aria-labelledby="roadmap-heading"
+          className="scroll-mt-24"
+          id="status-roadmap"
+        >
           <h2
             id="roadmap-heading"
             className="text-2xl font-semibold text-text-1"
@@ -169,7 +221,11 @@ export default function StatusPage() {
           </div>
         </section>
 
-        <section aria-labelledby="lessons-heading">
+        <section
+          aria-labelledby="lessons-heading"
+          className="scroll-mt-24"
+          id="status-lessons"
+        >
           <h2
             id="lessons-heading"
             className="text-2xl font-semibold text-text-1"
@@ -181,7 +237,11 @@ export default function StatusPage() {
           </div>
         </section>
 
-        <section aria-labelledby="how-to-use-heading">
+        <section
+          aria-labelledby="how-to-use-heading"
+          className="scroll-mt-24"
+          id="status-how-to-use"
+        >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2
