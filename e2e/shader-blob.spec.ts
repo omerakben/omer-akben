@@ -195,16 +195,24 @@ test.describe('Shader Blob - 8 Brightness Modes', () => {
 });
 
 test.describe('Shader Blob - WebGL Feature Detection', () => {
-  test('renders WebGL canvas when supported', async ({ page, browserName }) => {
+  test('renders WebGL canvas when supported', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.setViewportSize({ width: 1920, height: 1080 });
 
-    // Modern browsers support WebGL (hero section only)
+    // Hero section selectors
     const canvas = page.locator('section canvas[aria-label="Open Ozzy AI Assistant"]');
+    const fallback = page.locator('section div[aria-label="Open Ozzy AI Assistant"]');
 
-    // Should render canvas in modern browsers
-    if (browserName === 'chromium' || browserName === 'firefox') {
+    // Feature-detect actual WebGL availability in this runtime (not just browser name)
+    const hasWebGL = await page.evaluate(() => {
+      const probe = document.createElement('canvas');
+      return Boolean(probe.getContext('webgl') || probe.getContext('experimental-webgl'));
+    });
+
+    if (hasWebGL) {
       await expect(canvas).toBeVisible();
+    } else {
+      await expect(fallback).toBeVisible();
     }
   });
 

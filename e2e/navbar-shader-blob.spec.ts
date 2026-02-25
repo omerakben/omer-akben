@@ -10,7 +10,14 @@
  * - Accessibility features
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+function navbarBlobLocator(page: Page) {
+  return page
+    .locator('header a[href="/"]')
+    .first()
+    .locator('> canvas.rounded-full, > div.relative.rounded-full');
+}
 
 test.describe('Navbar Shader Blob', () => {
   test.beforeEach(async ({ page }) => {
@@ -23,8 +30,8 @@ test.describe('Navbar Shader Blob', () => {
     // Wait for navbar to render
     await page.waitForSelector('header', { timeout: 5000 });
 
-    // Find navbar shader blob (canvas or fallback div)
-    const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
+    // Find navbar shader blob (canvas or fallback icon div)
+    const navbarBlob = navbarBlobLocator(page);
 
     // Verify it's visible
     await expect(navbarBlob).toBeVisible();
@@ -41,9 +48,9 @@ test.describe('Navbar Shader Blob', () => {
     // Navigate to a different page first
     await page.goto('/projects', { waitUntil: 'networkidle' });
 
-    // Click navbar shader blob
-    const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
-    await navbarBlob.click();
+    // Click navbar home link (blob is rendered inside this link)
+    const navbarHomeLink = page.locator('header a[href="/"]').first();
+    await navbarHomeLink.click();
 
     // Wait for navigation
     await page.waitForURL('/', { timeout: 5000 });
@@ -56,8 +63,10 @@ test.describe('Navbar Shader Blob', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
 
     // Find both shader blobs
-    const navbarBlob = page.locator('header canvas').first();
-    const heroBlob = page.locator('section canvas').first();
+    const navbarBlob = navbarBlobLocator(page);
+    const heroBlob = page
+      .locator('section canvas[aria-label="Open Ozzy AI Assistant"]')
+      .or(page.locator('section div[aria-label="Open Ozzy AI Assistant"]'));
 
     // Both should be visible concurrently
     await expect(navbarBlob).toBeVisible();
@@ -83,7 +92,7 @@ test.describe('Navbar Shader Blob', () => {
   test('navbar blob has correct accessibility attributes', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
 
-    const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
+    const navbarBlob = navbarBlobLocator(page);
 
     // No role/tabindex needed since it's inside a Link component
     // The Link provides navigation semantics
@@ -116,7 +125,7 @@ test.describe('Navbar Shader Blob', () => {
     await page.waitForSelector('header', { timeout: 5000 });
 
     // Navbar blob should be visible even on mobile
-    const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
+    const navbarBlob = navbarBlobLocator(page);
     await expect(navbarBlob).toBeVisible();
   });
 });
@@ -137,7 +146,7 @@ test.describe('Navbar Shader Blob - 8 Brightness Modes', () => {
       await page.waitForTimeout(500);
 
       // Navbar shader blob should still be visible
-      const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
+      const navbarBlob = navbarBlobLocator(page);
       await expect(navbarBlob).toBeVisible();
 
       // Verify colors updated (check computed styles)
@@ -163,7 +172,7 @@ test.describe('Navbar Shader Blob - 8 Brightness Modes', () => {
     await page.waitForTimeout(500);
 
     // Navbar blob should still be visible
-    const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
+    const navbarBlob = navbarBlobLocator(page);
     await expect(navbarBlob).toBeVisible();
   });
 });
@@ -177,7 +186,7 @@ test.describe('Navbar Shader Blob - Performance', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
 
     // Navbar shader blob should still render
-    const navbarBlob = page.locator('header canvas').or(page.locator('header div[role="button"]'));
+    const navbarBlob = navbarBlobLocator(page);
     await expect(navbarBlob).toBeVisible();
   });
 
