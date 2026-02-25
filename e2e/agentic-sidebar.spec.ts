@@ -560,12 +560,13 @@ test.describe("Agentic Sidebar - Accessibility", () => {
 
     // Input should be focusable
     const input = page.locator("textarea#chat-sidebar-input");
+    await expect(input).toBeVisible({ timeout: 2000 });
+    await expect(input).toBeEnabled({ timeout: 5000 });
     await input.focus();
 
-    // Type to verify keyboard input works
-    await page.keyboard.type("Test accessibility");
-    const value = await input.inputValue();
-    expect(value).toContain("Test accessibility");
+    // Fill through the locator to avoid focus-race flakiness
+    await input.fill("Test accessibility");
+    await expect(input).toHaveValue("Test accessibility");
   });
 
   test("should have focus trap in sidebar", async ({ page }) => {
