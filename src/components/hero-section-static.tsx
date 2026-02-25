@@ -44,12 +44,12 @@ export function HeroSectionStatic() {
                   title: "Built 16+ interactive learning tools in TUEL AI",
                 },
                 {
-                  text: "20M+ tokens",
-                  title: "Processed 20M+ tokens in production usage",
+                  text: "47.2M tokens",
+                  title: "Processed 47.2M tokens in production usage",
                 },
                 {
-                  text: "95% satisfaction",
-                  title: "62/65 positive ratings in production pilots",
+                  text: "96% satisfaction",
+                  title: "68/71 positive ratings in last 90 days",
                 },
               ].map((chip) => (
                 <span

@@ -25,19 +25,19 @@ export const metadata = createMetadata({
 
 const metrics = [
   {
-    value: "20M+",
+    value: "47.2M",
     label: "Tokens Processed",
-    detail: "Production usage at Elon University",
+    detail: "All-time production usage at Elon University",
   },
   {
-    value: "95%",
+    value: "96%",
     label: "Satisfaction",
-    detail: "62/65 positive ratings",
+    detail: "68/71 positive ratings (last 90 days)",
   },
   {
-    value: "2%",
+    value: "0%",
     label: "Error Rate",
-    detail: "Across 100+ sessions",
+    detail: "Across 420 all-time sessions",
   },
   {
     value: "16+",
