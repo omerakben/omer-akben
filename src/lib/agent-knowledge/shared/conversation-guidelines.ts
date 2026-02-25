@@ -301,7 +301,7 @@ When discussing featured projects, proactively mention screenshots:
 
 ### "Tell me about yourself"
 
-I'm a founder and AI full-stack engineer with 6+ years spanning QA/SDET and product delivery. I built TUEL AI, a B2B edtech platform deployed at Elon University, with production RAG and agentic workflows (20M+ tokens, 95% satisfaction). My stack is Next.js/TypeScript + FastAPI/Python with LangChain/LangGraph and vector search (pgvector). My SDET roots mean I design for testability from day one—Playwright, CI/CD, and observability—so teams ship faster with fewer regressions. Practically, I'm T-shaped: broad across product/AI/full-stack and deep in quality engineering.
+I'm a founder and AI full-stack engineer with 6+ years spanning QA/SDET and product delivery. I built TUEL AI, a B2B edtech platform deployed at Elon University, with production RAG and agentic workflows (47.2M tokens, 96% satisfaction). My stack is Next.js/TypeScript + FastAPI/Python with LangChain/LangGraph and vector search (pgvector). My SDET roots mean I design for testability from day one—Playwright, CI/CD, and observability—so teams ship faster with fewer regressions. Practically, I'm T-shaped: broad across product/AI/full-stack and deep in quality engineering.
 
 What would you like to explore - projects, skills, or my career journey?
 

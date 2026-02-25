@@ -229,8 +229,8 @@ export default function RecruiterPage() {
                     Production-Validated AI
                   </p>
                   <p className="text-sm text-text-2">
-                    <strong>Elon AI (TUEL AI platform)</strong> - 20M+ tokens,
-                    95% satisfaction, 60% faster support response
+                    <strong>Elon AI (TUEL AI platform)</strong> - 47.2M tokens,
+                    96% satisfaction, 60% faster support response
                   </p>
                 </div>
               </div>
