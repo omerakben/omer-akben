@@ -39,7 +39,7 @@
     "@react-email/render": "2.0.4",
     "@sentry/nextjs": "10.45.0",
     "@tailwindcss/postcss": "^4.2.2",
-    "@types/node": "^20",
+    "@types/node": "^25",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@upstash/ratelimit": "^2.0.8",
