@@ -1,0 +1,33 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      ai-sdk:
+        patterns:
+          - "@ai-sdk/*"
+          - "ai"
+      mastra:
+        patterns:
+          - "@mastra/*"
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+      testing:
+        patterns:
+          - "vitest"
+          - "@vitejs/*"
+          - "@testing-library/*"
+          - "jsdom"
+          - "playwright"
+          - "@playwright/*"
+      sentry:
+        patterns:
+          - "@sentry/*"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [">=10.0.0"]
