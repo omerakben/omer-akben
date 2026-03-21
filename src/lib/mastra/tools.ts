@@ -11,6 +11,7 @@ import { createTool } from '@mastra/core/tools';
 import { z } from "zod";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001";
+const DEFAULT_RESUME_FORMAT = "resume" as const;
 
 const fetchJson = async (path: string, body?: unknown) => {
   const response = await fetch(`${BASE_URL}${path}`, {
@@ -111,10 +112,10 @@ export const downloadResumeTool = createTool({
 
   Use this tool to get the resume URL, then optionally offer collect_contact for enhanced user experience.`,
   inputSchema: z.object({
-    format: z.literal("resume").default("resume"),
+    format: z.literal(DEFAULT_RESUME_FORMAT).default(DEFAULT_RESUME_FORMAT),
   }),
   execute: async (inputData) => {
-    const params = new URLSearchParams({ format: inputData.format ?? "resume" });
+    const params = new URLSearchParams({ format: inputData.format ?? DEFAULT_RESUME_FORMAT });
     const response = await fetch(
       `${BASE_URL}/api/tools/download-resume?${params.toString()}`
     );
