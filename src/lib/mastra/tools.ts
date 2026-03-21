@@ -114,7 +114,7 @@ export const downloadResumeTool = createTool({
     format: z.literal("resume").default("resume"),
   }),
   execute: async (inputData) => {
-    const params = new URLSearchParams({ format: inputData.format });
+    const params = new URLSearchParams({ format: inputData.format ?? "resume" });
     const response = await fetch(
       `${BASE_URL}/api/tools/download-resume?${params.toString()}`
     );
