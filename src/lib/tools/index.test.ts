@@ -94,10 +94,12 @@ describe("tool registry", () => {
 
   describe("profile performance tool", () => {
     it("should be disabled outside development", async () => {
+      vi.stubEnv("NODE_ENV", "test");
       const result = await aiToolRegistry.profile_performance.execute?.(
         { duration: 5000, includeScreenshots: false },
         {} as ToolCallOptions
       );
+      vi.unstubAllEnvs();
       expect(result).toEqual(
         expect.objectContaining({
           success: false,
