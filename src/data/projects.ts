@@ -149,9 +149,9 @@ export const projects: Project[] = [
     title: "Elon AI — TUEL AI Platform",
     shortTitle: "Elon AI",
     description:
-      "Live deployment of TUEL AI at Elon University with multi-tenant RAG, agentic workflows, and 18+ generative UI tools.",
+      "Live TUEL AI deployment at Elon University: 615 sessions, 71.8M tokens, 202 users, 96% satisfaction, 0% error rate. Professor Mustafa Akben's research shows 88% voluntary adoption and students averaging 94% on exams. FERPA-compliant, citation-grounded, with 30 AI assistants serving 27 teachers and 84 students.",
     longDescription:
-      "Elon AI is the live TUEL AI deployment for Elon University, built as a B2B educational technology platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with citations. It supports multi-model routing (OpenAI, Claude, Grok, Gemini) and a production RAG pipeline using Upstash Vector + pgvector. The platform includes Microsoft Entra ID SSO, role-based access control, faculty controls for AI behavior, 35+ audit action types, and evaluation with RAGAS. Production metrics: 420 all-time sessions, 161 total users, 47.2M all-time tokens, 0% error rate, 96% satisfaction (68/71 positive ratings over the last 90 days), and P95 retrieval latency under 2 seconds. Public demo assistants are available at https://tuel.ai/#demo.",
+      "Elon AI is the live TUEL AI deployment for Elon University, built as a B2B educational technology platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with citations. It supports multi-model routing (OpenAI, Claude, Grok, Gemini) and a production RAG pipeline using Upstash Vector + pgvector. The platform includes Microsoft Entra ID SSO, role-based access control, faculty controls for AI behavior, 35+ audit action types, and evaluation with RAGAS. Production metrics: 615 all-time sessions, 202 total users, 71.8M all-time tokens, 0% error rate, 96% satisfaction, and P95 retrieval latency under 2 seconds. The platform currently powers 30 AI assistants used by 27 teachers and 84 students. Professor Mustafa Akben's peer-reviewed research found 88% voluntary adoption and students averaging 94% on exams—outcomes attributed to FERPA-compliant, citation-grounded AI that faculty trust and students embrace. Live at https://elon-ai.app — public demo assistants and chatbot builder at https://tuel.ai.",
     image: "/elon_ai_img/elon_ai_img.png",
     technologies: [
       "Next.js 15",
@@ -292,9 +292,9 @@ export const projects: Project[] = [
     title: "Tuel AI Chatbot Builder",
     shortTitle: "Tuel AI Chatbot Builder",
     description:
-      "Full-stack chatbot builder platform for TUEL AI with multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
+      "Full-stack chatbot builder platform for TUEL AI powering 30 AI assistants across 27 teachers and 84 students. Multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
     longDescription:
-      "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control. Public demo assistants are available at https://tuel.ai/#demo.",
+      "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control. Currently powering 30 active AI assistants deployed by 27 teachers for 84 students—part of the TUEL AI ecosystem live at https://elon-ai.app. Public demo assistants available at https://tuel.ai/#demo.",
     image: "/tuel_chatbot_img/tuel_ai_landing_page.png",
     technologies: [
       "FastAPI",
