@@ -24,9 +24,9 @@
     "generate:favicons": "tsx scripts/generate-shader-favicons.ts"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^3.0.47",
-    "@ai-sdk/react": "^3.0.136",
-    "@ai-sdk/xai": "3.0.72",
+    "@ai-sdk/openai": "^3.0.48",
+    "@ai-sdk/react": "^3.0.143",
+    "@ai-sdk/xai": "3.0.74",
     "@mastra/ai-sdk": "1.2.0",
     "@mastra/core": "^1.15.0",
     "@mastra/memory": "^1.9.0",
@@ -46,7 +46,7 @@
     "@upstash/redis": "^1.37.0",
     "@upstash/vector": "^1.2.3",
     "@vercel/analytics": "^2.0.1",
-    "ai": "^6.0.134",
+    "ai": "^6.0.141",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dompurify": "^3.3.3",
