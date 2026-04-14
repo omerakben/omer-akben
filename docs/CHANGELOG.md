@@ -13,6 +13,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Search functionality across all documentation
 - Versioned documentation for API changes
 
+## [2.1.0] - 2026-04-14
+
+### Added
+
+- **Maintenance plan** (`docs/operations/maintenance-plan.md`) — weekly / monthly /
+  quarterly cadence for dependencies, security audits, project-data sync
+  (tuel.ai, opus-nx, GitHub), and doc truth-checks.
+- **Top-level `.nvmrc`** pinned to Node 20 to match the CI matrix in
+  `.github/workflows/quality-gates.yml` and
+  `.github/workflows/pre-deployment-to-main.yml`.
+- **GitHub Actions ecosystem** added to `.github/dependabot.yml` (weekly,
+  grouped as `actions-core`).
+
+### Changed
+
+- **Doc truth-check**: reconciled test counts (815/815 across 54 files) and AI
+  agent tool count (12) in `README.md`, `CLAUDE.md`, and `AGENTS.md`. Removes
+  drift that accumulated since the 2.0.0 doc release.
+- **Operations index** (`docs/operations/index.md`) now links the maintenance
+  plan.
+
+### Security
+
+- Captured current `pnpm audit --prod` baseline in the maintenance plan:
+  4 HIGH + 9 MODERATE advisories, all transitive. Remediation mapped onto open
+  Dependabot PRs (`next 16.2.3` closes the Next.js DoS advisory; the mastra
+  grouped PR closes the hono / picomatch / path-to-regexp chain).
+
 ## [2.0.0] - 2025-11-02
 
 ### Added

@@ -219,7 +219,7 @@ These rules apply to ALL work, regardless of agent or skill:
 ```bash
 ✅ ESLint:     npm run lint           # 0 errors required
 ✅ TypeScript: npx tsc --noEmit      # 0 errors required
-✅ Unit Tests: npm test              # 776/776 passing required
+✅ Unit Tests: npm test              # 815/815 passing required
 ✅ Build:      npm run build         # Success required
 ✅ Bundle:     npm run size          # Within limits required
 ✅ E2E Tests:  npm run test:e2e      # 66 passing required
@@ -281,7 +281,7 @@ These rules apply to ALL work, regardless of agent or skill:
 ```
 ✅ TypeScript:    0 errors
 ✅ ESLint:        0 errors, 0 warnings
-✅ Unit Tests:    814/814 passing (100%)
+✅ Unit Tests:    815/815 passing (100%)
 ✅ E2E Tests:     66 passing, 14 skipped (OpenAI/WIP modal timing)
 ✅ Bundle Size:   7.73KB / 40KB homepage (within limits)
 ✅ Accessibility: 8/8 routes WCAG 2A compliant
@@ -307,7 +307,7 @@ These rules apply to ALL work, regardless of agent or skill:
 - **AI:** Vercel AI SDK v5 + XAI (Grok) + OpenAI (fallback)
 - **Database:** Upstash Redis + Upstash Vector
 - **Email:** Resend with React Email templates
-- **Testing:** Vitest (776 tests) + Playwright (66 E2E)
+- **Testing:** Vitest (815 tests) + Playwright (66 E2E)
 - **Deployment:** Vercel with zero-downtime
 
 ### Directory Structure
@@ -315,7 +315,7 @@ These rules apply to ALL work, regardless of agent or skill:
 ```
 src/
 ├── app/              # Next.js App Router
-│   ├── api/tools/    # 11 AI agent tools
+│   ├── api/tools/    # 12 AI agent tools
 │   └── (pages)/      # Frontend routes
 ├── components/       # React components
 │   ├── ui/           # shadcn/ui primitives
@@ -500,7 +500,7 @@ See: `.claude/skills/hydration-safety-skill/`
 
 ### Unit Tests (Vitest)
 
-- **Current:** 776 tests passing
+- **Current:** 815 tests passing
 - **Coverage:** Components, API routes, integrations
 - **Run:** `npm test`
 - **Watch:** `npm test -- --watch`

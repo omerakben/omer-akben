@@ -26,7 +26,7 @@ and `.github/dependabot.yml` (automation).
 | Recent security work | Wave 1 & 2 CVE remediation (Mar 2026) | No critical/high advisories outstanding at last audit. |
 | Last metrics refresh | Tuel/Elon AI platform metrics (Mar 22, 2026) | Source of truth: `@/data/projects`. |
 | Docs changelog | Last entry 2025-11-02 (v2.0.0) | 5+ months stale — see §3.4. |
-| Doc drift | CLAUDE.md: "11 AI agent tools" vs "12 Server-Side Tools"; test count `776` vs `814/814` | Fix in next doc pass. |
+| Doc drift | Test count drift corrected to `815/815` across README/CLAUDE.md/AGENTS.md; tool count reconciled to 12 | Resolved 2026-04-14 in this branch. |
 
 External canonical sources to sync from (monthly):
 
@@ -166,7 +166,7 @@ Track as individual issues; no single item blocks shipping.
 
 - [ ] Add `.nvmrc` = `20` (matches CI) + `"node": ">=20"` already set in
       `package.json:engines`.
-- [ ] Reconcile CLAUDE.md tool count (11 vs 12) and test count (776 vs 814).
+- [x] Reconcile CLAUDE.md / README.md / AGENTS.md tool count and test count (815/815, 54 files, 12 tools) — done 2026-04-14.
 - [ ] Add `github-actions` ecosystem to `.github/dependabot.yml`.
 - [ ] Promote `docs/operations/maintenance-plan.md` (this file) from
       `docs/operations/index.md`.

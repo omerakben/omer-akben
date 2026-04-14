@@ -22,7 +22,7 @@ This document provides mandatory guidelines for ALL AI coding agents (Claude Cod
 
 ```bash
 npm run dev                                      # Dev server (Turbopack)
-npm test                                         # Unit tests (776 tests)
+npm test                                         # Unit tests (815 tests)
 npm test -- --watch                              # TDD mode
 npm run test:e2e                                 # E2E tests (Playwright)
 npm run build                                    # Production build
@@ -39,7 +39,7 @@ npm run analyze                                  # Bundle analysis
 - **UI Components:** 40+ shadcn/ui primitives
 - **AI:** Vercel AI SDK v5 + OpenAI API
 - **Database:** Upstash Redis (rate limiting, caching) + Upstash Vector (episodic memory)
-- **Testing:** Vitest (776 unit tests) + Playwright (80 E2E tests: 66 passing, 14 skipped)
+- **Testing:** Vitest (815 unit tests) + Playwright (80 E2E tests: 66 passing, 14 skipped)
 
 ---
 
@@ -60,7 +60,7 @@ These rules are **non-negotiable** and must be followed by all AI agents without
 # Run ALL 6 gates before committing - NO EXCEPTIONS
 npm run lint          # Must return: 0 errors
 npx tsc --noEmit      # Must return: 0 errors
-npm test              # Must return: 776/776 passing
+npm test              # Must return: 815/815 passing
 npm run build         # Must complete successfully
 npm run size          # Must not exceed limits
 npm run test:e2e      # Must pass all E2E tests
@@ -1064,7 +1064,7 @@ export function buildCurrentTimeContext(now: Date = new Date()): string {
 4. **Accessibility** - WCAG 2A compliance on all routes
 5. **Performance** - Bundle size budgets enforced, icon optimization active
 6. **Security** - Server-side secrets only, rate limiting active, PII redaction
-7. **Testing** - 776 unit tests + E2E coverage, 100% pass rate
+7. **Testing** - 815 unit tests + E2E coverage, 100% pass rate
 8. **Consistency** - Design tokens only, 8 brightness modes tested
 9. **Documentation** - Code is self-documenting, patterns are clear
 10. **Production Ready** - Live deployment, CI/CD configured, monitoring active

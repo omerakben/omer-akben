@@ -35,3 +35,15 @@ updates:
         versions: [">=6.0.0"]
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      actions-core:
+        patterns:
+          - "actions/*"
+          - "pnpm/action-setup"
