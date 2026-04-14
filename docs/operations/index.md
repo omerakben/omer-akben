@@ -48,6 +48,19 @@ Performance validation workflow for UI refinements:
 
 **Key Use**: Run before shipping UI changes to prevent performance regressions.
 
+### [Maintenance Plan](maintenance-plan.md)
+
+Cadenced maintenance plan (weekly / monthly / quarterly) for dependencies,
+security, project data, and docs — keeping the repo and live site aligned with
+external sources (tuel.ai, opus-nx, GitHub).
+
+- **Weekly**: Dependabot triage and merge
+- **Monthly**: Security audit + project metrics refresh + doc truth-check
+- **Quarterly**: Major upgrades + branch hygiene + workflow audit
+
+**Key Use**: Reference for routine maintenance cycles; keeps dependency lag and
+doc drift bounded.
+
 ## Operational Workflows
 
 ### Pre-Deployment Checklist
