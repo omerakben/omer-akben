@@ -164,18 +164,64 @@ Gaps to consider adding (not implemented; evaluate in next quarterly slot):
 
 Track as individual issues; no single item blocks shipping.
 
-- [ ] Add `.nvmrc` = `20` (matches CI) + `"node": ">=20"` already set in
-      `package.json:engines`.
+- [x] Add `.nvmrc` = `20` (matches CI) — done 2026-04-14.
 - [x] Reconcile CLAUDE.md / README.md / AGENTS.md tool count and test count (815/815, 54 files, 12 tools) — done 2026-04-14.
-- [ ] Add `github-actions` ecosystem to `.github/dependabot.yml`.
-- [ ] Promote `docs/operations/maintenance-plan.md` (this file) from
-      `docs/operations/index.md`.
+- [x] Add `github-actions` ecosystem to `.github/dependabot.yml` — done 2026-04-14.
+- [x] Promote `docs/operations/maintenance-plan.md` from `docs/operations/index.md` — done 2026-04-13.
 - [ ] Add a monthly "release" entry convention to `docs/CHANGELOG.md` even when
       changes are small — prevents the current 5-month gap recurring.
 
 ---
 
-## 6. Exit Criteria per Cycle
+## 6. Known Blockers
+
+### 6.1 Dependabot PRs cannot pass Quality Gates (CI secrets)
+
+**Observed 2026-04-14.** All 11 open Dependabot PRs (#99, #101, #102, #104,
+#106, #108, #110, #111, #112, #113, #114) show identical failure shape:
+
+| Check | Conclusion |
+| --- | --- |
+| Vercel Preview Comments | ✅ success |
+| Quality Checks & Build (`quality-gates.yml`) | ❌ failure |
+| claude-review (`claude-code-review.yml`) | ❌ failure |
+| E2E Tests (Playwright) | ⏭ skipped (depends on Quality Checks build artifact) |
+
+**Root cause.** `.github/workflows/quality-gates.yml` starts with a "Verify
+environment variables" step that hard-exits on empty `UPSTASH_REDIS_REST_URL`.
+Since 2021 GitHub's default policy hides repository `secrets.*` from
+Dependabot-triggered `pull_request` runs, so every secret-consuming step fails
+before `pnpm test` / `pnpm build` even start. Same reason `claude-review`
+fails: `CLAUDE_CODE_OAUTH_TOKEN` is unset for Dependabot.
+
+This blocks auto-merge for the entire backlog. The `next 16.2.1 → 16.2.3`
+bump (PR #113) closes the Next.js HIGH CVE and the mastra grouped PR (#99)
+closes hono / picomatch / path-to-regexp — both are security-material and
+currently stuck behind this blocker.
+
+**Remediation options (one of):**
+
+1. **Dependabot secrets (recommended, least workflow churn).** Settings →
+   Secrets and variables → Dependabot → add the 8 required secrets there too
+   (`XAI_API_KEY`, `OPENAI_API_KEY`, `UPSTASH_REDIS_REST_URL`,
+   `UPSTASH_REDIS_REST_TOKEN`, `UPSTASH_VECTOR_REST_URL`,
+   `UPSTASH_VECTOR_REST_TOKEN`, `RESEND_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`).
+   After this, simply re-run the failing workflows and auto-merge resumes.
+2. **Switch to `pull_request_target` with an allow-list.** Safe for Dependabot
+   only because PRs come from the same repo; still requires careful review of
+   any code that executes from the PR head (we do `pnpm install` with a
+   `frozen-lockfile`, so the lockfile change is the only untrusted input).
+3. **Downgrade the Verify step to a soft check** in Dependabot context — skip
+   secret-dependent gates and require them only on direct pushes to
+   `pre-deployment` / `main`. Simplest code change, weakest guarantee.
+
+This blocker is out of scope for automated agent work (GitHub Settings UI
+change) — surface in the weekly standup; one-shot fix then resume normal
+triage flow.
+
+---
+
+## 7. Exit Criteria per Cycle
 
 A cycle is "done" when:
 
@@ -185,7 +231,7 @@ A cycle is "done" when:
 
 ---
 
-## 7. Ownership
+## 8. Ownership
 
 Solo maintainer (Omer). All cadenced work is opened as PRs against
 `pre-deployment` so the standard auto-merge pipeline enforces gates — no direct
