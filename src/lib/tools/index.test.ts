@@ -1,5 +1,5 @@
 import type { ToolCallOptions } from "ai";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   aiToolRegistry,
@@ -93,7 +93,13 @@ describe("tool registry", () => {
   // });
 
   describe("profile performance tool", () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
     it("should be disabled outside development", async () => {
+      vi.stubEnv("NODE_ENV", "production");
+
       const result = await aiToolRegistry.profile_performance.execute?.(
         { duration: 5000, includeScreenshots: false },
         {} as ToolCallOptions

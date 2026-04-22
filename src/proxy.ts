@@ -73,8 +73,10 @@ function getRateLimitKey(request: NextRequest): string {
 export async function proxy(request: NextRequest) {
   // Generate cryptographic nonce for CSP
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const isDevelopment = process.env.NODE_ENV === "development";
+
   // Only apply rate limiting to API routes
-  if (request.nextUrl.pathname.startsWith("/api/")) {
+  if (request.nextUrl.pathname.startsWith("/api/") && !isDevelopment) {
     const ip = getRateLimitKey(request);
 
     // Select rate limiter based on route
@@ -128,9 +130,6 @@ export async function proxy(request: NextRequest) {
   // Add nonce header and CSP to all responses
   const response = NextResponse.next();
   response.headers.set("x-nonce", nonce);
-
-  // Detect development mode
-  const isDevelopment = process.env.NODE_ENV === "development";
 
   // Set Content Security Policy with nonce (replaces next.config.ts CSP)
   // In development: Allow unsafe-inline for Turbopack HMR style injection
