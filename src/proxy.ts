@@ -48,6 +48,32 @@ function getRateLimitKey(request: NextRequest): string {
   return ip;
 }
 
+function buildCspHeader(nonce: string, isDevelopment: boolean): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' https://va.vercel-scripts.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
+    `script-src-elem 'self' 'nonce-${nonce}' https://va.vercel-scripts.com https://us-assets.i.posthog.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
+    "worker-src 'self' blob:",
+    isDevelopment
+      ? "style-src 'self' 'unsafe-inline'"
+      : "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https: blob:",
+    "font-src 'self' data:",
+    `connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com https://*.i.posthog.com https://*.posthog.com ${isDevelopment ? "wss://localhost:* ws://localhost:*" : ""}`.trim(),
+    "frame-ancestors 'none'",
+  ].join("; ");
+}
+
+function applySecurityHeaders(
+  response: NextResponse,
+  nonce: string,
+  csp: string
+): NextResponse {
+  response.headers.set("x-nonce", nonce);
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
 /**
  * Next.js proxy function
  *
@@ -62,6 +88,7 @@ function getRateLimitKey(request: NextRequest): string {
  * - /api/chat: 30 req/min (chatRateLimit)
  * - /api/tools/*: 60 req/min (toolsRateLimit)
  * - Other /api/*: Standard limits (apiRateLimit)
+ * - Development bypass: /api/* rate limiting is skipped when NODE_ENV === "development"
  *
  * CSP differences by environment:
  * - Development: Allows unsafe-eval (for Turbopack HMR), unsafe-inline styles
@@ -74,8 +101,9 @@ export async function proxy(request: NextRequest) {
   // Generate cryptographic nonce for CSP
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDevelopment = process.env.NODE_ENV === "development";
+  const csp = buildCspHeader(nonce, isDevelopment);
 
-  // Only apply rate limiting to API routes
+  // Only apply rate limiting to API routes outside development
   if (request.nextUrl.pathname.startsWith("/api/") && !isDevelopment) {
     const ip = getRateLimitKey(request);
 
@@ -94,20 +122,24 @@ export async function proxy(request: NextRequest) {
       const result = await rateLimit.limit(ip);
 
       if (!result.success) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Too many requests. Please try again later.",
-          },
-          {
-            status: 429,
-            headers: {
-              "Retry-After": "60",
-              "X-RateLimit-Limit": result.limit.toString(),
-              "X-RateLimit-Remaining": "0",
-              "X-RateLimit-Reset": result.reset.toString(),
+        return applySecurityHeaders(
+          NextResponse.json(
+            {
+              success: false,
+              error: "Too many requests. Please try again later.",
             },
-          }
+            {
+              status: 429,
+              headers: {
+                "Retry-After": "60",
+                "X-RateLimit-Limit": result.limit.toString(),
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Reset": result.reset.toString(),
+              },
+            }
+          ),
+          nonce,
+          csp
         );
       }
 
@@ -120,16 +152,12 @@ export async function proxy(request: NextRequest) {
       );
       response.headers.set("X-RateLimit-Reset", result.reset.toString());
 
-      // Add nonce header for CSP
-      response.headers.set("x-nonce", nonce);
-
-      return response;
+      return applySecurityHeaders(response, nonce, csp);
     }
   }
 
   // Add nonce header and CSP to all responses
-  const response = NextResponse.next();
-  response.headers.set("x-nonce", nonce);
+  const response = applySecurityHeaders(NextResponse.next(), nonce, csp);
 
   // Set Content Security Policy with nonce (replaces next.config.ts CSP)
   // In development: Allow unsafe-inline for Turbopack HMR style injection
@@ -139,21 +167,6 @@ export async function proxy(request: NextRequest) {
   // preventing code execution. Attack surface: CSS injection possible, but no JS execution.
   // CSP Spec: When nonce is present in style-src, 'unsafe-inline' is IGNORED per CSP Level 3.
   // Solution: Remove nonce from style-src to allow inline style attributes while keeping script-src strict.
-  const csp = [
-    "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://va.vercel-scripts.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
-    `script-src-elem 'self' 'nonce-${nonce}' https://va.vercel-scripts.com https://us-assets.i.posthog.com ${isDevelopment ? "'unsafe-eval'" : ""}`,
-    `worker-src 'self' blob:`,
-    isDevelopment
-      ? "style-src 'self' 'unsafe-inline'" // Dev: Allow Turbopack HMR
-      : "style-src 'self' 'unsafe-inline'", // Prod: Allow inline styles (nonce removed - see comment above)
-    "img-src 'self' data: https: blob:",
-    "font-src 'self' data:",
-    `connect-src 'self' https://api.openai.com https://vercel-insights.com https://*.vercel-analytics.com https://va.vercel-scripts.com https://*.i.posthog.com https://*.posthog.com ${isDevelopment ? "wss://localhost:* ws://localhost:*" : ""}`.trim(),
-    "frame-ancestors 'none'",
-  ].join("; ");
-
-  response.headers.set("Content-Security-Policy", csp);
 
   return response;
 }
