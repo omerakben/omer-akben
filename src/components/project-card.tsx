@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/card";
 import { DURATION, EASING, VIEWPORT } from "@/lib/animations";
 import { motion } from "framer-motion";
-import { Code2, ExternalLink, Github } from "lucide-react";
+import { Github } from "@/components/brand-icons";
+import { Code2, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";

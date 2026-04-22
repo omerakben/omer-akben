@@ -7,12 +7,12 @@ import {
 } from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import type { UIMessage } from "ai";
+import { Github } from "@/components/brand-icons";
 import {
   ArrowRight,
   Briefcase,
   ExternalLink,
   FileText,
-  Github,
   Mail,
   User,
   Zap,
