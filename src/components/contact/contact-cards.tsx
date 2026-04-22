@@ -2,7 +2,8 @@
 
 import { CONTACT_BRANDS } from "@/config/contact-brands";
 import { facts } from "@/data/facts";
-import { Calendar, Github, Linkedin, Mail, Phone } from "lucide-react";
+import { Github, Linkedin } from "@/components/brand-icons";
+import { Calendar, Mail, Phone } from "lucide-react";
 import { ContactMethodCard } from "./contact-method-card";
 
 export function LinkedInContactCard({ delay = 0 }: { delay?: number }) {

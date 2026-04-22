@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { facts } from "@/data/facts";
 import { projects } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
+import { Linkedin } from "@/components/brand-icons";
 import {
   Award,
   Briefcase,
@@ -12,7 +13,6 @@ import {
   ExternalLink,
   FileText,
   FileUser,
-  Linkedin,
   Mail,
   Rocket,
   TrendingUp,

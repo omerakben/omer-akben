@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
+import { Github } from "@/components/brand-icons";
 import {
   ArrowLeft,
   BarChart3,
   Bot,
   Building2,
   ExternalLink,
-  Github,
   Image as ImageIcon,
   Mail,
   Smartphone,
