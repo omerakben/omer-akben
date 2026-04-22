@@ -27,7 +27,7 @@
     "@ai-sdk/openai": "^3.0.53",
     "@ai-sdk/react": "^3.0.170",
     "@ai-sdk/xai": "3.0.83",
-    "@mastra/ai-sdk": "1.4.1",
+    "@mastra/ai-sdk": "^1.4.1",
     "@mastra/core": "^1.26.0",
     "@mastra/memory": "^1.16.0",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -101,7 +101,16 @@
       "path-to-regexp@>=8.0.0 <8.4.2": "^8.4.2",
       "picomatch@<4.0.4": "^4.0.4",
       "protobufjs@<7.5.5": "^7.5.5",
-      "uuid@<14.0.0": "^14.0.0"
+      "uuid@<14.0.0": "^14.0.0",
+      "@typescript-eslint/parser": "^8.59.0",
+      "@typescript-eslint/eslint-plugin": "^8.59.0",
+      "@typescript-eslint/utils": "^8.59.0",
+      "@typescript-eslint/type-utils": "^8.59.0",
+      "@typescript-eslint/types": "^8.59.0",
+      "@typescript-eslint/typescript-estree": "^8.59.0",
+      "@typescript-eslint/scope-manager": "^8.59.0",
+      "@typescript-eslint/visitor-keys": "^8.59.0",
+      "typescript-eslint": "^8.59.0"
     }
   }
 }
