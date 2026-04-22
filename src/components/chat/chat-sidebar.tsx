@@ -346,26 +346,39 @@ export function ChatSidebar() {
     textarea.style.height = `${newHeight}px`;
   }, [input]);
 
-  // Auto-scroll to latest message during streaming (throttled to prevent jank)
-  // Only scrolls if user is already near the bottom to preserve reading position
-  const scrollToBottom = useCallback(() => {
+  // Auto-scroll to latest message during streaming.
+  // Preserve manual reading position unless the user just sent a message or the
+  // assistant is actively streaming a reply.
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     const container = messagesContainerRef.current;
     if (!container) return;
 
-    // Check if user is near bottom (within 100px threshold)
-    const isNearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-
-    // Only auto-scroll if user is already following the conversation
-    if (isNearBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior,
+    });
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(scrollToBottom, 100);
+    const container = messagesContainerRef.current;
+    if (!container || messages.length === 0) return;
+
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      100;
+    const lastMessage = messages[messages.length - 1];
+    const shouldForceFollow = lastMessage?.role === "user" || isLoading;
+
+    if (!shouldForceFollow && !isNearBottom) {
+      return;
+    }
+
+    const timeoutId = setTimeout(
+      () => scrollToBottom(shouldForceFollow ? "auto" : "smooth"),
+      100
+    );
     return () => clearTimeout(timeoutId);
-  }, [messages, scrollToBottom]);
+  }, [isLoading, messages, scrollToBottom]);
 
   // Keep a mutable reference of the latest messages to avoid stale closures
   useEffect(() => {

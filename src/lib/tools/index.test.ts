@@ -98,8 +98,7 @@ describe("tool registry", () => {
     });
 
     it("should be disabled outside development", async () => {
-      vi.stubEnv("NODE_ENV", "production");
-
+      vi.stubEnv("NODE_ENV", "test");
       const result = await aiToolRegistry.profile_performance.execute?.(
         { duration: 5000, includeScreenshots: false },
         {} as ToolCallOptions
