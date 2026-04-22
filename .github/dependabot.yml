@@ -29,9 +29,10 @@ updates:
         patterns:
           - "@sentry/*"
     ignore:
+      # eslint 10: hold until eslint-plugin-react, eslint-plugin-import, and
+      # eslint-plugin-jsx-a11y (via eslint-config-next) support the new peer.
       - dependency-name: "eslint"
         versions: [">=10.0.0"]
-      - dependency-name: "@vitejs/plugin-react"
-        versions: [">=6.0.0"]
+      # @types/node: pinned to v22 to match the Node runtime baseline (.nvmrc 22.22.0).
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
