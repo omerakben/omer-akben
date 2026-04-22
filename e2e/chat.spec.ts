@@ -12,6 +12,11 @@ test.describe("Chat Functionality", () => {
     await page.addInitScript(() => {
       localStorage.setItem("wip_modal_dismissed", "true");
       localStorage.setItem("wip_banner_dismissed", "true");
+      localStorage.removeItem("chat_thread_id");
+
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith("thread_"))
+        .forEach((key) => localStorage.removeItem(key));
     });
     await page.goto("/", { waitUntil: "networkidle" });
 
@@ -118,29 +123,36 @@ test.describe("Chat Functionality", () => {
     const chatButton = page.locator('button[aria-label*="chat" i]').last();
     await chatButton.click();
 
-    await page.waitForSelector('textarea, input[type="text"]');
+    const sidebar = page
+      .locator('[role="dialog"], aside')
+      .filter({
+        has: page.locator('textarea, input[type="text"]'),
+      })
+      .first();
+
+    await expect(sidebar).toBeVisible();
 
     // Send multiple messages to create scroll
     for (let i = 1; i <= 3; i++) {
-      const messageInput = page.locator('textarea, input[type="text"]').first();
+      const messageInput = sidebar.locator('textarea, input[type="text"]').first();
       await messageInput.fill(`Test message ${i}`);
 
-      const sendButton = page.locator('button[type="submit"]').first();
+      const sendButton = sidebar.locator('button[type="submit"]').first();
       await sendButton.click();
 
-      // Wait for each message to appear
-      await expect(page.locator(`text=Test message ${i}`)).toBeVisible();
+      // Wait for each user message to appear in the chat transcript.
+      await expect(
+        sidebar.locator(".chat-message").filter({
+          hasText: `Test message ${i}`,
+        })
+      ).toHaveCount(1);
 
       // Wait a bit for potential response
       await page.waitForTimeout(2000);
     }
 
     // Get the messages container
-    const messagesContainer = page
-      .locator(
-        '[class*="messages"], [class*="chat-messages"], [class*="overflow"]'
-      )
-      .first();
+    const messagesContainer = sidebar.locator(".chat-scroll-smooth").first();
 
     // Check if the container is scrolled to bottom (within a small threshold)
     const isScrolledToBottom = await messagesContainer.evaluate((el) => {
