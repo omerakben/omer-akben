@@ -37,7 +37,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@react-email/components": "1.0.12",
     "@react-email/render": "2.0.7",
-    "@sentry/nextjs": "10.49.0",
+    "@sentry/nextjs": "10.50.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^22",
     "@types/react": "^19.2.14",
