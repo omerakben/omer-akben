@@ -53,7 +53,7 @@
     "dotenv": "^17.4.2",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.8.0",
-    "next": "16.2.4",
+    "next": "16.2.6",
     "openai": "^6.34.0",
     "posthog-js": "1.370.1",
     "posthog-node": "5.29.5",
