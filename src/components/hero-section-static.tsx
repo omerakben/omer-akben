@@ -30,9 +30,8 @@ export function HeroSectionStatic() {
 
             {/* Subheadline */}
             <p className="hero-slide-up-delay-1 text-base sm:text-lg text-text-2 mb-8">
-              Founder of TUEL AI, shipping production RAG and agentic workflows
-              with Next.js/FastAPI and modern LLMs—backed by 6+ years of SDET/QA
-              automation experience.
+              I built TUEL so a university can verify every answer. Live at
+              Elon.
             </p>
 
             {/* Proof & Capability Chips */}
@@ -40,16 +39,16 @@ export function HeroSectionStatic() {
               {/* Proof Chips (metrics/outcomes) */}
               {[
                 {
-                  text: "16+ learning tools",
-                  title: "Built 16+ interactive learning tools in TUEL AI",
+                  text: "88% voluntary adoption",
+                  title: "Spring 2026 Elon: students chose to use the tutor",
                 },
                 {
-                  text: "47.2M tokens",
-                  title: "Processed 47.2M tokens in production usage",
+                  text: "94% exam average",
+                  title: "Among engaged weekly users, Spring 2026",
                 },
                 {
                   text: "96% satisfaction",
-                  title: "68/71 positive ratings in last 90 days",
+                  title: "73/76 positive ratings",
                 },
               ].map((chip) => (
                 <span
@@ -142,7 +141,10 @@ export function HeroSectionStatic() {
               {/* Micro-proof footer */}
               <p className="mt-4 text-sm text-text-3">
                 Selected for Elon University Business Faculty Pilot Program
-                after 6 months production use.
+                after 6 months production use.{" "}
+                <Link href="https://tuel.ai" className="underline underline-offset-2">
+                  tuel.ai
+                </Link>
               </p>
             </div>
           </div>
