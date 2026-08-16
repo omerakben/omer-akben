@@ -30,7 +30,7 @@ export const facts = {
       "QA Test Automation & SDET",
       "CI/CD Architecture & DevOps",
     ],
-    availability: "Available for new opportunities",
+    availability: "Open to scoped consulting and TUEL walkthroughs",
     workPreferences: {
       remote: true,
       location: "Raleigh, NC or Remote",
@@ -236,7 +236,7 @@ export const facts = {
       location: "Remote (Raleigh, NC)",
       period: "Jan 2024 – Present",
       achievements: [
-        "Selected for Elon University Business Faculty Pilot Program after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with source citations. Production metrics: 420 all-time sessions, 161 total users, 47.2M all-time tokens, 0% error rate, 96% satisfaction (68/71 positive in last 90 days), and 60% support response time reduction.",
+        "Selected for Elon University Business Faculty Pilot Program after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with source citations. Production metrics: 622 all-time sessions, 202 total users, 72.2M all-time tokens, 2% error rate, 96% satisfaction (73/76), and 60% support response time reduction.",
         "Built FERPA-compliant multi-tenant architecture with row-level isolation, Microsoft Entra ID RBAC, faculty dashboard for AI behavior control, and 35+ audit action types. Implemented production RAG pipeline (pgvector + keyword hybrid search, Upstash Redis semantic caching, RAGAS validation) improving retrieval precision by 25% while keeping P95 latency under 2 seconds.",
         "Orchestrated multi-agent workflows in LangGraph and Vercel AI SDK for autonomous tool calling and student services flows with content guardrails and conversation memory. Automated regulatory document workflows for Minor Use Foundation using LLM-based PDF extraction, reducing manual data entry by 60% with full audit trails.",
         "Integrated Playwright E2E tests into GitHub Actions and LangSmith tracing, achieving 95%+ stability on critical chat/auth flows and cutting query costs by 15%.",
