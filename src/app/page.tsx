@@ -260,8 +260,8 @@ export default async function HomePage() {
             Let&apos;s Work Together
           </h2>
           <p className="text-lg text-text-2 mb-8 max-w-2xl mx-auto">
-            Building verified AI for learning. If you want a walkthrough of
-            TUEL, or a scoped build, write me.
+            Building verified AI for learning. Open to strong AI engineering
+            roles, plus TUEL walkthroughs and scoped builds.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
