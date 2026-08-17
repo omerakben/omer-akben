@@ -2,11 +2,6 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Agentic Sidebar - Core Functionality", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
   });
 
@@ -84,11 +79,6 @@ test.describe("Agentic Sidebar - Core Functionality", () => {
 
 test.describe("Agentic Sidebar - Keyboard Shortcuts", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
   });
 
@@ -136,11 +126,6 @@ test.describe("Agentic Sidebar - Keyboard Shortcuts", () => {
 
 test.describe("Agentic Sidebar - Quick Actions", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
     // Open sidebar
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');
@@ -224,11 +209,6 @@ test.describe("Agentic Sidebar - Quick Actions", () => {
 
 test.describe("Agentic Sidebar - Message Interactions", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
     // Open sidebar
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');
@@ -349,11 +329,6 @@ test.describe("Agentic Sidebar - Message Interactions", () => {
 
 test.describe("Agentic Sidebar - Thread Persistence", () => {
   test.skip("should persist messages after page refresh", async ({ page }) => {
-    // Dismiss WIP modal and banner before test (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
 
     // Open sidebar
@@ -408,11 +383,6 @@ test.describe("Agentic Sidebar - Thread Persistence", () => {
     // This test verifies the TTL logic works (can't wait 24 hours in E2E)
     // We'll verify the cleanExpiredThreads function is called on mount
 
-    // Dismiss WIP modal and banner before test (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
 
     // Check console for thread memory logs
@@ -436,11 +406,6 @@ test.describe("Agentic Sidebar - Thread Persistence", () => {
 
 test.describe("Agentic Sidebar - Navigation Links", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
     // Open sidebar
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');
@@ -514,11 +479,6 @@ test.describe("Agentic Sidebar - Navigation Links", () => {
 
 test.describe("Agentic Sidebar - Accessibility", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
   });
 
@@ -598,11 +558,6 @@ test.describe("Agentic Sidebar - Accessibility", () => {
 
 test.describe("Agentic Sidebar - Error Handling", () => {
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
-    await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
-    });
     await page.goto("/");
     // Open sidebar
     const chatButton = page.locator('button[aria-label*="Ozzy" i]');

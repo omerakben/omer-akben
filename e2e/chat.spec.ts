@@ -8,10 +8,7 @@ test.describe("Chat Functionality", () => {
   test.skip(!!process.env.CI, "Skipping chat tests in CI (real API calls)");
 
   test.beforeEach(async ({ page }) => {
-    // Dismiss WIP modal and banner before tests (simulates returning visitor)
     await page.addInitScript(() => {
-      localStorage.setItem("wip_modal_dismissed", "true");
-      localStorage.setItem("wip_banner_dismissed", "true");
       localStorage.removeItem("chat_thread_id");
 
       Object.keys(localStorage)

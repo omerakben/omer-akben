@@ -7,14 +7,11 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { GlobalChatButton } from "@/components/global-chat-button";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { SkipToContent } from "@/components/skip-to-content";
-import { WIPBanner } from "@/components/wip-banner";
-import { WIPGateModal } from "@/components/wip-gate-modal";
 import { BrightnessProvider } from "@/lib/brightness-context";
 import {
   ChatSidebarProvider,
   useChatSidebar,
 } from "@/lib/chat-sidebar-context";
-import { WIPProvider } from "@/lib/wip-context";
 import { Analytics } from "@vercel/analytics/next";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
@@ -75,24 +72,20 @@ export function AppShell({ children }: { children: ReactNode }) {
       <SkipToContent />
       <ErrorBoundary>
         <BrightnessProvider>
-          <WIPProvider>
-            <ChatSidebarProvider>
-              <LayoutContainer>
-                <WIPBanner />
-                <AppHeader />
-                <main id="main-content" className="min-h-screen">
-                  {children}
-                </main>
-                <AppFooter />
-              </LayoutContainer>
-              <ScrollToTop />
-              <ChatSidebar />
-              <GlobalChatButton />
-              <WIPGateModal />
-              <Toaster richColors position="top-center" />
-              <Analytics />
-            </ChatSidebarProvider>
-          </WIPProvider>
+          <ChatSidebarProvider>
+            <LayoutContainer>
+              <AppHeader />
+              <main id="main-content" className="min-h-screen">
+                {children}
+              </main>
+              <AppFooter />
+            </LayoutContainer>
+            <ScrollToTop />
+            <ChatSidebar />
+            <GlobalChatButton />
+            <Toaster richColors position="top-center" />
+            <Analytics />
+          </ChatSidebarProvider>
         </BrightnessProvider>
       </ErrorBoundary>
     </>
