@@ -30,7 +30,8 @@ export const facts = {
       "QA Test Automation & SDET",
       "CI/CD Architecture & DevOps",
     ],
-    availability: "Open to scoped consulting and TUEL walkthroughs",
+    availability:
+      "Open to strong AI engineering roles, plus consulting and TUEL walkthroughs",
     workPreferences: {
       remote: true,
       location: "Raleigh, NC or Remote",
