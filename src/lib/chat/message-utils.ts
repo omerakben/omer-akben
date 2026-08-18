@@ -72,6 +72,24 @@ export function getMessageText(message: UIMessage | null | undefined) {
   return extractUniqueTextFromParts(message.parts);
 }
 
+export function hasVisibleAssistantContent(
+  message: UIMessage | null | undefined
+): boolean {
+  if (!message || message.role !== "assistant") {
+    return false;
+  }
+
+  if (getMessageText(message).trim().length > 0) {
+    return true;
+  }
+
+  if (extractNavigationLinks(message).length > 0) {
+    return true;
+  }
+
+  return extractCollectContactMessage(message) !== null;
+}
+
 export type NavigationLink = {
   label: string;
   href: string;

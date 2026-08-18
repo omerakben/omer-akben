@@ -1,26 +1,40 @@
+import { collectContact } from "@/lib/tools/implementations/collect-contact";
+import { downloadResume } from "@/lib/tools/implementations/download-resume";
+import { extractPageSummary } from "@/lib/tools/implementations/extract-page-summary";
+import { getContact } from "@/lib/tools/implementations/get-contact";
+import { listProjects } from "@/lib/tools/implementations/list-projects";
+import { navigatePage } from "@/lib/tools/implementations/navigate-page";
+import { openProject } from "@/lib/tools/implementations/open-project";
+import { profilePerformance } from "@/lib/tools/implementations/profile-performance";
+import { searchProjectsSemantic } from "@/lib/tools/implementations/search-projects-semantic";
+import { triggerWorkflow } from "@/lib/tools/implementations/trigger-workflow";
 import {
   collectContactInputSchema,
   extractPageSummaryInputSchema,
+  listProjectsInputSchema,
   navigatePageInputSchema,
+  openProjectInputSchema,
   profilePerformanceInputSchema,
   scrollToSectionInputSchema,
   searchProjectsSemanticSchema,
   triggerWorkflowInputSchema,
 } from "@/lib/tools/zod-schemas";
-import { createTool } from '@mastra/core/tools';
+import { createTool } from "@mastra/core/tools";
+import type { ToolCallOptions } from "ai";
 import { z } from "zod";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001";
 const DEFAULT_RESUME_FORMAT = "resume" as const;
+const emptyToolOptions = {} as ToolCallOptions;
 
-const fetchJson = async (path: string, body?: unknown) => {
-  const response = await fetch(`${BASE_URL}${path}`, {
-    method: body ? "POST" : "GET",
-    headers: { "Content-Type": "application/json" },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  return response.json();
-};
+async function runInProcess(
+  execute: ((input: never, options: ToolCallOptions) => unknown) | undefined,
+  input: unknown
+): Promise<unknown> {
+  if (!execute) {
+    throw new Error("Tool is missing execute()");
+  }
+  return execute(input as never, emptyToolOptions);
+}
 
 export const provideNavigationLinksTool = createTool({
   id: "provide_navigation_links",
@@ -47,9 +61,7 @@ export const navigatePageTool = createTool({
   id: "navigate_page",
   description: "Navigate to a specific page on omerakben.com.",
   inputSchema: navigatePageInputSchema,
-  execute: async (inputData) => {
-    return fetchJson("/api/tools/navigate-page", inputData);
-  },
+  execute: async (inputData) => runInProcess(navigatePage.execute, inputData),
 });
 
 export const scrollToSectionTool = createTool({
@@ -73,9 +85,8 @@ export const extractPageSummaryTool = createTool({
   id: "extract_page_summary",
   description: "Extract and summarize the current page content.",
   inputSchema: extractPageSummaryInputSchema,
-  execute: async (inputData) => {
-    return fetchJson("/api/tools/extract-summary", inputData);
-  },
+  execute: async (inputData) =>
+    runInProcess(extractPageSummary.execute, inputData),
 });
 
 export const triggerWorkflowTool = createTool({
@@ -83,9 +94,7 @@ export const triggerWorkflowTool = createTool({
   description:
     "Trigger a backend workflow for CRM updates, email notifications, or analytics events.",
   inputSchema: triggerWorkflowInputSchema,
-  execute: async (inputData) => {
-    return fetchJson("/api/tools/trigger-workflow", inputData);
-  },
+  execute: async (inputData) => runInProcess(triggerWorkflow.execute, inputData),
 });
 
 export const profilePerformanceTool = createTool({
@@ -93,9 +102,8 @@ export const profilePerformanceTool = createTool({
   description:
     "Profile page performance with Chrome DevTools metrics (development only).",
   inputSchema: profilePerformanceInputSchema,
-  execute: async (inputData) => {
-    return fetchJson("/api/tools/profile-performance", inputData);
-  },
+  execute: async (inputData) =>
+    runInProcess(profilePerformance.execute, inputData),
 });
 
 export const downloadResumeTool = createTool({
@@ -114,28 +122,17 @@ export const downloadResumeTool = createTool({
   inputSchema: z.object({
     format: z.literal(DEFAULT_RESUME_FORMAT).default(DEFAULT_RESUME_FORMAT),
   }),
-  execute: async (inputData) => {
-    const params = new URLSearchParams({ format: inputData.format ?? DEFAULT_RESUME_FORMAT });
-    const response = await fetch(
-      `${BASE_URL}/api/tools/download-resume?${params.toString()}`
-    );
-    return response.json();
-  },
+  execute: async (inputData) =>
+    runInProcess(downloadResume.execute, {
+      format: inputData.format ?? DEFAULT_RESUME_FORMAT,
+    }),
 });
 
 export const listProjectsTool = createTool({
   id: "list_projects",
-  description: "List portfolio projects with optional tag filters.",
-  inputSchema: z.object({
-    tag: z.string().optional(),
-  }),
-  execute: async (inputData) => {
-    const query = inputData.tag
-      ? `?tag=${encodeURIComponent(inputData.tag)}`
-      : "";
-    const response = await fetch(`${BASE_URL}/api/tools/list-projects${query}`);
-    return response.json();
-  },
+  description: "List portfolio projects with optional category or featured filters.",
+  inputSchema: listProjectsInputSchema,
+  execute: async (inputData) => runInProcess(listProjects.execute, inputData),
 });
 
 export const searchProjectsSemanticTool = createTool({
@@ -143,24 +140,15 @@ export const searchProjectsSemanticTool = createTool({
   description:
     "Search portfolio projects using natural language semantic search. Use this when the user asks vague questions like 'projects with machine learning' or 'what have you built with real-time features'.",
   inputSchema: searchProjectsSemanticSchema,
-  execute: async (inputData) => {
-    return fetchJson("/api/tools/search-projects-semantic", inputData);
-  },
+  execute: async (inputData) =>
+    runInProcess(searchProjectsSemantic.execute, inputData),
 });
 
 export const openProjectTool = createTool({
   id: "open_project",
   description: "Open a specific project page by slug.",
-  inputSchema: z.object({
-    slug: z.string(),
-  }),
-  execute: async (inputData) => {
-    const params = new URLSearchParams({ slug: inputData.slug });
-    const response = await fetch(
-      `${BASE_URL}/api/tools/open-project?${params.toString()}`
-    );
-    return response.json();
-  },
+  inputSchema: openProjectInputSchema,
+  execute: async (inputData) => runInProcess(openProject.execute, inputData),
 });
 
 export const getContactTool = createTool({
@@ -175,10 +163,7 @@ export const getContactTool = createTool({
   - Build engagement relationship
 
   Use this tool ONLY when collect_contact is not appropriate (user declined, asked for reference only, etc.)`,
-  execute: async () => {
-    const response = await fetch(`${BASE_URL}/api/tools/get-contact`);
-    return response.json();
-  },
+  execute: async () => runInProcess(getContact.execute, {}),
 });
 
 export const collectContactTool = createTool({
@@ -202,7 +187,5 @@ export const collectContactTool = createTool({
 
   Permission: User providing their name/email counts as consent. You don't need explicit "yes" - asking "how can I contact" implies interest in connecting.`,
   inputSchema: collectContactInputSchema,
-  execute: async (inputData) => {
-    return fetchJson("/api/tools/collect-contact", inputData);
-  },
+  execute: async (inputData) => runInProcess(collectContact.execute, inputData),
 });

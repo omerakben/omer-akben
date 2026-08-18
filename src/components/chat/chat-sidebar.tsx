@@ -11,7 +11,10 @@ import {
   silentReplyErrorMessage,
   type ChatFinishEvent,
 } from "@/lib/chat/error-utils";
-import { getMessageText } from "@/lib/chat/message-utils";
+import {
+  getMessageText,
+  hasVisibleAssistantContent,
+} from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
@@ -189,7 +192,6 @@ export function ChatSidebar() {
     error: transportError,
   } = useChat({
     id: threadId,
-    experimental_throttle: 100,
     transport: new DefaultChatTransport({
       api: "/api/chat",
       prepareSendMessagesRequest: ({ id, messages: outgoingMessages }) => {
@@ -231,9 +233,8 @@ export function ChatSidebar() {
         return;
       }
 
-      setError(null);
-      setLastFailedMessage("");
-      pendingUserMessageRef.current = "";
+      // Leave pendingUserMessageRef set until messages settle. A tool-only
+      // turn appends an empty assistant message; clearing here hid the error.
     },
   });
 
@@ -253,12 +254,35 @@ export function ChatSidebar() {
       return;
     }
 
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage) {
+      return;
+    }
+
+    if (lastMessage.role === "assistant") {
+      if (hasVisibleAssistantContent(lastMessage)) {
+        pendingUserMessageRef.current = "";
+        return;
+      }
+
+      const lastUser = [...messages]
+        .reverse()
+        .find((message) => message.role === "user");
+      const lastUserText =
+        pendingUserMessageRef.current || getMessageText(lastUser);
+
+      setError(silentReplyErrorMessage());
+      if (lastUserText) {
+        setLastFailedMessage(lastUserText);
+      }
+      return;
+    }
+
     if (!pendingUserMessageRef.current) {
       return;
     }
 
-    const lastMessage = messages[messages.length - 1];
-    if (!lastMessage || lastMessage.role !== "user") {
+    if (lastMessage.role !== "user") {
       pendingUserMessageRef.current = "";
       return;
     }
@@ -853,6 +877,13 @@ export function ChatSidebar() {
                     const isLastAssistantMessage =
                       item.message.role === "assistant" &&
                       index === messages.length - 1;
+                    const hideEmptyAssistant =
+                      item.message.role === "assistant" &&
+                      !hasVisibleAssistantContent(item.message);
+
+                    if (hideEmptyAssistant) {
+                      return null;
+                    }
 
                     return (
                       <ChatMessage
@@ -867,7 +898,10 @@ export function ChatSidebar() {
                       />
                     );
                   })}
-                  {isLoading && (
+                  {isLoading &&
+                    !hasVisibleAssistantContent(
+                      messages[messages.length - 1]
+                    ) && (
                     <div className="flex gap-3 justify-start">
                       <div className="shrink-0">
                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">

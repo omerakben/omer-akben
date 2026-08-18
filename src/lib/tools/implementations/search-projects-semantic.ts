@@ -3,13 +3,13 @@ import { tool } from "ai";
 import {
   SearchProjectsSemanticInput,
   SearchProjectsSemanticResponse,
-  createErrorResponse,
   createSuccessResponse,
   searchProjectsSemanticSchema,
   searchProjectsSemanticResponseSchema,
 } from "@/lib/tools/zod-schemas";
 import { logError } from "@/lib/log";
 import { searchProjectsBySimilarity } from "@/lib/redis/embeddings";
+import { searchProjectsLexical } from "@/lib/tools/implementations/search-projects-lexical";
 
 export const searchProjectsSemantic = tool<
   SearchProjectsSemanticInput,
@@ -20,17 +20,26 @@ export const searchProjectsSemantic = tool<
   inputSchema: searchProjectsSemanticSchema,
   outputSchema: searchProjectsSemanticResponseSchema,
   execute: async (input) => {
+    const limit = input.limit ?? 5;
+
     try {
-      const limit = input.limit ?? 5;
       const results = await searchProjectsBySimilarity(input.query, limit);
-      return createSuccessResponse({
-        results,
-        query: input.query,
-        count: results.length,
-      });
+      if (results.length > 0) {
+        return createSuccessResponse({
+          results,
+          query: input.query,
+          count: results.length,
+        });
+      }
     } catch (error) {
       logError("tools.search-projects-semantic", error);
-      return createErrorResponse("Failed to search projects");
     }
+
+    const lexical = searchProjectsLexical(input.query, limit);
+    return createSuccessResponse({
+      results: lexical,
+      query: input.query,
+      count: lexical.length,
+    });
   },
 });
