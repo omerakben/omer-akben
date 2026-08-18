@@ -63,7 +63,7 @@ export const skillsData: SkillCategory[] = [
         name: "LangChain",
         experience: "Since 2024",
         context: "Production RAG pipelines",
-        metrics: "47.2M tokens, 96% satisfaction",
+        metrics: "100M+ tokens processed",
       },
       {
         name: "LangGraph",

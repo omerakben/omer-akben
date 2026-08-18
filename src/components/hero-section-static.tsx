@@ -3,6 +3,7 @@
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { elonProofHighlights } from "@/lib/proof";
 import { ArrowRight, Download, Mail, UserCheck } from "lucide-react";
 import Link from "next/link";
 
@@ -37,20 +38,7 @@ export function HeroSectionStatic() {
             {/* Proof & Capability Chips */}
             <div className="hero-slide-up-delay-2 flex flex-wrap gap-2 text-sm text-text-3 mb-8">
               {/* Proof Chips (metrics/outcomes) */}
-              {[
-                {
-                  text: "88% voluntary adoption",
-                  title: "Spring 2026 Elon: students chose to use the tutor",
-                },
-                {
-                  text: "94% exam average",
-                  title: "Among engaged weekly users, Spring 2026",
-                },
-                {
-                  text: "96% satisfaction",
-                  title: "73/76 positive ratings",
-                },
-              ].map((chip) => (
+              {elonProofHighlights.map((chip) => (
                 <span
                   key={chip.text}
                   title={chip.title}

@@ -1,3 +1,5 @@
+import { formatElonAcademicProofLine } from "@/lib/proof";
+
 export interface Project {
   id: string;
   slug: string;
@@ -149,9 +151,9 @@ export const projects: Project[] = [
     title: "Elon AI — TUEL AI Platform",
     shortTitle: "Elon AI",
     description:
-      "Live TUEL AI deployment at Elon University: 622 sessions, 72.2M tokens, 202 users, 96% satisfaction (73/76), 2% error rate. Professor Mustafa Akben's research shows 88% voluntary adoption and 94% exam average among engaged weekly users (Spring 2026). FERPA-compliant, citation-grounded, with 30 AI assistants serving 27 teachers and 84 students.",
+      `Live TUEL AI deployment at Elon University: ${formatElonAcademicProofLine()} (Spring 2026). FERPA-compliant and citation-grounded, with faculty-controlled course assistants.`,
     longDescription:
-      "Elon AI is the live TUEL AI deployment for Elon University, built as a B2B educational technology platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with citations. It supports multi-model routing (OpenAI, Claude, Grok, Gemini) and a production RAG pipeline using Upstash Vector + pgvector. The platform includes Microsoft Entra ID SSO, role-based access control, faculty controls for AI behavior, 35+ audit action types, and evaluation with RAGAS. Production metrics: 622 all-time sessions, 202 total users, 72.2M all-time tokens, 2% error rate, 96% satisfaction (73/76), and P95 retrieval latency under 2 seconds. The platform currently powers 30 AI assistants used by 27 teachers and 84 students. Professor Mustafa Akben's peer-reviewed research found 88% voluntary adoption and 94% exam average among engaged weekly users (Spring 2026)—outcomes attributed to FERPA-compliant, citation-grounded AI that faculty trust and students embrace. Live at https://elon-ai.app — public demo assistants and chatbot builder at https://tuel.ai.",
+      `Elon AI is the live TUEL AI deployment for Elon University, built as a B2B educational technology platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with citations. It supports multi-model routing (OpenAI, Claude, Grok, Gemini) and a production RAG pipeline using Upstash Vector + pgvector. The platform includes Microsoft Entra ID SSO, role-based access control, faculty controls for AI behavior, 35+ audit action types, and evaluation with RAGAS. Public proof: ${formatElonAcademicProofLine()} (Spring 2026)—outcomes attributed to FERPA-compliant, citation-grounded AI that faculty trust and students embrace. Live at https://elon-ai.app — public demo assistants and chatbot builder at https://tuel.ai.`,
     image: "/elon_ai_img/elon_ai_img.png",
     technologies: [
       "Next.js 15",

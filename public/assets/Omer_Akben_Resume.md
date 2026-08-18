@@ -28,7 +28,7 @@ AI Full-Stack Software Engineer and EdTech Founder with 6+ years of SDET/QA auto
 
 *Clients: [Elon University](https://elon-ai.app), [Minor Use Foundation](https://minorusefoundation.org), [North Glass LLC](https://www.northglassnc.com/)*
 
-* **Selected for Elon University Business Faculty Pilot Program** after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and 7-layer prompt system with source citations. **Production metrics:** 100+ sessions, 50+ users, 20M+ tokens, 2% error rate, 95% satisfaction (62/65 positive), 60% support response time reduction.
+* **Selected for Elon University Business Faculty Pilot Program** after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and 7-layer prompt system with source citations. **Public proof:** 250+ users, 80%+ voluntary adoption, 90%+ exam average among engaged weekly users.
 
 * Built FERPA-compliant multi-tenant architecture with row-level isolation, Microsoft Entra ID RBAC, faculty dashboard for AI behavior control, and 35+ audit action types. Implemented production RAG pipeline (pgvector \+ keyword hybrid search, Upstash Redis semantic caching, RAGAS validation) achieving 25% retrieval precision improvement with P95 latency under 2 seconds.
 

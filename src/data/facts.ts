@@ -5,6 +5,8 @@
  * that AI agents can use to answer questions accurately.
  */
 
+import { formatElonAcademicProofLine } from "@/lib/proof";
+
 export const facts = {
   personal: {
     fullName: "Omer Akben",
@@ -21,7 +23,7 @@ export const facts = {
     currentRole: "Founder & AI Full-Stack Engineer",
     currentCompany: "TUEL AI",
     summary:
-      "AI Full-Stack Software Engineer and EdTech Founder with 6+ years of SDET/QA automation experience. Creator of TUEL AI, a B2B educational technology platform deployed at Elon University with production metrics demonstrating real user impact. Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI). Combines strong Python (FastAPI) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, capability-building AI applications. Focused on human-AI interaction that develops genuine user skill rather than engagement metrics. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.",
+      `AI Full-Stack Software Engineer and EdTech Founder with 6+ years of SDET/QA automation experience. Creator of TUEL AI, a B2B educational technology platform deployed at Elon University (${formatElonAcademicProofLine()}). Specializes in building production-grade Retrieval-Augmented Generation (RAG) and agentic workflows using LangGraph, LangChain, and modern LLM APIs (OpenAI, Claude, Vertex AI). Combines strong Python (FastAPI) and TypeScript/React (Next.js, Vercel AI SDK) skills with deep testing and CI/CD expertise to ship reliable, capability-building AI applications. Focused on human-AI interaction that develops genuine user skill rather than engagement metrics. Known for system-level thinking: observability, automated evaluations (RAGAS, DeepEval), and shift-left quality baked into full-stack delivery.`,
     specializations: [
       "EdTech Platform Founder & AI Product Delivery",
       "Retrieval-Augmented Generation (RAG) & Agentic Workflows",
@@ -237,7 +239,7 @@ export const facts = {
       location: "Remote (Raleigh, NC)",
       period: "Jan 2024 – Present",
       achievements: [
-        "Selected for Elon University Business Faculty Pilot Program after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with source citations. Production metrics: 622 all-time sessions, 202 total users, 72.2M all-time tokens, 2% error rate, 96% satisfaction (73/76), and 60% support response time reduction.",
+        `Selected for Elon University Business Faculty Pilot Program after 6 months production use. Built AI education platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with source citations. Public proof: ${formatElonAcademicProofLine()}.`,
         "Built FERPA-compliant multi-tenant architecture with row-level isolation, Microsoft Entra ID RBAC, faculty dashboard for AI behavior control, and 35+ audit action types. Implemented production RAG pipeline (pgvector + keyword hybrid search, Upstash Redis semantic caching, RAGAS validation) improving retrieval precision by 25% while keeping P95 latency under 2 seconds.",
         "Orchestrated multi-agent workflows in LangGraph and Vercel AI SDK for autonomous tool calling and student services flows with content guardrails and conversation memory. Automated regulatory document workflows for Minor Use Foundation using LLM-based PDF extraction, reducing manual data entry by 60% with full audit trails.",
         "Integrated Playwright E2E tests into GitHub Actions and LangSmith tracing, achieving 95%+ stability on critical chat/auth flows and cutting query costs by 15%.",

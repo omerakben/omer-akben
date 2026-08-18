@@ -1,5 +1,6 @@
 import { facts } from "@/data/facts";
 import { projects } from "@/data/projects";
+import { formatElonAcademicProofLine } from "@/lib/proof";
 import fs from "fs";
 import path from "path";
 
@@ -106,7 +107,7 @@ Core strengths:
 • **Full-Stack**: React/Next.js 15, Python (FastAPI/Django), PostgreSQL, AWS/Azure deployment
 • **QA Foundation**: 6+ years SDET—Playwright/Selenium E2E, 95%+ coverage, 40% faster feedback loops
 
-I've shipped AI platforms processing 47.2M tokens with 96% satisfaction, automated regulatory workflows reducing manual data entry by 60%, and open-source tools like Tuel animations used in production.
+I've shipped AI platforms at Elon University with ${formatElonAcademicProofLine()}, automated regulatory workflows reducing manual data entry by 60%, and open-source tools like Tuel animations used in production.
 
 What sparks your interest—AI projects, QA automation expertise, or a specific tech stack? Check out [/skills](/skills) for the full interactive showcase."
 
