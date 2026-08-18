@@ -1,4 +1,5 @@
 import { TimelineItem } from "@/components/timeline";
+import { formatElonAcademicProofLine } from "@/lib/proof";
 
 export const journeyData: TimelineItem[] = [
   {
@@ -34,7 +35,7 @@ export const journeyData: TimelineItem[] = [
     ],
     location: "Remote (Raleigh, NC)",
     highlights: [
-      "Selected for Elon University Business Faculty Pilot Program after 6 months production use; built TUEL AI with 16+ interactive learning tools and a 7-layer prompt system with citations. Metrics: 622 all-time sessions, 202 total users, 72.2M all-time tokens, 2% error rate, 96% satisfaction (73/76), 60% support response reduction.",
+      `Selected for Elon University Business Faculty Pilot Program after 6 months production use; built TUEL AI with 16+ interactive learning tools and a 7-layer prompt system with citations. Public proof: ${formatElonAcademicProofLine()}.`,
       "Built FERPA-compliant multi-tenant architecture with Entra ID RBAC, faculty controls, and 35+ audit action types; shipped a production RAG pipeline (pgvector + keyword hybrid search, Upstash Redis semantic caching) improving retrieval precision by 25% with P95 < 2s.",
       "Orchestrated multi-agent workflows in LangGraph and Vercel AI SDK with guardrails and memory; automated Minor Use Foundation regulatory workflows using LLM-based PDF extraction, reducing manual data entry by 60% with full audit trails.",
       "Integrated Playwright E2E tests into GitHub Actions and LangSmith tracing, achieving 95%+ stability on critical chat/auth flows and reducing query costs by 15%.",

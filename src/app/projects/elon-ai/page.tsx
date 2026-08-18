@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProjectBySlug } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
+import { elonAcademicProof } from "@/lib/proof";
 import {
   ArrowLeft,
   BookOpen,
@@ -25,19 +26,19 @@ export const metadata = createMetadata({
 
 const metrics = [
   {
-    value: "47.2M",
-    label: "Tokens Processed",
-    detail: "All-time production usage at Elon University",
+    value: elonAcademicProof.activeUsers,
+    label: "Users",
+    detail: `${elonAcademicProof.deploymentWindow} Elon deployment cohort`,
   },
   {
-    value: "96%",
-    label: "Satisfaction",
-    detail: "68/71 positive ratings (last 90 days)",
+    value: elonAcademicProof.voluntaryAdoption,
+    label: "Voluntary Adoption",
+    detail: "Students chose to use the tutor",
   },
   {
-    value: "0%",
-    label: "Error Rate",
-    detail: "Across 420 all-time sessions",
+    value: elonAcademicProof.averageExamScore,
+    label: "Exam Average",
+    detail: elonAcademicProof.examScoreQualifier,
   },
   {
     value: "16+",
