@@ -53,6 +53,20 @@ vi.mock("@/lib/followups/generate-and-cache", () => ({
   generateAndCacheFollowups: vi.fn().mockResolvedValue(undefined),
 }));
 
+const streamChatWithOpenAIFallback = vi.fn();
+
+vi.mock("@/lib/chat/openai-fallback-stream", () => ({
+  streamChatWithOpenAIFallback: (...args: unknown[]) =>
+    streamChatWithOpenAIFallback(...args),
+}));
+
+vi.mock("@/lib/mastra/agents/ozzy-agent", () => ({
+  buildOzzyInstructions: vi.fn().mockResolvedValue({
+    role: "system",
+    content: "You are Ozzy.",
+  }),
+}));
+
 // Mock AI SDK's createUIMessageStream to capture onFinish callback
 vi.mock("ai", async () => {
   const actual = await vi.importActual("ai");
@@ -82,6 +96,10 @@ describe("chat route", () => {
     saveSTMMock.mockResolvedValue(undefined);
     saveLTMMock.mockResolvedValue(undefined);
     onFinishCallback = null;
+    streamChatWithOpenAIFallback.mockReset();
+    streamChatWithOpenAIFallback.mockResolvedValue(
+      new Response("fallback-stream", { status: 200 })
+    );
   });
 
   describe("GET", () => {
@@ -163,6 +181,37 @@ describe("chat route", () => {
 
       expect(saveSTMMock).toHaveBeenCalledWith("thread-1", expect.any(Array));
       expect(saveLTMMock).toHaveBeenCalledWith("thread-1", expect.any(Array));
+      expect(streamChatWithOpenAIFallback).not.toHaveBeenCalled();
+    });
+
+    it("falls back to OpenAI when the Mastra coordinator throws", async () => {
+      const routeModule = await import("./route");
+      routeMock.mockRejectedValueOnce(new Error("Memory is not initialized"));
+
+      const response = await routeModule.POST(
+        new Request("http://localhost/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chatId: "thread-fallback",
+            message: {
+              id: "1",
+              role: "user",
+              parts: [{ type: "text", text: "Tell me about yourself." }],
+            },
+          }),
+        })
+      );
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("fallback-stream");
+      expect(streamChatWithOpenAIFallback).toHaveBeenCalledTimes(1);
+      const fallbackArgs = streamChatWithOpenAIFallback.mock.calls[0][0] as {
+        system: string;
+        messages: UIMessage[];
+      };
+      expect(fallbackArgs.system).toContain("You are Ozzy.");
+      expect(fallbackArgs.messages.at(-1)?.role).toBe("user");
     });
   });
 });

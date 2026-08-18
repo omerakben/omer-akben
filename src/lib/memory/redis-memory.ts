@@ -1,3 +1,4 @@
+import { logError } from "@/lib/log";
 import { getRedisClient } from "@/lib/redis/client";
 import {
   RedisEpisodicMemory,
@@ -77,14 +78,23 @@ export class RedisMemoryManager {
   }
 
   async retrieveRelevant(query: string, userId: string) {
-    const [episodic, semantic] = await Promise.all([
-      this.retrieveEpisodic(query, 3),
-      this.getSemantic(userId),
-    ]);
+    try {
+      const [episodic, semantic] = await Promise.all([
+        this.retrieveEpisodic(query, 3),
+        this.getSemantic(userId),
+      ]);
 
-    return {
-      episodic,
-      semantic,
-    };
+      return {
+        episodic,
+        semantic,
+      };
+    } catch (error) {
+      // Chat must still answer if embeddings or Vector are unavailable.
+      logError("memory:retrieveRelevant", error);
+      return {
+        episodic: [],
+        semantic: null,
+      };
+    }
   }
 }

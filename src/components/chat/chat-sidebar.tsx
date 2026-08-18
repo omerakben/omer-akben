@@ -5,11 +5,17 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { posthog } from "@/lib/analytics/posthog-client";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import {
+  parseChatTransportError,
+  shouldClearChatError,
+  silentReplyErrorMessage,
+  type ChatFinishEvent,
+} from "@/lib/chat/error-utils";
 import { getMessageText } from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, UIMessage } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
@@ -77,6 +83,7 @@ export function ChatSidebar() {
   const skipHydrationRef = useRef(false);
   const followupGenerationIdRef = useRef(0); // Track current generation to prevent race conditions
   const messagesContainerRef = useRef<HTMLDivElement>(null); // Track scroll container for smart auto-scroll
+  const pendingUserMessageRef = useRef("");
 
   const markPinHintSeen = useCallback(
     (reason: "dismiss" | "pin" = "dismiss") => {
@@ -174,10 +181,17 @@ export function ChatSidebar() {
   const MAX_INPUT_LENGTH = 2000; // Character limit for chat input
   const shouldShowPinHint = showPinHint && !isPinned;
 
-  const { messages, sendMessage, status, setMessages } = useChat({
+  const {
+    messages,
+    sendMessage,
+    status,
+    setMessages,
+    error: transportError,
+  } = useChat({
     id: threadId,
     experimental_throttle: 100,
     transport: new DefaultChatTransport({
+      api: "/api/chat",
       prepareSendMessagesRequest: ({ id, messages: outgoingMessages }) => {
         const lastMessage = outgoingMessages[outgoingMessages.length - 1];
 
@@ -193,47 +207,78 @@ export function ChatSidebar() {
         };
       },
     }),
-    onError: (error) => {
-      console.error("[ChatSidebar] Chat error:", error);
+    onError: (chatError) => {
+      console.error("[ChatSidebar] Chat error:", chatError);
 
-      // Handle abort errors gracefully (user navigation/refresh)
-      if (error.name === "AbortError") {
-        console.warn(
-          "[ChatSidebar] Request aborted - likely navigation or user action"
-        );
+      if (chatError.name === "AbortError") {
+        setError("The request was interrupted. Please try again.");
+        if (pendingUserMessageRef.current) {
+          setLastFailedMessage(pendingUserMessageRef.current);
+        }
         return;
       }
 
-      // Network errors
-      if (error.message?.includes("fetch")) {
-        setError("Network error. Please check your connection and try again.");
-        return;
+      setError(parseChatTransportError(chatError));
+      if (pendingUserMessageRef.current) {
+        setLastFailedMessage(pendingUserMessageRef.current);
       }
-
-      // Generic error handling
-      setError(
-        error.message ||
-          "Failed to send message. Please check your internet connection."
-      );
     },
-    onFinish: () => {
-      setError(null); // Clear errors on success
-      setLastFailedMessage(""); // Clear failed message on success
+    onFinish: (event?: ChatFinishEvent) => {
+      if (!shouldClearChatError(event)) {
+        if (pendingUserMessageRef.current) {
+          setLastFailedMessage(pendingUserMessageRef.current);
+        }
+        return;
+      }
+
+      setError(null);
+      setLastFailedMessage("");
+      pendingUserMessageRef.current = "";
     },
   });
 
   const isLoading = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    if (status === "error" && transportError) {
+      setError(parseChatTransportError(transportError));
+      if (pendingUserMessageRef.current) {
+        setLastFailedMessage(pendingUserMessageRef.current);
+      }
+    }
+  }, [status, transportError]);
+
+  useEffect(() => {
+    if (isHydratingThread || isLoading || status !== "ready" || transportError) {
+      return;
+    }
+
+    if (!pendingUserMessageRef.current) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage || lastMessage.role !== "user") {
+      pendingUserMessageRef.current = "";
+      return;
+    }
+
+    setError(silentReplyErrorMessage());
+    setLastFailedMessage(pendingUserMessageRef.current);
+  }, [isHydratingThread, isLoading, messages, status, transportError]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isHydratingThread || !input.trim()) return;
 
     const userMessage = input.trim();
+    pendingUserMessageRef.current = userMessage;
 
     setInput("");
     setLastFollowupAction(null);
     setShowMessages(true);
     setError(null); // Clear previous errors
+    setLastFailedMessage(userMessage);
 
     try {
       await sendMessage({
@@ -252,6 +297,7 @@ export function ChatSidebar() {
 
     setError(null);
     setInput("");
+    pendingUserMessageRef.current = lastFailedMessage;
 
     try {
       await sendMessage({
@@ -272,6 +318,7 @@ export function ChatSidebar() {
     setError(null);
     setLastFailedMessage("");
     setInput("");
+    pendingUserMessageRef.current = "";
   }, [setMessages, setError, setLastFailedMessage, setInput]);
 
   const handleSuggestedQuestion = async (question: string) => {
@@ -284,9 +331,10 @@ export function ChatSidebar() {
       return;
     }
 
+    pendingUserMessageRef.current = question;
     setShowMessages(true);
     setError(null); // Clear previous errors
-    setLastFailedMessage(""); // Clear previous failed messages
+    setLastFailedMessage(question);
     setLastFollowupAction(question);
 
     try {
