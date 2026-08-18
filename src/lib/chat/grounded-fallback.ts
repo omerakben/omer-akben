@@ -49,8 +49,8 @@ export function buildGroundedFallback(query: string): string {
         : "Elon AI, the animation library, the chatbot builder, and the Selenium framework";
 
     return [
-      "TUEL is Omer Akben's product family.",
-      `The flagship is TUEL AI (Elon AI Platform), a live FERPA-compliant learning platform at Elon University (${formatElonAcademicProofLine()}).`,
+      "TUEL (Trusted Unified Education & Learning) is Omer Akben's course-grounded higher-ed AI product family.",
+      `The flagship is TUEL AI (Elon AI Platform), live at Elon University (${formatElonAcademicProofLine()}).`,
       `Related work includes ${roster}.`,
       "Ask about a specific project if you want a deeper walkthrough.",
     ].join(" ");

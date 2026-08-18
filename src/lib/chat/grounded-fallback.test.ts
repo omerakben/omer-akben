@@ -26,7 +26,8 @@ describe("buildGroundedFallback", () => {
   it("answers short TUEL questions with locked public proof", () => {
     for (const query of ["What is Tuel?", "Tuel", "What is TUEL AI?"]) {
       const reply = buildGroundedFallback(query);
-      expect(reply).toMatch(/TUEL/i);
+      expect(reply).toMatch(/Trusted Unified Education & Learning/);
+      expect(reply).toMatch(/course-grounded/);
       expect(reply).toContain(formatElonAcademicProofLine());
       expect(reply).not.toMatch(/202|204|88%|94%|72\.2M/);
     }
