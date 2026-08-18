@@ -1,5 +1,6 @@
 import { getMessageText } from "@/lib/chat/message-utils";
 import { streamChatWithOpenAIFallback } from "@/lib/chat/openai-fallback-stream";
+import { forwardAgentStreamWithTextGuard } from "@/lib/chat/stream-text-guard";
 import { generateAndCacheFollowups } from "@/lib/followups/generate-and-cache";
 import { logError } from "@/lib/log";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
@@ -148,22 +149,16 @@ export async function POST(req: Request) {
         sendFinish: true,
       });
 
-      // Create UI message stream that pipes from Mastra stream
+      // Create UI message stream that pipes from Mastra stream.
+      // If the agent finishes with only tool parts, inject grounded text
+      // so the widget never mounts an empty assistant bubble.
       const uiStream = createUIMessageStream({
         execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
-          const reader = (
-            aiSdkStream as unknown as ReadableStream
-          ).getReader();
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              // Forward chunks to the writer
-              writer.write(value);
-            }
-          } finally {
-            reader.releaseLock();
-          }
+          await forwardAgentStreamWithTextGuard({
+            writer,
+            stream: aiSdkStream as unknown as ReadableStream<unknown>,
+            query,
+          });
         },
         originalMessages: messages,
         onFinish: async ({ messages: finalMessages }) => {

@@ -5,6 +5,10 @@ import {
   type AgentExecutionContext,
 } from "@/lib/mastra/agents/base-agent";
 import {
+  CHAT_MAX_STEPS,
+  EnsureFinalResponseProcessor,
+} from "@/lib/mastra/processors/ensure-final-response";
+import {
   buildContactInstructions,
   contactAgent,
 } from "@/lib/mastra/agents/contact-agent";
@@ -145,7 +149,11 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     const instructions = await route.instructions(context);
     const stream = await route.agent.stream(toMastraMessages(context.history), {
       instructions,
-      maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
+      // Step 0 may call tools. Step 1 is forced to prose so tool-only
+      // turns (short "Tuel" / "What is Tuel?") cannot finish empty.
+      // Text-only first steps still stop after one LLM call.
+      maxSteps: CHAT_MAX_STEPS,
+      inputProcessors: [new EnsureFinalResponseProcessor(CHAT_MAX_STEPS)],
     });
 
     return stream;

@@ -7,6 +7,26 @@ import { ChatSidebar } from "./chat-sidebar";
 const sendMessage = vi.fn();
 const setMessages = vi.fn();
 
+const chatState: {
+  messages: Array<{
+    id: string;
+    role: "user" | "assistant";
+    parts: Array<{ type: "text"; text: string }>;
+  }>;
+  status: "ready" | "error" | "submitted" | "streaming";
+  error: Error | undefined;
+} = {
+  messages: [
+    {
+      id: "user-1",
+      role: "user",
+      parts: [{ type: "text", text: "Tell me about yourself." }],
+    },
+  ],
+  status: "error",
+  error: new Error('{"error":"Failed to process chat request"}'),
+};
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
   useRouter: () => ({
@@ -18,17 +38,11 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@ai-sdk/react", () => ({
   useChat: () => ({
-    messages: [
-      {
-        id: "user-1",
-        role: "user",
-        parts: [{ type: "text", text: "Tell me about yourself." }],
-      },
-    ],
+    messages: chatState.messages,
     sendMessage,
-    status: "error",
+    status: chatState.status,
     setMessages,
-    error: new Error('{"error":"Failed to process chat request"}'),
+    error: chatState.error,
   }),
 }));
 
@@ -46,6 +60,16 @@ vi.mock("framer-motion", () => ({
 
 describe("ChatSidebar failed request UI", () => {
   beforeEach(() => {
+    chatState.messages = [
+      {
+        id: "user-1",
+        role: "user",
+        parts: [{ type: "text", text: "Tell me about yourself." }],
+      },
+    ];
+    chatState.status = "error";
+    chatState.error = new Error('{"error":"Failed to process chat request"}');
+
     vi.spyOn(ChatSidebarContext, "useChatSidebar").mockReturnValue({
       isOpen: true,
       isPinned: false,
@@ -63,10 +87,10 @@ describe("ChatSidebar failed request UI", () => {
 
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue({
+      vi.fn().mockImplementation(async () => ({
         ok: true,
-        json: async () => ({ messages: [] }),
-      })
+        json: async () => ({ messages: chatState.messages }),
+      }))
     );
   });
 
@@ -82,5 +106,38 @@ describe("ChatSidebar failed request UI", () => {
       await screen.findByText("Failed to process chat request")
     ).toBeInTheDocument();
     expect(screen.getByText("Tell me about yourself.")).toBeInTheDocument();
+  });
+
+  it("shows a Retry error instead of a blank bubble for an empty assistant turn", async () => {
+    chatState.status = "ready";
+    chatState.error = undefined;
+    chatState.messages = [
+      {
+        id: "user-tuel",
+        role: "user",
+        parts: [{ type: "text", text: "What is Tuel?" }],
+      },
+      {
+        id: "assistant-empty",
+        role: "assistant",
+        parts: [{ type: "text", text: "" }],
+      },
+    ];
+
+    render(<ChatSidebar />);
+
+    expect(
+      await screen.findByText("Ozzy did not return a reply. Please try again.")
+    ).toBeInTheDocument();
+    expect(await screen.findByText("What is Tuel?")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /retry/i })).toBeInTheDocument();
+    expect(
+      screen.queryByText((_, element) => {
+        return (
+          element?.classList.contains("chat-message") === true &&
+          element.textContent?.trim() === ""
+        );
+      })
+    ).not.toBeInTheDocument();
   });
 });
