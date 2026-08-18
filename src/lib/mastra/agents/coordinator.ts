@@ -1,4 +1,5 @@
 import { MASTRA_PRIMARY_REASONING } from "@/lib/ai/model-config";
+import { getMessageText } from "@/lib/chat/message-utils";
 import {
   BasePortfolioAgent,
   type AgentExecutionContext,
@@ -47,12 +48,27 @@ function extractLatestUserText(messages: UIMessage[]): string {
     if (message.role !== "user") {
       continue;
     }
-    const textPart = message.parts.find((part) => part.type === "text");
-    if (textPart && "text" in textPart) {
-      return textPart.text;
+    const text = getMessageText(message);
+    if (text) {
+      return text;
     }
   }
   return "";
+}
+
+function toMastraMessages(messages: UIMessage[]): MessageListInput {
+  return messages
+    .filter(
+      (message): message is UIMessage & { role: "user" | "assistant" | "system" } =>
+        message.role === "user" ||
+        message.role === "assistant" ||
+        message.role === "system"
+    )
+    .map((message) => ({
+      id: message.id,
+      role: message.role,
+      content: getMessageText(message) || " ",
+    }));
 }
 
 /**
@@ -127,17 +143,10 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     }
 
     const instructions = await route.instructions(context);
-    const stream = await route.agent.stream(
-      context.history as unknown as MessageListInput,
-      {
+    const stream = await route.agent.stream(toMastraMessages(context.history), {
       instructions,
-      memory: {
-        thread: { id: context.threadId },
-        resource: "portfolio-chat",
-      },
       maxSteps: 1, // Prevent duplicate responses - agent should complete in single step
-      }
-    );
+    });
 
     return stream;
   }

@@ -1,10 +1,14 @@
 import { getMessageText } from "@/lib/chat/message-utils";
+import { streamChatWithOpenAIFallback } from "@/lib/chat/openai-fallback-stream";
+import { generateAndCacheFollowups } from "@/lib/followups/generate-and-cache";
 import { logError } from "@/lib/log";
 import { coordinatorAgent } from "@/lib/mastra/agents/coordinator";
+import { buildOzzyInstructions } from "@/lib/mastra/agents/ozzy-agent";
 import { extractAndSaveFacts } from "@/lib/memory/fact-extractor";
 import { RedisMemoryManager } from "@/lib/memory/redis-memory";
-import { generateAndCacheFollowups } from "@/lib/followups/generate-and-cache";
+import { formatElonAcademicProofLine } from "@/lib/proof";
 import { toAISdkStream } from "@mastra/ai-sdk";
+import type { SystemMessage } from "@mastra/core/llm";
 import {
   createUIMessageStream,
   createUIMessageStreamResponse,
@@ -106,80 +110,173 @@ export async function POST(req: Request) {
     const userMessage = normalizeToUIMessage(message);
     const messages: UIMessage[] = [...history, userMessage];
     const query = extractMessageText(userMessage);
+    const effectiveUserId = userId ?? "anonymous";
+    const persistMessages = async (finalMessages: UIMessage[]) => {
+      const lastMessage = finalMessages[finalMessages.length - 1];
+      if (lastMessage) {
+        injectNavigationLinksIfNeeded(lastMessage);
+      }
 
-    const stream = await coordinatorAgent.route({
-      query,
-      threadId: chatId,
-      userId: userId ?? "anonymous",
-      history: messages,
-    });
+      await Promise.all([
+        memoryManager.saveSTM(chatId, finalMessages),
+        memoryManager.saveLTM(chatId, finalMessages),
+        extractAndSaveFacts(effectiveUserId, finalMessages),
+        generateAndCacheFollowups({
+          threadId: chatId,
+          userId: effectiveUserId,
+          messages: finalMessages,
+        }),
+      ]);
+    };
 
-    if (!stream) {
-      return ensureJsonResponse({ error: "Coordinator unavailable" }, 500);
+    try {
+      const stream = await coordinatorAgent.route({
+        query,
+        threadId: chatId,
+        userId: effectiveUserId,
+        history: messages,
+      });
+
+      if (!stream) {
+        throw new Error("Coordinator unavailable");
+      }
+
+      // Convert Mastra stream to AI SDK compatible format
+      const aiSdkStream = toAISdkStream(stream, {
+        from: "agent",
+        sendStart: true,
+        sendFinish: true,
+      });
+
+      // Create UI message stream that pipes from Mastra stream
+      const uiStream = createUIMessageStream({
+        execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
+          const reader = (
+            aiSdkStream as unknown as ReadableStream
+          ).getReader();
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              // Forward chunks to the writer
+              writer.write(value);
+            }
+          } finally {
+            reader.releaseLock();
+          }
+        },
+        originalMessages: messages,
+        onFinish: async ({ messages: finalMessages }) => {
+          // Use final messages only if they're actually populated (not empty array)
+          // Empty arrays from workflow finish chunks should fall back to original messages
+          const effectiveMessages =
+            finalMessages && finalMessages.length > 0 ? finalMessages : messages;
+
+          try {
+            await persistMessages(effectiveMessages);
+          } catch (error) {
+            logError("chat:onFinish", error);
+          }
+        },
+      });
+
+      // Return streaming response
+      return createUIMessageStreamResponse({ stream: uiStream });
+    } catch (mastraError) {
+      logError("chat:POST:mastra", mastraError);
+
+      const fallbackSystem = await buildFallbackSystemPrompt({
+        query,
+        threadId: chatId,
+        userId: effectiveUserId,
+        history: messages,
+      });
+
+      return streamChatWithOpenAIFallback({
+        messages,
+        system: fallbackSystem,
+        onFinish: async (finalMessages) => {
+          try {
+            await persistMessages(finalMessages);
+          } catch (error) {
+            logError("chat:onFinish", error);
+          }
+        },
+      });
     }
-
-    // Convert Mastra stream to AI SDK compatible format
-    const aiSdkStream = toAISdkStream(stream, {
-      from: "agent",
-      sendStart: true,
-      sendFinish: true,
-    });
-
-    // Create UI message stream that pipes from Mastra stream
-    const uiStream = createUIMessageStream({
-      execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
-        const reader = (
-          aiSdkStream as unknown as ReadableStream
-        ).getReader();
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            // Forward chunks to the writer
-            writer.write(value);
-          }
-        } finally {
-          reader.releaseLock();
-        }
-      },
-      originalMessages: messages,
-      onFinish: async ({ messages: finalMessages }) => {
-        // Use final messages only if they're actually populated (not empty array)
-        // Empty arrays from workflow finish chunks should fall back to original messages
-        const effectiveMessages =
-          finalMessages && finalMessages.length > 0 ? finalMessages : messages;
-        const effectiveUserId = userId ?? "anonymous";
-
-        try {
-          // Auto-inject navigation links if appropriate
-          const lastMessage = effectiveMessages[effectiveMessages.length - 1];
-          if (lastMessage) {
-            injectNavigationLinksIfNeeded(lastMessage);
-          }
-
-          // Persist conversation memory, extract facts, and generate follow-ups in parallel
-          await Promise.all([
-            memoryManager.saveSTM(chatId, effectiveMessages),
-            memoryManager.saveLTM(chatId, effectiveMessages),
-            extractAndSaveFacts(effectiveUserId, effectiveMessages),
-            generateAndCacheFollowups({
-              threadId: chatId,
-              userId: effectiveUserId,
-              messages: effectiveMessages,
-            }),
-          ]);
-        } catch (error) {
-          logError("chat:onFinish", error);
-        }
-      },
-    });
-
-    // Return streaming response
-    return createUIMessageStreamResponse({ stream: uiStream });
   } catch (error) {
     logError("chat:POST", error);
     return ensureJsonResponse({ error: "Failed to process chat request" }, 500);
   }
+}
+
+async function buildFallbackSystemPrompt(context: {
+  query: string;
+  threadId: string;
+  userId: string;
+  history: UIMessage[];
+}): Promise<string> {
+  try {
+    const instructions = await buildOzzyInstructions(context);
+    const content = extractSystemPromptText(instructions);
+    if (content.trim()) {
+      return content;
+    }
+  } catch (error) {
+    logError("chat:fallbackInstructions", error);
+  }
+
+  return [
+    "You are Ozzy, Omer Akben's portfolio assistant.",
+    "Answer helpfully using only known facts about Omer.",
+    "Do not invent personal details.",
+    `Public Elon proof: ${formatElonAcademicProofLine()}.`,
+    "Never cite 202, 204, 88%, 94%, or 72.2M.",
+    "Keep engineer-first positioning. Do not mention salary.",
+  ].join(" ");
+}
+
+function extractSystemPromptText(instructions: SystemMessage): string {
+  if (typeof instructions === "string") {
+    return instructions;
+  }
+
+  if (Array.isArray(instructions)) {
+    return instructions
+      .map((part) => extractSystemPromptText(part))
+      .filter((part) => part.trim().length > 0)
+      .join("\n");
+  }
+
+  return extractContentText(instructions.content);
+}
+
+function extractContentText(content: unknown): string {
+  if (typeof content === "string") {
+    return content;
+  }
+
+  if (!Array.isArray(content)) {
+    return "";
+  }
+
+  return content
+    .map((part) => {
+      if (typeof part === "string") {
+        return part;
+      }
+      if (
+        part &&
+        typeof part === "object" &&
+        "text" in part &&
+        typeof (part as { text?: unknown }).text === "string"
+      ) {
+        return (part as { text: string }).text;
+      }
+      return "";
+    })
+    .filter((part) => part.trim().length > 0)
+    .join("\n");
 }
 
 function normalizeToUIMessage(raw: z.infer<typeof messageSchema>): UIMessage {
