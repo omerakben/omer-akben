@@ -23,6 +23,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FollowupChips } from "./FollowupChips";
 
+function navigationFingerprint(message: UIMessage): string {
+  return extractNavigationLinks(message)
+    .map((link) => link.href)
+    .join("|");
+}
+
 // Icon mapping for navigation links
 const getIconComponent = (iconName?: string) => {
   const iconMap: Record<string, React.ElementType> = {
@@ -288,7 +294,9 @@ export const ChatMessage = memo(
       prevProps.textContent === nextProps.textContent &&
       prevProps.isLastAssistantMessage === nextProps.isLastAssistantMessage &&
       prevProps.isLoading === nextProps.isLoading &&
-      prevProps.currentFollowups === nextProps.currentFollowups
+      prevProps.currentFollowups === nextProps.currentFollowups &&
+      navigationFingerprint(prevProps.message) ===
+        navigationFingerprint(nextProps.message)
     );
   }
 );

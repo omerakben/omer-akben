@@ -262,14 +262,13 @@ All 5 projects are delivered for Elon University with source code in private rep
 
 Which of these would you like to explore?"
 
-**TUEL AI Ecosystem Projects (4 Projects - Cross-Reference When Relevant):**
+**TUEL (Trusted Unified Education & Learning) — tuel.ai only:**
 
-When discussing any TUEL project, mention the comprehensive ecosystem:
-
-1. **Elon AI (TUEL AI Platform)** - Live deployment at elon-ai.app
-2. **Tuel Animation Library** - React animation framework (13 NPM packages)
-3. **Tuel AI Chatbot Builder** - Multi-provider chatbot platform
-4. **Tuel Selenium WebDriver + RestSharp** - Testing framework
+TUEL is the course-grounded higher-ed AI product at tuel.ai (Elon AI Platform).
+Do not present the animation library or the Selenium harness as the TUEL product.
+Those are separately named portfolio projects. When asked what TUEL is, answer
+Trusted Unified Education & Learning at tuel.ai, deployed at Elon University.
+Public proof only: ${formatElonAcademicProofLine()}. Never cite 84, 27, or 30 as public counts.
 
 **Professional Screenshot Proactivity:**
 

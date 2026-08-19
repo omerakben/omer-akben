@@ -4,6 +4,7 @@ import {
   BasePortfolioAgent,
   type AgentExecutionContext,
 } from "@/lib/mastra/agents/base-agent";
+import { shouldContinueAfterIteration } from "@/lib/mastra/agents/iteration-policy";
 import {
   CHAT_MAX_STEPS,
   EnsureFinalResponseProcessor,
@@ -149,11 +150,14 @@ class CoordinatorAgent extends BasePortfolioAgent<"coordinator"> {
     const instructions = await route.instructions(context);
     const stream = await route.agent.stream(toMastraMessages(context.history), {
       instructions,
-      // Step 0 may call tools. Step 1 is forced to prose so tool-only
-      // turns (short "Tuel" / "What is Tuel?") cannot finish empty.
-      // Text-only first steps still stop after one LLM call.
+      // Step 0 may call tools. Continue only when that step had no
+      // visible text so tool-only TUEL turns still get a prose step.
+      // A bio + provide_navigation_links must not start a rewrite step.
       maxSteps: CHAT_MAX_STEPS,
       inputProcessors: [new EnsureFinalResponseProcessor(CHAT_MAX_STEPS)],
+      onIterationComplete: ({ text }) => ({
+        continue: shouldContinueAfterIteration(text),
+      }),
     });
 
     return stream;
