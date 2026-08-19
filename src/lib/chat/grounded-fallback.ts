@@ -1,11 +1,10 @@
 import { facts } from "@/data/facts";
-import { getTuelProjects } from "@/lib/agent-knowledge/helpers/project-queries";
 import { formatElonAcademicProofLine } from "@/lib/proof";
 
 const PRESENCE_PATTERN =
   /^(are\s+(you|u)\s+there|you\s+there|hello|hi|hey|ping)\b/i;
 const ABOUT_PATTERN =
-  /\b(tell me about yourself|who are you|who is omer|about yourself|about you)\b/i;
+  /\b(tell me about your\s*self|who are you|who is omer|about yourself|about you)\b/i;
 const TUEL_PATTERN = /\btuel\b/i;
 
 export function isPresenceQuery(query: string): boolean {
@@ -39,19 +38,9 @@ export function buildGroundedFallback(query: string): string {
   }
 
   if (isTuelQuery(query)) {
-    const projectNames = getTuelProjects()
-      .map((project) => project.shortTitle ?? project.title)
-      .filter((name) => name.trim().length > 0);
-
-    const roster =
-      projectNames.length > 0
-        ? projectNames.join(", ")
-        : "Elon AI, the animation library, the chatbot builder, and the Selenium framework";
-
     return [
-      "TUEL (Trusted Unified Education & Learning) is Omer Akben's course-grounded higher-ed AI product family.",
-      `The flagship is TUEL AI (Elon AI Platform), live at Elon University (${formatElonAcademicProofLine()}).`,
-      `Related work includes ${roster}.`,
+      "TUEL (Trusted Unified Education & Learning) is Omer Akben's course-grounded higher-ed AI platform at tuel.ai.",
+      `The flagship deployment is TUEL AI (Elon AI Platform) at Elon University (${formatElonAcademicProofLine()}).`,
       "Ask about a specific project if you want a deeper walkthrough.",
     ].join(" ");
   }

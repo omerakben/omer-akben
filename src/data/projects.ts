@@ -294,9 +294,9 @@ export const projects: Project[] = [
     title: "Tuel AI Chatbot Builder",
     shortTitle: "Tuel AI Chatbot Builder",
     description:
-      "Full-stack chatbot builder platform for TUEL AI powering 30 AI assistants across 27 teachers and 84 students. Multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
+      "Full-stack chatbot builder for the TUEL AI platform at tuel.ai. Multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
     longDescription:
-      "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control. Currently powering 30 active AI assistants deployed by 27 teachers for 84 students—part of the TUEL AI ecosystem live at https://elon-ai.app. Public demo assistants available at https://tuel.ai/#demo.",
+      "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control. Part of the TUEL AI ecosystem live at https://elon-ai.app. Public demo assistants available at https://tuel.ai/#demo.",
     image: "/tuel_chatbot_img/tuel_ai_landing_page.png",
     technologies: [
       "FastAPI",

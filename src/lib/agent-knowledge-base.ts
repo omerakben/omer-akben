@@ -708,7 +708,7 @@ DEADLINE provides a unified command center for development artifacts with:
 Check out /projects/capstone-deadline for the complete case study with mission, vision, use cases, technical deep dive, architecture diagrams, and development process!"
 
 **Recruiter asks about Tuel Animation Library:**
-"Tuel is my open-source React animation library—think of it as a professional animation toolkit for developers who want polished motion design without becoming animation experts. Here's what makes it unique:
+"The Tuel Animation Library is a separately named open-source React animation project — not the TUEL education product at tuel.ai. Think of it as a professional animation toolkit for developers who want polished motion design without becoming animation experts. Here's what makes it unique:
 
 **Mission:** Eliminate animation complexity for React developers by providing professional-grade, production-ready animation components that 'just work'—no animation expertise required.
 

@@ -32,6 +32,36 @@ function shouldSkipPart(part: unknown): boolean {
   return false;
 }
 
+/**
+ * Tool-result narration the model sometimes emits after provide_navigation_links.
+ * These strings must never replace a streamed bio in the visible bubble.
+ */
+export function isToolNarrationText(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return false;
+  }
+
+  if (
+    trimmed.startsWith("[") &&
+    trimmed.endsWith("]") &&
+    /navigation|tool call|buttons?/i.test(trimmed)
+  ) {
+    return true;
+  }
+
+  return /i(?:['’])?ve provided clickable navigation buttons/i.test(trimmed);
+}
+
+export function stripToolNarration(text: string): string {
+  return text
+    .replace(/\[[^\]]*(?:navigation buttons|tool (?:call|result)|buttons? (?:now )?appear)[^\]]*]/gi, "")
+    .replace(/i(?:['’])?ve provided clickable navigation buttons[^.?!\n]*[.?!]?/gi, "")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export function extractUniqueTextFromParts(
   parts?: UIMessage["parts"]
 ): string {
@@ -39,29 +69,31 @@ export function extractUniqueTextFromParts(
     return "";
   }
 
-  // Strategy: Find the LAST text part after filtering out workflow markers
-  // In AI SDK tool-calling flow, the final text part contains the complete response
-  // Intermediate text parts (before tool calls) should be ignored
+  // Keep every user-visible text part. Intro turns stream a bio, then
+  // provide_navigation_links, then a later text-delta that used to wipe
+  // the bio when only the last part was kept.
+  const seen = new Set<string>();
+  const kept: string[] = [];
 
-  let lastTextPart: TextPart | null = null;
-
-  for (let i = parts.length - 1; i >= 0; i--) {
-    const part = parts[i];
-
-    if (shouldSkipPart(part)) {
+  for (const part of parts) {
+    if (shouldSkipPart(part) || !isTextPart(part)) {
       continue;
     }
 
-    if (isTextPart(part)) {
-      const normalized = part.text.trim();
-      if (normalized) {
-        lastTextPart = part;
-        break; // Found the last valid text part
-      }
+    const cleaned = stripToolNarration(part.text);
+    if (!cleaned || isToolNarrationText(cleaned)) {
+      continue;
     }
+
+    if (seen.has(cleaned)) {
+      continue;
+    }
+
+    seen.add(cleaned);
+    kept.push(cleaned);
   }
 
-  return lastTextPart ? lastTextPart.text.trimEnd() : "";
+  return kept.join("\n\n");
 }
 
 export function getMessageText(message: UIMessage | null | undefined) {
@@ -140,6 +172,18 @@ export function extractNavigationLinks(
     }
 
     if (part.type === "tool-provide_navigation_links") {
+      const outputLinks = readLinksFromResult(
+        (part as { output?: unknown }).output
+      );
+      collected.push(...outputLinks);
+      continue;
+    }
+
+    if (
+      part.type === "dynamic-tool" &&
+      "toolName" in part &&
+      part.toolName === "provide_navigation_links"
+    ) {
       const outputLinks = readLinksFromResult(
         (part as { output?: unknown }).output
       );

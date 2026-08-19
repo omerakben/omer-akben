@@ -23,8 +23,31 @@ describe("EnsureFinalResponseProcessor", () => {
     const result = await processor.processInputStep(stepArgs(CHAT_MAX_STEPS - 1));
 
     expect(result.toolChoice).toBe("none");
-    expect(result.systemMessages?.at(-1)).toMatchObject({
-      role: "system",
-    });
+    const content = result.systemMessages?.at(-1)?.content;
+    expect(content).toEqual(expect.stringContaining("Write a user-visible answer"));
+    expect(content).toEqual(
+      expect.stringContaining("Do not emit tool narration")
+    );
+  });
+
+  it("does not ask the model to rewrite when a prior step already has text", async () => {
+    const processor = new EnsureFinalResponseProcessor(CHAT_MAX_STEPS);
+    const result = await processor.processInputStep({
+      ...stepArgs(CHAT_MAX_STEPS - 1),
+      steps: [
+        {
+          text: "I'm a founder and AI full-stack engineer with 6+ years spanning QA/SDET.",
+        },
+      ],
+    } as ProcessInputStepArgs);
+
+    expect(result.toolChoice).toBe("none");
+    const content = result.systemMessages?.at(-1)?.content;
+    expect(content).toEqual(
+      expect.stringContaining("Do not rewrite, replace, or summarize")
+    );
+    expect(content).not.toEqual(
+      expect.stringContaining("Write a user-visible answer")
+    );
   });
 });

@@ -17,6 +17,7 @@ describe("grounded fallback routing", () => {
 
   it("treats intro and presence questions distinctly", () => {
     expect(isAboutQuery("Tell me about yourself.")).toBe(true);
+    expect(isAboutQuery("Tell me about your self")).toBe(true);
     expect(isPresenceQuery("Are u there?")).toBe(true);
     expect(isAboutQuery("What is Tuel?")).toBe(false);
   });
@@ -27,9 +28,12 @@ describe("buildGroundedFallback", () => {
     for (const query of ["What is Tuel?", "Tuel", "What is TUEL AI?"]) {
       const reply = buildGroundedFallback(query);
       expect(reply).toMatch(/Trusted Unified Education & Learning/);
+      expect(reply).toMatch(/tuel\.ai/);
       expect(reply).toMatch(/course-grounded/);
       expect(reply).toContain(formatElonAcademicProofLine());
       expect(reply).not.toMatch(/202|204|88%|94%|72\.2M/);
+      expect(reply).not.toMatch(/animation library|Selenium/i);
+      expect(reply).not.toMatch(/\b(84|27|30)\b/);
     }
   });
 
