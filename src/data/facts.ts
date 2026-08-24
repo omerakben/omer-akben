@@ -414,7 +414,7 @@ export const facts = {
   social: {
     linkedin: "https://linkedin.com/in/omerakben",
     github: "https://github.com/omerakben",
-    twitter: "https://x.com/mrfrkkbn",
+    twitter: "https://x.com/oakben",
     portfolio: "https://omerakben.com",
   },
 
