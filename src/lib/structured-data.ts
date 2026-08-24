@@ -24,7 +24,7 @@ export function getPersonSchema() {
     sameAs: [
       facts.social.linkedin,
       facts.social.github,
-      facts.social.twitter || "https://x.com/mrfrkkbn",
+      facts.social.twitter || "https://x.com/oakben",
     ],
     knowsAbout: [
       "Artificial Intelligence",
