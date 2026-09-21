@@ -2,7 +2,7 @@ import { FAVICON_SOURCES } from "@/lib/constants";
 import { Metadata } from "next";
 
 const baseUrl = "https://omerakben.com";
-const defaultTitle = "Omer Akben - AI/ML Engineer & Full-Stack Developer";
+const defaultTitle = "Omer Akben - AI Full-Stack Engineer & EdTech Founder";
 const defaultDescription =
   "Building intelligent systems and elegant solutions. Specializing in AI/ML engineering, full-stack development, and agentic workflows.";
 
