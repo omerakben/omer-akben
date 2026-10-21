@@ -203,8 +203,6 @@ export const projects: Project[] = [
     category: "ai-ml",
     featured: false,
     displayOrder: 2,
-    demoUrl:
-      "https://elon-ai-agent.happyplant-fd188d6c.canadacentral.azurecontainerapps.io/docs",
     // GitHub: Private repository - Elon University property
     status: "completed",
   },
@@ -257,8 +255,7 @@ export const projects: Project[] = [
     category: "tools",
     featured: false,
     displayOrder: 3,
-    demoUrl: "https://elon-ai-toolbox-mdxazqewk-omera.vercel.app",
-    // Production URL: https://elonopenapps.azurewebsites.net/AItoolbox/toolbox.html
+    demoUrl: "https://elonopenapps.azurewebsites.net/AItoolbox/toolbox.html",
     status: "completed",
   },
   {
@@ -390,7 +387,6 @@ export const projects: Project[] = [
     category: "ai-ml",
     featured: true,
     displayOrder: 5,
-    demoUrl: "https://lsb-ai.azurewebsites.net/main.html",
     status: "completed",
   },
 ];

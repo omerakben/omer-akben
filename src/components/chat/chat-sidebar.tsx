@@ -431,6 +431,8 @@ export function ChatSidebar() {
     });
   }, []);
 
+  const pendingAutoScrollRef = useRef(false);
+
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container || messages.length === 0) return;
@@ -439,14 +441,22 @@ export function ChatSidebar() {
       container.scrollHeight - container.scrollTop - container.clientHeight <
       100;
     const lastMessage = messages[messages.length - 1];
-    const shouldForceFollow = lastMessage?.role === "user" || isLoading;
+    if (lastMessage?.role === "user" || isLoading) {
+      pendingAutoScrollRef.current = true;
+    }
+    // A fast response can finish before the scheduled scroll runs. Keep the
+    // follow request across effect cleanup until it has actually been applied.
+    const shouldForceFollow = pendingAutoScrollRef.current;
 
     if (!shouldForceFollow && !isNearBottom) {
       return;
     }
 
     const timeoutId = setTimeout(
-      () => scrollToBottom(shouldForceFollow ? "auto" : "smooth"),
+      () => {
+        scrollToBottom(shouldForceFollow ? "auto" : "smooth");
+        pendingAutoScrollRef.current = false;
+      },
       100
     );
     return () => clearTimeout(timeoutId);

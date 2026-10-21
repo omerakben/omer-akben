@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@/test-utils/playwright-chat";
 
 test.describe("Agentic Sidebar - Core Functionality", () => {
   test.beforeEach(async ({ page }) => {
