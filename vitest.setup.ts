@@ -58,6 +58,21 @@ const ensureLocalStorage = () => {
 
 ensureLocalStorage();
 
+// JSDOM has no layout engine or Element.scrollTo implementation. Preserve the
+// browser API's position updates so delayed scrolling effects can run in tests.
+if (typeof HTMLElement.prototype.scrollTo !== "function") {
+  HTMLElement.prototype.scrollTo = function (
+    optionsOrX?: ScrollToOptions | number,
+    y?: number
+  ) {
+    const options = typeof optionsOrX === "number"
+      ? { left: optionsOrX, top: y }
+      : optionsOrX;
+    if (options?.left !== undefined) this.scrollLeft = options.left;
+    if (options?.top !== undefined) this.scrollTop = options.top;
+  };
+}
+
 process.on("warning", (warning) => {
   if (warning.message.includes("--localstorage-file")) {
     return;

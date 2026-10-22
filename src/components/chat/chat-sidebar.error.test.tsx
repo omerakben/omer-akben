@@ -1,5 +1,5 @@
 import * as ChatSidebarContext from "@/lib/chat-sidebar-context";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ChatSidebar } from "./chat-sidebar";
@@ -60,6 +60,7 @@ vi.mock("framer-motion", () => ({
 
 describe("ChatSidebar failed request UI", () => {
   beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, "scrollTo");
     chatState.messages = [
       {
         id: "user-1",
@@ -106,6 +107,7 @@ describe("ChatSidebar failed request UI", () => {
       await screen.findByText("Failed to process chat request")
     ).toBeInTheDocument();
     expect(screen.getByText("Tell me about yourself.")).toBeInTheDocument();
+    await waitFor(() => expect(HTMLElement.prototype.scrollTo).toHaveBeenCalled());
   });
 
   it("shows a Retry error instead of a blank bubble for an empty assistant turn", async () => {
@@ -131,6 +133,7 @@ describe("ChatSidebar failed request UI", () => {
     ).toBeInTheDocument();
     expect(await screen.findByText("What is Tuel?")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /retry/i })).toBeInTheDocument();
+    await waitFor(() => expect(HTMLElement.prototype.scrollTo).toHaveBeenCalled());
     expect(
       screen.queryByText((_, element) => {
         return (
