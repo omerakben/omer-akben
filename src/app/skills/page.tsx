@@ -174,8 +174,8 @@ export default function SkillsPage() {
             {filteredSkillsData.map((skillCategory, categoryIndex) => (
               <motion.div
                 key={skillCategory.category}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ y: 20 }}
+                animate={{ y: 0 }}
                 transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
               >
                 <Card className="border-border-line hover:border-brand-primary/60 transition-all">

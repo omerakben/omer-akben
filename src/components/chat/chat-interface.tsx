@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { extractNavigationLinks, getMessageText } from "@/lib/chat/message-utils";
 import type { UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
+import { Github } from "@/components/brand-icons";
 import {
   AlertCircle,
   ArrowRight,
@@ -13,7 +14,6 @@ import {
   Copy,
   ExternalLink,
   FileText,
-  Github,
   Mail,
   RefreshCw,
   Send,

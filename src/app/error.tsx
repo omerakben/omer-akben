@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { useEffect } from "react";
+import Link from "next/link";
 
 /**
  * Error Component
@@ -64,12 +65,11 @@ export default function Error({
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => (window.location.href = "/")}
-          >
-            <Home className="w-4 h-4 mr-2" />
-            Back to Home
+          <Button variant="outline" asChild>
+            <Link href="/">
+              <Home className="w-4 h-4 mr-2" />
+              Back to Home
+            </Link>
           </Button>
         </div>
 

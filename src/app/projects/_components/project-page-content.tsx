@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Project } from "@/data/projects";
 import { roleColors, statusColors } from "@/lib/constants";
-import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { Github } from "@/components/brand-icons";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 

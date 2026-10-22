@@ -74,7 +74,7 @@ Each page automatically includes:
 - **Twitter Cards**:
   - `twitter:card: "summary_large_image"`
   - `twitter:title`, `twitter:description`
-  - `twitter:creator: "@omerakben"`
+  - `twitter:creator: "@oakben"`
   - `twitter:image`
 
 ## Structured Data (JSON-LD)

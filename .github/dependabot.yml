@@ -1,0 +1,38 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      ai-sdk:
+        patterns:
+          - "@ai-sdk/*"
+          - "ai"
+      mastra:
+        patterns:
+          - "@mastra/*"
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+      testing:
+        patterns:
+          - "vitest"
+          - "@vitejs/*"
+          - "@testing-library/*"
+          - "jsdom"
+          - "playwright"
+          - "@playwright/*"
+      sentry:
+        patterns:
+          - "@sentry/*"
+    ignore:
+      # eslint 10: hold until eslint-plugin-react, eslint-plugin-import, and
+      # eslint-plugin-jsx-a11y (via eslint-config-next) support the new peer.
+      - dependency-name: "eslint"
+        versions: [">=10.0.0"]
+      # @types/node: pinned to v22 to match the Node runtime baseline (.nvmrc 22.22.0).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]

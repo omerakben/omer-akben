@@ -7,12 +7,12 @@ import {
 } from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import type { UIMessage } from "ai";
+import { Github } from "@/components/brand-icons";
 import {
   ArrowRight,
   Briefcase,
   ExternalLink,
   FileText,
-  Github,
   Mail,
   User,
   Zap,
@@ -22,6 +22,12 @@ import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FollowupChips } from "./FollowupChips";
+
+function navigationFingerprint(message: UIMessage): string {
+  return extractNavigationLinks(message)
+    .map((link) => link.href)
+    .join("|");
+}
 
 // Icon mapping for navigation links
 const getIconComponent = (iconName?: string) => {
@@ -288,7 +294,9 @@ export const ChatMessage = memo(
       prevProps.textContent === nextProps.textContent &&
       prevProps.isLastAssistantMessage === nextProps.isLastAssistantMessage &&
       prevProps.isLoading === nextProps.isLoading &&
-      prevProps.currentFollowups === nextProps.currentFollowups
+      prevProps.currentFollowups === nextProps.currentFollowups &&
+      navigationFingerprint(prevProps.message) ===
+        navigationFingerprint(nextProps.message)
     );
   }
 );

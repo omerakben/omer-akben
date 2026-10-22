@@ -38,12 +38,14 @@ export async function executeFollowupAction(
           console.error("[ActionMapper] Missing slug for open_project action");
           return false;
         }
+        if (!router) return false;
         executeOpenProject(slug, router);
         return true;
       }
 
       case "list_projects": {
         const category = args?.category as string;
+        if (!router) return false;
         await executeListProjects(category, router);
         return true;
       }
@@ -54,6 +56,7 @@ export async function executeFollowupAction(
           console.error("[ActionMapper] Missing query for search_projects action");
           return false;
         }
+        if (!router) return false;
         await executeSearchProjects(query, router);
         return true;
       }
@@ -123,36 +126,26 @@ async function executeDownloadResume(format: string): Promise<void> {
  */
 function executeOpenProject(
   slug: string,
-  router?: { push: (url: string) => void }
+  router: { push: (url: string) => void }
 ): void {
   const projectUrl = `/projects/${slug}`;
 
-  if (router) {
-    // Use Next.js router for client-side navigation
-    router.push(projectUrl);
-  } else {
-    // Fallback to window.location
-    window.location.href = projectUrl;
-  }
+  router.push(projectUrl);
 }
 
 /**
  * List projects with optional category filter
  */
 async function executeListProjects(
-  category?: string,
-  router?: { push: (url: string) => void }
+  category: string | undefined,
+  router: { push: (url: string) => void }
 ): Promise<void> {
   // Navigate to projects page with optional category filter
   const projectsUrl = category
     ? `/projects?category=${encodeURIComponent(category)}`
     : "/projects";
 
-  if (router) {
-    router.push(projectsUrl);
-  } else {
-    window.location.href = projectsUrl;
-  }
+  router.push(projectsUrl);
 }
 
 /**
@@ -160,16 +153,12 @@ async function executeListProjects(
  */
 async function executeSearchProjects(
   query: string,
-  router?: { push: (url: string) => void }
+  router: { push: (url: string) => void }
 ): Promise<void> {
   // Navigate to projects page with search query
   const searchUrl = `/projects?search=${encodeURIComponent(query)}`;
 
-  if (router) {
-    router.push(searchUrl);
-  } else {
-    window.location.href = searchUrl;
-  }
+  router.push(searchUrl);
 }
 
 /**

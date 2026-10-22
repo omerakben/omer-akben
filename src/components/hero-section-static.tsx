@@ -3,6 +3,7 @@
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
+import { elonProofHighlights } from "@/lib/proof";
 import { ArrowRight, Download, Mail, UserCheck } from "lucide-react";
 import Link from "next/link";
 
@@ -30,28 +31,14 @@ export function HeroSectionStatic() {
 
             {/* Subheadline */}
             <p className="hero-slide-up-delay-1 text-base sm:text-lg text-text-2 mb-8">
-              Founder of TUEL AI, shipping production RAG and agentic workflows
-              with Next.js/FastAPI and modern LLMs—backed by 6+ years of SDET/QA
-              automation experience.
+              I built TUEL so a university can verify every answer. Live at
+              Elon.
             </p>
 
             {/* Proof & Capability Chips */}
             <div className="hero-slide-up-delay-2 flex flex-wrap gap-2 text-sm text-text-3 mb-8">
               {/* Proof Chips (metrics/outcomes) */}
-              {[
-                {
-                  text: "16+ learning tools",
-                  title: "Built 16+ interactive learning tools in TUEL AI",
-                },
-                {
-                  text: "20M+ tokens",
-                  title: "Processed 20M+ tokens in production usage",
-                },
-                {
-                  text: "95% satisfaction",
-                  title: "62/65 positive ratings in production pilots",
-                },
-              ].map((chip) => (
+              {elonProofHighlights.map((chip) => (
                 <span
                   key={chip.text}
                   title={chip.title}
@@ -142,7 +129,10 @@ export function HeroSectionStatic() {
               {/* Micro-proof footer */}
               <p className="mt-4 text-sm text-text-3">
                 Selected for Elon University Business Faculty Pilot Program
-                after 6 months production use.
+                after 6 months production use.{" "}
+                <Link href="https://tuel.ai" className="underline underline-offset-2">
+                  tuel.ai
+                </Link>
               </p>
             </div>
           </div>

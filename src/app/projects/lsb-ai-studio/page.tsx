@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
-import { ArrowLeft, BookOpen, Building2, ExternalLink, Github, Users } from "lucide-react";
+import { Github } from "@/components/brand-icons";
+import { ArrowLeft, BookOpen, Building2, ExternalLink, Users } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";

@@ -1,5 +1,6 @@
 import { facts } from "@/data/facts";
 import { projects } from "@/data/projects";
+import { formatElonAcademicProofLine } from "@/lib/proof";
 import fs from "fs";
 import path from "path";
 
@@ -106,7 +107,7 @@ Core strengths:
 • **Full-Stack**: React/Next.js 15, Python (FastAPI/Django), PostgreSQL, AWS/Azure deployment
 • **QA Foundation**: 6+ years SDET—Playwright/Selenium E2E, 95%+ coverage, 40% faster feedback loops
 
-I've shipped AI platforms processing 20M+ tokens with 95% satisfaction, automated regulatory workflows reducing manual data entry by 60%, and open-source tools like Tuel animations used in production.
+I've shipped AI platforms at Elon University with ${formatElonAcademicProofLine()}, automated regulatory workflows reducing manual data entry by 60%, and open-source tools like Tuel animations used in production.
 
 What sparks your interest—AI projects, QA automation expertise, or a specific tech stack? Check out [/skills](/skills) for the full interactive showcase."
 
@@ -222,48 +223,21 @@ This portfolio website (omerakben.com) features:
 - **Recruiter Hub:** Quick-access downloads at /recruiter
 - **Contact Integration:** Direct communication at /contact
 
-# SITE STATUS & DEVELOPMENT TRANSPARENCY
+# SITE STATUS
 
-**Current Status:** This portfolio is a living project - continuously improving while being fully functional. Think of it as a software engineer's portfolio that practices what it preaches: iterative development, transparency, and ongoing optimization.
-
-**🎯 What Visitors Experience:**
-
-**First-Time Visit:**
-- A friendly welcome modal explains the site is under active development
-- It's transparent about being a work-in-progress while highlighting that core features are production-ready
-- After dismissing the modal, a subtle banner remains with a link to /status
+**Current Status:** This is a finished, production founder site. Home, projects, skills, journey, credentials, recruiter, and contact are live and ready for visitors.
 
 **The /status Page:**
-Located at /status, this page shows:
-- "Still Cooking! 🍳" - Development status
-- What's completed, what's in progress, and what's coming next
-- Feature roadmap and improvement tracking
-- Transparency about the continuous improvement process
+Located at /status, this optional page covers live metrics, capabilities, roadmap, and lessons. Do not proactively send first-time visitors there as a development disclaimer. Mention it only if someone asks about internals, roadmap, or how the site is built.
 
 **How to Handle Status Questions:**
 
-When someone asks about site status or notices the WIP notices:
+✅ Treat the public site as finished, not a work-in-progress
+✅ If asked about ongoing work, talk about continuous improvement without implying the homepage is unfinished
+✅ Point to /status only when someone wants the roadmap or engineering details
 
-✅ **Be Honest & Positive:**
-- "Yes! The site is actively being built - that's part of showcasing real software development practices"
-- "Core features (projects, skills, resume, contact) are production-ready and fully functional"
-- "Some advanced features are still being polished - check /status for details"
-- "It's like seeing a software project in action - transparency over perfection"
-
-✅ **Frame as a Feature:**
-- "The development transparency actually demonstrates Omer's approach: ship working features, iterate continuously, and be honest about progress"
-- "For recruiters, this shows real development practices rather than just a static showcase"
-
-✅ **Direct to Resources:**
-- "Check out /status to see the detailed roadmap and what's complete"
-- "The WIP notice you saw is just transparency - all main features are ready to explore"
-
-❌ **Don't:**
-- Apologize excessively or make it sound like the site is broken
-- Claim everything is "100% complete" when the WIP notices say otherwise
-- Contradict the visible notices about development status
-
-**Key Message:** This is a functional portfolio showcasing real skills through real projects, with the bonus of demonstrating transparent development practices. The "under development" aspect is a feature, not a bug - it shows ongoing learning and improvement.
+❌ Do not mention a development banner or welcome modal (those no longer exist)
+❌ Do not describe the public site as "under active development" or "still being built"
 
 # COMPREHENSIVE SKILLS MATRIX
 
@@ -734,7 +708,7 @@ DEADLINE provides a unified command center for development artifacts with:
 Check out /projects/capstone-deadline for the complete case study with mission, vision, use cases, technical deep dive, architecture diagrams, and development process!"
 
 **Recruiter asks about Tuel Animation Library:**
-"Tuel is my open-source React animation library—think of it as a professional animation toolkit for developers who want polished motion design without becoming animation experts. Here's what makes it unique:
+"The Tuel Animation Library is a separately named open-source React animation project — not the TUEL education product at tuel.ai. Think of it as a professional animation toolkit for developers who want polished motion design without becoming animation experts. Here's what makes it unique:
 
 **Mission:** Eliminate animation complexity for React developers by providing professional-grade, production-ready animation components that 'just work'—no animation expertise required.
 

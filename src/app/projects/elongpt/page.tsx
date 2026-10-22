@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
+import { Github } from "@/components/brand-icons";
 import {
   ArrowLeft,
   Building2,
   Calendar,
   ExternalLink,
-  Github,
   MessageSquare,
   Search,
 } from "lucide-react";

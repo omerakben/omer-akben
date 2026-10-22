@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm install && npm run build",
-  "installCommand": "npm install --include=optional",
+  "buildCommand": "corepack pnpm run build",
+  "installCommand": "corepack pnpm install --frozen-lockfile --ignore-scripts",
   "framework": "nextjs",
   "outputDirectory": ".next",
   "crons": [

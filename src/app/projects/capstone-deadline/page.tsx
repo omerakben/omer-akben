@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
+import { Github } from "@/components/brand-icons";
 import {
   ArrowLeft,
   CheckCircle2,
   ExternalLink,
   Eye,
   FileText,
-  Github,
   Layers,
   Search,
   Shield,

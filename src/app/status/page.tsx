@@ -12,7 +12,6 @@ import { PersonaSwitch } from "@/components/status/PersonaSwitch";
 import { Roadmap } from "@/components/status/Roadmap";
 import { StatusHero } from "@/components/status/StatusHero";
 import { statusData, type Persona } from "@/data/status";
-import { wipBannerCopy } from "@/data/wip";
 import { posthog } from "@/lib/analytics/posthog-client";
 import { enrichMetrics } from "@/lib/status/metrics";
 
@@ -38,7 +37,6 @@ const quickLinks = [
 export default function StatusPage() {
   const [activePersona, setActivePersona] = useState<Persona>("recruiters");
   const [metrics, setMetrics] = useState(statusData.metrics);
-  const bannerMessage = `${wipBannerCopy.neutral.prefix} ${wipBannerCopy.neutral.main}`;
 
   useEffect(() => {
     let mounted = true;
@@ -97,18 +95,6 @@ export default function StatusPage() {
           className="space-y-8 scroll-mt-24"
           id="status-overview"
         >
-          <div className="rounded-2xl border border-dashed border-brand-primary/40 bg-surf-1 p-6 shadow-sm">
-            <h2 id="why-banner" className="text-lg font-semibold text-text-1">
-              Why you saw a banner
-            </h2>
-            <p className="mt-2 text-sm text-text-2">
-              <span className="font-semibold text-text-1">{bannerMessage}</span>{" "}
-              This notice reappears whenever a new deploy ships (keyed to the
-              latest git SHA) and always links back here for the full roadmap and
-              release notes.
-            </p>
-          </div>
-
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="rounded-2xl border border-border-line bg-surf-1 p-6 shadow-sm">
               <h2

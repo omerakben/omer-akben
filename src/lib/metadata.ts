@@ -79,7 +79,7 @@ export function createMetadata({
       card: "summary_large_image",
       title: fullTitle,
       description: description || defaultDescription,
-      creator: "@omerakben",
+      creator: "@oakben",
       images: [image],
     },
     alternates: {

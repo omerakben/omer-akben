@@ -4,10 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { ContactBrand } from "@/config/contact-brands";
 import { getBrandColorVars } from "@/config/contact-brands";
 import { motion } from "framer-motion";
-import { ExternalLink, type LucideIcon } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
+
+type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
 interface ContactMethodCardProps {
-  icon: LucideIcon;
+  icon: IconComponent;
   label: string;
   value: string;
   subtitle?: string;

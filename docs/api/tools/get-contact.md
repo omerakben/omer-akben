@@ -102,7 +102,7 @@ curl -X POST http://localhost:3001/api/tools/get-contact \
       "location": "Raleigh, NC",
       "linkedin": "https://www.linkedin.com/in/omerakben",
       "github": "https://github.com/omerakben",
-      "twitter": "https://twitter.com/omerakben"
+      "twitter": "https://x.com/oakben"
     }
   }
 }
@@ -142,7 +142,7 @@ curl -X POST http://localhost:3001/api/tools/get-contact \
 | Field     | Type   | Description                      | Format Example                  |
 | --------- | ------ | -------------------------------- | ------------------------------- |
 | `phone`   | string | Phone number (optional)          | `+1 (267) 512-4566`             |
-| `twitter` | string | Twitter/X profile URL (optional) | `https://twitter.com/omerakben` |
+| `twitter` | string | Twitter/X profile URL (optional) | `https://x.com/oakben` |
 
 ## Data Source
 

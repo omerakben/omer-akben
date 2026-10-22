@@ -1,3 +1,5 @@
+import { formatElonAcademicProofLine } from "@/lib/proof";
+
 export interface Project {
   id: string;
   slug: string;
@@ -149,9 +151,9 @@ export const projects: Project[] = [
     title: "Elon AI — TUEL AI Platform",
     shortTitle: "Elon AI",
     description:
-      "Live deployment of TUEL AI at Elon University with multi-tenant RAG, agentic workflows, and 18+ generative UI tools.",
+      `Live TUEL AI deployment at Elon University: ${formatElonAcademicProofLine()} (Spring 2026). FERPA-compliant and citation-grounded, with faculty-controlled course assistants.`,
     longDescription:
-      "Elon AI is the live TUEL AI deployment for Elon University, built as a B2B educational technology platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with citations. It supports multi-model routing (OpenAI, Claude, Grok, Gemini) and a production RAG pipeline using Upstash Vector + pgvector. The platform includes Microsoft Entra ID SSO, role-based access control, faculty controls for AI behavior, 35+ audit action types, and evaluation with RAGAS. Production metrics: 100+ sessions, 50+ users, 20M+ tokens, 2% error rate, 95% satisfaction, and P95 retrieval latency under 2 seconds. Public demo assistants are available at https://tuel.ai/#demo.",
+      `Elon AI is the live TUEL AI deployment for Elon University, built as a B2B educational technology platform with 16+ interactive learning tools (flashcards, quizzes, concept maps, Hume AI voice chat) and a 7-layer prompt system with citations. It supports multi-model routing (OpenAI, Claude, Grok, Gemini) and a production RAG pipeline using Upstash Vector + pgvector. The platform includes Microsoft Entra ID SSO, role-based access control, faculty controls for AI behavior, 35+ audit action types, and evaluation with RAGAS. Public proof: ${formatElonAcademicProofLine()} (Spring 2026)—outcomes attributed to FERPA-compliant, citation-grounded AI that faculty trust and students embrace. Live at https://elon-ai.app — public demo assistants and chatbot builder at https://tuel.ai.`,
     image: "/elon_ai_img/elon_ai_img.png",
     technologies: [
       "Next.js 15",
@@ -292,9 +294,9 @@ export const projects: Project[] = [
     title: "Tuel AI Chatbot Builder",
     shortTitle: "Tuel AI Chatbot Builder",
     description:
-      "Full-stack chatbot builder platform for TUEL AI with multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
+      "Full-stack chatbot builder for the TUEL AI platform at tuel.ai. Multi-provider AI support (OpenAI, Gemini, OpenRouter), RAG implementation, and OAuth SSO.",
     longDescription:
-      "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control. Public demo assistants are available at https://tuel.ai/#demo.",
+      "Complete chatbot builder platform allowing instructors to create AI-powered assistants trained on custom content (files + URLs). Features include vector storage for RAG, real-time streaming chat, share tokens, analytics dashboard, BYOK encryption for OpenRouter, and comprehensive role-based access control. Part of the TUEL AI ecosystem live at https://elon-ai.app. Public demo assistants available at https://tuel.ai/#demo.",
     image: "/tuel_chatbot_img/tuel_ai_landing_page.png",
     technologies: [
       "FastAPI",

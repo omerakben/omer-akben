@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { facts } from "@/data/facts";
 import { projects } from "@/data/projects";
 import { createMetadata } from "@/lib/metadata";
+import { formatElonAcademicProofLine } from "@/lib/proof";
+import { Linkedin } from "@/components/brand-icons";
 import {
   Award,
   Briefcase,
@@ -12,7 +14,6 @@ import {
   ExternalLink,
   FileText,
   FileUser,
-  Linkedin,
   Mail,
   Rocket,
   TrendingUp,
@@ -229,8 +230,8 @@ export default function RecruiterPage() {
                     Production-Validated AI
                   </p>
                   <p className="text-sm text-text-2">
-                    <strong>Elon AI (TUEL AI platform)</strong> - 20M+ tokens,
-                    95% satisfaction, 60% faster support response
+                    <strong>Elon AI (TUEL AI platform)</strong> —{" "}
+                    {formatElonAcademicProofLine()}
                   </p>
                 </div>
               </div>

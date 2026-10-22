@@ -5,11 +5,20 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { posthog } from "@/lib/analytics/posthog-client";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
-import { getMessageText } from "@/lib/chat/message-utils";
+import {
+  parseChatTransportError,
+  shouldClearChatError,
+  silentReplyErrorMessage,
+  type ChatFinishEvent,
+} from "@/lib/chat/error-utils";
+import {
+  getMessageText,
+  hasVisibleAssistantContent,
+} from "@/lib/chat/message-utils";
 import type { FollowupSuggestionType } from "@/lib/schemas/followup-schema";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, UIMessage } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
@@ -77,6 +86,7 @@ export function ChatSidebar() {
   const skipHydrationRef = useRef(false);
   const followupGenerationIdRef = useRef(0); // Track current generation to prevent race conditions
   const messagesContainerRef = useRef<HTMLDivElement>(null); // Track scroll container for smart auto-scroll
+  const pendingUserMessageRef = useRef("");
 
   const markPinHintSeen = useCallback(
     (reason: "dismiss" | "pin" = "dismiss") => {
@@ -174,10 +184,16 @@ export function ChatSidebar() {
   const MAX_INPUT_LENGTH = 2000; // Character limit for chat input
   const shouldShowPinHint = showPinHint && !isPinned;
 
-  const { messages, sendMessage, status, setMessages } = useChat({
+  const {
+    messages,
+    sendMessage,
+    status,
+    setMessages,
+    error: transportError,
+  } = useChat({
     id: threadId,
-    experimental_throttle: 100,
     transport: new DefaultChatTransport({
+      api: "/api/chat",
       prepareSendMessagesRequest: ({ id, messages: outgoingMessages }) => {
         const lastMessage = outgoingMessages[outgoingMessages.length - 1];
 
@@ -193,47 +209,100 @@ export function ChatSidebar() {
         };
       },
     }),
-    onError: (error) => {
-      console.error("[ChatSidebar] Chat error:", error);
+    onError: (chatError) => {
+      console.error("[ChatSidebar] Chat error:", chatError);
 
-      // Handle abort errors gracefully (user navigation/refresh)
-      if (error.name === "AbortError") {
-        console.warn(
-          "[ChatSidebar] Request aborted - likely navigation or user action"
-        );
+      if (chatError.name === "AbortError") {
+        setError("The request was interrupted. Please try again.");
+        if (pendingUserMessageRef.current) {
+          setLastFailedMessage(pendingUserMessageRef.current);
+        }
         return;
       }
 
-      // Network errors
-      if (error.message?.includes("fetch")) {
-        setError("Network error. Please check your connection and try again.");
-        return;
+      setError(parseChatTransportError(chatError));
+      if (pendingUserMessageRef.current) {
+        setLastFailedMessage(pendingUserMessageRef.current);
       }
-
-      // Generic error handling
-      setError(
-        error.message ||
-          "Failed to send message. Please check your internet connection."
-      );
     },
-    onFinish: () => {
-      setError(null); // Clear errors on success
-      setLastFailedMessage(""); // Clear failed message on success
+    onFinish: (event?: ChatFinishEvent) => {
+      if (!shouldClearChatError(event)) {
+        if (pendingUserMessageRef.current) {
+          setLastFailedMessage(pendingUserMessageRef.current);
+        }
+        return;
+      }
+
+      // Leave pendingUserMessageRef set until messages settle. A tool-only
+      // turn appends an empty assistant message; clearing here hid the error.
     },
   });
 
   const isLoading = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    if (status === "error" && transportError) {
+      setError(parseChatTransportError(transportError));
+      if (pendingUserMessageRef.current) {
+        setLastFailedMessage(pendingUserMessageRef.current);
+      }
+    }
+  }, [status, transportError]);
+
+  useEffect(() => {
+    if (isHydratingThread || isLoading || status !== "ready" || transportError) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage) {
+      return;
+    }
+
+    if (lastMessage.role === "assistant") {
+      if (hasVisibleAssistantContent(lastMessage)) {
+        pendingUserMessageRef.current = "";
+        return;
+      }
+
+      const lastUser = [...messages]
+        .reverse()
+        .find((message) => message.role === "user");
+      const lastUserText =
+        pendingUserMessageRef.current || getMessageText(lastUser);
+
+      setError(silentReplyErrorMessage());
+      if (lastUserText) {
+        setLastFailedMessage(lastUserText);
+      }
+      return;
+    }
+
+    if (!pendingUserMessageRef.current) {
+      return;
+    }
+
+    if (lastMessage.role !== "user") {
+      pendingUserMessageRef.current = "";
+      return;
+    }
+
+    setError(silentReplyErrorMessage());
+    setLastFailedMessage(pendingUserMessageRef.current);
+  }, [isHydratingThread, isLoading, messages, status, transportError]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isHydratingThread || !input.trim()) return;
 
     const userMessage = input.trim();
+    pendingUserMessageRef.current = userMessage;
 
     setInput("");
     setLastFollowupAction(null);
     setShowMessages(true);
     setError(null); // Clear previous errors
+    setLastFailedMessage(userMessage);
 
     try {
       await sendMessage({
@@ -252,6 +321,7 @@ export function ChatSidebar() {
 
     setError(null);
     setInput("");
+    pendingUserMessageRef.current = lastFailedMessage;
 
     try {
       await sendMessage({
@@ -272,6 +342,7 @@ export function ChatSidebar() {
     setError(null);
     setLastFailedMessage("");
     setInput("");
+    pendingUserMessageRef.current = "";
   }, [setMessages, setError, setLastFailedMessage, setInput]);
 
   const handleSuggestedQuestion = async (question: string) => {
@@ -284,9 +355,10 @@ export function ChatSidebar() {
       return;
     }
 
+    pendingUserMessageRef.current = question;
     setShowMessages(true);
     setError(null); // Clear previous errors
-    setLastFailedMessage(""); // Clear previous failed messages
+    setLastFailedMessage(question);
     setLastFollowupAction(question);
 
     try {
@@ -346,26 +418,39 @@ export function ChatSidebar() {
     textarea.style.height = `${newHeight}px`;
   }, [input]);
 
-  // Auto-scroll to latest message during streaming (throttled to prevent jank)
-  // Only scrolls if user is already near the bottom to preserve reading position
-  const scrollToBottom = useCallback(() => {
+  // Auto-scroll to latest message during streaming.
+  // Preserve manual reading position unless the user just sent a message or the
+  // assistant is actively streaming a reply.
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     const container = messagesContainerRef.current;
     if (!container) return;
 
-    // Check if user is near bottom (within 100px threshold)
-    const isNearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-
-    // Only auto-scroll if user is already following the conversation
-    if (isNearBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior,
+    });
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(scrollToBottom, 100);
+    const container = messagesContainerRef.current;
+    if (!container || messages.length === 0) return;
+
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      100;
+    const lastMessage = messages[messages.length - 1];
+    const shouldForceFollow = lastMessage?.role === "user" || isLoading;
+
+    if (!shouldForceFollow && !isNearBottom) {
+      return;
+    }
+
+    const timeoutId = setTimeout(
+      () => scrollToBottom(shouldForceFollow ? "auto" : "smooth"),
+      100
+    );
     return () => clearTimeout(timeoutId);
-  }, [messages, scrollToBottom]);
+  }, [isLoading, messages, scrollToBottom]);
 
   // Keep a mutable reference of the latest messages to avoid stale closures
   useEffect(() => {
@@ -792,6 +877,13 @@ export function ChatSidebar() {
                     const isLastAssistantMessage =
                       item.message.role === "assistant" &&
                       index === messages.length - 1;
+                    const hideEmptyAssistant =
+                      item.message.role === "assistant" &&
+                      !hasVisibleAssistantContent(item.message);
+
+                    if (hideEmptyAssistant) {
+                      return null;
+                    }
 
                     return (
                       <ChatMessage
@@ -806,7 +898,10 @@ export function ChatSidebar() {
                       />
                     );
                   })}
-                  {isLoading && (
+                  {isLoading &&
+                    !hasVisibleAssistantContent(
+                      messages[messages.length - 1]
+                    ) && (
                     <div className="flex gap-3 justify-start">
                       <div className="shrink-0">
                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">

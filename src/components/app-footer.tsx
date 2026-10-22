@@ -1,5 +1,6 @@
 import { facts } from "@/data/facts";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Linkedin, Twitter } from "@/components/brand-icons";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 
 const footerLinks = {
@@ -30,7 +31,7 @@ const socialLinks = [
     icon: Linkedin,
   },
   {
-    href: facts.social.twitter || "https://x.com/mrfrkkbn",
+    href: facts.social.twitter || "https://x.com/oakben",
     label: "Twitter",
     icon: Twitter,
   },

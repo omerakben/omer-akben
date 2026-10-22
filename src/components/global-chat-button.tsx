@@ -3,10 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { useChatSidebar } from "@/lib/chat-sidebar-context";
 import { AnimatedBlobContainer } from "@/components/animated-blob-container";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function GlobalChatButton() {
   const { isOpen, openSidebar, newChat } = useChatSidebar();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     // Don't register keyboard shortcuts when sidebar is open
@@ -28,6 +29,7 @@ export function GlobalChatButton() {
     };
 
     window.addEventListener("keydown", handleKeyDown);
+    setIsReady(true);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, openSidebar, newChat]);
 
@@ -37,6 +39,7 @@ export function GlobalChatButton() {
   return (
     <Button
       onClick={openSidebar}
+      disabled={!isReady}
       size="lg"
       className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-brand-primary hover:bg-brand-primary/90 z-40"
       aria-label="Open AI Ozzy chat (cmd/ctrl+K)"

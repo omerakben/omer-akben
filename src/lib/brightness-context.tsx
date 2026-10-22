@@ -53,6 +53,23 @@ export function BrightnessProvider({
 
   useEffect(() => {
     const root = document.documentElement;
+    let restoreFrame = 0;
+    const applyTheme = (mode: BrightnessMode) => {
+      if (root.getAttribute("data-brightness") === mode) return;
+      cancelAnimationFrame(restoreFrame);
+      // Text and surfaces must change together, without low-contrast midpoints.
+      root.setAttribute("data-brightness-changing", "true");
+      root.setAttribute("data-brightness", mode);
+      restoreFrame = requestAnimationFrame(() => {
+        restoreFrame = requestAnimationFrame(() => {
+          root.removeAttribute("data-brightness-changing");
+        });
+      });
+    };
+    const finishThemeChange = () => {
+      cancelAnimationFrame(restoreFrame);
+      root.removeAttribute("data-brightness-changing");
+    };
 
     if (brightness === "auto") {
       // Auto mode: use system preference + time-based adjustment
@@ -72,7 +89,7 @@ export function BrightnessProvider({
           targetMode = hour >= 18 || hour < 8 ? "+1" : "+2";
         }
 
-        root.setAttribute("data-brightness", targetMode);
+        applyTheme(targetMode);
       };
 
       applyAutoTheme();
@@ -87,11 +104,13 @@ export function BrightnessProvider({
       const interval = setInterval(applyAutoTheme, 60 * 60 * 1000);
 
       return () => {
+        finishThemeChange();
         darkModeQuery.removeEventListener("change", handler);
         clearInterval(interval);
       };
     } else {
-      root.setAttribute("data-brightness", brightness);
+      applyTheme(brightness);
+      return finishThemeChange;
     }
   }, [brightness]);
 
