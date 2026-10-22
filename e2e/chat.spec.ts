@@ -1,12 +1,7 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@/test-utils/playwright-chat";
 
-// Skip chat E2E tests in CI to avoid OpenAI API calls and timeout issues
-// These tests make real AI API calls which are slow, expensive, and unreliable
-// Run locally with: npm run test:e2e -- chat.spec.ts
+// Exercise the real chat UI with deterministic API responses and no paid services.
 test.describe("Chat Functionality", () => {
-  // Skip all chat tests in CI environment
-  test.skip(!!process.env.CI, "Skipping chat tests in CI (real API calls)");
-
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("chat_thread_id");
@@ -20,11 +15,16 @@ test.describe("Chat Functionality", () => {
     // Wait for hydration to complete
     await page.waitForTimeout(1500);
 
-    // Wait for visible chat button (use .last() to get the floating button, not the invisible one)
-    await page.locator('button[aria-label*="chat" i]').last().waitFor({
-      state: "visible",
-      timeout: 10000,
-    });
+    // Select the public chat control by its exact accessible name.
+    await page
+      .getByRole("button", {
+        name: "Open AI Ozzy chat (cmd/ctrl+K)",
+        exact: true,
+      })
+      .waitFor({
+        state: "visible",
+        timeout: 10000,
+      });
   });
 
   test.skip("should open and close chat sidebar", async ({ page }) => {
@@ -95,7 +95,10 @@ test.describe("Chat Functionality", () => {
     page,
   }) => {
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="chat" i]').last();
+    const chatButton = page.getByRole("button", {
+      name: "Open AI Ozzy chat (cmd/ctrl+K)",
+      exact: true,
+    });
     await chatButton.click();
 
     // Send a message that should return links
@@ -107,7 +110,10 @@ test.describe("Chat Functionality", () => {
     await sendButton.click();
 
     // Wait for response with link
-    const link = page.locator('a[href*="omerakben.com"]').first();
+    const link = page
+      .locator(".chat-message")
+      .getByRole("link", { name: "GitHub", exact: true })
+      .first();
     await expect(link).toBeVisible({ timeout: 15000 });
 
     // Verify link attributes
@@ -117,7 +123,10 @@ test.describe("Chat Functionality", () => {
 
   test("should auto-scroll to latest message", async ({ page }) => {
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="chat" i]').last();
+    const chatButton = page.getByRole("button", {
+      name: "Open AI Ozzy chat (cmd/ctrl+K)",
+      exact: true,
+    });
     await chatButton.click();
 
     const sidebar = page
@@ -131,7 +140,9 @@ test.describe("Chat Functionality", () => {
 
     // Send multiple messages to create scroll
     for (let i = 1; i <= 3; i++) {
-      const messageInput = sidebar.locator('textarea, input[type="text"]').first();
+      const messageInput = sidebar
+        .locator('textarea, input[type="text"]')
+        .first();
       await messageInput.fill(`Test message ${i}`);
 
       const sendButton = sidebar.locator('button[type="submit"]').first();
@@ -141,25 +152,35 @@ test.describe("Chat Functionality", () => {
       await expect(
         sidebar.locator(".chat-message").filter({
           hasText: `Test message ${i}`,
-        })
+        }),
       ).toHaveCount(1);
 
-      // Wait a bit for potential response
-      await page.waitForTimeout(2000);
+      // Wait for the streamed assistant response before submitting the next message.
+      await expect(
+        sidebar.getByRole("link", { name: "Omer's portfolio", exact: true }),
+      ).toHaveCount(i);
     }
 
     // Get the messages container
     const messagesContainer = sidebar.locator(".chat-scroll-smooth").first();
 
     // Check if the container is scrolled to bottom (within a small threshold)
-    const isScrolledToBottom = await messagesContainer.evaluate((el) => {
-      const threshold = 50; // Allow 50px threshold
-      return (
-        Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold
-      );
-    });
-
-    expect(isScrolledToBottom).toBeTruthy();
+    await expect
+      .poll(() =>
+        messagesContainer.evaluate((el) => {
+          const threshold = 50; // Allow 50px threshold
+          return (
+            Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <=
+            threshold
+          );
+        }),
+      )
+      .toBeTruthy();
+    expect(
+      await messagesContainer.evaluate(
+        (el) => el.scrollHeight > el.clientHeight,
+      ),
+    ).toBeTruthy();
   });
 
   test.skip("should display follow-up question buttons", async ({ page }) => {
@@ -224,7 +245,10 @@ test.describe("Chat Functionality", () => {
     page,
   }) => {
     // Open chat sidebar
-    const chatButton = page.locator('button[aria-label*="chat" i]').last();
+    const chatButton = page.getByRole("button", {
+      name: "Open AI Ozzy chat (cmd/ctrl+K)",
+      exact: true,
+    });
     await chatButton.click();
 
     await page.waitForSelector('textarea, input[type="text"]');

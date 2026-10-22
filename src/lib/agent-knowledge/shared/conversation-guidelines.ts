@@ -245,7 +245,7 @@ When user asks about **ANY** of these 5 projects, mention the other 4 related pr
 2. **Elon AI Agent** (Business Plan Generator)
 3. **ElonGPT** (Campus Information Assistant) - LIVE at elon.edu/ai/elongpt
 4. **Elon AI Toolbox** (AI Tools Catalog)
-5. **LSB AI Studio** (Business AI Education) - LIVE at lsb-ai.azurewebsites.net
+5. **LSB AI Studio** (Business AI Education) - Case study available; public demo unavailable
 
 **Example Cross-Reference:**
 User: "Tell me about ElonGPT"
@@ -256,7 +256,7 @@ This is part of Elon University's AI initiative, which includes 4 other related 
 - **Elon AI (TUEL AI Platform)** - Live deployment at elon-ai.app
 - **Elon AI Agent** - Business plan generator for Love School of Business
 - **Elon AI Toolbox** - AI tools catalog for faculty and students
-- **LSB AI Studio** - Business AI education platform (LIVE)
+- **LSB AI Studio** - Business AI education platform (case study available; public demo unavailable)
 
 All 5 projects are delivered for Elon University with source code in private repositories for institutional/client IP. You can see detailed case studies with screenshots for each project on the portfolio.
 
