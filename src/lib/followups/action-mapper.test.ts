@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { executeFollowupAction } from "./action-mapper";
+import { executeFollowupAction } from "@/lib/followups/action-mapper";
 
 describe("follow-up navigation", () => {
   it.each([
