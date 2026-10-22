@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@/test-utils/playwright-chat";
 
 test.describe("Agentic Sidebar - Core Functionality", () => {
   test.beforeEach(async ({ page }) => {
@@ -80,6 +80,7 @@ test.describe("Agentic Sidebar - Core Functionality", () => {
 test.describe("Agentic Sidebar - Keyboard Shortcuts", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
+    await expect(page.getByRole("button", { name: "Open AI Ozzy chat (cmd/ctrl+K)" })).toBeEnabled();
   });
 
   test("should open sidebar with cmd+K on macOS", async ({ page }) => {
@@ -114,9 +115,6 @@ test.describe("Agentic Sidebar - Keyboard Shortcuts", () => {
   }) => {
     // Open with keyboard shortcut
     await page.keyboard.press("Meta+k");
-
-    // Wait for sidebar animation
-    await page.waitForTimeout(500);
 
     // Verify input is focused
     const input = page.locator("textarea#chat-sidebar-input");

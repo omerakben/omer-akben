@@ -1,6 +1,6 @@
 "use client";
 
-import { slideUp, staggerContainer } from "@/lib/animations";
+import { DURATION, EASING, STAGGER } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 
@@ -22,20 +22,23 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <motion.div
-      variants={staggerContainer}
+      variants={{
+        hidden: {},
+        visible: { transition: { staggerChildren: STAGGER.normal, delayChildren: 0.1 } },
+      }}
       initial="hidden"
       animate="visible"
       className={`text-center mb-12 ${className}`}
     >
       <motion.h1
-        variants={slideUp}
+        variants={headerSlide}
         className="text-4xl md:text-5xl font-bold text-text-1 mb-6 flex items-center justify-center gap-4"
       >
         <Icon className="w-10 h-10 md:w-12 md:h-12 text-brand-primary flex-shrink-0" />
         {title}
       </motion.h1>
       <motion.p
-        variants={slideUp}
+        variants={headerSlide}
         className="text-lg text-text-2 max-w-2xl mx-auto"
       >
         {description}
@@ -43,3 +46,12 @@ export function PageHeader({
     </motion.div>
   );
 }
+
+// Keep text opaque throughout entrance motion so its contrast stays readable.
+const headerSlide = {
+  hidden: { y: 20 },
+  visible: {
+    y: 0,
+    transition: { duration: DURATION.normal, ease: EASING.default },
+  },
+};

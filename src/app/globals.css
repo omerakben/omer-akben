@@ -645,6 +645,15 @@ html {
   }
 }
 
+/* Theme colors change atomically; spatial and opacity animations keep running. */
+[data-brightness-changing],
+[data-brightness-changing] *,
+[data-brightness-changing] *::before,
+[data-brightness-changing] *::after {
+  transition-property: transform, translate, scale, rotate, opacity, box-shadow,
+    filter, width, height, margin-right !important;
+}
+
 /* Performance-optimized pulse animation for timeline dots */
 @keyframes pulse-ring {
   0%,

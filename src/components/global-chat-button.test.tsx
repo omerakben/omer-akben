@@ -2,6 +2,7 @@ import * as ChatSidebarContext from "@/lib/chat-sidebar-context";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GlobalChatButton } from "./global-chat-button";
+import { renderToString } from "react-dom/server";
 
 // Mock the chat sidebar context
 const mockOpenSidebar = vi.fn();
@@ -34,6 +35,14 @@ describe("GlobalChatButton", () => {
   });
 
   describe("Rendering", () => {
+    it("keeps the server-rendered control disabled until client shortcuts are ready", () => {
+      renderWithContext();
+      const markup = document.createElement("div");
+      markup.innerHTML = renderToString(<GlobalChatButton />);
+      expect(markup.querySelector("button")).toBeDisabled();
+      expect(screen.getByRole("button")).toBeEnabled();
+    });
+
     it("should render the chat button", () => {
       renderWithContext();
       const button = screen.getByRole("button");
