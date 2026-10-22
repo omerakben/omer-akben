@@ -93,8 +93,9 @@ export default function GlobalError({
               >
                 Try Again
               </button>
+              <form action="/" method="get">
               <button
-                onClick={() => (window.location.href = "/")}
+                type="submit"
                 style={{
                   padding: "0.75rem 1.5rem",
                   backgroundColor: "#121a35",
@@ -108,6 +109,7 @@ export default function GlobalError({
               >
                 Go Home
               </button>
+              </form>
             </div>
           </div>
         </div>

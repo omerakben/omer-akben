@@ -145,7 +145,7 @@ export function ShaderBlob({
     attribLocations: { vertexPosition: number; textureCoord: number };
     uniformLocations: Record<string, WebGLUniformLocation | null>;
   } | null>(null);
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number>(0);
   const [isHovered, setIsHovered] = useState(false);
   const reducedMotion = useRef(false);
   const isPausedRef = useRef(false);
@@ -168,6 +168,8 @@ export function ShaderBlob({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    if (startTimeRef.current === 0) startTimeRef.current = Date.now();
 
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
