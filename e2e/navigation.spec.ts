@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@/test-utils/playwright-chat";
 
 test.skip("navigate core routes", async ({ page }) => {
   await page.goto("/");

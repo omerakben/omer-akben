@@ -59,7 +59,24 @@ vi.mock("framer-motion", () => ({
 }));
 
 describe("ChatSidebar failed request UI", () => {
+  let prefersReducedMotion = false;
+
   beforeEach(() => {
+    prefersReducedMotion = false;
+    // jsdom has no media-query engine; model the browser preference explicitly.
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string): MediaQueryList => ({
+        matches: prefersReducedMotion && query === "(prefers-reduced-motion: reduce)",
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(() => true),
+      }))
+    );
     vi.spyOn(HTMLElement.prototype, "scrollTo");
     chatState.messages = [
       {
@@ -142,5 +159,18 @@ describe("ChatSidebar failed request UI", () => {
         );
       })
     ).not.toBeInTheDocument();
+  });
+
+  it("scrolls failed user messages instantly when reduced motion is preferred", async () => {
+    prefersReducedMotion = true;
+    render(<ChatSidebar />);
+
+    await screen.findByText("Failed to process chat request");
+    await waitFor(() =>
+      expect(HTMLElement.prototype.scrollTo).toHaveBeenCalledWith({
+        top: expect.any(Number),
+        behavior: "instant",
+      })
+    );
   });
 });

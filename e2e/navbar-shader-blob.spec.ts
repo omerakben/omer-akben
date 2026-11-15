@@ -10,7 +10,8 @@
  * - Accessibility features
  */
 
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from "@/test-utils/playwright-chat";
+import type { Page } from "@playwright/test";
 
 function navbarBlobLocator(page: Page) {
   return page
