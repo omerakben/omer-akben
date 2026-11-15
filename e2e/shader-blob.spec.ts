@@ -4,7 +4,7 @@
  * Tests animated shader blob across all 8 brightness modes, interactions, and accessibility.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@/test-utils/playwright-chat";
 
 test.describe('Shader Blob - Hero Section', () => {
   test.beforeEach(async ({ page }) => {

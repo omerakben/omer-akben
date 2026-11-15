@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@/test-utils/playwright-chat";
 
 const BRIGHTNESS_MODES = ["auto", "-3", "-2", "-1", "0", "+1", "+2", "+3"];
 
