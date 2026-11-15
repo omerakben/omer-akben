@@ -9,11 +9,6 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { ZodError } from "zod";
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 /**
  * POST /api/text-editor
  *
@@ -71,6 +66,16 @@ export async function POST(
         { status: 400 }
       );
     }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, error: "Text editing is temporarily unavailable." },
+        { status: 503 }
+      );
+    }
+
+    const openai = new OpenAI({ apiKey });
 
     // Build messages for OpenAI
     const messages = buildEditingMessages(text, operation, customPrompt);

@@ -87,6 +87,7 @@ export function ChatSidebar() {
   const followupGenerationIdRef = useRef(0); // Track current generation to prevent race conditions
   const messagesContainerRef = useRef<HTMLDivElement>(null); // Track scroll container for smart auto-scroll
   const pendingUserMessageRef = useRef("");
+  const pendingAutoScrollRef = useRef(false);
 
   const markPinHintSeen = useCallback(
     (reason: "dismiss" | "pin" = "dismiss") => {
@@ -343,6 +344,7 @@ export function ChatSidebar() {
     setLastFailedMessage("");
     setInput("");
     pendingUserMessageRef.current = "";
+    pendingAutoScrollRef.current = false;
   }, [setMessages, setError, setLastFailedMessage, setInput]);
 
   const handleSuggestedQuestion = async (question: string) => {
@@ -427,30 +429,48 @@ export function ChatSidebar() {
 
     container.scrollTo({
       top: container.scrollHeight,
-      behavior,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : behavior,
     });
   }, []);
 
   useEffect(() => {
+    pendingAutoScrollRef.current = false;
+  }, [threadId]);
+
+  useEffect(() => {
     const container = messagesContainerRef.current;
-    if (!container || messages.length === 0) return;
+    if (messages.length === 0) {
+      pendingAutoScrollRef.current = false;
+      return;
+    }
+    if (!container) return;
 
     const isNearBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight <
       100;
     const lastMessage = messages[messages.length - 1];
-    const shouldForceFollow = lastMessage?.role === "user" || isLoading;
+    if (lastMessage?.role === "user" || isLoading) {
+      pendingAutoScrollRef.current = true;
+    }
+    // A fast response can finish before the scheduled scroll runs. Keep the
+    // follow request across effect cleanup until it has actually been applied.
+    const shouldForceFollow = pendingAutoScrollRef.current;
 
     if (!shouldForceFollow && !isNearBottom) {
       return;
     }
 
     const timeoutId = setTimeout(
-      () => scrollToBottom(shouldForceFollow ? "auto" : "smooth"),
+      () => {
+        scrollToBottom(shouldForceFollow ? "auto" : "smooth");
+        pendingAutoScrollRef.current = false;
+      },
       100
     );
     return () => clearTimeout(timeoutId);
-  }, [isLoading, messages, scrollToBottom]);
+  }, [isLoading, messages, scrollToBottom, threadId]);
 
   // Keep a mutable reference of the latest messages to avoid stale closures
   useEffect(() => {

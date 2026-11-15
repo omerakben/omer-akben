@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@/test-utils/playwright-chat";
 
 /**
  * E2E Tests for Slider-Based Brightness Control System
