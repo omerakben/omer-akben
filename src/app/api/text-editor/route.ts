@@ -1,3 +1,4 @@
+import { FALLBACK_MODEL, PRIMARY_NON_REASONING_MODEL } from "@/lib/ai/model-config";
 import { textEditorRateLimit } from "@/lib/rate-limit";
 import { buildEditingMessages } from "@/lib/text-editor/prompts";
 import {
@@ -6,7 +7,9 @@ import {
   type TextEditorResponse,
 } from "@/lib/text-editor/schemas";
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import { openai } from "@ai-sdk/openai";
+import { xai } from "@ai-sdk/xai";
+import { generateText } from "ai";
 import { ZodError } from "zod";
 
 /**
@@ -67,37 +70,36 @@ export async function POST(
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { success: false, error: "Text editing is temporarily unavailable." },
-        { status: 503 }
-      );
-    }
-
-    const openai = new OpenAI({ apiKey });
-
-    // Build messages for OpenAI
+    // Read configuration at request time; prefer the same provider as Ozzy.
+    const models = [
+      ...(process.env.XAI_API_KEY ? [xai(PRIMARY_NON_REASONING_MODEL)] : []),
+      ...(process.env.OPENAI_API_KEY ? [openai.chat(FALLBACK_MODEL)] : []),
+    ];
     const messages = buildEditingMessages(text, operation, customPrompt);
+    let editedText = "";
 
-    // Call OpenAI API (non-streaming for atomic results)
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
-      temperature: 0.3, // Consistent, predictable edits
-      max_tokens: 1000, // Sufficient for edited text
-    });
-
-    // Extract edited text
-    const editedText = completion.choices[0]?.message?.content?.trim();
+    for (const model of models) {
+      try {
+        const result = await generateText({
+          model,
+          messages,
+          temperature: 0.3,
+          maxOutputTokens: 1000,
+          maxRetries: 0,
+          abortSignal: AbortSignal.timeout(12_000),
+        });
+        editedText = result.text.trim();
+        if (editedText) break;
+      } catch {
+        // Provider error bodies can contain credentials or submitted text.
+        console.warn("Text editor provider unavailable; trying next configured provider.");
+      }
+    }
 
     if (!editedText) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "No response generated from AI model",
-        },
-        { status: 500 }
+        { success: false, error: "Text editing is temporarily unavailable." },
+        { status: 503 }
       );
     }
 
@@ -123,20 +125,8 @@ export async function POST(
       );
     }
 
-    // Handle OpenAI API errors
-    if (error instanceof OpenAI.APIError) {
-      console.error("OpenAI API Error:", error.message);
-      return NextResponse.json(
-        {
-          success: false,
-          error: "AI service error. Please try again.",
-        },
-        { status: 500 }
-      );
-    }
-
-    // Handle unexpected errors
-    console.error("Text Editor API Error:", error);
+    // Do not log raw errors: upstream errors may include sensitive data.
+    console.error("Text Editor API request failed");
     return NextResponse.json(
       {
         success: false,
