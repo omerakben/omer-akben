@@ -57,9 +57,9 @@ function StatCard({
       className="group relative"
     >
       {/* Glassmorphism card */}
-      <div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-[24px] p-8 hover:border-brand-primary/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-xl hover:shadow-brand-primary/10">
+      <div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-none p-8 hover:border-brand-primary/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-xl hover:shadow-brand-primary/10">
         {/* Background gradient on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5 rounded-[24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-brand-primary/5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Content */}
         <div className="relative z-10">
@@ -106,7 +106,7 @@ export function JourneyHero() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: DURATION.normal, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-sm font-medium mb-6"
           >
             <TrendingUp className="w-4 h-4" />
             Career Journey

@@ -35,8 +35,8 @@ export default function GlobalError({
             minHeight: "100vh",
             padding: "2rem",
             textAlign: "center",
-            backgroundColor: "#0b1328",
-            color: "#e4ecff",
+            backgroundColor: "#14141b",
+            color: "#fafafa",
           }}
         >
           <div style={{ maxWidth: "600px" }}>
@@ -53,7 +53,7 @@ export default function GlobalError({
               style={{
                 fontSize: "1.125rem",
                 marginBottom: "2rem",
-                color: "#b5c1df",
+                color: "#c8c8d4",
               }}
             >
               A critical error occurred. Please try refreshing the page.
@@ -63,13 +63,13 @@ export default function GlobalError({
                 style={{
                   marginBottom: "2rem",
                   padding: "1rem",
-                  backgroundColor: "#121a35",
-                  border: "1px solid #2b355c",
+                  backgroundColor: "#1c1c26",
+                  border: "1px solid #424254",
                   borderRadius: "0.5rem",
                   textAlign: "left",
                   fontSize: "0.875rem",
                   overflow: "auto",
-                  color: "#8998c0",
+                  color: "#9898a8",
                 }}
               >
                 {error.message}
@@ -82,8 +82,8 @@ export default function GlobalError({
                 onClick={reset}
                 style={{
                   padding: "0.75rem 1.5rem",
-                  backgroundColor: "#10b981",
-                  color: "#0b1328",
+                  backgroundColor: "#d4ff00",
+                  color: "#14141b",
                   border: "none",
                   borderRadius: "0.5rem",
                   fontSize: "1rem",
@@ -98,9 +98,9 @@ export default function GlobalError({
                 type="submit"
                 style={{
                   padding: "0.75rem 1.5rem",
-                  backgroundColor: "#121a35",
-                  color: "#e4ecff",
-                  border: "1px solid #2b355c",
+                  backgroundColor: "#1c1c26",
+                  color: "#fafafa",
+                  border: "1px solid #424254",
                   borderRadius: "0.5rem",
                   fontSize: "1rem",
                   fontWeight: "600",

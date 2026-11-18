@@ -44,9 +44,9 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
       className="group relative"
     >
       {/* Glassmorphism card */}
-      <div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-[24px] p-6 md:p-8 hover:border-brand-primary/40 transition-all duration-300 shadow-lg shadow-surf-2/50 hover:shadow-xl hover:shadow-brand-primary/10">
+      <div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-none p-6 md:p-8 hover:border-brand-primary/40 transition-all duration-300 shadow-lg shadow-surf-2/50 hover:shadow-xl hover:shadow-brand-primary/10">
         {/* Background gradient on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5 rounded-[24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-brand-primary/5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Content container */}
         <div className="relative z-10">
@@ -55,7 +55,7 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
             {/* Large Visual Icon/Badge */}
             <div className="flex-shrink-0">
               <div
-                className={`p-4 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 border-2 border-border-line group-hover:border-brand-primary/30 transition-all ${typeColors[credential.type]}`}
+                className={`p-4 rounded-2xl bg-brand-primary/10 border-2 border-border-line group-hover:border-brand-primary/30 transition-all ${typeColors[credential.type]}`}
               >
                 <Icon className="w-10 h-10" />
               </div>
@@ -148,7 +148,7 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
                   <Button
                     asChild
                     size="sm"
-                    className="bg-gradient-to-r from-brand-primary to-accent-primary text-white hover:opacity-90 transition-opacity shadow-lg shadow-brand-primary/20"
+                    className="bg-synth-volt text-synth-volt-fg hover:opacity-90 transition-opacity shadow-lg shadow-brand-primary/20"
                   >
                     <a
                       href={credential.verificationUrl}
@@ -163,7 +163,7 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
 
                   {/* Credential ID Badge - displayed next to verify button */}
                   {credential.credentialId && (
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-0 border border-border-line text-xs text-text-3">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none bg-surf-0 border border-border-line text-xs text-text-3">
                       <FileText className="w-3 h-3" />
                       <span className="font-mono">
                         ID: {credential.credentialId}
@@ -178,7 +178,7 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
                 <Button
                   asChild
                   size="sm"
-                  className="bg-gradient-to-r from-brand-primary to-accent-primary text-white hover:opacity-90 transition-opacity shadow-lg shadow-brand-primary/20"
+                  className="bg-synth-volt text-synth-volt-fg hover:opacity-90 transition-opacity shadow-lg shadow-brand-primary/20"
                 >
                   <a
                     href={credential.certificateUrl}
@@ -248,7 +248,7 @@ export function CredentialCard({ credential, index }: CredentialCardProps) {
         {/* Status badge */}
         {credential.status === "in-progress" && (
           <div className="absolute top-4 right-12">
-            <span className="text-xs font-medium px-2 py-1 rounded-full bg-accent-primary/10 text-accent-primary border border-accent-primary/20">
+            <span className="text-xs font-medium px-2 py-1 rounded-none bg-accent-primary/10 text-accent-primary border border-accent-primary/20">
               In Progress
             </span>
           </div>

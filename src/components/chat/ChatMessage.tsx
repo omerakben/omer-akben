@@ -96,7 +96,7 @@ export const ChatMessage = memo(
           <div
             className={`chat-message max-w-[85%] rounded-lg px-4 py-3 text-sm ${
               message.role === "user"
-                ? "bg-brand-primary text-white"
+                ? "bg-synth-volt text-synth-volt-fg"
                 : "bg-surf-1/95 border border-border-line/40 text-text-1 shadow-sm backdrop-blur-sm"
             }`}
           >
@@ -144,7 +144,7 @@ export const ChatMessage = memo(
                         }}
                         className={`font-medium transition-all duration-200 cursor-pointer ${
                           message.role === "user"
-                            ? "text-white underline decoration-white/50 hover:decoration-white"
+                            ? "text-synth-volt-fg underline decoration-synth-volt-fg/50 hover:decoration-synth-volt-fg"
                             : "text-brand-primary no-underline hover:underline hover:decoration-brand-primary"
                         }`}
                       >
@@ -161,7 +161,7 @@ export const ChatMessage = memo(
                       rel="noopener noreferrer"
                       className={`font-medium transition-all duration-200 ${
                         message.role === "user"
-                          ? "text-white underline decoration-white/50 hover:decoration-white"
+                          ? "text-synth-volt-fg underline decoration-synth-volt-fg/50 hover:decoration-synth-volt-fg"
                           : "text-brand-primary no-underline hover:underline hover:decoration-brand-primary"
                       }`}
                     >

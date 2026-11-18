@@ -114,7 +114,7 @@ export default function NorthGlassPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed">
             North Glass LLC, a professional glass and aluminum contractor serving
@@ -127,7 +127,7 @@ export default function NorthGlassPage() {
           </p>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed">
             I developed a full-featured commercial website using Next.js 15 and
@@ -154,7 +154,7 @@ export default function NorthGlassPage() {
           />
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Key Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {features.map((feature, idx) => {
@@ -189,7 +189,7 @@ export default function NorthGlassPage() {
           />
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Implementation
           </h2>
@@ -212,13 +212,13 @@ export default function NorthGlassPage() {
           </ul>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>

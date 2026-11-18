@@ -1,5 +1,7 @@
 "use client";
 
+import { Github } from "@/components/brand-icons";
+import { ProjectWaveHeader } from "@/components/project-wave-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +13,15 @@ import {
 } from "@/components/ui/card";
 import { DURATION, EASING, VIEWPORT } from "@/lib/animations";
 import { motion } from "framer-motion";
-import { Github } from "@/components/brand-icons";
-import { Code2, ExternalLink } from "lucide-react";
-import Image from "next/image";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, useState } from "react";
+
+const ProjectScreenshot = dynamic(
+  () => import("@/components/project-screenshot"),
+  { ssr: false }
+);
 
 export interface ProjectCardProps {
   title: string;
@@ -27,141 +33,156 @@ export interface ProjectCardProps {
   slug?: string;
   status?: "completed" | "in-progress" | "planned";
   index?: number;
-  priority?: boolean; // For Next.js Image priority loading
+  priority?: boolean;
 }
 
-export const ProjectCard = memo(function ProjectCard({
-  title,
-  description,
-  image,
-  technologies,
-  demoUrl,
-  githubUrl,
-  slug,
-  status,
-  index = 0,
-  priority = false,
-}: ProjectCardProps) {
-  // First 6 cards (2 rows of 3) should animate immediately on page load
-  const shouldAnimateImmediately = index < 6;
+export const ProjectCard = memo(
+  function ProjectCard({
+    title,
+    description,
+    image,
+    technologies,
+    demoUrl,
+    githubUrl,
+    slug,
+    status,
+    index = 0,
+  }: ProjectCardProps) {
+    const shouldAnimateImmediately = index < 6;
+    // The screenshot is only requested once someone shows interest in the card.
+    const [wantsScreenshot, setWantsScreenshot] = useState(false);
+    const requestScreenshot = () => setWantsScreenshot(true);
 
-  return (
-    <motion.div
-      className="motion-safe"
-      initial={{ opacity: 0, y: 20 }}
-      animate={shouldAnimateImmediately ? { opacity: 1, y: 0 } : undefined}
-      whileInView={!shouldAnimateImmediately ? { opacity: 1, y: 0 } : undefined}
-      viewport={!shouldAnimateImmediately ? VIEWPORT.default : undefined}
-      transition={{
-        duration: DURATION.normal,
-        ease: EASING.default,
-        delay: shouldAnimateImmediately ? index * 0.1 : 0,
-      }}
-    >
-      <Card className="group h-full hover:shadow-lg hover:border-brand-primary/40 transition-all duration-300">
-        {/* Project Image or Code Icon */}
-        <div className="relative w-full h-48 overflow-hidden rounded-t-[20px] bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 flex items-center justify-center">
-          {image ? (
-            <Image
-              src={image}
-              alt={title}
-              fill
-              priority={priority}
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <Code2 className="w-20 h-20 text-brand-primary/40" />
-          )}
-          {/* Production Badge */}
-          {status === "completed" && demoUrl && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
-              className="absolute top-3 right-3"
+    return (
+      <motion.div
+        className="motion-safe h-full"
+        initial={{ opacity: 0, y: 20 }}
+        animate={shouldAnimateImmediately ? { opacity: 1, y: 0 } : undefined}
+        whileInView={
+          !shouldAnimateImmediately ? { opacity: 1, y: 0 } : undefined
+        }
+        viewport={!shouldAnimateImmediately ? VIEWPORT.default : undefined}
+        transition={{
+          duration: DURATION.normal,
+          ease: EASING.default,
+          delay: shouldAnimateImmediately ? index * 0.08 : 0,
+        }}
+      >
+        <Card
+          onPointerEnter={requestScreenshot}
+          onFocusCapture={requestScreenshot}
+          className="group flex h-full flex-col justify-between rounded-none border-2 border-border-line bg-surf-1 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-primary">
+          <div>
+            <ProjectWaveHeader
+              index={index}
+              status={status}
+              demoUrl={demoUrl}
+              slug={slug}
             >
-              <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-none shadow-lg font-semibold">
-                ● LIVE
-              </Badge>
-            </motion.div>
-          )}
-        </div>
+              {image && wantsScreenshot ? (
+                <ProjectScreenshot src={image} />
+              ) : null}
+            </ProjectWaveHeader>
 
-        <CardHeader>
-          <div className="flex items-start justify-between gap-2">
-            <CardTitle className="group-hover:text-brand-primary transition-colors">
-              {slug ? <Link href={`/projects/${slug}`}>{title}</Link> : title}
-            </CardTitle>
-            <div className="flex gap-2 shrink-0">
-              {githubUrl && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                  asChild
+            <CardHeader className="pb-4">
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle className="text-xl font-extrabold tracking-tight text-text-1 transition-colors group-hover:text-brand-primary">
+                  {slug ? (
+                    <Link
+                      href={`/projects/${slug}`}
+                      className="inline-flex items-center gap-1.5"
+                    >
+                      <span>{title}</span>
+                      <ArrowUpRight
+                        aria-hidden="true"
+                        className="h-4 w-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </Link>
+                  ) : (
+                    title
+                  )}
+                </CardTitle>
+                <div className="flex shrink-0 gap-1.5">
+                  {githubUrl && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 rounded-none border border-border-line p-0 hover:border-brand-primary"
+                      asChild
+                    >
+                      <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View on GitHub"
+                      >
+                        <Github className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                  {demoUrl && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 rounded-none border border-border-line p-0 hover:border-brand-primary"
+                      asChild
+                    >
+                      <a
+                        href={demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View live demo"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <CardDescription className="line-clamp-3 text-sm leading-relaxed text-text-2">
+                {description}
+              </CardDescription>
+            </CardHeader>
+          </div>
+
+          <CardContent className="border-t border-border-line pt-4">
+            <div className="flex flex-wrap gap-1.5">
+              {technologies.slice(0, 5).map((tech) => (
+                <Badge
+                  key={tech}
+                  variant="secondary"
+                  className="rounded-none border border-border-line bg-surf-0 font-mono text-xs text-text-2"
                 >
-                  <a
-                    href={githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="View on GitHub"
-                  >
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
-              )}
-              {demoUrl && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                  asChild
+                  {tech}
+                </Badge>
+              ))}
+              {technologies.length > 5 && (
+                <Badge
+                  variant="outline"
+                  className="rounded-none border border-border-line font-mono text-xs text-text-3"
                 >
-                  <a
-                    href={demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="View live demo"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
+                  +{technologies.length - 5}
+                </Badge>
               )}
             </div>
-          </div>
-          <CardDescription className="line-clamp-2">
-            {description}
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {technologies.slice(0, 6).map((tech) => (
-              <Badge key={tech} variant="secondary">
-                {tech}
-              </Badge>
-            ))}
-            {technologies.length > 6 && (
-              <Badge variant="outline">+{technologies.length - 6} more</Badge>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-}, (prevProps, nextProps) => {
-  // Custom comparison: only re-render if relevant props change
-  return (
-    prevProps.title === nextProps.title &&
-    prevProps.description === nextProps.description &&
-    prevProps.image === nextProps.image &&
-    prevProps.slug === nextProps.slug &&
-    prevProps.demoUrl === nextProps.demoUrl &&
-    prevProps.githubUrl === nextProps.githubUrl &&
-    prevProps.status === nextProps.status &&
-    prevProps.index === nextProps.index &&
-    prevProps.priority === nextProps.priority &&
-    prevProps.technologies.length === nextProps.technologies.length &&
-    prevProps.technologies.every((tech, i) => tech === nextProps.technologies[i])
-  );
-});
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.title === nextProps.title &&
+      prevProps.description === nextProps.description &&
+      prevProps.image === nextProps.image &&
+      prevProps.slug === nextProps.slug &&
+      prevProps.demoUrl === nextProps.demoUrl &&
+      prevProps.githubUrl === nextProps.githubUrl &&
+      prevProps.status === nextProps.status &&
+      prevProps.index === nextProps.index &&
+      prevProps.priority === nextProps.priority &&
+      prevProps.technologies.length === nextProps.technologies.length &&
+      prevProps.technologies.every((tech, i) => tech === nextProps.technologies[i])
+    );
+  }
+);

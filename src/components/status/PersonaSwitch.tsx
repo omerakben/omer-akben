@@ -58,7 +58,7 @@ export function PersonaSwitch({ personas, active, onChange }: PersonaSwitchProps
           aria-controls={`persona-panel-${persona.id}`}
           aria-selected={active === persona.id}
           className={cn(
-            "rounded-full px-4 py-2 text-sm font-medium transition-all",
+            "rounded-none px-4 py-2 text-sm font-medium transition-all",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
             active === persona.id
               ? "bg-emerald-700 text-white"

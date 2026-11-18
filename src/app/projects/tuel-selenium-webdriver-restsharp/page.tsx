@@ -174,13 +174,13 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
 
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30">
               QA Automation
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-300 border border-green-500/30">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-green-500/10 text-green-300 border border-green-500/30">
               Completed
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
               Open Source
             </span>
           </div>
@@ -219,7 +219,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Mission & Delivery Outcomes
           </h2>
@@ -253,7 +253,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
           {useCases.map((useCase) => (
             <div
               key={useCase.title}
-              className="bg-surf-1 border border-border-line rounded-[20px] p-6"
+              className="bg-surf-1 border border-border-line rounded-none p-6"
             >
               <useCase.icon
                 aria-hidden="true"
@@ -269,7 +269,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
           ))}
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Architecture Pillars
           </h2>
@@ -300,7 +300,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Implementation Wins
           </h2>
@@ -325,7 +325,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Delivery Phases
           </h2>
@@ -336,7 +336,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
                 className="bg-surf-0 border border-border-subtle rounded-2xl p-6"
               >
                 <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <span className="px-2 py-1 text-xs font-semibold uppercase tracking-wide bg-text-1/10 text-text-1 rounded-full">
+                  <span className="px-2 py-1 text-xs font-semibold uppercase tracking-wide bg-text-1/10 text-text-1 rounded-none">
                     {item.phase}
                   </span>
                   <span className="text-sm text-text-2">{item.label}</span>
@@ -350,7 +350,7 @@ export default function TuelSeleniumWebDriverRestSharpPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Operational Metrics
           </h2>

@@ -48,3 +48,37 @@ No causal claim about the skill's effect. Active implementation time was not sep
 - Active implementation time was not separately measured. Three validation correction rounds (import-time client, browser/service fixtures, jsdom media mock); counts describe this task, not skill causality.
 - Warnings retained: existing Sentry configuration deprecations, Next image-cache warning, Vite future config-loader warning; optional dependency build scripts blocked by pnpm defaults.
 - Independent agent plan and code reviews completed; no actionable final findings. Node22CI and live service compatibility remain unverified.
+
+## 2026-11-17 — Cyber-Synth wave review (canvas loop, tabs, tokens)
+
+Baseline: working tree on feature/ai-editor-provider-fix at ed6c397 plus the uncommitted Cyber-Synth redesign. Skill version 2026_11_09-5bcc021b (CLI reports 2026_11_10-47b4c80e available). Guides retrieved: efficient-background-processing, tabs. No custom browser support policy found.
+
+Changes: shared `src/lib/use-canvas-loop.ts` (one rAF and one brightness MutationObserver for all canvases, loop stops off-screen / hidden tab / reduced motion, dt-based time); wave deck eases between channels and cross-fades engines instead of restarting; ARIA tabs with roving tabindex, arrow/Home/End keys and a labelled tabpanel; `--wave-crest` token; +1 `--synth-emerald` darkened; focus-visible no longer forces a 4px radius.
+
+| Check | Baseline | After | Evidence |
+|---|---|---|---|
+| Lint / TypeScript | pass (reported) | pass | npm run lint, npx tsc --noEmit |
+| Unit tests | 828/828 (reported) | 829/829, 70 files | npm test -- --run |
+| Build / size / Playwright | pass (reported) | NOT RUN | sandbox denies the local port Turbopack needs |
+| +1 emerald text on surf-0 | 4.46:1 | 6.25:1 | computed WCAG ratio |
+| Light-mode wave crest vs surf-0 | 1.55–2.13:1 | uses --text-1 | computed ratio; seen in browser with injected token |
+| rAF callbacks on /projects (26 canvases) | 26 per frame, always | 1 per frame, visible canvases only | code inspection; not profiled |
+| LCP / CLS / interaction latency | unmeasured | unmeasured | no traces taken |
+
+Not verified: globals.css edits in the running dev server (it kept serving a stale stylesheet), 8-mode axe/contrast E2E, mobile GPU behaviour, Safari/Firefox. `focusgroup` from the tabs guide was not used (limited availability; its fallback is a new polyfill dependency) — manual roving tabindex instead. No causal claim about the skill.
+
+## 2026-11-17 (later) — site-wide Cyber-Synth conversion with Codex review
+
+Scope: shared Button/Card/Badge/Input/Textarea, `--radius` tokens set to 0, floating chat and scroll-to-top keys, footer, PageHeader, gradient and pill sweep across subpages, OG images, `/chat` redirect, screenshot reveal on project cards (dynamic import), `qualityProof` floors. Codex (gpt-6.2-astra, read-only) reviewed the plan; its 8 points are in work/codex-review-2026-11-17.md and all were checked against source.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Lint / TypeScript | pass | npm run lint, npx tsc --noEmit |
+| Unit tests | 829/829, 70 files | npm test -- --run |
+| Build | 46/46 routes, with non-secret placeholder env (no Upstash vars in this shell) | npm run build |
+| Size (brotli) | Home 24.29/40, Skills 5.42/10, Projects 11.13/15, Contact 6.07/10, Shared 25.77/90 kB | npm run size |
+| Playwright | 115 passed, 12 skipped (unchanged skips) | npm run test:e2e --workers=4 |
+| Visual | 6 full-page screenshots, modes -3, 0, +1, +2 | Playwright script, reviewed by eye |
+| LCP / CLS / interaction latency | unmeasured | no traces |
+
+Not verified: 8-mode contrast on routes other than /skills (the only route the contrast spec covers), mobile layouts, Safari/Firefox, real provider/Redis calls, OG image rendering in a share debugger. No guides beyond the earlier two were retrieved for this pass.

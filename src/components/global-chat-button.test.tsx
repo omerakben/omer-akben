@@ -77,10 +77,11 @@ describe("GlobalChatButton", () => {
       expect(button.className).toContain("z-40");
     });
 
-    it("should have rounded-full styling", () => {
+    it("should be a square Cyber-Synth key around the round orb", () => {
       renderWithContext();
       const button = screen.getByRole("button");
-      expect(button.className).toContain("rounded-full");
+      expect(button.className).toContain("rounded-none");
+      expect(button.className).toContain("border-2");
     });
 
     it("should have shadow-lg styling", () => {
@@ -89,10 +90,10 @@ describe("GlobalChatButton", () => {
       expect(button.className).toContain("shadow-lg");
     });
 
-    it("should use brand primary color", () => {
+    it("should sit on a neutral surface so the orb carries the color", () => {
       renderWithContext();
       const button = screen.getByRole("button");
-      expect(button.className).toContain("bg-brand-primary");
+      expect(button.className).toContain("bg-surf-1");
     });
   });
 
@@ -251,7 +252,7 @@ describe("GlobalChatButton", () => {
     it("should have hover state styling", () => {
       renderWithContext();
       const button = screen.getByRole("button");
-      expect(button.className).toContain("hover:bg-brand-primary/90");
+      expect(button.className).toContain("hover:bg-surf-2");
     });
 
     it("should have size-lg for proper touch target", () => {

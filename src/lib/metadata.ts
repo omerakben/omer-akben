@@ -10,7 +10,7 @@ export function createMetadata({
   title,
   description,
   path = "",
-  image = "/og-image.png",
+  image = "/opengraph-image",
 }: {
   title?: string;
   description?: string;

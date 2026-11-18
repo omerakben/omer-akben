@@ -47,7 +47,7 @@ export function CredentialsShowcase({
           >
             <Card className="group h-full border-border-line hover:border-brand-primary/50 transition-all hover:shadow-xl hover:shadow-brand-primary/10 overflow-hidden">
               {/* Visual Badge Header */}
-              <div className="bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 p-6 border-b border-border-line">
+              <div className="bg-brand-primary/10 p-6 border-b border-border-line">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 rounded-xl bg-white/90 border border-brand-primary/20 shadow-lg">
                     <Award className="w-8 h-8 text-brand-primary" />
@@ -113,7 +113,7 @@ export function CredentialsShowcase({
                     href={credential.verificationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-gradient-to-r from-brand-primary to-accent-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-brand-primary/20 group"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-synth-volt text-synth-volt-fg text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-brand-primary/20 group"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     Verify Credential

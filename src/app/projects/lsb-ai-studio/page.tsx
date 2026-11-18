@@ -98,7 +98,7 @@ export default function LSBAIStudioPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Mission</h2>
           <p className="text-text-2 leading-relaxed">
             The LSB Applied AI Studio was created to address the critical need
@@ -112,7 +112,7 @@ export default function LSBAIStudioPage() {
           </p>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             The Ecosystem
           </h2>
@@ -203,7 +203,7 @@ export default function LSBAIStudioPage() {
           </div>
         )}
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Learning Outcomes
           </h2>
@@ -232,13 +232,13 @@ export default function LSBAIStudioPage() {
           </ul>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>
@@ -247,7 +247,7 @@ export default function LSBAIStudioPage() {
         </div>
 
         {/* Acknowledgment Section */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Acknowledgment
           </h2>

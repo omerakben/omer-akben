@@ -81,7 +81,7 @@ export default function StatusPage() {
             {quickLinks.map((link) => (
               <a
                 key={link.id}
-                className="rounded-full border border-border-line bg-surf-0 px-3 py-1.5 text-xs font-semibold text-text-2 transition hover:border-brand-primary/60 hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                className="rounded-none border border-border-line bg-surf-0 px-3 py-1.5 text-xs font-semibold text-text-2 transition hover:border-brand-primary/60 hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
                 href={`#${link.id}`}
               >
                 {link.label}
