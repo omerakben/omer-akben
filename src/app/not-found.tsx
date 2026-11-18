@@ -63,7 +63,6 @@ export default function NotFound() {
             <div className="flex flex-wrap gap-4">
               <Button
                 asChild
-                className="bg-brand-primary hover:bg-brand-primary/90"
               >
                 <Link href="/">
                   <Home className="w-4 h-4 mr-2" />

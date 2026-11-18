@@ -98,7 +98,7 @@ export default function ElonAiToolboxPage() {
           </div>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed">
             Elon University needed a centralized platform to help students,
@@ -109,7 +109,7 @@ export default function ElonAiToolboxPage() {
           </p>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed">
             I developed the Elon AI Toolbox, a web application that provides a
@@ -134,7 +134,7 @@ export default function ElonAiToolboxPage() {
           </div>
         )}
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Key Features</h2>
           <ul className="list-disc list-inside text-text-2 space-y-2">
             <li>Over 130 curated AI tools</li>
@@ -146,13 +146,13 @@ export default function ElonAiToolboxPage() {
           </ul>
         </div>
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>
@@ -161,7 +161,7 @@ export default function ElonAiToolboxPage() {
         </div>
 
         {/* Acknowledgment Section */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Acknowledgment
           </h2>

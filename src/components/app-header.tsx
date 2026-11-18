@@ -41,14 +41,14 @@ export function AppHeader() {
   const { openSidebar } = useChatSidebar();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-line bg-surf-0/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b-2 border-border-line bg-surf-0/95 backdrop-blur-lg">
       <div className="container mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center gap-3">
+        <div className="flex h-[4.5rem] items-center gap-3">
           {/* Logo */}
           <Link
             href="/"
             className={cn(
-              "flex items-center justify-center hover:opacity-90 transition-opacity lg:-ml-6 xl:-ml-10",
+              "flex items-center justify-center hover:opacity-90 transition-opacity",
               LOGO_SIZE.className
             )}
             aria-label="Home"
@@ -61,6 +61,10 @@ export function AppHeader() {
             />
           </Link>
 
+          <span className="hidden xl:inline-block bg-synth-volt px-2 py-0.5 font-mono text-xs font-bold tracking-wider text-synth-volt-fg">
+            OMER.AKBEN
+          </span>
+
           {/* Desktop navigation + controls */}
           <div className="hidden md:flex flex-1 items-center gap-4">
             <nav className="flex flex-1 items-center gap-1">
@@ -71,14 +75,14 @@ export function AppHeader() {
                     key={route.href}
                     href={route.href}
                     className={cn(
-                      "nav-item flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
+                      "nav-item flex items-center gap-2 px-3 py-2 font-mono text-xs font-bold uppercase tracking-wide",
                       pathname === route.href
                         ? "text-brand-primary"
                         : "text-text-2 transition-colors hover:text-text-1",
                       index === 0 && "pl-0"
                     )}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                     {route.label}
                   </Link>
                 );
@@ -93,7 +97,7 @@ export function AppHeader() {
               <Button
                 size="sm"
                 onClick={openSidebar}
-                className="flex items-center gap-2 bg-gradient-to-r from-brand-primary to-[#2563EB] hover:opacity-90"
+                className="flex items-center gap-2 rounded-none border-2 border-border-line bg-synth-volt font-mono text-xs font-bold uppercase text-synth-volt-fg hover:opacity-90"
               >
                 <MessageCircle className="h-4 w-4" />
                 Open Chat

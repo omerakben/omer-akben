@@ -140,13 +140,13 @@ export default function TuelChatbotCaseStudyPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               AI
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
               In Development
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
               Full-Stack
             </span>
           </div>
@@ -184,7 +184,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* The Challenge */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             Educational institutions face significant barriers in deploying
@@ -209,7 +209,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* The Solution */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             I developed{" "}
@@ -243,7 +243,7 @@ export default function TuelChatbotCaseStudyPage() {
             alt="Tuel AI Chatbot Builder landing page showing platform overview with multi-provider AI support, RAG implementation, and Azure architecture highlights"
             width={3840}
             height={2160}
-            className="rounded-[20px] border border-border-line w-full h-auto"
+            className="rounded-none border border-border-line w-full h-auto"
             priority={true}
             quality={90}
           />
@@ -254,7 +254,7 @@ export default function TuelChatbotCaseStudyPage() {
         </figure>
 
         {/* Project Status & Timeline */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Project Status & Development Timeline
           </h2>
@@ -376,7 +376,7 @@ export default function TuelChatbotCaseStudyPage() {
             alt="Tuel AI Chatbot conversation interface showing real-time streaming responses, file upload capabilities, and multi-turn dialogue with RAG-powered context"
             width={3840}
             height={2160}
-            className="rounded-[20px] border border-border-line w-full h-auto"
+            className="rounded-none border border-border-line w-full h-auto"
             priority={false}
             quality={90}
             loading="lazy"
@@ -389,7 +389,7 @@ export default function TuelChatbotCaseStudyPage() {
 
         {/* Architecture Diagram */}
         <div className="mb-8">
-          <div className="bg-surf-1 border border-border-line rounded-[20px] overflow-hidden">
+          <div className="bg-surf-1 border border-border-line rounded-none overflow-hidden">
             <div className="p-4 border-b border-border-line">
               <h3 className="text-lg font-bold text-text-1">
                 Azure Cloud Architecture
@@ -510,7 +510,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Key Features */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">Key Features</h2>
           <div className="space-y-6">
             <div className="flex gap-4">
@@ -656,7 +656,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Technical Implementation */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Implementation
           </h2>
@@ -741,7 +741,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Azure Infrastructure Breakdown */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Azure Infrastructure Cost Breakdown
           </h2>
@@ -857,7 +857,7 @@ export default function TuelChatbotCaseStudyPage() {
 
         {/* Mission & Vision */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+          <div className="bg-surf-1 border border-border-line rounded-none p-8">
             <div className="flex items-center gap-3 mb-4">
               <Target
                 aria-hidden="true"
@@ -872,7 +872,7 @@ export default function TuelChatbotCaseStudyPage() {
             </p>
           </div>
 
-          <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+          <div className="bg-surf-1 border border-border-line rounded-none p-8">
             <div className="flex items-center gap-3 mb-4">
               <Sparkles
                 aria-hidden="true"
@@ -890,7 +890,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Production Readiness Assessment */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Production Readiness Assessment
           </h2>
@@ -1021,7 +1021,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Use Cases */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Real-World Use Cases
           </h2>
@@ -1051,7 +1051,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Technical Highlights */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Highlights
           </h2>
@@ -1069,7 +1069,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Why This Matters */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Why This Project Matters
           </h2>
@@ -1086,7 +1086,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Live Resources */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Documentation & Resources
           </h2>
@@ -1178,7 +1178,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Results & Impact */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Results & Impact
           </h2>
@@ -1245,7 +1245,7 @@ export default function TuelChatbotCaseStudyPage() {
         </div>
 
         {/* Technologies */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technologies Used
           </h2>
@@ -1281,7 +1281,7 @@ export default function TuelChatbotCaseStudyPage() {
             ].map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 rounded-full text-sm bg-surf-0 border border-border-line text-text-2"
+                className="px-3 py-1 rounded-none text-sm bg-surf-0 border border-border-line text-text-2"
               >
                 {tech}
               </span>

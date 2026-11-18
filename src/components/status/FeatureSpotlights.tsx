@@ -59,7 +59,7 @@ export function FeatureSpotlights({ items }: FeatureSpotlightsProps) {
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-semibold text-text-1">{item.title}</h3>
             {item.badge ? (
-              <span className="rounded-full bg-brand-primary/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-brand-primary">
+              <span className="rounded-none bg-brand-primary/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-brand-primary">
                 {item.badge}
               </span>
             ) : null}

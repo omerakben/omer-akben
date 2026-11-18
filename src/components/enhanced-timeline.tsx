@@ -55,9 +55,9 @@ const TimelineCard = memo(function TimelineCard({
       {/* Content */}
       <div className="flex-1 md:pl-12 pl-8">
         {/* Removed layout prop for better performance - expand/collapse handled by AnimatePresence */}
-        <motion.div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-[24px] p-6 hover:border-brand-primary/50 transition-all duration-300 shadow-lg shadow-surf-2/50 hover:shadow-xl hover:shadow-brand-primary/10 group">
+        <motion.div className="relative bg-surf-1/80 backdrop-blur-sm border border-border-line rounded-none p-6 hover:border-brand-primary/50 transition-all duration-300 shadow-lg shadow-surf-2/50 hover:shadow-xl hover:shadow-brand-primary/10 group">
           {/* Background gradient on hover */}
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5 rounded-[24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-brand-primary/5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           {/* Content container */}
           <div className="relative z-10">
@@ -188,7 +188,7 @@ const TimelineCard = memo(function TimelineCard({
             whileInView={{ height: "2rem", opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: index * 0.1 + 0.3 }}
-            className="w-0.5 bg-gradient-to-b from-brand-primary/40 to-transparent"
+            className="w-0.5 bg-border-line"
           />
         </motion.div>
       </div>
@@ -200,7 +200,7 @@ export function EnhancedTimeline({ items }: TimelineProps) {
   return (
     <div className="relative">
       {/* Timeline line with gradient */}
-      <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-gradient-to-b from-brand-primary via-accent-primary to-brand-primary opacity-30" />
+      <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-border-line" />
 
       <div className="space-y-16">
         {items.map((item, index) => (

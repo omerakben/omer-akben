@@ -44,3 +44,12 @@ export function formatElonAcademicProofLine(): string {
     `${elonAcademicProof.averageExamScore} exam average ${elonAcademicProof.examScoreQualifier}`,
   ].join(", ");
 }
+
+/**
+ * Portfolio quality-gate floors. Honest floors, not synced exacts: bump only
+ * after the suites grow past the next round number.
+ */
+export const qualityProof = {
+  unitTests: "820+",
+  e2eTests: "110+",
+} as const;

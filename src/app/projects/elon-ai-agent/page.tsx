@@ -174,13 +174,13 @@ export default function ElonAIAgentPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               AI
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
               Production
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
               Full-Stack
             </span>
           </div>
@@ -214,7 +214,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* The Challenge */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             Creating comprehensive business plans is time-intensive and requires
@@ -238,7 +238,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* The Solution */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             I developed an{" "}
@@ -270,7 +270,7 @@ export default function ElonAIAgentPage() {
 
         {/* Parallel Agent Architecture */}
         <div className="mb-8">
-          <div className="bg-surf-1 border border-border-line rounded-[20px] overflow-hidden">
+          <div className="bg-surf-1 border border-border-line rounded-none overflow-hidden">
             <div className="p-4 border-b border-border-line">
               <h3 className="text-lg font-bold text-text-1">
                 Parallel Agent Architecture
@@ -372,7 +372,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Key Features */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">Key Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {features.map((feature, idx) => {
@@ -396,7 +396,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Seven Specialized Agents */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Seven Specialized Agents
           </h2>
@@ -426,7 +426,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Technical Implementation */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Implementation
           </h2>
@@ -502,7 +502,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Technical Highlights */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Highlights
           </h2>
@@ -520,7 +520,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Results & Impact */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Results & Impact
           </h2>
@@ -555,7 +555,7 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Acknowledgment Section */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Acknowledgment
           </h2>
@@ -623,13 +623,13 @@ export default function ElonAIAgentPage() {
         </div>
 
         {/* Technologies */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>

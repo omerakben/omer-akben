@@ -325,16 +325,16 @@ export default function TuelAnimationLibraryPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
               Full-Stack
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
               In Progress
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
               Featured
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
               Open Source
             </span>
           </div>
@@ -394,7 +394,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* The Challenge */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             React developers face a dilemma: CSS transitions are too basic for
@@ -415,7 +415,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* The Solution */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             I developed <strong className="text-text-1">Tuel</strong>, an
@@ -438,7 +438,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Package Ecosystem Grid */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Package Ecosystem (13 Packages)
           </h2>
@@ -483,7 +483,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Mission & Vision */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Mission & Vision
           </h2>
@@ -523,7 +523,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Why Tuel Stands Out */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Why Tuel Stands Out
           </h2>
@@ -550,7 +550,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Real-World Use Cases */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Real-World Use Cases
           </h2>
@@ -580,7 +580,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Technical Implementation */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Implementation
           </h2>
@@ -607,7 +607,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Development Roadmap */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Development Roadmap (v0.2.0 → v2.0.0)
           </h2>
@@ -652,7 +652,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Live Resources */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Live Resources
           </h2>
@@ -694,7 +694,7 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Results & Impact */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Results & Impact
           </h2>
@@ -730,13 +730,13 @@ export default function TuelAnimationLibraryPage() {
         </div>
 
         {/* Technologies */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>

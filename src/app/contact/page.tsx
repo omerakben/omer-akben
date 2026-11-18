@@ -310,7 +310,7 @@ export default function ContactPage() {
                       type="button"
                       variant="default"
                       size="sm"
-                      className="absolute bottom-3 right-3 rounded-full bg-gradient-to-r from-brand-primary to-accent-primary hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-brand-primary/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      className="absolute bottom-3 right-3 rounded-full bg-synth-volt text-synth-volt-fg hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-brand-primary/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                       onClick={() => setIsEditorOpen(true)}
                       disabled={!formData.message.trim() || isSubmitting}
                     >
@@ -323,7 +323,7 @@ export default function ContactPage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                  className="w-full bg-synth-volt text-synth-volt-fg"
                   disabled={isSubmitting || !isFormValid()}
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}

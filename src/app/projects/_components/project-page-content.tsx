@@ -25,13 +25,13 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <span
-              className={`px-3 py-1 rounded-full text-sm font-medium border ${roleColors[project.role]}`}
+              className={`px-3 py-1 rounded-none text-sm font-medium border ${roleColors[project.role]}`}
             >
               {project.role}
             </span>
             {project.status && (
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium border capitalize ${
+                className={`px-3 py-1 rounded-none text-sm font-medium border capitalize ${
                   statusColors[project.status]
                 }`}
               >
@@ -39,7 +39,7 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
               </span>
             )}
             {project.featured && (
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+              <span className="px-3 py-1 rounded-none text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                 Featured
               </span>
             )}
@@ -80,7 +80,7 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
         </div>
 
         {project.longDescription && (
-          <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+          <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
             <h2 className="text-2xl font-bold text-text-1 mb-4">
               About This Project
             </h2>
@@ -90,13 +90,13 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
           </div>
         )}
 
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>
@@ -105,7 +105,7 @@ export function ProjectPageContent({ project }: ProjectPageContentProps) {
         </div>
 
         {(project.startDate || project.endDate) && (
-          <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+          <div className="bg-surf-1 border border-border-line rounded-none p-8">
             <h2 className="text-2xl font-bold text-text-1 mb-4">Timeline</h2>
             <div className="flex gap-4 text-text-2">
               {project.startDate && (

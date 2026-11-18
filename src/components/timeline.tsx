@@ -55,7 +55,7 @@ export function Timeline({ items }: TimelineProps) {
                   isEven ? "md:pr-12 md:text-right" : "md:pl-12 md:text-left"
                 } pl-8 md:pl-0`}
               >
-                <div className="bg-surf-1 border border-border-line rounded-[20px] p-6 hover:border-brand-primary/50 transition-all duration-300">
+                <div className="bg-surf-1 border border-border-line rounded-none p-6 hover:border-brand-primary/50 transition-all duration-300">
                   <div
                     className={`text-sm font-semibold mb-2 ${typeColors[item.type]}`}
                   >

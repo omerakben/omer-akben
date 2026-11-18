@@ -59,7 +59,7 @@ export function CapabilityGrid({ items }: CapabilityGridProps) {
             <div className="flex items-start justify-between gap-2">
               <h3 className="text-base font-semibold text-text-1">{item.title}</h3>
               {item.badge ? (
-                <span className="rounded-full bg-brand-primary/10 px-2 py-0.5 text-xs font-medium text-brand-primary">
+                <span className="rounded-none bg-brand-primary/10 px-2 py-0.5 text-xs font-medium text-brand-primary">
                   {item.badge}
                 </span>
               ) : null}

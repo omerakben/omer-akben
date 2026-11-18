@@ -714,6 +714,8 @@ export function ChatSidebar() {
                 isPinned ? "bg-brand-primary/50" : "hover:bg-brand-primary/50"
               }`}
               onMouseDown={() => setIsResizing(true)}
+              role="separator"
+              aria-orientation="vertical"
               aria-label="Resize sidebar"
             >
               <div
@@ -816,7 +818,7 @@ export function ChatSidebar() {
                         <button
                           type="button"
                           onClick={handlePinToggle}
-                          className="rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold text-white"
+                          className="bg-synth-volt px-3 py-1 font-mono text-xs font-bold text-synth-volt-fg"
                         >
                           Pin now
                         </button>
@@ -1013,7 +1015,8 @@ export function ChatSidebar() {
                   <Button
                     type="submit"
                     disabled={isHydratingThread || isLoading || !input.trim()}
-                    className="bg-brand-primary text-white hover:bg-brand-primary/90 h-auto px-3 py-2"
+                    aria-label="Send message"
+                    className="h-auto px-3 py-2"
                   >
                     <Send aria-hidden="true" className="w-4 h-4" />
                   </Button>

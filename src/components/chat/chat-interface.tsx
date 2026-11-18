@@ -650,7 +650,7 @@ export function ChatInterface({
             <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-brand-primary hover:bg-brand-primary/90 shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-brand-primary text-surf-0 hover:bg-brand-primary/90 shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               aria-label="Send message"
             >
               <Send aria-hidden="true" className="w-4 h-4" />

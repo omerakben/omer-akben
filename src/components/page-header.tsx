@@ -28,18 +28,20 @@ export function PageHeader({
       }}
       initial="hidden"
       animate="visible"
-      className={`text-center mb-12 ${className}`}
+      className={`mb-12 border-b-2 border-border-line pb-8 ${className}`}
     >
       <motion.h1
         variants={headerSlide}
-        className="text-4xl md:text-5xl font-bold text-text-1 mb-6 flex items-center justify-center gap-4"
+        className="mb-4 flex items-center gap-4 text-4xl font-black uppercase tracking-tight text-text-1 md:text-5xl"
       >
-        <Icon className="w-10 h-10 md:w-12 md:h-12 text-brand-primary flex-shrink-0" />
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center bg-synth-volt text-synth-volt-fg md:h-14 md:w-14">
+          <Icon aria-hidden="true" className="h-6 w-6 md:h-7 md:w-7" />
+        </span>
         {title}
       </motion.h1>
       <motion.p
         variants={headerSlide}
-        className="text-lg text-text-2 max-w-2xl mx-auto"
+        className="max-w-2xl text-lg text-text-2"
       >
         {description}
       </motion.p>

@@ -58,10 +58,7 @@ export default function Error({
 
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button
-            onClick={reset}
-            className="bg-brand-primary hover:bg-brand-primary/90"
-          >
+          <Button onClick={reset}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
           </Button>

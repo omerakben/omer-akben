@@ -127,13 +127,13 @@ export default function DeadlineCaseStudyPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
               Full-Stack
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
               Completed
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+            <span className="px-3 py-1 rounded-none text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
               Featured
             </span>
           </div>
@@ -173,7 +173,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* The Challenge */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Challenge</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             Software developers manage hundreds of critical artifacts across
@@ -198,7 +198,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* The Solution */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">The Solution</h2>
           <p className="text-text-2 leading-relaxed mb-4">
             I developed <strong className="text-text-1">DEADLINE</strong>, a
@@ -232,7 +232,7 @@ export default function DeadlineCaseStudyPage() {
             alt="DEADLINE dashboard showing workspace overview with artifact counts, environment filters, and recent activity feed"
             width={3456}
             height={1926}
-            className="rounded-[20px] border border-border-line w-full h-auto"
+            className="rounded-none border border-border-line w-full h-auto"
             priority={false}
             quality={90}
             loading="lazy"
@@ -244,7 +244,7 @@ export default function DeadlineCaseStudyPage() {
 
         {/* Application Architecture */}
         <div className="mb-8">
-          <div className="bg-surf-1 border border-border-line rounded-[20px] overflow-hidden">
+          <div className="bg-surf-1 border border-border-line rounded-none overflow-hidden">
             <div className="p-4 border-b border-border-line">
               <h3 className="text-lg font-bold text-text-1">
                 Application Architecture
@@ -359,7 +359,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Key Features */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">Key Features</h2>
           <div className="space-y-6">
             <div className="flex gap-4">
@@ -481,7 +481,7 @@ export default function DeadlineCaseStudyPage() {
             alt="DEADLINE workspace interface displaying polymorphic artifacts (ENV_VAR, PROMPT, DOC_LINK) with environment scoping, tags, and reveal tracking"
             width={3456}
             height={1926}
-            className="rounded-[20px] border border-border-line w-full h-auto"
+            className="rounded-none border border-border-line w-full h-auto"
             priority={false}
             quality={90}
             loading="lazy"
@@ -492,7 +492,7 @@ export default function DeadlineCaseStudyPage() {
         </figure>
 
         {/* Technical Implementation */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Implementation
           </h2>
@@ -587,7 +587,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Development Process */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Development Process
           </h2>
@@ -703,7 +703,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Mission & Vision */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Mission & Vision
           </h2>
@@ -743,7 +743,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Why DEADLINE Matters */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Why DEADLINE Matters
           </h2>
@@ -770,7 +770,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Real-World Use Cases */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-6">
             Real-World Use Cases
           </h2>
@@ -800,7 +800,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Technical Highlights */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Technical Highlights
           </h2>
@@ -818,7 +818,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Live Deployments */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Live Deployments
           </h2>
@@ -887,7 +887,7 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Results & Impact */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8 mb-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8 mb-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">
             Results & Impact
           </h2>
@@ -951,13 +951,13 @@ export default function DeadlineCaseStudyPage() {
         </div>
 
         {/* Technologies */}
-        <div className="bg-surf-1 border border-border-line rounded-[20px] p-8">
+        <div className="bg-surf-1 border border-border-line rounded-none p-8">
           <h2 className="text-2xl font-bold text-text-1 mb-4">Technologies</h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 bg-surf-2 text-text-2 rounded-full text-sm border border-border-line"
+                className="px-3 py-1 bg-surf-2 text-text-2 rounded-none text-sm border border-border-line"
               >
                 {tech}
               </span>

@@ -80,7 +80,7 @@ export default function SkillsPage() {
                 placeholder="Search skills..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 text-base text-text-1 bg-surf-0 border-2 border-border-line focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all rounded-full"
+                className="pl-12 h-14 text-base text-text-1 bg-surf-0 border-2 border-border-line focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all rounded-none"
               />
             </div>
 
@@ -94,9 +94,9 @@ export default function SkillsPage() {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none ${
+                    className={`px-5 py-2.5 rounded-none text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:outline-none ${
                       selectedCategory === category
-                        ? "bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg"
+                        ? "bg-synth-volt text-synth-volt-fg shadow-lg"
                         : "bg-surf-0 text-text-2 hover:bg-surf-1 hover:text-text-1 border-2 border-border-line hover:border-brand-primary/50"
                     }`}
                   >
@@ -162,7 +162,7 @@ export default function SkillsPage() {
                     setSearchQuery("");
                     setSelectedCategory("All");
                   }}
-                  className="px-6 py-3 bg-gradient-to-r from-brand-primary to-accent-primary text-white rounded-full font-semibold hover:opacity-90 transition-opacity shadow-lg"
+                  className="px-6 py-3 bg-synth-volt text-synth-volt-fg rounded-none font-semibold hover:opacity-90 transition-opacity shadow-lg"
                 >
                   Clear All Filters
                 </button>
@@ -181,7 +181,7 @@ export default function SkillsPage() {
                 <Card className="border-border-line hover:border-brand-primary/60 transition-all">
                   <CardHeader className="border-b border-border-line bg-surf-1/50">
                     <CardTitle className="text-2xl flex items-center gap-3">
-                      <div className="w-2 h-8 bg-gradient-to-b from-brand-primary to-accent-primary rounded-full"></div>
+                      <div className="w-2 h-8 bg-synth-volt text-synth-volt-fg rounded-full"></div>
                       {skillCategory.category}
                       <span className="text-sm font-normal text-text-3 ml-auto">
                         {skillCategory.skills.length} skills
@@ -198,7 +198,7 @@ export default function SkillsPage() {
                           {/* Skill Header */}
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-br from-brand-primary/10 to-accent-primary/10 flex items-center justify-center group-hover:from-brand-primary/20 group-hover:to-accent-primary/20 transition-all border border-border-line group-hover:border-brand-primary/30">
+                              <div className="w-8 h-8 shrink-0 rounded-lg bg-brand-primary/10 flex items-center justify-center group-hover:from-brand-primary/20 group-hover:to-accent-primary/20 transition-all border border-border-line group-hover:border-brand-primary/30">
                                 <SkillIcon
                                   skillName={skill.name}
                                   className="w-5 h-5 text-brand-primary group-hover:scale-110 transition-transform"

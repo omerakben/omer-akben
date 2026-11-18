@@ -37,6 +37,10 @@ const nextConfig = {
     NEXT_PUBLIC_BUILD_DATE: resolveBuildDate(),
   },
   pageExtensions: ["js", "jsx", "ts", "tsx"],
+  // AI Ozzy lives in the sidebar; /chat has no page of its own.
+  async redirects() {
+    return [{ source: "/chat", destination: "/?chat=open", permanent: false }];
+  },
   outputFileTracingRoot: path.resolve(__dirname),
   compiler: {
     removeConsole:

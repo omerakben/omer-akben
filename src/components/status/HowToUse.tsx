@@ -113,7 +113,7 @@ export function HowToUse({ persona, blocks }: HowToUseProps) {
           >
             <p className="flex-1 text-base text-text-1">{prompt}</p>
             <button
-              className="rounded-full border border-border-line px-4 py-2 text-sm font-medium text-text-2 transition-all hover:border-brand-primary hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+              className="rounded-none border border-border-line px-4 py-2 text-sm font-medium text-text-2 transition-all hover:border-brand-primary hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
               onClick={() => copyPrompt(prompt)}
               type="button"
             >

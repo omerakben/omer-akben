@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useMemo,
   useState,
 } from "react";
@@ -99,6 +100,15 @@ export function ChatSidebarProvider({
       document.body.classList.add("overflow-hidden");
     }
   }, [isPinned]);
+
+  // /chat redirects to /?chat=open so a shared chat link still opens Ozzy.
+  const handledChatIntent = useRef(false);
+  useEffect(() => {
+    if (handledChatIntent.current) return;
+    handledChatIntent.current = true;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("chat") === "open") openSidebar();
+  }, [openSidebar]);
 
   const closeSidebar = useCallback(() => {
     // Don't close if pinned

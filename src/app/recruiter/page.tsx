@@ -32,7 +32,7 @@ export const metadata = createMetadata({
 const tldr = {
   availability: facts.professional.availability,
   location: facts.professional.workPreferences.location,
-  experience: `${facts.professional.yearsOfExperience}+ years`,
+  experience: `${facts.professional.yearsOfExperience} years`,
   specialization: facts.personal.title,
   topSkills: facts.skills.languages
     .slice(0, 3)
@@ -54,14 +54,14 @@ export default function RecruiterPage() {
         {/* Enhanced Hero Section */}
         <div className="relative mb-20">
           {/* Background Gradient */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-primary/5 via-transparent to-accent-primary/5 rounded-3xl blur-3xl" />
+          <div className="absolute inset-0 -z-10 bg-brand-primary/5 rounded-3xl blur-3xl" />
 
           <div className="text-center">
             {/* Profile Photo - Larger & More Prominent */}
             <div className="mb-8 flex justify-center">
               <div className="relative">
                 {/* Decorative rings */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-brand-primary to-accent-primary opacity-20 blur-xl scale-110" />
+                <div className="absolute inset-0 rounded-full bg-synth-volt text-synth-volt-fg opacity-20 blur-xl scale-110" />
                 <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-brand-primary shadow-2xl ring-4 ring-brand-primary/20">
                   <Image
                     src="/assets/me.jpeg"
@@ -73,7 +73,7 @@ export default function RecruiterPage() {
                   />
                 </div>
                 {/* Status Badge */}
-                <div className="absolute top-0 -right-4 md:-right-6 flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                <div className="absolute top-0 -right-4 md:-right-6 flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-xs font-semibold rounded-none shadow-lg">
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                   Open to Work
                 </div>
@@ -81,7 +81,7 @@ export default function RecruiterPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surf-1 border border-border-line">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-surf-1 border border-border-line">
                 <FileUser className="w-5 h-5 text-brand-primary" />
                 <span className="text-sm font-medium text-text-2">
                   For Recruiters & Hiring Managers
@@ -90,7 +90,7 @@ export default function RecruiterPage() {
 
               <h1 className="text-5xl md:text-6xl font-bold text-text-1 tracking-tight">
                 Omer{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-accent-primary">
+                <span className="bg-synth-volt px-2 text-synth-volt-fg">
                   &quot;Ozzy&quot;
                 </span>{" "}
                 Akben
@@ -101,8 +101,8 @@ export default function RecruiterPage() {
               </p>
 
               <p className="text-lg text-text-2 max-w-2xl mx-auto">
-                {tldr.experience} of experience building production AI systems
-                and Full-Stack applications
+                {tldr.experience} of SDET and quality engineering, now building
+                production AI systems and full-stack applications
               </p>
 
               {/* Quick Stats */}
@@ -126,7 +126,7 @@ export default function RecruiterPage() {
                 <Button
                   asChild
                   size="lg"
-                  className="w-full sm:w-auto px-8 bg-gradient-to-r from-brand-primary to-accent-primary text-white shadow-lg hover:shadow-xl transition-all"
+                  className="w-full sm:w-auto px-8 bg-synth-volt text-synth-volt-fg shadow-lg hover:shadow-xl transition-all"
                 >
                   <a
                     href="/assets/Omer_Akben_Resume.pdf"
@@ -142,7 +142,7 @@ export default function RecruiterPage() {
         </div>
 
         {/* Production Metrics Dashboard - Enhanced */}
-        <Card className="mb-16 border-brand-primary/30 bg-gradient-to-br from-brand-primary/5 to-accent-primary/5 shadow-lg">
+        <Card className="mb-16 border-brand-primary/30 bg-brand-primary/5 shadow-lg">
           <CardHeader>
             <div className="flex items-center gap-3 mb-2">
               <div className="p-2 rounded-xl bg-brand-primary/10">
@@ -162,7 +162,7 @@ export default function RecruiterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {/* Live Projects - Enhanced Card */}
               <div className="group relative text-center p-6 bg-surf-1 rounded-xl border border-border-line hover:border-brand-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="absolute inset-0 bg-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <div className="relative">
                   <div className="text-4xl font-bold text-brand-primary mb-2 group-hover:scale-110 transition-transform">
                     {liveProjectsCount}
@@ -179,7 +179,7 @@ export default function RecruiterPage() {
 
               {/* Client Projects */}
               <div className="group relative text-center p-6 bg-surf-1 rounded-xl border border-border-line hover:border-green-500/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <div className="relative">
                   <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform">
                     {clientProjectsCount}
@@ -195,7 +195,7 @@ export default function RecruiterPage() {
 
               {/* Total Projects */}
               <div className="group relative text-center p-6 bg-surf-1 rounded-xl border border-border-line hover:border-accent-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="absolute inset-0 bg-accent-primary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <div className="relative">
                   <div className="text-4xl font-bold text-accent-primary mb-2 group-hover:scale-110 transition-transform">
                     {totalProjectsCount}
@@ -278,7 +278,7 @@ export default function RecruiterPage() {
           <CardContent className="space-y-6">
             {/* Key Info Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-gradient-to-br from-brand-primary/5 to-transparent border border-border-line">
+              <div className="p-4 rounded-xl bg-brand-primary/5 border border-border-line">
                 <Clock className="h-5 w-5 text-brand-primary mb-2" />
                 <p className="text-xs font-medium text-text-2 mb-1">
                   Availability
@@ -288,7 +288,7 @@ export default function RecruiterPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-gradient-to-br from-accent-primary/5 to-transparent border border-border-line">
+              <div className="p-4 rounded-xl bg-accent-primary/5 border border-border-line">
                 <FileText className="h-5 w-5 text-accent-primary mb-2" />
                 <p className="text-xs font-medium text-text-2 mb-1">
                   Experience
@@ -300,10 +300,10 @@ export default function RecruiterPage() {
             </div>
 
             {/* Divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-border-line to-transparent" />
+            <div className="h-px bg-border-line" />
 
             {/* Specialization Highlight */}
-            <div className="p-6 rounded-xl bg-gradient-to-br from-brand-primary/10 via-accent-primary/5 to-transparent border-2 border-brand-primary/20">
+            <div className="p-6 rounded-xl bg-brand-primary/10 border-2 border-brand-primary/20">
               <p className="text-sm font-semibold text-brand-primary mb-2">
                 Core Specialization
               </p>
@@ -423,7 +423,7 @@ export default function RecruiterPage() {
                     <Button
                       asChild
                       size="sm"
-                      className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      className="w-full bg-synth-volt text-synth-volt-fg"
                     >
                       <a
                         href="/assets/Omer-Akben-NSS-Certificate.pdf"
@@ -442,7 +442,7 @@ export default function RecruiterPage() {
                     <Button
                       asChild
                       size="sm"
-                      className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      className="w-full bg-synth-volt text-synth-volt-fg"
                     >
                       <a
                         href="/assets/Omer-Akben-NSS-Cloud-Certificate.pdf"
@@ -461,7 +461,7 @@ export default function RecruiterPage() {
                     <Button
                       asChild
                       size="sm"
-                      className="w-full bg-gradient-to-r from-brand-primary to-accent-primary"
+                      className="w-full bg-synth-volt text-synth-volt-fg"
                     >
                       <a
                         href="/assets/Omer-Akben-AWS-Certificate.pdf"
@@ -492,7 +492,7 @@ export default function RecruiterPage() {
         </Card>
 
         {/* Contact Section - Enhanced */}
-        <Card className="border-2 border-brand-primary/20 shadow-xl bg-gradient-to-br from-brand-primary/5 to-transparent">
+        <Card className="border-2 border-brand-primary/20 shadow-xl bg-brand-primary/5">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-brand-primary/10">
@@ -509,7 +509,7 @@ export default function RecruiterPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Primary CTA - Email */}
-            <div className="p-1 rounded-xl bg-gradient-to-r from-brand-primary to-accent-primary">
+            <div className="p-1 rounded-xl bg-synth-volt text-synth-volt-fg">
               <Button
                 asChild
                 size="lg"
@@ -527,7 +527,7 @@ export default function RecruiterPage() {
 
             {/* Secondary CTAs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-1 rounded-xl bg-gradient-to-r from-brand-primary to-accent-primary">
+              <div className="p-1 rounded-xl bg-synth-volt text-synth-volt-fg">
                 <Button
                   asChild
                   size="lg"
@@ -545,7 +545,7 @@ export default function RecruiterPage() {
                 </Button>
               </div>
 
-              <div className="p-1 rounded-xl bg-gradient-to-r from-brand-primary to-accent-primary">
+              <div className="p-1 rounded-xl bg-synth-volt text-synth-volt-fg">
                 <Button
                   asChild
                   size="lg"
