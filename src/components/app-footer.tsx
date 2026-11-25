@@ -67,7 +67,7 @@ export function AppFooter() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center border-2 border-border-line text-text-2 transition-colors hover:bg-surf-2 hover:text-text-1"
+                    className="flex h-11 w-11 items-center justify-center border-2 border-border-line text-text-2 transition-colors hover:bg-surf-2 hover:text-text-1"
                     aria-label={social.label}
                   >
                     <Icon aria-hidden="true" className="h-5 w-5" />
@@ -82,12 +82,12 @@ export function AppFooter() {
             <h3 className="mb-4 font-mono text-xs font-bold uppercase tracking-wider text-text-1">
               Navigation
             </h3>
-            <ul className="space-y-2">
+            <ul className="md:space-y-2">
               {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-text-2 hover:text-text-1 text-sm transition-colors"
+                    className="inline-flex min-h-11 items-center text-sm text-text-2 transition-colors hover:text-text-1 md:min-h-0"
                   >
                     {link.label}
                   </Link>
@@ -101,12 +101,12 @@ export function AppFooter() {
             <h3 className="mb-4 font-mono text-xs font-bold uppercase tracking-wider text-text-1">
               Resources
             </h3>
-            <ul className="space-y-2">
+            <ul className="md:space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-text-2 hover:text-text-1 text-sm transition-colors"
+                    className="inline-flex min-h-11 items-center text-sm text-text-2 transition-colors hover:text-text-1 md:min-h-0"
                   >
                     {link.label}
                   </Link>

@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import {
   Briefcase,
   Compass,
+  Download,
   FileUser,
   GraduationCap,
   Menu,
@@ -112,19 +113,31 @@ export function AppHeader() {
               size="sm"
               aria-label="Open chat"
               onClick={openSidebar}
+              className="h-11 w-11 p-0"
             >
               <MessageCircle className="h-5 w-5" />
             </Button>
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" aria-label="Open menu">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label="Open menu"
+                  className="h-11 w-11 p-0"
+                >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetContent
+                side="right"
+                className="flex w-[min(100vw,360px)] flex-col gap-6 border-l-2 border-border-line bg-surf-0"
+              >
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                <nav className="flex flex-col gap-4 mt-8">
+                <div className="font-mono text-xs font-bold text-synth-red">
+                  {"// NAVIGATE"}
+                </div>
+                <nav className="flex flex-col border-2 border-border-line">
                   {routes.map((route) => {
                     const Icon = route.icon;
                     return (
@@ -133,18 +146,56 @@ export function AppHeader() {
                         href={route.href}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "nav-item flex items-center gap-2 px-4 py-3 rounded-lg text-base font-medium",
+                          "nav-item flex min-h-12 items-center gap-3 border-b-2 border-border-line px-4 font-mono text-sm font-bold uppercase tracking-wide last:border-b-0",
                           pathname === route.href
-                            ? "text-brand-primary"
-                            : "text-text-2 transition-colors hover:text-text-1"
+                            ? "bg-synth-volt text-synth-volt-fg"
+                            : "bg-surf-1 text-text-1 transition-colors hover:bg-surf-2"
                         )}
+                        aria-current={
+                          pathname === route.href ? "page" : undefined
+                        }
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon aria-hidden="true" className="h-4 w-4" />
                         {route.label}
                       </Link>
                     );
                   })}
                 </nav>
+
+                <div className="flex flex-col gap-2.5">
+                  <Button
+                    size="lg"
+                    className="h-12 w-full"
+                    onClick={() => {
+                      setOpen(false);
+                      openSidebar();
+                    }}
+                  >
+                    <MessageCircle aria-hidden="true" className="h-4 w-4" />
+                    Ask AI Ozzy
+                  </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="h-12 w-full"
+                  >
+                    <a
+                      href="/assets/Omer_Akben_Resume.pdf"
+                      download="Omer_Akben_Resume.pdf"
+                    >
+                      <Download aria-hidden="true" className="h-4 w-4" />
+                      Resume.PDF
+                    </a>
+                  </Button>
+                </div>
+
+                <div className="mt-auto space-y-2">
+                  <div className="font-mono text-xs font-bold text-text-2">
+                    LUMINOSITY
+                  </div>
+                  <BrightnessControl />
+                </div>
               </SheetContent>
             </Sheet>
           </div>

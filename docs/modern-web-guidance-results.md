@@ -82,3 +82,16 @@ Scope: shared Button/Card/Badge/Input/Textarea, `--radius` tokens set to 0, floa
 | LCP / CLS / interaction latency | unmeasured | no traces |
 
 Not verified: 8-mode contrast on routes other than /skills (the only route the contrast spec covers), mobile layouts, Safari/Firefox, real provider/Redis calls, OG image rendering in a share debugger. No guides beyond the earlier two were retrieved for this pass.
+
+## 2026-11-25 — mobile usability pass
+
+Guide retrieved: form-factor-adaptation (skill 2026_11_09-5bcc021b). Measured in the app's browser pane at 375x812 with touch emulation (`pointer: coarse` true), local dev with placeholder env.
+
+| Check | Before | After | Evidence |
+|---|---|---|---|
+| Homepage controls under 44px (excl. links inside sentences) | 55 of 59 | 13 of 58, before the footer and case-study link fix; not re-counted after | DOM measurement |
+| Horizontal overflow, 8 routes at 390px | none | none | Playwright script |
+| Pinned sidebar at 375px | page 55px wide | page 375px, overlay | DOM measurement, also on production |
+| Lint / TypeScript / unit / Playwright | pass | pass (829 unit, 115 E2E, 12 skipped) | local runs |
+
+Not verified: real iOS/Android devices, Safari, tablet widths, 320px width, safe-area insets (viewport meta has no viewport-fit=cover, so none are needed yet), LCP/CLS/interaction latency. Card title links and Playwright's desktop project are unaffected by the coarse-pointer rule.

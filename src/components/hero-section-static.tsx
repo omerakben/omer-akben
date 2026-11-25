@@ -112,7 +112,7 @@ export function HeroSectionStatic() {
                   asChild
                   size="lg"
                   aria-label="View projects by Omer Akben"
-                  className="rounded-none border-2 border-border-line bg-synth-volt font-mono text-xs font-bold uppercase text-synth-volt-fg hover:opacity-90"
+                  className="h-12 w-full sm:h-10 sm:w-auto rounded-none border-2 border-border-line bg-synth-volt font-mono text-xs font-bold uppercase text-synth-volt-fg hover:opacity-90"
                 >
                   <Link href="/projects">
                     View Projects
@@ -125,7 +125,7 @@ export function HeroSectionStatic() {
                   size="lg"
                   variant="outline"
                   aria-label="Information for recruiters"
-                  className="rounded-none border-2 border-border-line bg-surf-0 font-mono text-xs font-bold uppercase text-text-1 hover:border-brand-primary hover:bg-surf-2 hover:text-text-1"
+                  className="h-12 w-full sm:h-10 sm:w-auto rounded-none border-2 border-border-line bg-surf-0 font-mono text-xs font-bold uppercase text-text-1 hover:border-brand-primary hover:bg-surf-2 hover:text-text-1"
                 >
                   <Link href="/recruiter">
                     <UserCheck className="mr-2 h-4 w-4" />

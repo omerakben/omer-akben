@@ -363,6 +363,29 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Short headings wrap into even lines instead of leaving one orphan word. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Touch screens: a fingertip needs 44px (WCAG 2.5.5). Mouse users keep
+     the compact sizes. Zero specificity, so any explicit min-size wins. */
+  @media (pointer: coarse) {
+    :where(
+        button,
+        [role="button"],
+        [role="tab"],
+        a.button,
+        input:not([type="checkbox"], [type="radio"]),
+        select
+      ) {
+      min-block-size: 44px;
+      min-inline-size: 44px;
+    }
+  }
+
   body {
     @apply bg-surf-0 text-text-1;
   }

@@ -556,7 +556,7 @@ export function CyberWaveDeck() {
               <div className="pt-1">
                 <Link
                   href={activeChannel.actionHref}
-                  className="inline-block border-2 border-border-line bg-surf-0 px-3.5 py-1.5 font-mono text-xs font-bold text-text-1 transition-colors hover:border-brand-primary hover:text-brand-primary"
+                  className="inline-flex min-h-11 items-center border-2 border-border-line bg-surf-0 px-3.5 py-1.5 font-mono text-xs font-bold text-text-1 transition-colors hover:border-brand-primary hover:text-brand-primary"
                 >
                   {activeChannel.actionLabel} →
                 </Link>

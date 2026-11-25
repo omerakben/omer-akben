@@ -34,7 +34,7 @@ export function ScrollToTop() {
       onClick={scrollToTop}
       size="icon"
       variant="outline"
-      className="fixed bottom-24 right-6 z-40 h-10 w-14 bg-surf-1 text-text-1 shadow-lg hover:bg-surf-2"
+      className="fixed bottom-24 right-6 z-40 hidden h-10 w-14 md:inline-flex bg-surf-1 text-text-1 shadow-lg hover:bg-surf-2"
       aria-label="Scroll to top"
     >
       <ArrowUp className="h-5 w-5" />

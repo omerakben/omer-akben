@@ -703,7 +703,7 @@ export function ChatSidebar() {
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             style={{ width: `${width}px` }}
-            className="fixed top-0 right-0 h-full max-w-full bg-surf-0 shadow-2xl z-50 flex flex-col"
+            className="fixed top-0 right-0 h-full max-w-full bg-surf-0 shadow-2xl z-50 flex flex-col max-lg:w-full!"
             role="dialog"
             aria-modal={!isPinned}
             aria-label="Chat with AI Ozzy"
