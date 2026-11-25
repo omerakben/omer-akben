@@ -779,7 +779,7 @@ export function ChatSidebar() {
                     className={cn(
                       "relative",
                       shouldShowPinHint &&
-                        "pin-highlight inline-flex rounded-full"
+                        "pin-highlight inline-flex rounded-none"
                     )}
                   >
                     <Button
@@ -825,7 +825,7 @@ export function ChatSidebar() {
                         <button
                           type="button"
                           onClick={dismissPinHint}
-                          className="rounded-full border border-border-line px-3 py-1 text-xs font-medium text-text-2 hover:border-brand-primary hover:text-brand-primary"
+                          className="rounded-none border border-border-line px-3 py-1 text-xs font-medium text-text-2 hover:border-brand-primary hover:text-brand-primary"
                         >
                           Got it
                         </button>
@@ -963,7 +963,7 @@ export function ChatSidebar() {
                           key={index}
                           type="button"
                           onClick={() => handleSuggestedQuestion(question)}
-                          className="w-full text-left px-3 py-1.5 rounded-full bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 transition-all"
+                          className="w-full text-left px-3 py-1.5 rounded-none bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 transition-all"
                           disabled={isHydratingThread}
                         >
                           {question}

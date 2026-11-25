@@ -141,7 +141,7 @@ export const FollowupChips = memo(function FollowupChips({
             {/* Chip number indicator */}
             <span
               className="flex-shrink-0 mt-0.5 w-4 h-4 flex items-center justify-center
-                           rounded-full bg-brand-primary/10 text-brand-primary text-xs font-medium
+                           rounded-none bg-brand-primary/10 text-brand-primary text-xs font-medium
                            group-hover:bg-brand-primary group-hover:text-surf-0
                            transition-colors duration-200"
             >

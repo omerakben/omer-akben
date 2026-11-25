@@ -220,7 +220,7 @@ export function ChatInterface({
                   <motion.button
                     type="button"
                     onClick={handleViewProjects}
-                    className="w-full flex items-center gap-3 h-12 px-4 rounded-full bg-surf-1 border border-border-line hover:bg-surf-2 hover:border-brand-primary/50 transition-all"
+                    className="w-full flex items-center gap-3 h-12 px-4 rounded-none bg-surf-1 border border-border-line hover:bg-surf-2 hover:border-brand-primary/50 transition-all"
                     whileHover={{ scale: 1.02, y: -1 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -237,7 +237,7 @@ export function ChatInterface({
                   <motion.button
                     type="button"
                     onClick={handleSeeSkills}
-                    className="w-full flex items-center gap-3 h-12 px-4 rounded-full bg-surf-1 border border-border-line hover:bg-surf-2 hover:border-brand-primary/50 transition-all"
+                    className="w-full flex items-center gap-3 h-12 px-4 rounded-none bg-surf-1 border border-border-line hover:bg-surf-2 hover:border-brand-primary/50 transition-all"
                     whileHover={{ scale: 1.02, y: -1 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -252,7 +252,7 @@ export function ChatInterface({
                   <motion.button
                     type="button"
                     onClick={handleGetResume}
-                    className="w-full flex items-center gap-3 h-12 px-4 rounded-full bg-surf-1 border border-border-line hover:bg-surf-2 hover:border-brand-primary/50 transition-all"
+                    className="w-full flex items-center gap-3 h-12 px-4 rounded-none bg-surf-1 border border-border-line hover:bg-surf-2 hover:border-brand-primary/50 transition-all"
                     whileHover={{ scale: 1.02, y: -1 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -281,7 +281,7 @@ export function ChatInterface({
                       key={index}
                       type="button"
                       onClick={() => handleSuggestedQuestion(question)}
-                      className="w-full text-center px-4 py-2.5 rounded-full bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-2 transition-all font-medium"
+                      className="w-full text-center px-4 py-2.5 rounded-none bg-surf-1 border border-border-line text-sm text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-2 transition-all font-medium"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -517,7 +517,7 @@ export function ChatInterface({
                                         router.push(link.href);
                                       }
                                     }}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none bg-surf-2/80 border border-border-line/50 text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1/80 transition-all font-medium"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                   >

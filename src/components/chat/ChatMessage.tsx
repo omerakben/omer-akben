@@ -234,7 +234,7 @@ export const ChatMessage = memo(
                           handleInternalNavigation(link.href);
                         }
                       }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-surf-2 border border-border-line text-xs text-text-2 hover:border-brand-primary/50 hover:text-text-1 hover:bg-surf-1 transition-all font-medium"
                     >
                       <div className="w-3.5 h-3.5 rounded-sm bg-brand-primary/10 flex items-center justify-center shrink-0">
                         <Icon

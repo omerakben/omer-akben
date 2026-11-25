@@ -1158,7 +1158,6 @@ html {
     content: "";
     position: absolute;
     inset: -6px;
-    border-radius: 9999px;
     border: 2px solid var(--brand-primary);
     opacity: 0.6;
     animation: pin-hint-pulse 1.6s ease-in-out infinite;
