@@ -42,15 +42,18 @@ export function GlobalChatButton() {
       disabled={!isReady}
       size="lg"
       variant="outline"
-      className="fixed bottom-6 right-6 z-40 h-14 w-14 bg-surf-1 p-0 shadow-lg hover:bg-surf-2"
+      className="fixed bottom-4 right-4 z-40 h-11 w-11 bg-surf-1 p-0 shadow-lg hover:bg-surf-2 md:bottom-6 md:right-6 md:h-14 md:w-14"
       aria-label="Open AI Ozzy chat (cmd/ctrl+K)"
     >
-      <AnimatedBlobContainer
-        size={36}
-        className="rounded-full"
-        disableCenterDimming={true}
-        asIcon={true}
-      />
+      {/* The orb renders at a fixed pixel size, so phones scale it down. */}
+      <span className="flex scale-75 md:scale-100">
+        <AnimatedBlobContainer
+          size={36}
+          className="rounded-full"
+          disableCenterDimming={true}
+          asIcon={true}
+        />
+      </span>
     </Button>
   );
 }
