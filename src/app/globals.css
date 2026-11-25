@@ -1129,22 +1129,25 @@ html {
     font-size: 0.9em;
   }
 
-  /* Ensure sufficient contrast for user messages on brand-primary background */
-  [data-brightness] .chat-message.bg-brand-primary,
-  [data-brightness] .chat-message.bg-brand-primary * {
-    color: rgb(255 255 255);
+  /* User messages sit on the volt surface: every descendant uses its ink
+     color, overriding the per-element text-text-* classes from markdown. */
+  [data-brightness] .chat-message.bg-synth-volt,
+  [data-brightness] .chat-message.bg-synth-volt * {
+    color: var(--synth-volt-fg);
   }
 
-  /* Override for links in user messages to remain white with underline */
-  [data-brightness] .chat-message.bg-brand-primary a {
-    color: rgb(255 255 255);
+  [data-brightness] .chat-message.bg-synth-volt a {
     text-decoration: underline;
   }
 
-  /* Override for code blocks in user messages - use contrasting colors */
-  [data-brightness] .chat-message.bg-brand-primary code {
-    color: rgb(10 16 32);
-    background: rgb(255 255 255 / 0.9);
+  [data-brightness] .chat-message.bg-synth-volt li::marker {
+    color: var(--synth-volt-fg);
+  }
+
+  /* Inline code keeps its own chip so it stays legible on volt */
+  [data-brightness] .chat-message.bg-synth-volt code {
+    color: var(--text-1);
+    background: var(--surf-0);
   }
 
   .pin-highlight {
