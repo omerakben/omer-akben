@@ -15,7 +15,7 @@ export function ChatSidebarHeader() {
   };
 
   return (
-    <div className="flex items-center justify-between h-16 px-4 border-b border-border-line">
+    <div className="flex items-center justify-between h-[calc(4.5rem+2px)] px-4 border-b-2 border-border-line">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center bg-synth-volt">
           <Bot aria-hidden="true" className="h-5 w-5 text-synth-volt-fg" />

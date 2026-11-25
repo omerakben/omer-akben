@@ -731,7 +731,8 @@ export function ChatSidebar() {
             </div>
 
             {/* Header */}
-            <div className="flex h-16 items-center justify-between px-4 border-b border-border-line bg-surf-0">
+            {/* Same 72px bar + 2px rule as AppHeader so the two lines meet. */}
+            <div className="flex h-[calc(4.5rem+2px)] items-center justify-between px-4 border-b-2 border-border-line bg-surf-0">
               <div className="flex items-center gap-2">
                 <AnimatedBlobContainer
                   size={20}
