@@ -51,15 +51,38 @@ const ChatSidebarContext = createContext<ChatSidebarContextType | undefined>(
   undefined
 );
 
+/** Viewports at least this wide can show the page beside a pinned sidebar. */
+const PIN_MEDIA_QUERY = "(min-width: 1024px)";
+
+function getPinQuery(): MediaQueryList | null {
+  if (typeof window === "undefined") return null;
+  return typeof window.matchMedia === "function"
+    ? window.matchMedia(PIN_MEDIA_QUERY)
+    : null;
+}
+
 export function ChatSidebarProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isPinned, setIsPinnedState] = useState(false);
+  // The saved preference. Pinning only takes effect where there is room for
+  // the page beside the sidebar; on narrow screens Ozzy is always an overlay.
+  const [pinnedPreference, setIsPinnedState] = useState(false);
+  const [canPin, setCanPin] = useState(true);
+  const isPinned = pinnedPreference && canPin;
   const [width, setWidthState] = useState(DEFAULT_WIDTH);
   const [threadId, setThreadIdState] = useState("");
+
+  useEffect(() => {
+    const query = getPinQuery();
+    if (!query) return;
+    const sync = () => setCanPin(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
 
   // Load persisted state from localStorage on mount
   useEffect(() => {
@@ -72,7 +95,7 @@ export function ChatSidebarProvider({
         setIsPinnedState(isPinnedValue);
 
         // If sidebar was pinned, it should be open on mount
-        if (isPinnedValue) {
+        if (isPinnedValue && (getPinQuery()?.matches ?? true)) {
           setIsOpen(true);
         }
       }

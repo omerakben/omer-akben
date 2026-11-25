@@ -494,8 +494,9 @@ export function CyberWaveDeck() {
 
       {/* 4 Architecture & Proof Channels */}
       <div className="space-y-5 border-t-2 border-border-line p-5 sm:p-6">
-        {/* Single scrolling row; padding keeps focus rings from being clipped. */}
-        <div className="-mx-1.5 overflow-x-auto p-1.5">
+        {/* Single scrolling row; padding keeps focus rings from being clipped.
+            The cut-off tab is the scroll cue, so the scrollbar is hidden. */}
+        <div className="-mx-1.5 overflow-x-auto p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div
             className="flex gap-2 font-mono text-xs font-bold"
             role="tablist"

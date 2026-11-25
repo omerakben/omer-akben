@@ -775,7 +775,7 @@ export function ChatSidebar() {
                     <Trash2 aria-hidden="true" className="w-4 h-4" />
                   </Button>
                 )}
-                <div className="relative">
+                <div className="relative hidden lg:block">
                   <div
                     className={cn(
                       "relative",
